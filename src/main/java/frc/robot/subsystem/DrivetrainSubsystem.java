@@ -81,10 +81,6 @@ public class DrivetrainSubsystem extends BitBucketsSubsystem {
   private Translation2d moduleBackLeftLocation;
   private Translation2d moduleBackRightLocation;
 
-  public SwerveDriveOdometry odometry;
-
-  //private final Loggable<String> odometryLoggable = BucketLog.loggable(Put.STRING, "drivetrain/odometry");
-
   private SimpleMotorFeedforward feedForward = new SimpleMotorFeedforward(0.65292, 2.3053, 0.37626); //new SimpleMotorFeedforward(0.12817, 2.3423, 0.53114);
 
 
@@ -263,9 +259,6 @@ public class DrivetrainSubsystem extends BitBucketsSubsystem {
 
       //pose = odometry.update(this.gyro.getRotation2d(), states[0], states[1], states[2], states[3]);
 
-      SmartDashboard.putNumber("/drivetrain/actual_X", odometry.getPoseMeters().getX());
-      SmartDashboard.putNumber("/drivetrain/actual_Y", odometry.getPoseMeters().getY());
-      SmartDashboard.putNumber("/drivetrain/actual_Theta", odometry.getPoseMeters().getRotation().getRadians());
     }
   }
 
@@ -285,7 +278,6 @@ public class DrivetrainSubsystem extends BitBucketsSubsystem {
 
   //DOES NOT RESET GYRO
   public void setOdometry(Pose2d startingPosition) {
-    //odometry = new SwerveDriveOdometry(kinematics, this.gyro.getRotation2d(), startingPosition);
 
     //odometryLoggable.log(LogLevel.DEBUG, "Reset Odometry to Starting Position: " + startingPosition);
     SmartDashboard.putString("/drivetrain/start_position", startingPosition.toString());
@@ -312,13 +304,11 @@ public class DrivetrainSubsystem extends BitBucketsSubsystem {
   {
     StringJoiner s = new StringJoiner("\n")
             .add("-----------------")
-            .add("Odometry Position: " + this.odometry.getPoseMeters())
             .add("Drivetrain Gyro Heading: " + this.gyro.getRotation2d())
             .add("-----------------");
 
     //odometryLoggable.log(LogLevel.DEBUG, s.toString());
 
-    SmartDashboard.putString("/drivetrain/odometry_position", this.odometry.getPoseMeters().toString());
     SmartDashboard.putString("/drivetrain/gyro_heading", this.gyro.getRotation2d().toString());
     SmartDashboard.putNumber("/drivetrain/speed_modifier", this.speedModifier);
   }
