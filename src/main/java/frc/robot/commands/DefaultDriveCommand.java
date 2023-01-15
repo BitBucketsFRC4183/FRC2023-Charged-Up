@@ -12,7 +12,6 @@ import java.util.function.DoubleSupplier;
 public class DefaultDriveCommand extends CommandBase {
 
   private static final SendableChooser<String> orientationChooser = new SendableChooser<>();
-  //private final Loggable<String> xWheelLoggable = BucketLog.loggable(Put.STRING, "drivetrain/xWheel");
 
   private final DrivetrainSubsystem driveSubsystem;
 
@@ -52,21 +51,17 @@ public class DefaultDriveCommand extends CommandBase {
       case "Field Oriented":
         if (xOutput == 0 && yOutput == 0 && rotationOutput == 0) {
           driveSubsystem.stopSticky();
-          //xWheelLoggable.log(LogLevel.DEBUG, "xWheel active.");
         } else {
           driveSubsystem.drive(
             ChassisSpeeds.fromFieldRelativeSpeeds(xOutput, yOutput, rotationOutput, driveSubsystem.getGyroAngle())
           );
-          //xWheelLoggable.log(LogLevel.DEBUG, "xWheel inactive.");
         }
         break;
       case "Robot Oriented":
         if (xOutput == 0 && yOutput == 0 && rotationOutput == 0) {
           driveSubsystem.stopSticky();
-          //xWheelLoggable.log(LogLevel.DEBUG, "xWheel active.");
         } else {
           ChassisSpeeds robotOrient = new ChassisSpeeds(xOutput, yOutput, rotationOutput);
-          //xWheelLoggable.log(LogLevel.DEBUG, "xWheel inactive.");
           driveSubsystem.drive(robotOrient);
         }
         break;
