@@ -44,7 +44,7 @@ public class Robot extends TimedRobot {
   private Buttons buttons;
   private Config config;
 
-  private boolean isBalancing = false;
+  private boolean isBalancing = !false;
   WPI_PigeonIMU gyro = new WPI_PigeonIMU(5);
 
   private final List<BitBucketsSubsystem> robotSubsystems = new ArrayList<>();
