@@ -4,6 +4,8 @@
 
 package frc.robot.subsystem;
 
+import com.ctre.phoenix.sensors.WPI_Pigeon2;
+import com.ctre.phoenix.sensors.WPI_PigeonIMU;
 import com.kauailabs.navx.frc.AHRS;
 import com.swervedrivespecialties.swervelib.Mk4SwerveModuleHelper;
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
@@ -67,7 +69,7 @@ public class DrivetrainSubsystem extends BitBucketsSubsystem {
   // cause the angle reading to increase until it wraps back over to zero.
   //  Remove if you are using a Pigeon
   //  Uncomment if you are using a NavX
-  public AHRS gyro;
+  public WPI_PigeonIMU gyro;
 
   // Swerve Modules
   private SwerveModule moduleFrontLeft;
@@ -87,7 +89,6 @@ public class DrivetrainSubsystem extends BitBucketsSubsystem {
   @Override
   public void init() {
 
-    System.out.println("William YB 😼");
 
     //Normalized Wheel Diameter after wear
     double wheelWearFactor = 1;
@@ -127,7 +128,7 @@ public class DrivetrainSubsystem extends BitBucketsSubsystem {
         moduleBackRightLocation
       );
 
-    this.gyro = new AHRS(SPI.Port.kMXP, (byte)200);
+    this.gyro = new WPI_PigeonIMU(5);
 
     //this.chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
 
@@ -217,10 +218,7 @@ public class DrivetrainSubsystem extends BitBucketsSubsystem {
     });
   }
 
-  public void orient() {
-    // do something here.
 
-  }
 
   public DrivetrainSubsystem(Config config) {
     super(config);
@@ -287,13 +285,12 @@ public class DrivetrainSubsystem extends BitBucketsSubsystem {
   public void zeroGyro()
   {
     gyro.reset();
-    gyro.setAngleAdjustment(0);
   }
 
   public void resetGyroWithOffset(Rotation2d r)
   {
     gyro.reset();
-    gyro.setAngleAdjustment(r.getDegrees());
+    gyro.setAccumZAngle(r.getDegrees());
   }
 
   public Rotation2d getGyroAngle() {
@@ -316,7 +313,18 @@ public class DrivetrainSubsystem extends BitBucketsSubsystem {
   public void stop() {
     this.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
   }
-  
+  public void driveForward()
+    {
+      this.drive(new ChassisSpeeds(0.05, 0.0, 0.0));
+    }
+
+    public void driveBack() {
+
+      this.drive(new ChassisSpeeds(-0.05, 0.0, 0.0));
+    }
+    // do something here.
+
+
   @Override
   public void disable() {
     stop();

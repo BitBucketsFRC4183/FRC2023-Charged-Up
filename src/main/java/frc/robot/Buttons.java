@@ -19,7 +19,7 @@ public class Buttons {
   int lt = 2;
   int rt = 3;
   Button slowDrive = new Button(() -> driverControl.getRawAxis(lt) > 0.1);
-  JoystickButton autoAim = new JoystickButton(driverControl, Xbox.CIRCLE);
+  JoystickButton autoBalance = new JoystickButton(driverControl, Xbox.CIRCLE);
 
 
   //Operator
