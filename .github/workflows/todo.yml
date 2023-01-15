@@ -1,5 +1,8 @@
 name: "Run TODO to Issue"
-on: ["push"]
+on:
+  push:
+    paths:
+      - '**/*.java'
 
 # https://github.com/marketplace/actions/todo-to-issue
 
@@ -17,3 +20,5 @@ jobs:
             - uses: "actions/checkout@v3"
             - name: "TODO to Issue"
               uses: "alstr/todo-to-issue-action@v4"
+              with:
+                  CLOSE_ISSUES: false
