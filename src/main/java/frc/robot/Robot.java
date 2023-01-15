@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import com.ctre.phoenix.sensors.WPI_PigeonIMU;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -12,13 +13,16 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.commands.AutoBalanceCommand;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.config.Config;
 import frc.robot.simulator.CTREPhysicsSim;
 import frc.robot.simulator.SetModeTestSubsystem;
 import frc.robot.simulator.SimulatorTestSubsystem;
 import frc.robot.subsystem.*;
+import frc.robot.subsystem.balance.BalancerSubsystem;
 import frc.robot.utils.MathUtils;
 
 import java.util.*;
@@ -39,6 +43,9 @@ public class Robot extends TimedRobot {
 
   private Buttons buttons;
   private Config config;
+
+  private boolean isBalancing = false;
+  WPI_PigeonIMU gyro = new WPI_PigeonIMU(5);
 
   private final List<BitBucketsSubsystem> robotSubsystems = new ArrayList<>();
 
@@ -83,7 +90,8 @@ public class Robot extends TimedRobot {
     }*/
     if (config.enableDriveSubsystem) {
       this.robotSubsystems.add(drivetrainSubsystem = new DrivetrainSubsystem(this.config));
-    }/*
+    }
+    /*
     if (config.enableIntakeSubsystem) {
       this.robotSubsystems.add(intakeSubsystem = new IntakeSubsystem(this.config));
     }
@@ -252,7 +260,9 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
+
     CommandScheduler.getInstance().run();
+    SmartDashboard.putNumber("gyro",drivetrainSubsystem.gyro.getRoll());
     //this.robotSubsystems.forEach(BitBucketsSubsystem::periodic);
   }
 
@@ -309,15 +319,20 @@ public class Robot extends TimedRobot {
     }*/
 
     if (config.enableDriveSubsystem) {
+//      drivetrainSubsystem.setDefaultCommand(
+//        new DefaultDriveCommand(
+//          drivetrainSubsystem,
+//          () -> -MathUtils.modifyAxis(buttons.driverControl.getRawAxis(buttons.swerveForward)),
+//          () -> -MathUtils.modifyAxis(buttons.driverControl.getRawAxis(buttons.swerveStrafe)),
+//          () -> -MathUtils.modifyAxis(buttons.driverControl.getRawAxis(buttons.swerveRotation))
+//        )
+//      );
       drivetrainSubsystem.setDefaultCommand(
-        new DefaultDriveCommand(
-          drivetrainSubsystem,
-          () -> -MathUtils.modifyAxis(buttons.driverControl.getRawAxis(buttons.swerveForward)),
-          () -> -MathUtils.modifyAxis(buttons.driverControl.getRawAxis(buttons.swerveStrafe)),
-          () -> -MathUtils.modifyAxis(buttons.driverControl.getRawAxis(buttons.swerveRotation))
-        )
-      );
+              new AutoBalanceCommand(
+                      drivetrainSubsystem
 
+              )
+      );
       /*buttons.autoAim.whenPressed(
               new AutoOrientCommand(
                       buttons.operatorControl::getX,
@@ -331,6 +346,7 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
+
     /*if((int)Timer.getMatchTime() == 30) this.rgbSubsystem.alertMatchTimeLeft();
 
     if(config.enableShooterSubsystem){
@@ -371,6 +387,34 @@ public class Robot extends TimedRobot {
   @Override
   public void testInit() {}
 
+
+  public void toggleBalance()
+  {
+    CommandScheduler.getInstance().cancelAll();
+    isBalancing = !isBalancing;
+    if(isBalancing)
+    {
+      drivetrainSubsystem.setDefaultCommand(
+              new AutoBalanceCommand(
+                      drivetrainSubsystem
+
+              )
+      );
+    }
+    else
+    {
+      drivetrainSubsystem.setDefaultCommand(
+              new DefaultDriveCommand(
+                      drivetrainSubsystem,
+                      () -> -MathUtils.modifyAxis(buttons.driverControl.getRawAxis(buttons.swerveForward)),
+                      () -> -MathUtils.modifyAxis(buttons.driverControl.getRawAxis(buttons.swerveStrafe)),
+                      () -> -MathUtils.modifyAxis(buttons.driverControl.getRawAxis(buttons.swerveRotation))
+              )
+      );
+    }
+  }
+
+
   /** This function is called periodically during test mode. */
   @Override
   public void testPeriodic() {
@@ -400,9 +444,17 @@ public class Robot extends TimedRobot {
         }
       );
 
+
       buttons.slowDrive.whenPressed(() -> this.drivetrainSubsystem.speedModifier = 0.25);
       buttons.slowDrive.whenReleased(() -> this.drivetrainSubsystem.speedModifier = 0.75);
+
+
+    buttons.autoBalance.whenPressed(() -> toggleBalance());
+
+
+
     }
+
 
     //Intake buttons
     /*if (config.enableIntakeSubsystem) {
