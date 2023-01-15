@@ -1,0 +1,19 @@
+name: "Run TODO to Issue"
+on: ["push"]
+
+# https://github.com/marketplace/actions/todo-to-issue
+
+# format like so:
+
+# // TODO stop being dumb 
+# // labels: impossible, dumb
+# // assignees: vkedia05, yourMother
+# // y'all really gotta get good, fr
+
+jobs:
+    build:
+        runs-on: "ubuntu-latest"
+        steps:
+            - uses: "actions/checkout@v3"
+            - name: "TODO to Issue"
+              uses: "alstr/todo-to-issue-action@v4"
