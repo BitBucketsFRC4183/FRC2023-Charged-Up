@@ -54,10 +54,6 @@ public class BalancerSubsystem extends BitBucketsSubsystem {
 
 
 
-               // feedforward.calculate(-speed, acceleration);
-
-
-              //  balanceController.setPID(.1, 0, 0);
 
 
 
@@ -65,7 +61,6 @@ public class BalancerSubsystem extends BitBucketsSubsystem {
             else if (gyro.getRoll() < -3) {
                 drivetrainSubsystem.driveBack();
 
-            //    balanceController.setPID(.1, 0, 0);
 
             }
             else {

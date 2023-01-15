@@ -43,18 +43,12 @@ public class AutoBalanceCommand extends CommandBase {
 
 
 
-            // feedforward.calculate(-speed, acceleration);
-
-
-            //  balanceController.setPID(.1, 0, 0);
-
 
 
         }
         else if (drivetrainSubsystem.gyro.getRoll() < -15) {
             drivetrainSubsystem.driveBack();
 
-            //    balanceController.setPID(.1, 0, 0);
 
         }
         else {
