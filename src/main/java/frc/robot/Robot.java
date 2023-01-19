@@ -10,6 +10,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -45,12 +46,16 @@ public class Robot extends TimedRobot {
   private Config config;
 
   private boolean isBalancing = !false;
+
+  //start robot with manual control
+  private boolean manualMode = true;
   WPI_PigeonIMU gyro = new WPI_PigeonIMU(5);
 
   private final List<BitBucketsSubsystem> robotSubsystems = new ArrayList<>();
 
-
+  //Subsystems
   private DrivetrainSubsystem drivetrainSubsystem;
+  private ArmSubsystem armSubsystem;
 
   private Field2d field;
 
@@ -135,6 +140,7 @@ public class Robot extends TimedRobot {
     }
 
 
+
   }
 
   /** This function is called periodically during operator control. */
@@ -145,6 +151,24 @@ public class Robot extends TimedRobot {
     boolean manual;
     boolean upperForward;
     boolean lowerForward;
+
+    drivetrainSubsystem.stop();
+
+    if (manualMode) {
+      // trigger is between 0 and 1, where 1 is fully pressed
+      double lowerJointOutput = buttons.driverControl.getRawAxis(XboxController.Axis.kLeftTrigger.value);
+      double upperJointOutput = buttons.driverControl.getRawAxis(XboxController.Axis.kRightTrigger.value);
+
+      if (lowerJointOutput > 0.01){
+        armSubsystem.moveLowerArm(lowerJointOutput);
+      }
+      if(upperJointOutput > 0.01){
+        armSubsystem.moveUpperArm(lowerJointOutput);
+      }
+    }
+    else{
+
+    }
   }
 
   /** This function is called once when the robot is disabled. */
@@ -192,11 +216,17 @@ public class Robot extends TimedRobot {
     }
   }
 
+  public void toggleManual(){
+
+    //toggle manual to auto or vice versa
+    manualMode = !manualMode;
+  }
+
 
   /** This function is called periodically during test mode. */
   @Override
   public void testPeriodic() {
-    drivetrainSubsystem.stop();
+
   }
 
   @Override
@@ -228,6 +258,9 @@ public class Robot extends TimedRobot {
 
 
     buttons.autoBalance.whenPressed(() -> toggleBalance());
+
+    //when start button is pressed, call toggleManual function
+    buttons.toggleAutoManual.whenPressed(() -> toggleManual());
 
 
 
