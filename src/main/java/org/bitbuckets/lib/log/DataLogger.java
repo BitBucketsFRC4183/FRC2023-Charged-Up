@@ -1,6 +1,5 @@
 package org.bitbuckets.lib.log;
 
-import org.bitbuckets.lib.abstractions.ILowLevelEncoder;
 import org.bitbuckets.lib.core.LogDriver;
 
 import java.util.function.Consumer;
