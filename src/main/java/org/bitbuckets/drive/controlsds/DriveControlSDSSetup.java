@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import org.bitbuckets.drive.DriveConstants;
+import org.bitbuckets.drive.DriveSDSConstants;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.lib.log.DataLogger;
@@ -40,20 +40,20 @@ public class DriveControlSDSSetup implements ISetup<DriveControlSDS> {
 
         double maxAngularVelocity_radiansPerSecond =
                 maxVelocity_metersPerSecond /
-                        Math.hypot(DriveConstants.drivetrainTrackWidth_meters / 2.0, DriveConstants.drivetrainWheelBase_meters / 2.0);
+                        Math.hypot(DriveSDSConstants.drivetrainTrackWidth_meters / 2.0, DriveSDSConstants.drivetrainWheelBase_meters / 2.0);
 
         SmartDashboard.putNumber("/drivetrain/max_angular_velocity", maxAngularVelocity_radiansPerSecond);
 
         Translation2d moduleFrontLeftLocation =
-                new Translation2d(DriveConstants.drivetrainTrackWidth_meters / 2.0, DriveConstants.drivetrainWheelBase_meters / 2.0);
+                new Translation2d(DriveSDSConstants.drivetrainTrackWidth_meters / 2.0, DriveSDSConstants.drivetrainWheelBase_meters / 2.0);
         Translation2d moduleFrontRightLocation =
-                new Translation2d(DriveConstants.drivetrainTrackWidth_meters / 2.0, -DriveConstants.drivetrainWheelBase_meters / 2.0);
+                new Translation2d(DriveSDSConstants.drivetrainTrackWidth_meters / 2.0, -DriveSDSConstants.drivetrainWheelBase_meters / 2.0);
         Translation2d moduleBackLeftLocation =
-                new Translation2d(-DriveConstants.drivetrainTrackWidth_meters / 2.0, DriveConstants.drivetrainWheelBase_meters / 2.0);
+                new Translation2d(-DriveSDSConstants.drivetrainTrackWidth_meters / 2.0, DriveSDSConstants.drivetrainWheelBase_meters / 2.0);
         Translation2d moduleBackRightLocation =
                 new Translation2d(
-                        -DriveConstants.drivetrainTrackWidth_meters / 2.0,
-                        -DriveConstants.drivetrainWheelBase_meters / 2.0
+                        -DriveSDSConstants.drivetrainTrackWidth_meters / 2.0,
+                        -DriveSDSConstants.drivetrainWheelBase_meters / 2.0
                 );
 
         SwerveDriveKinematics kinematics =
@@ -85,40 +85,40 @@ public class DriveControlSDSSetup implements ISetup<DriveControlSDS> {
                 //Smart Dashboard Tab
                 tab.getLayout("Front Left Module", BuiltInLayouts.kList).withSize(2, 4).withPosition(0, 0),
                 Mk4SwerveModuleHelper.GearRatio.L2, //Gear Ratio
-                DriveConstants.frontLeftModuleDriveMotor_ID, //Drive Motor
-                DriveConstants.frontLeftModuleSteerMotor_ID, //Steer Motor
-                DriveConstants.frontLeftModuleSteerEncoder_ID, //Steer Encoder
-                DriveConstants.frontLeftModuleSteerOffset //Steer Offset
+                DriveSDSConstants.frontLeftModuleDriveMotor_ID, //Drive Motor
+                DriveSDSConstants.frontLeftModuleSteerMotor_ID, //Steer Motor
+                DriveSDSConstants.frontLeftModuleSteerEncoder_ID, //Steer Encoder
+                DriveSDSConstants.frontLeftModuleSteerOffset //Steer Offset
         );
 
         SwerveModule moduleFrontRight = Mk4SwerveModuleHelper.createFalcon500(
                 //Smart Dashboard Tab
                 tab.getLayout("Front Right Module", BuiltInLayouts.kList).withSize(2, 4).withPosition(2, 0),
                 Mk4SwerveModuleHelper.GearRatio.L2, //Gear Ratio
-                DriveConstants.frontRightModuleDriveMotor_ID, //Drive Motor
-                DriveConstants.frontRightModuleSteerMotor_ID, //Steer Motor
-                DriveConstants.frontRightModuleSteerEncoder_ID, //Steer Encoder
-                DriveConstants.frontRightModuleSteerOffset //Steer Offset
+                DriveSDSConstants.frontRightModuleDriveMotor_ID, //Drive Motor
+                DriveSDSConstants.frontRightModuleSteerMotor_ID, //Steer Motor
+                DriveSDSConstants.frontRightModuleSteerEncoder_ID, //Steer Encoder
+                DriveSDSConstants.frontRightModuleSteerOffset //Steer Offset
         );
 
         SwerveModule moduleBackLeft = Mk4SwerveModuleHelper.createFalcon500(
                 //Smart Dashboard Tab
                 tab.getLayout("Back Left Module", BuiltInLayouts.kList).withSize(2, 4).withPosition(4, 0),
                 Mk4SwerveModuleHelper.GearRatio.L2, //Gear Ratio
-                DriveConstants.backLeftModuleDriveMotor_ID, //Drive Motor
-                DriveConstants.backLeftModuleSteerMotor_ID, //Steer Motor
-                DriveConstants.backLeftModuleSteerEncoder_ID, //Steer Encoder
-                DriveConstants.backLeftModuleSteerOffset //Steer Offset
+                DriveSDSConstants.backLeftModuleDriveMotor_ID, //Drive Motor
+                DriveSDSConstants.backLeftModuleSteerMotor_ID, //Steer Motor
+                DriveSDSConstants.backLeftModuleSteerEncoder_ID, //Steer Encoder
+                DriveSDSConstants.backLeftModuleSteerOffset //Steer Offset
         );
 
         SwerveModule moduleBackRight = Mk4SwerveModuleHelper.createFalcon500(
                 //Smart Dashboard Tab
                 tab.getLayout("Back Right Module", BuiltInLayouts.kList).withSize(2, 4).withPosition(6, 0),
                 Mk4SwerveModuleHelper.GearRatio.L2, //Gear Ratio
-                DriveConstants.backRightModuleDriveMotor_ID, //Drive Motor
-                DriveConstants.backRightModuleSteerMotor_ID, //Steer Motor
-                DriveConstants.backRightModuleSteerEncoder_ID, //Steer Encoder
-                DriveConstants.backRightModuleSteerOffset //Steer Offset
+                DriveSDSConstants.backRightModuleDriveMotor_ID, //Drive Motor
+                DriveSDSConstants.backRightModuleSteerMotor_ID, //Steer Motor
+                DriveSDSConstants.backRightModuleSteerEncoder_ID, //Steer Encoder
+                DriveSDSConstants.backRightModuleSteerOffset //Steer Offset
         );
 
 
