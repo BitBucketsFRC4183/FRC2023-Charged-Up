@@ -1,12 +1,10 @@
 package org.bitbuckets.drive.controlsds;
 
 import com.ctre.phoenix.sensors.WPI_PigeonIMU;
-import com.swervedrivespecialties.swervelib.SwerveModule;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import org.bitbuckets.drive.DriveSDSConstants;
 import org.bitbuckets.lib.log.DataLogger;
@@ -93,13 +91,6 @@ public class DriveControlSDS {
             return kinematics.toSwerveModuleStates(chassisSpeeds);
         }
         return new SwerveModuleState[4];
-    }
-
-    public SwerveModulePosition[] reportActualPositions() {
-        SwerveModulePosition[] positions = new SwerveModulePosition[4];
-
-        // TODO: not implemented
-        return positions;
     }
 
     public void drive(ChassisSpeeds chassisSpeeds) {
