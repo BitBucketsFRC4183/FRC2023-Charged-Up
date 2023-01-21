@@ -1,5 +1,6 @@
 package org.bitbuckets.bootstrap;
 
+import com.revrobotics.REVPhysicsSim;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
@@ -7,6 +8,7 @@ import org.bitbuckets.lib.core.ErrorDriver;
 import org.bitbuckets.lib.core.IdentityDriver;
 import org.bitbuckets.lib.core.LogDriver;
 import org.bitbuckets.lib.core.LoopDriver;
+import org.bitbuckets.lib.sim.CTREPhysicsSim;
 import org.bitbuckets.robot.RobotContainer;
 import org.bitbuckets.robot.RobotSetup;
 import org.littletonrobotics.junction.LoggedRobot;
@@ -77,7 +79,6 @@ public class Robot extends LoggedRobot {
         //TODO run all logging loops here always
 
 
-
         //TODO command scheduler should run here
     }
 
@@ -89,7 +90,8 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void simulationPeriodic() {
-
+        CTREPhysicsSim.getInstance().run();
+        REVPhysicsSim.getInstance().run();
     }
 
 }

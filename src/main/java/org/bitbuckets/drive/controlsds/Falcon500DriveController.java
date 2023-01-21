@@ -1,14 +1,14 @@
 package org.bitbuckets.drive.controlsds;
 
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 public class Falcon500DriveController implements DriveController {
-    private final TalonFX motor;
+    private final WPI_TalonFX motor;
     private final double sensorVelocityCoefficient;
     private final double nominalVoltage;
 
-    Falcon500DriveController(TalonFX motor, double sensorVelocityCoefficient, double nominalVoltage) {
+    Falcon500DriveController(WPI_TalonFX motor, double sensorVelocityCoefficient, double nominalVoltage) {
         this.motor = motor;
         this.sensorVelocityCoefficient = sensorVelocityCoefficient;
         this.nominalVoltage = nominalVoltage;
