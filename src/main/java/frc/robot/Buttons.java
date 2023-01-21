@@ -5,18 +5,18 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
-import frc.robot.utils.Xbox;
+import org.bitbuckets.robot.XboxConstants;
 
 public class Buttons {
 
   //////////////////////////////////////////////////////////////////////////////
   // Driver
   Joystick driverControl = new Joystick(0);
-  int swerveForward = Xbox.LEFT_STICK_Y;
-  int swerveStrafe = Xbox.LEFT_STICK_X;
-  int swerveRotation = Xbox.RIGHT_STICK_X;
+  int swerveForward = XboxConstants.LEFT_STICK_Y;
+  int swerveStrafe = XboxConstants.LEFT_STICK_X;
+  int swerveRotation = XboxConstants.RIGHT_STICK_X;
 
-  JoystickButton resetOdometry = new JoystickButton(driverControl, Xbox.OPTIONS);
+  JoystickButton resetOdometry = new JoystickButton(driverControl, XboxConstants.OPTIONS);
   int lt = 2;
   int rt = 3;
   Button slowDrive = new Button(() -> driverControl.getRawAxis(lt) > 0.1);
