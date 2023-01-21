@@ -13,7 +13,7 @@ import org.mockito.Mockito;
 /**
  * TODO more than just mocking tests
  */
-public class DriveControlTest {
+public class DriveControlSDSTest {
 
     @Test
     public void reportActualStates_shouldReflectCurrentStatesStates() {
