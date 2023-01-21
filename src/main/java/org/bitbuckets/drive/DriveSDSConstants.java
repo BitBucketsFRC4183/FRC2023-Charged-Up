@@ -1,6 +1,8 @@
 package org.bitbuckets.drive;
 
 
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+
 public interface DriveSDSConstants {
 
     // Drive Subsystem
@@ -32,5 +34,5 @@ public interface DriveSDSConstants {
 
     double backRightModuleSteerOffset = -Math.toRadians(70.66 + 180); // set back right steer offset
 
-
+    SimpleMotorFeedforward feedForward = new SimpleMotorFeedforward(0.65292, 2.3053, 0.37626); //new SimpleMotorFeedforward(0.12817, 2.3423, 0.53114);
 }

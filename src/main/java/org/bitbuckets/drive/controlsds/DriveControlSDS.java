@@ -3,12 +3,12 @@ package org.bitbuckets.drive.controlsds;
 import com.ctre.phoenix.sensors.WPI_PigeonIMU;
 import com.swervedrivespecialties.swervelib.SwerveModule;
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import org.bitbuckets.drive.DriveSDSConstants;
 import org.bitbuckets.lib.log.DataLogger;
 
 import java.util.ArrayList;
@@ -51,8 +51,6 @@ public class DriveControlSDS {
 
     // Instance Variables
     final SwerveDriveKinematics kinematics;
-
-    final SimpleMotorFeedforward feedForward = new SimpleMotorFeedforward(0.65292, 2.3053, 0.37626); //new SimpleMotorFeedforward(0.12817, 2.3423, 0.53114);
 
     //Speed factor that edits the max velocity and max angular velocity
     double speedModifier = .75;
@@ -155,7 +153,7 @@ public class DriveControlSDS {
 
     private double velocityToDriveVolts(double speedMetersPerSecond) {
         int maxVoltage = 12;
-        double ff = feedForward.calculate(speedMetersPerSecond);
+        double ff = DriveSDSConstants.feedForward.calculate(speedMetersPerSecond);
         return MathUtil.clamp(ff, -maxVoltage, maxVoltage);
     }
 }
