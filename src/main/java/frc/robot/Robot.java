@@ -5,29 +5,20 @@
 package frc.robot;
 
 import com.ctre.phoenix.sensors.WPI_PigeonIMU;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.commands.AutoBalanceCommand;
-import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.config.Config;
 import frc.robot.simulator.CTREPhysicsSim;
 import frc.robot.simulator.SetModeTestSubsystem;
 import frc.robot.simulator.SimulatorTestSubsystem;
-import frc.robot.subsystem.*;
-import frc.robot.subsystem.balance.BalancerSubsystem;
-import frc.robot.utils.MathUtils;
-import frc.robot.utils.Xbox;
+import frc.robot.subsystem.ArmSubsystem;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The VM is configured to automatically run this class, and to call the
