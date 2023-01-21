@@ -9,7 +9,6 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import org.bitbuckets.drive.DriveConstants;
 import org.bitbuckets.lib.log.DataLogger;
 
 import java.util.ArrayList;
@@ -62,7 +61,7 @@ public class DriveControlSDS {
     ArrayList<SwerveModule> modules;
     ChassisSpeeds chassisSpeeds;
 
-    SwerveModuleState[] cachedSetpoint = DriveConstants.LOCK;
+    SwerveModuleState[] cachedSetpoint = new SwerveModuleState[4];
 
     public DriveControlSDS(DataLogger<DriveControlSDSDataAutoGen> logger, double maxVelocity_metersPerSecond, double maxAngularVelocity_radiansPerSecond, WPI_PigeonIMU gyro, SwerveModule moduleFrontLeft, SwerveModule moduleFrontRight, SwerveModule moduleBackLeft, SwerveModule moduleBackRight, SwerveDriveKinematics kinematics) {
         this.logger = logger;
@@ -143,6 +142,7 @@ public class DriveControlSDS {
     private void doDriveWithStates(SwerveModuleState[] states) {
 
         if (states != null) {
+            cachedSetpoint = states;
             SwerveDriveKinematics.desaturateWheelSpeeds(states, getMaxVelocity());
 
             for (int i = 0; i < 4; i++) {
