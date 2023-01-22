@@ -8,6 +8,8 @@ import org.bitbuckets.drive.controlsds.DriveControlSDSSetup;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.lib.hardware.PIDIndex;
+import org.bitbuckets.vision.VisionControl;
+import org.bitbuckets.vision.VisionControlSetup;
 
 public class RobotSetup implements ISetup<RobotContainer> {
 
@@ -102,12 +104,14 @@ public class RobotSetup implements ISetup<RobotContainer> {
 
         DriveControlSDS driveControl = new DriveControlSDSSetup().build(path.addChild("drive-control"));
 
+        VisionControl visionControl = new VisionControlSetup().build(path.addChild("vision-control"));
+
         DriveInput input = new DriveInput(new Joystick(0));
 //        DriveSubsystem driveSubsystem = new DriveSubsystem(input, driveControl);
         DriveSDSSubsystem driveSubsystem = new DriveSDSSubsystem(input, driveControl);
 
         //SYSTEMS_GREEN.setOn(); //LET'S WIN SOME DAMN REGIONALS!!
 
-        return new RobotContainer(driveSubsystem);
+        return new RobotContainer(driveSubsystem, visionControl);
     }
 }
