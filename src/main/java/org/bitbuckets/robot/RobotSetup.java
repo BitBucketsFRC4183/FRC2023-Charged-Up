@@ -1,6 +1,10 @@
 package org.bitbuckets.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
+import org.bitbuckets.arm.ArmControl;
+import org.bitbuckets.arm.ArmControlSetup;
+import org.bitbuckets.arm.ArmInput;
+import org.bitbuckets.arm.ArmSubsystem;
 import org.bitbuckets.drive.DriveConstants;
 import org.bitbuckets.drive.DriveInput;
 import org.bitbuckets.drive.DriveSubsystem;
@@ -103,11 +107,15 @@ public class RobotSetup implements ISetup<RobotContainer> {
                 backRightModule
         ).build(path.addChild("drive-control"));
 
-        DriveInput input = new DriveInput(new Joystick(0));
-        DriveSubsystem driveSubsystem = new DriveSubsystem(input, driveControl);
+        DriveInput driveInput = new DriveInput(new Joystick(0));
+        DriveSubsystem driveSubsystem = new DriveSubsystem(driveInput, driveControl);
+
+        ArmControl armControl = new ArmControlSetup().build(path.addChild("arm-control"));
+        ArmInput armInput = new ArmInput(new Joystick(1));
+        ArmSubsystem armSubsystem = new ArmSubsystem(armInput, armControl);
 
         //SYSTEMS_GREEN.setOn(); //LET'S WIN SOME DAMN REGIONALS!!
 
-        return new RobotContainer(driveSubsystem);
+        return new RobotContainer(driveSubsystem, armSubsystem);
     }
 }

@@ -1,18 +1,18 @@
 package org.bitbuckets.robot;
 
-import edu.wpi.first.wpilibj.DriverStation;
+import org.bitbuckets.arm.ArmSubsystem;
 import org.bitbuckets.drive.DriveSubsystem;
-import org.littletonrobotics.junction.Logger;
 
 /**
  * This class represents your robot's periodic behavior
  */
 public class RobotContainer {
 
-    final DriveSubsystem subsystem;
-
-    public RobotContainer(DriveSubsystem subsystem) {
-        this.subsystem = subsystem;
+    final DriveSubsystem driveSubsystem;
+    final ArmSubsystem armSubsystem;
+    public RobotContainer(DriveSubsystem driveSubsystem, ArmSubsystem armSubsystem) {
+        this.driveSubsystem = driveSubsystem;
+        this.armSubsystem = armSubsystem;
     }
 
     public void autoPeriodic() {
@@ -24,8 +24,8 @@ public class RobotContainer {
     //Shouldn't need to do anything here
     public void teleopPeriodic() {
 
-
-        subsystem.teleopPeriodic();
+        armSubsystem.teleopPeriodic();
+        driveSubsystem.teleopPeriodic();
     }
 
 }
