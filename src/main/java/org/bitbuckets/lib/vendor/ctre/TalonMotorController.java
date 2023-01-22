@@ -74,23 +74,32 @@ class TalonMotorController implements IMotorController, Runnable {
 
     @Override
     public void forceOffset(double offsetUnits_baseUnits) {
+        System.out.println("OFFET " + offsetUnits_baseUnits);
         talonFX.setSelectedSensorPosition(offsetUnits_baseUnits);
     }
 
     @Override
-    public void moveAtPercent(double percent) {
+    public void moveAtPercent(double percent)
+    {
+
+        System.out.println("PERCENT " + percent);
         talonFX.set(ControlMode.PercentOutput, percent);
     }
 
     @Override
     public void moveToPosition(double position_encoderRotations) {
         double position_sensorUnits = position_encoderRotations / SU_TO_ROTATIONS; //ROTATIONS_TO_SU
+
+        System.out.println("POSITION " + position_sensorUnits);
+
         talonFX.set(ControlMode.Position, position_sensorUnits);
     }
 
     @Override
     public void moveAtVelocity(double velocity_encoderMetersPerSecond) {         //ROTATIONS_TO_SU / S TO MS
         double velocity_encoderSensorUnitsPerMs = velocity_encoderMetersPerSecond / SU_TO_ROTATIONS / MS_TO_S;
+
+        System.out.println("VELOCITY " + velocity_encoderMetersPerSecond);
 
         talonFX.set(TalonFXControlMode.Velocity, velocity_encoderSensorUnitsPerMs);
     }

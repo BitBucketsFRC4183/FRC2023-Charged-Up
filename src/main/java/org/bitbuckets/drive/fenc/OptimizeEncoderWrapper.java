@@ -61,7 +61,7 @@ public class OptimizeEncoderWrapper {
 
         System.out.println(setpoint_encoderRads + "is EncoderRads, " + accumulated + " is accumulated");
 
-        return optimizeWithBoth(setpoint_encoderRads, accumulated);
+        return setpoint_encoderRads;
     }
 
 }
