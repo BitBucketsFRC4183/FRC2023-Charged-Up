@@ -2,7 +2,6 @@ package org.bitbuckets.drive.module;
 
 import com.ctre.phoenix.sensors.*;
 import edu.wpi.first.hal.HAL;
-import org.bitbuckets.drive.fenc.FilteredEncoderSetup;
 import org.bitbuckets.lib.util.CTRETestUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -10,7 +9,7 @@ import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
-class FilteredEncoderSetupTest {
+class OptimizeEncoderWrapperSetupTest {
 
 
     @Test
@@ -50,30 +49,6 @@ class FilteredEncoderSetupTest {
 
     }
 
-    @Test
-    void retrieveCanCoderReadout_mechanismRadians() {
-
-        WPI_CANCoder canCoder = Mockito.mock();
-
-        Mockito.when(canCoder.getAbsolutePosition()).then(new Answer<Object>() {
-            int i = 0;
-            double[] pretendPositions = new double[] { 0.0, 0.0, 0.1, 0.7, 0.2, 0.3, 0.3, 0.3, 0.3, 0.4, 0.4}; //should return 0.3
-
-            @Override
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-
-                i++;
-
-                return pretendPositions[i];
-            }
-        });
-
-        double extracted = new FilteredEncoderSetup(0, Mockito.mock()).retrieveCanCoderReadout_mechanismRadians(canCoder);
-
-        Assertions.assertNotEquals(0.0, extracted, 0.0, "should wait for similar values");
-        Assertions.assertEquals(0.3, extracted, "should return on similar values");
-
-    }
 
     @Test
     void forcePositionToEncoder() {

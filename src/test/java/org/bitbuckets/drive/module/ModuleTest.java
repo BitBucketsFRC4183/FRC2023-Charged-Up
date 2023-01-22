@@ -1,6 +1,6 @@
 package org.bitbuckets.drive.module;
 
-import org.bitbuckets.drive.fenc.FilteredEncoder;
+import org.bitbuckets.drive.fenc.OptimizeEncoderWrapper;
 import org.bitbuckets.lib.hardware.IEncoder;
 import org.bitbuckets.lib.hardware.IMotor;
 import org.bitbuckets.lib.log.DataLogger;
@@ -30,21 +30,22 @@ class ModuleTest {
     IEncoder turnEncoder;
 
     @Mock
-    DataLogger<ModuleDataAutoGen> logger;
+    DataLogger<DriveModuleDataAutoGen> logger;
 
-    FilteredEncoder filteredEncoder;
+    OptimizeEncoderWrapper optimizeEncoderWrapper;
 
     @BeforeEach
     public void beforeEach() {
         // Using a regular IEncoder to let the filtered encoder handle the math of converting
         // raw encoder angles to absolute angles
-        filteredEncoder = new FilteredEncoder(turnEncoder);
+        optimizeEncoderWrapper = new OptimizeEncoderWrapper(turnEncoder);
         when(turnEncoder.getMechanismFactor()).thenReturn(1d);
     }
 
     @Test
     void commandSetpointValuesNone() {
-        var module = new DriveModule(drive, turn, driveEncoder, filteredEncoder, logger);
+
+        var module = new DriveModule(drive, turn, driveEncoder, optimizeEncoderWrapper, logger);
 
         // encoder is at 0, module told to go to 0 m/s, 0 rad/s
         when(turnEncoder.getEncoderPositionAccumulated_radians()).thenReturn(0d);
@@ -57,7 +58,7 @@ class ModuleTest {
 
     @Test
     void commandSetpointValuesForward() {
-        var module = new DriveModule(drive, turn, driveEncoder, filteredEncoder, logger);
+        var module = new DriveModule(drive, turn, driveEncoder, optimizeEncoderWrapper, logger);
 
         // encoder is at 0, module told to go to 1 m/s, 0 rads
         when(turnEncoder.getEncoderPositionAccumulated_radians()).thenReturn(0d);
@@ -70,7 +71,7 @@ class ModuleTest {
 
     @Test
     void commandSetpointValuesTurn() {
-        var module = new DriveModule(drive, turn, driveEncoder, filteredEncoder, logger);
+        var module = new DriveModule(drive, turn, driveEncoder, optimizeEncoderWrapper, logger);
 
         // encoder is at 0, module told to go to 0 m/s, 90 degrees
         when(turnEncoder.getEncoderPositionAccumulated_radians()).thenReturn(Math.toRadians(90));
@@ -83,7 +84,7 @@ class ModuleTest {
 
     @Test
     void commandSetpointValuesTurn2() {
-        var module = new DriveModule(drive, turn, driveEncoder, filteredEncoder, logger);
+        var module = new DriveModule(drive, turn, driveEncoder, optimizeEncoderWrapper, logger);
 
         // encoder is at 10PI rads (5 full turns), module told to go to 0 m/s, 90 degrees
         when(turnEncoder.getEncoderPositionAccumulated_radians()).thenReturn(10 * Math.PI);

@@ -1,9 +1,8 @@
 package org.bitbuckets.lib.vendor.ctre;
 
 import com.ctre.phoenix.ErrorCode;
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
+import com.ctre.phoenix.motorcontrol.*;
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
@@ -58,7 +57,7 @@ public class TalonSetup implements ISetup<IMotorController> {
 
         talonFX.enableVoltageCompensation(true);
 
-        if (talonFX.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, currentLimit, 0,0), SET_MAXCONFIGTIME_MS) != ErrorCode.OK) {
+        if (talonFX.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, currentLimit, currentLimit + 5,1.0), SET_MAXCONFIGTIME_MS) != ErrorCode.OK) {
             ctre_config.signalErrored("cant config supply limit");
         }
 
@@ -74,9 +73,12 @@ public class TalonSetup implements ISetup<IMotorController> {
             ctre_config.signalErrored("cant config pid");
         }
 
-        //TODO is this right? if we invert sensor phase AND output does pid still work?
-        talonFX.setSensorPhase(invert);
-        talonFX.setInverted(invert);
+        if (invert) {
+            talonFX.setInverted(TalonFXInvertType.CounterClockwise);
+        } else {
+            talonFX.setInverted(TalonFXInvertType.Clockwise);
+        }
+
         talonFX.setNeutralMode(NeutralMode.Brake);
 
         ctre_config.signalCompleted();
@@ -88,6 +90,8 @@ public class TalonSetup implements ISetup<IMotorController> {
                 rotationsToMetersFactor,
                 logger
         );
+
+        talon.rawAccess(TalonFX.class).set(ControlMode.Position, 0);
 
 
         SimulateMotorController sim = new SimulateMotorController(talonFX, invert);

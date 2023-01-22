@@ -105,6 +105,6 @@ class TalonMotorController implements IMotorController, Runnable {
     public <T> T rawAccess(Class<T> clazz) throws UnsupportedOperationException {
         if (clazz != TalonFX.class) throw new UnsupportedOperationException();
 
-        return clazz.cast(TalonFX.class);
+        return clazz.cast(talonFX);
     }
 }

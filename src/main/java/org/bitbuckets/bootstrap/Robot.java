@@ -29,6 +29,7 @@ public class Robot extends LoggedRobot {
 
 
     RobotContainer robotHandle;
+    LoopDriver loopDriver;
 
     @Override
     public void robotInit() {
@@ -56,7 +57,7 @@ public class Robot extends LoggedRobot {
 
         Logger.getInstance().start(); // Start logging! No more data receivers, replay sources, or metadata values may be added.
 
-        LoopDriver loopDriver = new LoopDriver();
+        loopDriver = new LoopDriver();
         IdentityDriver identityDriver = new IdentityDriver();
         LogDriver logDriver = new LogDriver(identityDriver);
         ErrorDriver errorDriver = new ErrorDriver(identityDriver);
@@ -76,14 +77,19 @@ public class Robot extends LoggedRobot {
     public void robotPeriodic() {
         //TODO run all logging loops here always
 
-
-
+        counter++;
+        if (counter > 50) {
+            loopDriver.run();
+            counter = 0;
+        }
         //TODO command scheduler should run here
     }
 
     @Override
     public void teleopPeriodic() {
         robotHandle.teleopPeriodic();
+
+
     }
 
 

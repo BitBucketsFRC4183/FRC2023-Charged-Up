@@ -2,16 +2,22 @@ package org.bitbuckets.drive.fenc;
 
 import org.bitbuckets.lib.hardware.IEncoder;
 
-public class FilteredEncoder {
+/**
+ * TODO: this needs a specific optimization where if the drive desired angle
+ * vs current angle is greater than pi we can reverse the drive direction instead
+ */
+public class OptimizeEncoderWrapper {
 
 
     public final IEncoder relative;
 
-    public FilteredEncoder(IEncoder relative) {
+    public OptimizeEncoderWrapper(IEncoder relative) {
         this.relative = relative;
     }
     double CIRCLE = Math.PI * 2.0;
     double HALF_CIRCLE = Math.PI;
+
+
 
     private double optimizeWithBoth(double setpoint_encoderRads, double current_encoderRads) {
         double lowerBound;
@@ -37,10 +43,13 @@ public class FilteredEncoder {
         } else if (setpoint_encoderRads - current_encoderRads < -HALF_CIRCLE) {
             setpoint_encoderRads += CIRCLE;
         };
+
+
         return setpoint_encoderRads;
     }
 
 
+    //can i find l
     public double optimizeSetpointWithMechanismRads_encoderRads(double setpoint_mechanismRads) {
         double goal = setpoint_mechanismRads / relative.getMechanismFactor();
 
@@ -48,8 +57,9 @@ public class FilteredEncoder {
     }
 
     public double optimizeSetpoint_encoderRads(double setpoint_encoderRads) {
-        double accumulated = relative.getEncoderPositionAccumulated_radians()
-                ;
+        double accumulated = relative.getEncoderPositionAccumulated_radians();
+
+        System.out.println(setpoint_encoderRads + "is EncoderRads, " + accumulated + " is accumulated");
 
         return optimizeWithBoth(setpoint_encoderRads, accumulated);
     }

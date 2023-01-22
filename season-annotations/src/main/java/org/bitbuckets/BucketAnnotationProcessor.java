@@ -138,9 +138,9 @@ public class BucketAnnotationProcessor extends AbstractProcessor {
 
                     //TODO why isn't my diffing code working? probably double comparisons, check data type first.
                     builder1
-                            .beginControlFlow("if (this.$L != $L)", lastName, simpleName)
-                            .add("driver.report($L, $S, $L);", "id", simpleName, simpleName)
-                            .endControlFlow();
+                            //.beginControlFlow("if (this.$L != $L)", lastName, simpleName)
+                            .add("driver.report($L, $S, $L);", "id", simpleName, simpleName);
+                            //.endControlFlow();
 
                 }
 

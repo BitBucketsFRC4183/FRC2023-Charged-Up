@@ -54,11 +54,8 @@ public class DriveControl {
 
     public void doDriveWithStates(SwerveModuleState[] states) {
 
-        System.out.println(states[0].speedMetersPerSecond);
-
-
         for (int i = 0; i < states.length; i++) {
-            driveModules[i].commandSetpointValues(states[i].speedMetersPerSecond, states[i].angle.getRadians());
+            driveModules[i].commandSetpointValues(states[i]);
         }
 
         cachedSetpoint = states;

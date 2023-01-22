@@ -27,6 +27,7 @@ public class DriveControlSetup implements ISetup<DriveControl> {
 
     @Override
     public DriveControl build(ProcessPath path) {
+
         DataLogger<DriveControlDataAutoGen> logger = path.generatePushDataLogger(DriveControlDataAutoGen::new);
         DriveControl control = new DriveControl(
                 logger,

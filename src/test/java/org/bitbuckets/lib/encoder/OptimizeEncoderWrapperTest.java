@@ -1,13 +1,13 @@
 package org.bitbuckets.lib.encoder;
 
-import org.bitbuckets.drive.fenc.FilteredEncoder;
+import org.bitbuckets.drive.fenc.OptimizeEncoderWrapper;
 import org.bitbuckets.lib.hardware.IEncoder;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 //im so tired of can busses cant we just have like
-class FilteredEncoderTest {
+class OptimizeEncoderWrapperTest {
 
 
     @Test
@@ -16,8 +16,8 @@ class FilteredEncoderTest {
         Mockito.when(encoder.getMechanismFactor()).thenReturn(1.0);
         Mockito.when(encoder.getEncoderPositionAccumulated_radians()).thenReturn(Math.PI * 2.0);
 
-        FilteredEncoder filteredEncoder = new FilteredEncoder(encoder);
-        double setpoint = filteredEncoder.optimizeSetpointWithMechanismRads_encoderRads(0.5 * Math.PI);
+        OptimizeEncoderWrapper optimizeEncoderWrapper = new OptimizeEncoderWrapper(encoder);
+        double setpoint = optimizeEncoderWrapper.optimizeSetpointWithMechanismRads_encoderRads(0.5 * Math.PI);
 
         Assertions.assertEquals(2.5 * Math.PI, setpoint);
 
@@ -29,8 +29,8 @@ class FilteredEncoderTest {
         Mockito.when(encoder.getMechanismFactor()).thenReturn(1.0);
         Mockito.when(encoder.getEncoderPositionAccumulated_radians()).thenReturn(Math.PI * 2.0);
 
-        FilteredEncoder filteredEncoder = new FilteredEncoder(encoder);
-        double setpoint = filteredEncoder.optimizeSetpointWithMechanismRads_encoderRads(20 * Math.PI);
+        OptimizeEncoderWrapper optimizeEncoderWrapper = new OptimizeEncoderWrapper(encoder);
+        double setpoint = optimizeEncoderWrapper.optimizeSetpointWithMechanismRads_encoderRads(20 * Math.PI);
 
         Assertions.assertEquals(Math.PI * 2, setpoint, .1);
 
@@ -43,8 +43,8 @@ class FilteredEncoderTest {
         Mockito.when(encoder.getMechanismFactor()).thenReturn(1.0);
         Mockito.when(encoder.getEncoderPositionAccumulated_radians()).thenReturn(Math.PI * 4.0);
 
-        FilteredEncoder filteredEncoder = new FilteredEncoder(encoder);
-        double setpoint = filteredEncoder.optimizeSetpointWithMechanismRads_encoderRads(1.5 * Math.PI);
+        OptimizeEncoderWrapper optimizeEncoderWrapper = new OptimizeEncoderWrapper(encoder);
+        double setpoint = optimizeEncoderWrapper.optimizeSetpointWithMechanismRads_encoderRads(1.5 * Math.PI);
 
         Assertions.assertEquals(3.5 * Math.PI, setpoint, 0.0001);
 
@@ -57,10 +57,10 @@ class FilteredEncoderTest {
         Mockito.when(encoder.getMechanismFactor()).thenReturn(0.5);
         Mockito.when(encoder.getEncoderPositionAccumulated_radians()).thenReturn(Math.PI * 4.0);
 
-        FilteredEncoder filteredEncoder = new FilteredEncoder(encoder);
+        OptimizeEncoderWrapper optimizeEncoderWrapper = new OptimizeEncoderWrapper(encoder);
 
         double setpointMechrads = 0.5 * Math.PI; //why does this fix the code?? im so confused
-        double setpoint = filteredEncoder.optimizeSetpointWithMechanismRads_encoderRads(setpointMechrads);
+        double setpoint = optimizeEncoderWrapper.optimizeSetpointWithMechanismRads_encoderRads(setpointMechrads);
 
 
         Assertions.assertEquals(5.0 * Math.PI, setpoint, 0.0001);
@@ -77,9 +77,9 @@ class FilteredEncoderTest {
         Mockito.when(encoder.getMechanismFactor()).thenReturn(0.5);
         Mockito.when(encoder.getEncoderPositionAccumulated_radians()).thenReturn(Math.PI * 0.25);
 
-        FilteredEncoder filteredEncoder = new FilteredEncoder(encoder);
+        OptimizeEncoderWrapper optimizeEncoderWrapper = new OptimizeEncoderWrapper(encoder);
 
-        double setpoint = filteredEncoder.optimizeSetpointWithMechanismRads_encoderRads(0.25 * Math.PI); //we want to move 1/2 pi encoder radians
+        double setpoint = optimizeEncoderWrapper.optimizeSetpointWithMechanismRads_encoderRads(0.25 * Math.PI); //we want to move 1/2 pi encoder radians
         //This should move the motor backwards
         Assertions.assertEquals(0.5 * Math.PI, setpoint, 0.001);
     }

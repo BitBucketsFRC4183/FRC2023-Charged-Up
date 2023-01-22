@@ -34,4 +34,10 @@ public class LoopDriver {
 
     }
 
+    public void run() {
+        for (Runnable runnable : alwaysRun) {
+            runnable.run();
+        }
+    }
+
 }
