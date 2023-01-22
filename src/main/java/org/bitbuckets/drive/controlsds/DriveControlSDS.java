@@ -3,6 +3,7 @@ package org.bitbuckets.drive.controlsds;
 import com.ctre.phoenix.sensors.WPI_PigeonIMU;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -45,6 +46,7 @@ public class DriveControlSDS {
     final PIDController balanceController;
 
     final PIDController rotControllerRad;
+
 
 
 
@@ -91,6 +93,13 @@ public class DriveControlSDS {
             data.targetStates = reportSetpointStates();
             data.realStates = reportActualStates();
         });
+    }
+
+    public double[] getGyroXYZ_mps()
+    {
+        double[] velArray1 = new double[]{0,0,0};
+        gyro.getRawGyro(velArray1);
+        return velArray1;
     }
 
 

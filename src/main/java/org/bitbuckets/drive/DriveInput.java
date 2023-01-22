@@ -80,6 +80,16 @@ public class DriveInput {
         return joystick.getRawButtonPressed(XboxConstants.SQUARE);
     }
 
+    public boolean isPidswitches()
+    {
+        return joystick.getRawButtonPressed(XboxConstants.L1);
+    }
+    public boolean isPidswitches1()
+    {
+        return joystick.getRawButtonPressed(XboxConstants.R1);
+    }
+
+
     public boolean isAutoBalancePressed() {
         return joystick.getRawButtonPressed(XboxConstants.CIRCLE);
     }

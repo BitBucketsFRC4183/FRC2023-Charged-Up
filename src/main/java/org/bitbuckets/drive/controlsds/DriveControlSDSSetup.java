@@ -1,13 +1,18 @@
 package org.bitbuckets.drive.controlsds;
 
+import com.ctre.phoenix.ErrorCode;
 import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.*;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Preferences;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
@@ -169,6 +174,9 @@ public class DriveControlSDSSetup implements ISetup<DriveControlSDS> {
 
         PIDController balanceController = new PIDController(BalanceKP, BalanceKI,BalanceKD);
 
+
+
+
         DriveControlSDS control = new DriveControlSDS(logger, maxVelocity_metersPerSecond, maxAngularVelocity_radiansPerSecond,
                 gyro, balanceController, rotControllerRad, moduleFrontLeft, moduleFrontRight, moduleBackLeft, moduleBackRight, kinematics);
 
@@ -284,15 +292,43 @@ public class DriveControlSDSSetup implements ISetup<DriveControlSDS> {
         config.absoluteSensorRange = AbsoluteSensorRange.Unsigned_0_to_360;
         config.magnetOffsetDegrees = Math.toDegrees(steerOffset);
         config.sensorDirection = direction == Direction.CLOCKWISE;
-
         var encoder = new WPI_CANCoder(steerEncoderPort);
         checkCtreError(encoder.configAllSettings(config, 250), "Failed to configure CANCoder");
+        waitForCanCoder(encoder);
 
         checkCtreError(encoder.setStatusFramePeriod(CANCoderStatusFrame.SensorData, DriveSDSConstants.canCoderPeriodMilliseconds, 250), "Failed to configure CANCoder update rate");
 
         AbsoluteEncoder absoluteEncoder = new CANCoderAbsoluteEncoder(encoder);
         return absoluteEncoder;
     }
+    private static void waitForCanCoder(WPI_CANCoder canCoder){
+        /*
+         * Wait for up to 1000 ms for a good CANcoder signal.
+         *
+         * This prevents a race condition during program startup
+         * where we try to synchronize the Falcon encoder to the
+         * CANcoder before we have received any position signal
+         * from the CANcoder.
+         */
+        int initTime = 0;
 
+        ErrorCode shm = canCoder.getLastError();
+        for (int i = 0; i < 100; ++i) {
+            canCoder.getAbsolutePosition();
+
+            shm = canCoder.getLastError();
+            if (shm.equals(ErrorCode.OK)) {
+                DriverStation.reportWarning("init took: " + initTime, false);
+                break;
+            }
+            Timer.delay(0.1);
+            initTime += 10;
+        }
+
+        System.out.println("how many tume rune " + initTime);
+
+
+        DriverStation.reportWarning("BAD BAD BAD BAD BAD BAD B" + shm, false);
+    }
 
 }

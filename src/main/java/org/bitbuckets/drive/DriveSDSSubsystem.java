@@ -14,6 +14,8 @@ import org.bitbuckets.lib.util.MathUtil;
 public class DriveSDSSubsystem {
 
     final DriveInput input;
+
+    double rotOutput = 0.1;
     final DriveControlSDS control;
 
     public DriveSDSSubsystem(DriveInput input, DriveControlSDS control) {
@@ -25,12 +27,20 @@ public class DriveSDSSubsystem {
 
     //Needs to stop if we're going fw or bw
     public void teleopPeriodic() {
+        SmartDashboard.putNumber("rotoutput",rotOutput);
+        SmartDashboard.putNumber("gyroVelX",control.getGyroXYZ_mps()[0]);
 
         switch (state) {
             case UNINITIALIZED:
                 //do nothing
                 break;
             case TELEOP_NORMAL:
+                if(input.isPidswitches())
+                {
+                    state = DriveFSM.PID_TUNING;
+                    break;
+
+                }
                 if (input.isAutoBalancePressed()) {
                     state = DriveFSM.TELEOP_BALANCING; //do balancing next iteration
                     break;
@@ -113,6 +123,40 @@ public class DriveSDSSubsystem {
 
 
 
+
+                break;
+            case PID_TUNING:
+                if(input.isPidswitches())
+                {
+                    state = DriveFSM.PID_TUNING1;
+                    break;
+                }
+                if(input.isDefaultPressed())
+                {
+                    state = DriveFSM.TELEOP_NORMAL;
+                    break;
+                }
+                rotOutput = 0.1;
+                control.drive(
+                        new ChassisSpeeds(0, 0, rotOutput));
+                break;
+            case PID_TUNING1:
+
+                if(input.isPidswitches1())
+                {
+                    state = DriveFSM.PID_TUNING;
+                    break;
+
+                }
+                if(input.isDefaultPressed())
+                {
+                    state = DriveFSM.TELEOP_NORMAL;
+                    break;
+                }
+                rotOutput = 0.3;
+                control.drive(
+
+                new ChassisSpeeds(0, 0, rotOutput));
 
                 break;
 
