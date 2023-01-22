@@ -9,4 +9,25 @@ public class MathUtil {
         return random(0, max);
     }
 
+    public static double deadbandAndSquare(double value) {
+        // Deadband
+        value = edu.wpi.first.math.MathUtil.applyDeadband(value, 0.1);
+
+        // Square the axis
+        value = Math.copySign(value * value, value);
+
+        return value;
+    }
+
+    public static double wrap(double unbound_radians) {
+        double angle = unbound_radians;
+
+        angle %= (2.0 * Math.PI);
+        if (angle < 0.0) {
+            angle += 2.0 * Math.PI;
+        }
+
+        return angle;
+    }
+
 }
