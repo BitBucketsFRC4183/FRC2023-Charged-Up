@@ -7,12 +7,10 @@ public class NeoDriveController implements DriveController {
 
     private final CANSparkMax motor;
 
-    private final double sensorVelocityCoefficient;
     private final double nominalVoltage;
 
-    public NeoDriveController(CANSparkMax motor, double sensorVelocityCoefficient, double nominalVoltage) {
+    public NeoDriveController(CANSparkMax motor, double nominalVoltage) {
         this.motor = motor;
-        this.sensorVelocityCoefficient = sensorVelocityCoefficient;
         this.nominalVoltage = nominalVoltage;
     }
 
@@ -23,6 +21,6 @@ public class NeoDriveController implements DriveController {
 
     @Override
     public double getStateVelocity() {
-        return motor.getEncoder().getVelocity() * sensorVelocityCoefficient;
+        return motor.getEncoder().getVelocity();
     }
 }

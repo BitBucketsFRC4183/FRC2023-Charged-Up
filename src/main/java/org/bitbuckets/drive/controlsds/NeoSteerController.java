@@ -9,8 +9,6 @@ public class NeoSteerController implements SteerController {
     private static final double ENCODER_RESET_MAX_ANGULAR_VELOCITY = Math.toRadians(0.5);
 
     private final CANSparkMax motor;
-    private final double motorEncoderPositionCoefficient;
-    private final double motorEncoderVelocityCoefficient;
     private final AbsoluteEncoder absoluteEncoder;
 
     private double referenceAngleRadians = 0.0;
@@ -18,13 +16,9 @@ public class NeoSteerController implements SteerController {
     private double resetIteration = 0;
 
     NeoSteerController(CANSparkMax motor,
-                             double motorEncoderPositionCoefficient,
-                             double motorEncoderVelocityCoefficient,
-                             TalonFXControlMode motorControlMode,
+                             CANSparkMax.ControlType motorControlMode,
                              AbsoluteEncoder absoluteEncoder) {
         this.motor = motor;
-        this.motorEncoderPositionCoefficient = motorEncoderPositionCoefficient;
-        this.motorEncoderVelocityCoefficient = motorEncoderVelocityCoefficient;
         this.absoluteEncoder = absoluteEncoder;
     }
 
@@ -35,16 +29,16 @@ public class NeoSteerController implements SteerController {
 
     @Override
     public void setReferenceAngle(double referenceAngleRadians) {
-        double currentAngleRadians = motor.getEncoder().getPosition() * motorEncoderPositionCoefficient;
+        double currentAngleRadians = motor.getEncoder().getPosition();
 
         // Reset the NEO's encoder periodically when the module is not rotating.
         // Sometimes (~5% of the time) when we initialize, the absolute encoder isn't fully set up, and we don't
         // end up getting a good reading. If we reset periodically this won't matter anymore.
-        if (motor.getEncoder().getVelocity() * motorEncoderVelocityCoefficient < ENCODER_RESET_MAX_ANGULAR_VELOCITY) {
+        if (motor.getEncoder().getVelocity() < ENCODER_RESET_MAX_ANGULAR_VELOCITY) {
             if (++resetIteration >= ENCODER_RESET_ITERATIONS) {
                 resetIteration = 0;
                 double absoluteAngle = absoluteEncoder.getAbsoluteAngle();
-                motor.getEncoder().setPosition(absoluteAngle / motorEncoderPositionCoefficient);
+                motor.getEncoder().setPosition(absoluteAngle);
                 currentAngleRadians = absoluteAngle;
             }
         } else {
@@ -64,7 +58,7 @@ public class NeoSteerController implements SteerController {
             adjustedReferenceAngleRadians += 2.0 * Math.PI;
         }
 
-        motor.getPIDController().setReference(adjustedReferenceAngleRadians / motorEncoderPositionCoefficient, CANSparkMax.ControlType.kPosition);
+        motor.getPIDController().setReference(adjustedReferenceAngleRadians, CANSparkMax.ControlType.kPosition);
 
 
         this.referenceAngleRadians = referenceAngleRadians;
@@ -72,7 +66,7 @@ public class NeoSteerController implements SteerController {
 
     @Override
     public double getStateAngle() {
-        double motorAngleRadians = motor.getEncoder().getPosition() * motorEncoderPositionCoefficient;
+        double motorAngleRadians = motor.getEncoder().getPosition();
         motorAngleRadians %= 2.0 * Math.PI;
         if (motorAngleRadians < 0.0) {
             motorAngleRadians += 2.0 * Math.PI;
