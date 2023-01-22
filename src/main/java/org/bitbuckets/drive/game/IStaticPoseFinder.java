@@ -7,6 +7,7 @@ public interface IStaticPoseFinder {
     boolean isRedOrBlue();
 
     Pose3d startingPose();
+
     Pose3d someOtherPose();
 
 }
