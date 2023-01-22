@@ -25,7 +25,7 @@ import static org.bitbuckets.drive.controlsds.CtreUtils.checkCtreError;
  * <p>
  * really fucking simple because a drivecontrol is super simple LMAO
  */
-public class DriveControlSDSSetup implements ISetup<DriveControlSDS> {
+public class Falcon500DriveControlSDSSetup implements ISetup<DriveControlSDS> {
 
     @Override
     public DriveControlSDS build(ProcessPath path) {

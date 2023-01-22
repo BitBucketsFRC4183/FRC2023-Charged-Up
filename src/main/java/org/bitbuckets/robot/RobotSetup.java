@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import org.bitbuckets.drive.DriveInput;
 import org.bitbuckets.drive.DriveSDSSubsystem;
 import org.bitbuckets.drive.controlsds.DriveControlSDS;
-import org.bitbuckets.drive.controlsds.DriveControlSDSSetup;
+import org.bitbuckets.drive.controlsds.Falcon500DriveControlSDSSetup;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.lib.hardware.PIDIndex;
@@ -100,7 +100,7 @@ public class RobotSetup implements ISetup<RobotContainer> {
 //                backRightModule
 //        ).build(path.addChild("drive-control"));
 
-        DriveControlSDS driveControl = new DriveControlSDSSetup().build(path.addChild("drive-control"));
+        DriveControlSDS driveControl = new Falcon500DriveControlSDSSetup().build(path.addChild("drive-control"));
 
         DriveInput input = new DriveInput(new Joystick(0));
 //        DriveSubsystem driveSubsystem = new DriveSubsystem(input, driveControl);

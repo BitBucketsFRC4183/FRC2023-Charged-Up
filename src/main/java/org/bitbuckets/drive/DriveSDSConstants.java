@@ -45,6 +45,14 @@ public interface DriveSDSConstants {
             true
     );
 
+    ModuleConfiguration MK4I_L2 = new ModuleConfiguration(
+            0.10033,
+            (14.0 / 50.0) * (27.0 / 17.0) * (15.0 / 45.0),
+            true,
+            (14.0 / 50.0) * (10.0 / 60.0),
+            false
+    );
+
     int CAN_TIMEOUT_MS = 250;
     int STATUS_FRAME_GENERAL_PERIOD_MS = 250;
     double TICKS_PER_ROTATION = 2048.0;
