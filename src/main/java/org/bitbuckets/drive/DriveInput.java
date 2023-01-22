@@ -80,4 +80,8 @@ public class DriveInput {
         return joystick.getRawButtonPressed(XboxConstants.CIRCLE);
     }
 
+    //boolean checking if the auto is finished
+    public boolean isAutoPathFinished() {
+        return true;
+    }
 }

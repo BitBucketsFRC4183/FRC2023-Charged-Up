@@ -5,14 +5,21 @@ import org.bitbuckets.drive.DriveConstants;
 import org.bitbuckets.drive.DriveInput;
 import org.bitbuckets.drive.DriveSubsystem;
 import org.bitbuckets.drive.control.DriveControl;
+import org.bitbuckets.drive.control.DriveControlDataAutoGen;
 import org.bitbuckets.drive.control.DriveControlSetup;
+import org.bitbuckets.drive.module.DriveModule;
 import org.bitbuckets.drive.module.ModuleSetup;
 import org.bitbuckets.lib.hardware.PIDIndex;
 import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.lib.ISetup;
+import org.bitbuckets.lib.log.DataLogger;
 import org.bitbuckets.lib.vendor.ctre.TalonSetup;
 
 public class RobotSetup implements ISetup<RobotContainer> {
+
+    DriveControl control = new DriveControl();
+    DriveInput input = new DriveInput(new Joystick(0));
+
 
 
     @Override
@@ -104,7 +111,7 @@ public class RobotSetup implements ISetup<RobotContainer> {
         ).build(path.addChild("drive-control"));
 
         DriveInput input = new DriveInput(new Joystick(0));
-        DriveSubsystem driveSubsystem = new DriveSubsystem(input, driveControl);
+        DriveSubsystem driveSubsystem = new DriveSubsystem(input, control, m_trajectory, m_pose, m_kinematics, m_controller, m_outputModuleStates);
 
         //SYSTEMS_GREEN.setOn(); //LET'S WIN SOME DAMN REGIONALS!!
 
