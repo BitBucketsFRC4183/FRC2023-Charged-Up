@@ -1,11 +1,7 @@
 package org.bitbuckets.lib.core;
 
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import org.bitbuckets.lib.log.DataLogger;
-import org.bitbuckets.lib.log.IDiffableData;
 import org.littletonrobotics.junction.Logger;
-
-import java.util.function.Supplier;
 
 /**
  * Users of the library should never see this
@@ -37,7 +33,6 @@ public class LogDriver {
     public void report(int id, String keyName, String str) {
         Logger.getInstance().recordOutput(identityDriver.fullPath(id) + keyName, str);
     }
-
 
 
 }

@@ -6,8 +6,6 @@ import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.*;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -170,11 +168,9 @@ public class DriveControlSDSSetup implements ISetup<DriveControlSDS> {
         double OrientKI = Preferences.getDouble(DriveSDSConstants.kOrientIKey, DriveSDSConstants.kOrientkI);
         double OrientKD = Preferences.getDouble(DriveSDSConstants.kOrientDKey, DriveSDSConstants.kOrientkD);
 
-        PIDController rotControllerRad = new PIDController(OrientKP,OrientKI,OrientKD);
+        PIDController rotControllerRad = new PIDController(OrientKP, OrientKI, OrientKD);
 
-        PIDController balanceController = new PIDController(BalanceKP, BalanceKI,BalanceKD);
-
-
+        PIDController balanceController = new PIDController(BalanceKP, BalanceKI, BalanceKD);
 
 
         DriveControlSDS control = new DriveControlSDS(logger, maxVelocity_metersPerSecond, maxAngularVelocity_radiansPerSecond,
@@ -301,7 +297,8 @@ public class DriveControlSDSSetup implements ISetup<DriveControlSDS> {
         AbsoluteEncoder absoluteEncoder = new CANCoderAbsoluteEncoder(encoder);
         return absoluteEncoder;
     }
-    private static void waitForCanCoder(WPI_CANCoder canCoder){
+
+    private static void waitForCanCoder(WPI_CANCoder canCoder) {
         /*
          * Wait for up to 1000 ms for a good CANcoder signal.
          *

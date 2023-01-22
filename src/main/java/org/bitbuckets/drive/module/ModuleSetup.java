@@ -1,9 +1,9 @@
 package org.bitbuckets.drive.module;
 
 import org.bitbuckets.drive.fenc.FilteredEncoder;
+import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.lib.hardware.IMotorController;
-import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.log.DataLogger;
 
 public class ModuleSetup implements ISetup<DriveModule> {
