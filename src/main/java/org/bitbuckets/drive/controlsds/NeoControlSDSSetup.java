@@ -1,9 +1,7 @@
 package org.bitbuckets.drive.controlsds;
 
-import com.ctre.phoenix.motorcontrol.*;
-import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.*;
+import com.revrobotics.*;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
@@ -11,21 +9,20 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import org.bitbuckets.bootstrap.Robot;
 import org.bitbuckets.drive.DriveSDSConstants;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.lib.log.DataLogger;
-import org.bitbuckets.lib.sim.CTREPhysicsSim;
 
 import static org.bitbuckets.drive.controlsds.CtreUtils.checkCtreError;
+import static org.bitbuckets.drive.controlsds.RevUtils.checkNeoError;
 
 /**
  * Sets up prereqs for a drive controller
  * <p>
  * really fucking simple because a drivecontrol is super simple LMAO
  */
-public class NeoDriveControlSDSSetup implements ISetup<DriveControlSDS> {
+public class NeoControlSDSSetup implements ISetup<DriveControlSDS> {
 
     @Override
     public DriveControlSDS build(ProcessPath path) {
@@ -33,11 +30,9 @@ public class NeoDriveControlSDSSetup implements ISetup<DriveControlSDS> {
 
         double wheelWearFactor = 1;
 
-        double maxVelocity_metersPerSecond =
-                6380.0 /
-                        60.0 *
-                        DriveSDSConstants.MK4_L2.getDriveReduction() *
-                        (DriveSDSConstants.MK4_L2.getWheelDiameter() * wheelWearFactor) *
+        double maxVelocity_metersPerSecond = 60.0 *
+                        DriveSDSConstants.MK4I_L2.getDriveReduction() *
+                        (DriveSDSConstants.MK4I_L2.getWheelDiameter() * wheelWearFactor) *
                         Math.PI;
 
         double maxAngularVelocity_radiansPerSecond =
@@ -139,95 +134,68 @@ public class NeoDriveControlSDSSetup implements ISetup<DriveControlSDS> {
             int steerEncoderPort,
             double steerOffset
     ) {
-        var driveController = createDriveController(driveMotorPort, DriveSDSConstants.MK4_L2);
-        var steerController = createSteerController(steerMotorPort, steerEncoderPort, steerOffset, DriveSDSConstants.MK4_L2);
+        var driveController = createDriveController(driveMotorPort, DriveSDSConstants.MK4I_L2);
+        var steerController = createSteerController(steerMotorPort, steerEncoderPort, steerOffset, DriveSDSConstants.MK4I_L2);
         return new ModuleImplementation(driveController, steerController);
     }
 
     DriveController createDriveController(int driveMotorPort, ModuleConfiguration moduleConfiguration) {
-        TalonFXConfiguration motorConfiguration = new TalonFXConfiguration();
+        CANSparkMax motor = new CANSparkMax(driveMotorPort, CANSparkMaxLowLevel.MotorType.kBrushless);
+        motor.setInverted(moduleConfiguration.isDriveInverted());
 
-        double sensorPositionCoefficient = Math.PI * moduleConfiguration.getWheelDiameter() * moduleConfiguration.getDriveReduction() / DriveSDSConstants.TICKS_PER_ROTATION;
-        double sensorVelocityCoefficient = sensorPositionCoefficient * 10.0;
+        // Setup voltage compensation
+        checkNeoError(motor.enableVoltageCompensation(DriveSDSConstants.nominalVoltage), "Failed to enable voltage compensation");
 
-        motorConfiguration.voltageCompSaturation = DriveSDSConstants.nominalVoltage;
+        checkNeoError(motor.setSmartCurrentLimit((int) DriveSDSConstants.driveCurrentLimit), "Failed to set current limit for NEO");
 
-        motorConfiguration.supplyCurrLimit.currentLimit = DriveSDSConstants.driveCurrentLimit;
-        motorConfiguration.supplyCurrLimit.enable = true;
+        checkNeoError(motor.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus0, 100), "Failed to set periodic status frame 0 rate");
+        checkNeoError(motor.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus1, 20), "Failed to set periodic status frame 1 rate");
+        checkNeoError(motor.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus2, 20), "Failed to set periodic status frame 2 rate");
+        // Set neutral mode to brake
+        motor.setIdleMode(CANSparkMax.IdleMode.kBrake);
 
-        var motor = new WPI_TalonFX(driveMotorPort);
-        checkCtreError(motor.configAllSettings(motorConfiguration), "Failed to configure Falcon 500");
-
-        // Enable voltage compensation
-        motor.enableVoltageCompensation(true);
-
-        motor.setNeutralMode(NeutralMode.Brake);
-
-        motor.setInverted(moduleConfiguration.isDriveInverted() ? TalonFXInvertType.Clockwise : TalonFXInvertType.CounterClockwise);
-        motor.setSensorPhase(true);
-
-        // Reduce CAN status frame rates
-        checkCtreError(
-                motor.setStatusFramePeriod(
-                        StatusFrameEnhanced.Status_1_General,
-                        DriveSDSConstants.STATUS_FRAME_GENERAL_PERIOD_MS,
-                        DriveSDSConstants.CAN_TIMEOUT_MS
-                ),
-                "Failed to configure Falcon status frame period"
-        );
-
-        if (Robot.isSimulation()) {
-            CTREPhysicsSim.getInstance().addTalonFX(motor, .5, 6800);
-        }
-
-        return new Falcon500DriveController(motor, sensorVelocityCoefficient, DriveSDSConstants.nominalVoltage);
+        // Setup encoder
+        RelativeEncoder encoder = motor.getEncoder();
+        double positionConversionFactor = Math.PI * moduleConfiguration.getWheelDiameter() * moduleConfiguration.getDriveReduction();
+        encoder.setPositionConversionFactor(positionConversionFactor);
+        encoder.setVelocityConversionFactor(positionConversionFactor / 60.0);
+        return new NeoDriveController(motor, DriveSDSConstants.nominalVoltage);
     }
 
     SteerController createSteerController(int steerMotorPort, int steerEncoderPort, double steerOffset, ModuleConfiguration moduleConfiguration) {
 
+        CANSparkMax motor = new CANSparkMax(steerMotorPort, CANSparkMaxLowLevel.MotorType.kBrushless);
+
         AbsoluteEncoder absoluteEncoder = createAbsoluteEncoder(steerEncoderPort, steerOffset);
 
-        final double sensorPositionCoefficient = 2.0 * Math.PI / DriveSDSConstants.TICKS_PER_ROTATION * moduleConfiguration.getSteerReduction();
-        final double sensorVelocityCoefficient = sensorPositionCoefficient * 10.0;
 
-        TalonFXConfiguration motorConfiguration = new TalonFXConfiguration();
-        motorConfiguration.slot0.kP = DriveSDSConstants.proportionalConstant;
-        motorConfiguration.slot0.kI = DriveSDSConstants.integralConstant;
-        motorConfiguration.slot0.kD = DriveSDSConstants.derivativeConstant;
+        checkNeoError(motor.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus0, 100), "Failed to set periodic status frame 0 rate");
+        checkNeoError(motor.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus1, 20), "Failed to set periodic status frame 1 rate");
+        checkNeoError(motor.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus2, 20), "Failed to set periodic status frame 2 rate");
+        checkNeoError(motor.setIdleMode(CANSparkMax.IdleMode.kBrake), "Failed to set NEO idle mode");
+        motor.setInverted(!moduleConfiguration.isSteerInverted());
 
-        motorConfiguration.voltageCompSaturation = DriveSDSConstants.nominalVoltage;
-        motorConfiguration.supplyCurrLimit.currentLimit = DriveSDSConstants.steerCurrentLimit;
-        motorConfiguration.supplyCurrLimit.enable = true;
+            checkNeoError(motor.enableVoltageCompensation(DriveSDSConstants.nominalVoltage), "Failed to enable voltage compensation");
 
-        var motor = new WPI_TalonFX(steerMotorPort);
-        checkCtreError(motor.configAllSettings(motorConfiguration, DriveSDSConstants.CAN_TIMEOUT_MS), "Failed to configure Falcon 500 settings");
 
-        motor.enableVoltageCompensation(true);
-        checkCtreError(motor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, DriveSDSConstants.CAN_TIMEOUT_MS), "Failed to set Falcon 500 feedback sensor");
-        motor.setSensorPhase(true);
-        motor.setInverted(moduleConfiguration.isSteerInverted() ? TalonFXInvertType.CounterClockwise : TalonFXInvertType.Clockwise);
-        motor.setNeutralMode(NeutralMode.Brake);
+            checkNeoError(motor.setSmartCurrentLimit((int) Math.round(DriveSDSConstants.steerCurrentLimit)), "Failed to set NEO current limits");
 
-        checkCtreError(motor.setSelectedSensorPosition(absoluteEncoder.getAbsoluteAngle() / sensorPositionCoefficient, 0, DriveSDSConstants.CAN_TIMEOUT_MS), "Failed to set Falcon 500 encoder position");
 
-        // Reduce CAN status frame rates
-        checkCtreError(
-                motor.setStatusFramePeriod(
-                        StatusFrameEnhanced.Status_1_General,
-                        DriveSDSConstants.STATUS_FRAME_GENERAL_PERIOD_MS,
-                        DriveSDSConstants.CAN_TIMEOUT_MS
-                ),
-                "Failed to configure Falcon status frame period"
-        );
+        RelativeEncoder integratedEncoder = motor.getEncoder();
+        checkNeoError(integratedEncoder.setPositionConversionFactor(2.0 * Math.PI * moduleConfiguration.getSteerReduction()), "Failed to set NEO encoder conversion factor");
+        checkNeoError(integratedEncoder.setVelocityConversionFactor(2.0 * Math.PI * moduleConfiguration.getSteerReduction() / 60.0), "Failed to set NEO encoder conversion factor");
+        checkNeoError(integratedEncoder.setPosition(absoluteEncoder.getAbsoluteAngle()), "Failed to set NEO encoder position");
 
-        if (Robot.isSimulation()) {
-            CTREPhysicsSim.getInstance().addTalonFX(motor, .5, 6800);
-        }
+        SparkMaxPIDController controller = motor.getPIDController();
 
-        return new Falcon500SteerController(motor,
-                sensorPositionCoefficient,
-                sensorVelocityCoefficient,
-                TalonFXControlMode.Position,
+        checkNeoError(controller.setP(controller.getP()), "Failed to set NEO PID proportional constant");
+        checkNeoError(controller.setI(controller.getI()), "Failed to set NEO PID integral constant");
+        checkNeoError(controller.setD(controller.getD()), "Failed to set NEO PID derivative constant");
+
+        checkNeoError(controller.setFeedbackDevice(integratedEncoder), "Failed to set NEO PID feedback device");
+
+        return new NeoSteerController(motor,
+                CANSparkMax.ControlType.kPosition,
                 absoluteEncoder);
     }
 
