@@ -47,8 +47,6 @@ public class DriveControlSDS {
     final PIDController rotControllerRad;
 
 
-
-
     // Swerve Modules
     final SwerveModule moduleFrontLeft;
     final SwerveModule moduleFrontRight;
@@ -66,7 +64,6 @@ public class DriveControlSDS {
     ChassisSpeeds chassisSpeeds;
 
     SwerveModuleState[] cachedSetpoint = new SwerveModuleState[4];
-
 
 
     public DriveControlSDS(DataLogger<DriveControlSDSDataAutoGen> logger, double maxVelocity_metersPerSecond, double maxAngularVelocity_radiansPerSecond, WPI_PigeonIMU gyro, PIDController balanceController, PIDController rotControllerRad, SwerveModule moduleFrontLeft, SwerveModule moduleFrontRight, SwerveModule moduleBackLeft, SwerveModule moduleBackRight, SwerveDriveKinematics kinematics) {
@@ -94,18 +91,17 @@ public class DriveControlSDS {
         });
     }
 
-    public double[] getGyroXYZ_mps()
-    {
-        double[] velArray1 = new double[]{0,0,0};
+    public double[] getGyroXYZ_mps() {
+        double[] velArray1 = new double[]{0, 0, 0};
         gyro.getRawGyro(velArray1);
         return velArray1;
     }
 
 
-    public double getRoll_deg()
-    {
+    public double getRoll_deg() {
         return gyro.getRoll();
     }
+
     public SwerveModuleState[] reportSetpointStates() {
         return cachedSetpoint;
     }
@@ -181,6 +177,6 @@ public class DriveControlSDS {
     }
 
     public double calculateRotOutputRad(double imu_yaw, double setpoint) {
-        return rotControllerRad.calculate(imu_yaw,setpoint);
+        return rotControllerRad.calculate(imu_yaw, setpoint);
     }
 }

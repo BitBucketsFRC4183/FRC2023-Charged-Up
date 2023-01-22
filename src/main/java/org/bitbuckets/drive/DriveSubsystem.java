@@ -7,7 +7,6 @@ import org.bitbuckets.drive.control.DriveControl;
 import org.bitbuckets.robot.RobotConstants;
 
 
-
 /**
  * subsystemize!
  */
@@ -31,7 +30,7 @@ public class DriveSubsystem {
                 //do nothing
 
             case TELEOP_NORMAL:
-                ChassisSpeeds desired = new ChassisSpeeds(input.getInputX(), input.getInputY() , input.getInputRot() * DriveConstants.MAX_ANG_VELOCITY);
+                ChassisSpeeds desired = new ChassisSpeeds(input.getInputX(), input.getInputY(), input.getInputRot() * DriveConstants.MAX_ANG_VELOCITY);
                 driveAt(desired);
 
                 if (input.isAutoBalancePressed()) {
@@ -46,10 +45,6 @@ public class DriveSubsystem {
         }
 
 
-
-
-
-
     }
 
     void driveAt(ChassisSpeeds speeds) {
@@ -59,8 +54,7 @@ public class DriveSubsystem {
     }
 
 
-    public void driveForward()
-    {
+    public void driveForward() {
         driveAt(new ChassisSpeeds(0.05, 0.0, 0.0));
     }
 

@@ -28,7 +28,6 @@ public class DriveInput {
         value = Math.copySign(value * value, value);
 
 
-
         return value;
     }
 
@@ -75,17 +74,15 @@ public class DriveInput {
         return getInputX() == 0 && getInputY() == 0 && getInputRot() == 0;
     }
 
-    public boolean isDefaultPressed()
-    {
+    public boolean isDefaultPressed() {
         return joystick.getRawButtonPressed(XboxConstants.SQUARE);
     }
 
-    public boolean isPidswitches()
-    {
+    public boolean isPidswitches() {
         return joystick.getRawButtonPressed(XboxConstants.L1);
     }
-    public boolean isPidswitches1()
-    {
+
+    public boolean isPidswitches1() {
         return joystick.getRawButtonPressed(XboxConstants.R1);
     }
 

@@ -40,7 +40,6 @@ public class DriveModule {
     }
 
     /**
-     *
      * @param velocitySetpoint_metersPerSecond I'm forwarding velocity right now, but turning it into voltage..
      * @param turnSetpoint_radians
      */

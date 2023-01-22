@@ -1,13 +1,14 @@
 package org.bitbuckets.lib.vendor.ctre;
 
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+
 import static org.bitbuckets.lib.util.MathUtil.random;
 
 /**
  * This runnable hooks into an existing TalonMotorController and emulates motor simulation
  * using basic math. not a replacement for using a seperate FlywheelMotorSetup, but useful when
  * you don't know your moment of inertia
- *
+ * <p>
  * i didnt write half of this and the code quality tells.
  */
 class SimulateMotorController implements Runnable {
@@ -60,18 +61,16 @@ class SimulateMotorController implements Runnable {
         // Simulate motor load
         if (theoreticalVel > _vel + accelAmount) {
             _vel += accelAmount;
-        }
-        else if (theoreticalVel < _vel - accelAmount) {
+        } else if (theoreticalVel < _vel - accelAmount) {
             _vel -= accelAmount;
-        }
-        else {
+        } else {
             _vel += 0.9 * (theoreticalVel - _vel);
         }
         // _pos += _vel * period / 100;
 
         /// SET SIM PHYSICS INPUTS
-        internalController.getSimCollection().addIntegratedSensorPosition((int)(_vel * period / 100));
-        internalController.getSimCollection().setIntegratedSensorVelocity((int)_vel);
+        internalController.getSimCollection().addIntegratedSensorPosition((int) (_vel * period / 100));
+        internalController.getSimCollection().setIntegratedSensorVelocity((int) _vel);
 
 
         double supplyCurrent = Math.abs(outPerc) * 30 * random(0.95, 1.05);
@@ -79,6 +78,6 @@ class SimulateMotorController implements Runnable {
         internalController.getSimCollection().setSupplyCurrent(supplyCurrent);
         internalController.getSimCollection().setStatorCurrent(statorCurrent);
 
-        internalController.getSimCollection().setBusVoltage(12 - outPerc * outPerc * 3/4 * random(0.95, 1.05));
+        internalController.getSimCollection().setBusVoltage(12 - outPerc * outPerc * 3 / 4 * random(0.95, 1.05));
     }
 }
