@@ -4,6 +4,7 @@ public class AngleUtil {
 
     /**
      * constrains a parameter to the range [0, 2pi]
+     *
      * @param unbound_radians any radian value
      * @return that radian value represented from [0 to 2pi]
      */

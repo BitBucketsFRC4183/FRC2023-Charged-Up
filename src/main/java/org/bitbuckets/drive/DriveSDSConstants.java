@@ -67,4 +67,32 @@ public interface DriveSDSConstants {
 
     int canCoderPeriodMilliseconds = 100;
 
+
+    final String kDriveFeedForwardSKey = "DriveTrain.pidFeedforward.kS";
+    final String kDriveFeedForwardVKey = "DriveTrain.pidFeedforward.kV";
+    final String kDriveFeedForwardAKey = "DriveTrain.pidFeedforward.kA";
+    double kDriveFeedForwardS = 0.65292;
+    double kDriveFeedForwardV = 2.3053;
+    double kDriveFeedForwardA = 0.37626;
+
+
+    final String kOrientPKey = "AutoOrient.pid.kP";
+    final String kOrientIKey = "AutoOrient.pid.kI";
+    final String kOrientDKey = "AutoOrient.pid.kD";
+    double kOrientkP = 3;
+    double kOrientkI = 0;
+    double kOrientkD = 0;
+    final String AutoOrientPidMaxAngVelMPSKey = "AutoOrient.pid.MaxAngVel";
+    final String AutoOrientPidMaxAngAccMPSSKey = "AutoOrient.pid.MaxAngAcc";
+
+
+    final String kBalancePKey = "AutoBalance.pid.kP";
+    final String kBalanceIKey = "AutoBalance.pid.kI";
+    final String kBalanceDKey = "AutoBalance.pid.kD";
+    double kBalancekP = -0.015;
+    double kBalancekI = 0.0;
+    double kBalancekD = 0.01;
+    final String autoBalanceDeadbandDegKey = "AutoBalance.deadbandDeg";
+    double BalanceDeadbandDeg = 6;
+
 }
