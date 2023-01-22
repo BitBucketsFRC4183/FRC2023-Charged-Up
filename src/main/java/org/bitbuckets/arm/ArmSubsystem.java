@@ -11,14 +11,10 @@ public class ArmSubsystem {
     ArmFSM state = ArmFSM.MANUAL;
 
 
-
-    public ArmSubsystem(ArmInput armInput, ArmControl armControl)
-    {
+    public ArmSubsystem(ArmInput armInput, ArmControl armControl) {
         this.armInput = armInput;
         this.armControl = armControl;
     }
-
-
 
 
     private double CONTROL_JOINT_OUTPUT = 0.1;
@@ -27,17 +23,14 @@ public class ArmSubsystem {
     private double gearRatio = (5 * 4 * 3) / (12. / 30.);
 
 
-
-
     public void teleopPeriodic() {
 
 
         switch (state) {
             case MANUAL:
-                if (armInput.isIntakePressed() || armInput.isLowPosPressed() || armInput.isMidPosPressed() || armInput.isLowPosPressed()) {
+                if (armInput.isIntakePressed() || armInput.isLowPosPressed() || armInput.isMidPosPressed() || armInput.isHighPosPressed()) {
                     state = ArmFSM.POSITION_CONTROL;
-                }
-                else {
+                } else {
                     armControl.moveLowerArm(armInput.getLowerArm_PercentOutput());
                     armControl.moveUpperArm(armInput.getUpperArm_PercentOutput());
                 }
@@ -56,9 +49,6 @@ public class ArmSubsystem {
     public void disable() {
 
     }
-
-
-
 
 
 }
