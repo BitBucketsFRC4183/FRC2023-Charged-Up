@@ -1,7 +1,6 @@
 package org.bitbuckets.lib.vendor.ctre;
 
 import org.bitbuckets.lib.log.Loggable;
-import org.bitbuckets.lib.log.LoggableKey;
 
 @Loggable
 public class TalonData {

@@ -28,7 +28,6 @@ public class DriveInput {
         value = Math.copySign(value * value, value);
 
 
-
         return value;
     }
 
@@ -66,15 +65,27 @@ public class DriveInput {
     /**
      * @return whether the aim drive is held or not
      */
-    public boolean isAimDrivePressed() {
+    public boolean isAutoHeadingPressed() {
 
-        return false;
-        //return joystick.getRawButtonPressed(XboxConstants.CIRCLE);
+        return joystick.getRawButtonPressed(XboxConstants.CROSS);
     }
 
     public boolean isUserInputZeroed() {
         return getInputX() == 0 && getInputY() == 0 && getInputRot() == 0;
     }
+
+    public boolean isDefaultPressed() {
+        return joystick.getRawButtonPressed(XboxConstants.SQUARE);
+    }
+
+    public boolean isPidswitches() {
+        return joystick.getRawButtonPressed(XboxConstants.L1);
+    }
+
+    public boolean isPidswitches1() {
+        return joystick.getRawButtonPressed(XboxConstants.R1);
+    }
+
 
     public boolean isAutoBalancePressed() {
         return joystick.getRawButtonPressed(XboxConstants.CIRCLE);

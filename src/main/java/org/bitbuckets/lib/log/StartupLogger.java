@@ -31,6 +31,7 @@ public class StartupLogger {
 
     /**
      * Automatically kills a signal
+     *
      * @param error
      */
     public void signalErrored(String error) {

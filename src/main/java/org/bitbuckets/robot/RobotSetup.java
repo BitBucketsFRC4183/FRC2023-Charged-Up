@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import org.bitbuckets.drive.DriveInput;
 import org.bitbuckets.drive.DriveSDSSubsystem;
 import org.bitbuckets.drive.controlsds.DriveControlSDS;
-import org.bitbuckets.drive.controlsds.Falcon500DriveControlSDSSetup;
+import org.bitbuckets.drive.controlsds.DriveControlSDSSetup;
 import org.bitbuckets.drive.controlsds.NeoControlSDSSetup;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
