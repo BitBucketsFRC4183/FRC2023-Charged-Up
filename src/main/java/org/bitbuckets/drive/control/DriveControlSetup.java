@@ -1,14 +1,14 @@
 package org.bitbuckets.drive.control;
 
 import org.bitbuckets.drive.module.DriveModule;
-import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.lib.ISetup;
+import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.lib.log.DataLogger;
 
 /**
  * Sets up prereqs for a drive controller
- *
- * really fucking simple because a drivecontrol is super simple LMAO
+ * <p>
+ * really simple because a drivecontrol is super simple LMAO
  */
 public class DriveControlSetup implements ISetup<DriveControl> {
 
