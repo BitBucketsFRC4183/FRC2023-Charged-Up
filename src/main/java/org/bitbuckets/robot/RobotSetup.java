@@ -5,27 +5,22 @@ import org.bitbuckets.drive.DriveConstants;
 import org.bitbuckets.drive.DriveInput;
 import org.bitbuckets.drive.DriveSubsystem;
 import org.bitbuckets.drive.control.DriveControl;
-import org.bitbuckets.drive.control.DriveControlDataAutoGen;
 import org.bitbuckets.drive.control.DriveControlSetup;
-import org.bitbuckets.drive.module.DriveModule;
+import org.bitbuckets.drive.module.AutoControl;
+import org.bitbuckets.drive.module.AutoSetup;
 import org.bitbuckets.drive.module.ModuleSetup;
-import org.bitbuckets.lib.hardware.PIDIndex;
-import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.lib.ISetup;
-import org.bitbuckets.lib.log.DataLogger;
+import org.bitbuckets.lib.ProcessPath;
+import org.bitbuckets.lib.hardware.PIDIndex;
 import org.bitbuckets.lib.vendor.ctre.TalonSetup;
 
 public class RobotSetup implements ISetup<RobotContainer> {
-
-    DriveControl control = new DriveControl();
-    DriveInput input = new DriveInput(new Joystick(0));
-
-
+    
 
     @Override
     public RobotContainer build(ProcessPath path) {
 
-        double[] predefPid = PIDIndex.CONSTANTS(1,0,0.1,0,0);
+        double[] predefPid = PIDIndex.CONSTANTS(1, 0, 0.1, 0, 0);
 
         ModuleSetup frontLeft = new ModuleSetup(
                 new TalonSetup(
@@ -111,7 +106,8 @@ public class RobotSetup implements ISetup<RobotContainer> {
         ).build(path.addChild("drive-control"));
 
         DriveInput input = new DriveInput(new Joystick(0));
-        DriveSubsystem driveSubsystem = new DriveSubsystem(input, control, m_trajectory, m_pose, m_kinematics, m_controller, m_outputModuleStates);
+        AutoControl autoControl = new AutoSetup().build(path.addChild("auto-control"));
+        DriveSubsystem driveSubsystem = new DriveSubsystem(input, driveControl, autoControl);
 
         //SYSTEMS_GREEN.setOn(); //LET'S WIN SOME DAMN REGIONALS!!
 
