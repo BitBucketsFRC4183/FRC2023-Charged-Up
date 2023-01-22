@@ -23,7 +23,7 @@ import static org.bitbuckets.drive.controlsds.CtreUtils.checkCtreError;
 /**
  * Sets up prereqs for a drive controller
  * <p>
- * really fucking simple because a drivecontrol is super simple LMAO
+ * really simple because a drivecontrol is super simple LMAO
  */
 public class DriveControlSDSSetup implements ISetup<DriveControlSDS> {
 
