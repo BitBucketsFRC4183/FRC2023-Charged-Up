@@ -7,8 +7,8 @@ import org.bitbuckets.drive.controlsds.ModuleConfiguration;
 public interface DriveSDSConstants {
 
     // Drive Subsystem
-    int frontLeftModuleDriveMotor_ID = 1;
-    int frontLeftModuleSteerMotor_ID = 2;
+    int frontLeftModuleDriveMotor_ID = 2;
+    int frontLeftModuleSteerMotor_ID = 1;
     int frontLeftModuleSteerEncoder_ID = 9;
 
     int frontRightModuleDriveMotor_ID = 7;
@@ -61,8 +61,8 @@ public interface DriveSDSConstants {
     double driveCurrentLimit = 80.0;
     double steerCurrentLimit = 20.0;
 
-    double proportionalConstant = .2;
-    double integralConstant = 0;
+    double proportionalConstant = 1.0;
+    double integralConstant = 0.0;
     double derivativeConstant = .1;
 
     int canCoderPeriodMilliseconds = 100;
