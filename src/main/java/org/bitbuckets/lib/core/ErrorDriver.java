@@ -1,7 +1,6 @@
 package org.bitbuckets.lib.core;
 
 import edu.wpi.first.wpilibj.DriverStation;
-import org.bitbuckets.lib.core.IdentityDriver;
 
 /**
  * Allows ISetup to log critical errors that prevent the robot from starting
@@ -15,8 +14,7 @@ public class ErrorDriver {
         this.identityFactory = identityFactory;
     }
 
-    public void flagError(int process, String error)
-    {
+    public void flagError(int process, String error) {
 
         //TODO actually robust error handling that isn't dumb
 

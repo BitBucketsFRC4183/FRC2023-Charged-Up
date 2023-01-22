@@ -58,7 +58,7 @@ public class TalonSetup implements ISetup<IMotorController> {
 
         talonFX.enableVoltageCompensation(true);
 
-        if (talonFX.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, currentLimit, 0,0), SET_MAXCONFIGTIME_MS) != ErrorCode.OK) {
+        if (talonFX.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, currentLimit, 0, 0), SET_MAXCONFIGTIME_MS) != ErrorCode.OK) {
             ctre_config.signalErrored("cant config supply limit");
         }
 

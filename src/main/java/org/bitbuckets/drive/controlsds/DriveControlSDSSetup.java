@@ -1,11 +1,16 @@
 package org.bitbuckets.drive.controlsds;
 
+import com.ctre.phoenix.ErrorCode;
 import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.*;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Preferences;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
@@ -30,6 +35,40 @@ public class DriveControlSDSSetup implements ISetup<DriveControlSDS> {
     @Override
     public DriveControlSDS build(ProcessPath path) {
         DataLogger<DriveControlSDSDataAutoGen> logger = path.generatePushDataLogger(DriveControlSDSDataAutoGen::new);
+
+
+        if (!Preferences.containsKey(DriveSDSConstants.kOrientPKey)) {
+            Preferences.setDouble(DriveSDSConstants.kOrientPKey, DriveSDSConstants.kOrientkP);
+        }
+        if (!Preferences.containsKey(DriveSDSConstants.kOrientIKey)) {
+            Preferences.setDouble(DriveSDSConstants.kOrientIKey, DriveSDSConstants.kOrientkI);
+        }
+        if (!Preferences.containsKey(DriveSDSConstants.kOrientDKey)) {
+            Preferences.setDouble(DriveSDSConstants.kOrientDKey, DriveSDSConstants.kOrientkD);
+        }
+        if (!Preferences.containsKey(DriveSDSConstants.kBalancePKey)) {
+            Preferences.setDouble(DriveSDSConstants.kBalancePKey, DriveSDSConstants.kBalancekP);
+        }
+        if (!Preferences.containsKey(DriveSDSConstants.kBalanceIKey)) {
+            Preferences.setDouble(DriveSDSConstants.kBalanceIKey, DriveSDSConstants.kBalancekI);
+        }
+        if (!Preferences.containsKey(DriveSDSConstants.kBalanceDKey)) {
+            Preferences.setDouble(DriveSDSConstants.kBalanceDKey, DriveSDSConstants.kBalancekD);
+        }
+        if (!Preferences.containsKey(DriveSDSConstants.autoBalanceDeadbandDegKey)) {
+            Preferences.setDouble(DriveSDSConstants.autoBalanceDeadbandDegKey, DriveSDSConstants.BalanceDeadbandDeg);
+        }
+
+
+        if (!Preferences.containsKey(DriveSDSConstants.kDriveFeedForwardAKey)) {
+            Preferences.setDouble(DriveSDSConstants.kDriveFeedForwardAKey, DriveSDSConstants.kDriveFeedForwardA);
+        }
+        if (!Preferences.containsKey(DriveSDSConstants.kDriveFeedForwardSKey)) {
+            Preferences.setDouble(DriveSDSConstants.kDriveFeedForwardSKey, DriveSDSConstants.kDriveFeedForwardS);
+        }
+        if (!Preferences.containsKey(DriveSDSConstants.kDriveFeedForwardVKey)) {
+            Preferences.setDouble(DriveSDSConstants.kDriveFeedForwardVKey, DriveSDSConstants.kDriveFeedForwardV);
+        }
 
         double wheelWearFactor = 1;
 
@@ -122,9 +161,20 @@ public class DriveControlSDSSetup implements ISetup<DriveControlSDS> {
 
         //Calibrate the gyro only once when the drive subsystem is first initialized
         gyro.calibrate();
+        double BalanceKP = Preferences.getDouble(DriveSDSConstants.kBalancePKey, DriveSDSConstants.kBalancekP);
+        double BalanceKI = Preferences.getDouble(DriveSDSConstants.kBalanceIKey, DriveSDSConstants.kBalancekI);
+        double BalanceKD = Preferences.getDouble(DriveSDSConstants.kBalanceDKey, DriveSDSConstants.kBalancekD);
+        double OrientKP = Preferences.getDouble(DriveSDSConstants.kOrientPKey, DriveSDSConstants.kOrientkP);
+        double OrientKI = Preferences.getDouble(DriveSDSConstants.kOrientIKey, DriveSDSConstants.kOrientkI);
+        double OrientKD = Preferences.getDouble(DriveSDSConstants.kOrientDKey, DriveSDSConstants.kOrientkD);
+
+        PIDController rotControllerRad = new PIDController(OrientKP, OrientKI, OrientKD);
+
+        PIDController balanceController = new PIDController(BalanceKP, BalanceKI, BalanceKD);
+
 
         DriveControlSDS control = new DriveControlSDS(logger, maxVelocity_metersPerSecond, maxAngularVelocity_radiansPerSecond,
-                gyro, moduleFrontLeft, moduleFrontRight, moduleBackLeft, moduleBackRight, kinematics);
+                gyro, balanceController, rotControllerRad, moduleFrontLeft, moduleFrontRight, moduleBackLeft, moduleBackRight, kinematics);
 
 
         path.registerLoop(control::guaranteedLoggingLoop, "logging");
@@ -238,9 +288,9 @@ public class DriveControlSDSSetup implements ISetup<DriveControlSDS> {
         config.absoluteSensorRange = AbsoluteSensorRange.Unsigned_0_to_360;
         config.magnetOffsetDegrees = Math.toDegrees(steerOffset);
         config.sensorDirection = direction == Direction.CLOCKWISE;
-
         var encoder = new WPI_CANCoder(steerEncoderPort);
         checkCtreError(encoder.configAllSettings(config, 250), "Failed to configure CANCoder");
+        waitForCanCoder(encoder);
 
         checkCtreError(encoder.setStatusFramePeriod(CANCoderStatusFrame.SensorData, DriveSDSConstants.canCoderPeriodMilliseconds, 250), "Failed to configure CANCoder update rate");
 
@@ -248,5 +298,34 @@ public class DriveControlSDSSetup implements ISetup<DriveControlSDS> {
         return absoluteEncoder;
     }
 
+    private static void waitForCanCoder(WPI_CANCoder canCoder) {
+        /*
+         * Wait for up to 1000 ms for a good CANcoder signal.
+         *
+         * This prevents a race condition during program startup
+         * where we try to synchronize the Falcon encoder to the
+         * CANcoder before we have received any position signal
+         * from the CANcoder.
+         */
+        int initTime = 0;
+
+        ErrorCode shm = canCoder.getLastError();
+        for (int i = 0; i < 100; ++i) {
+            canCoder.getAbsolutePosition();
+
+            shm = canCoder.getLastError();
+            if (shm.equals(ErrorCode.OK)) {
+                DriverStation.reportWarning("init took: " + initTime, false);
+                break;
+            }
+            Timer.delay(0.1);
+            initTime += 10;
+        }
+
+        System.out.println("how many tume rune " + initTime);
+
+
+        DriverStation.reportWarning("BAD BAD BAD BAD BAD BAD B" + shm, false);
+    }
 
 }
