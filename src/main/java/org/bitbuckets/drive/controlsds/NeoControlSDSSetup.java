@@ -166,7 +166,7 @@ public class NeoControlSDSSetup implements ISetup<DriveControlSDS> {
 
         CANSparkMax motor = new CANSparkMax(steerMotorPort, CANSparkMaxLowLevel.MotorType.kBrushless);
 
-        AbsoluteEncoder absoluteEncoder = createAbsoluteEncoder(steerEncoderPort, steerOffset);
+        AbsoluteEncoder absoluteEncoder = createAbsoluteEncoder(steerEncoderPort, steerEncoderPort);
 
 
         checkNeoError(motor.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus0, 100), "Failed to set periodic status frame 0 rate");
@@ -188,9 +188,9 @@ public class NeoControlSDSSetup implements ISetup<DriveControlSDS> {
 
         SparkMaxPIDController controller = motor.getPIDController();
 
-        checkNeoError(controller.setP(controller.getP()), "Failed to set NEO PID proportional constant");
-        checkNeoError(controller.setI(controller.getI()), "Failed to set NEO PID integral constant");
-        checkNeoError(controller.setD(controller.getD()), "Failed to set NEO PID derivative constant");
+        checkNeoError(controller.setP(DriveSDSConstants.proportionalConstant), "Failed to set NEO PID proportional constant");
+        checkNeoError(controller.setI(DriveSDSConstants.integralConstant), "Failed to set NEO PID integral constant");
+        checkNeoError(controller.setD(DriveSDSConstants.derivativeConstant), "Failed to set NEO PID derivative constant");
 
         checkNeoError(controller.setFeedbackDevice(integratedEncoder), "Failed to set NEO PID feedback device");
 
