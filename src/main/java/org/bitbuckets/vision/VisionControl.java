@@ -5,10 +5,12 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.bitbuckets.lib.ProcessPath;
+import org.bitbuckets.lib.hardware.PIDIndex;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.PhotonPipelineResult;
@@ -18,9 +20,9 @@ import java.util.List;
 
 public class VisionControl {
 
-    PhotonCamera camera = new PhotonCamera("Arducam_OV9281_USB_Camera");
+    ;
     public void Localization() {
-        PhotonPipelineResult result = camera.getLatestResult();
+        PhotonPipelineResult result = VisionControlSetup.camera.getLatestResult();
         double yaw = 0;
         double pitch = 0;
         double area = 0;
@@ -64,7 +66,15 @@ public class VisionControl {
 
     }
 
+    HolonomicDriveController controller = new HolonomicDriveController(new PIDController(AutoConstants.pathXYPID[PIDIndex.P],AutoConstants.pathXYPID[PIDIndex.I],AutoConstants.pathXYPID[PIDIndex.D]),new PIDController(AutoConstants.pathXYPID[PIDIndex.P], AutoConstants.pathXYPID[PIDIndex.I], AutoConstants.pathXYPID[PIDIndex.D]),new ProfiledPIDController(AutoConstants.pathThetaPID[PIDIndex.P], AutoConstants.pathThetaPID[PIDIndex.I], AutoConstants.pathThetaPID[PIDIndex.D], new TrapezoidProfile.Constraints(AutoConstants.maxPathFollowVelocity, AutoConstants.maxPathFollowAcceleration)));
 
+    public void driveToPosition(ChassisSpeeds chassisSpeeds) {
+        controller.calculate(
+
+        )
+
+
+    }
 
     public void teleopPeriodic() {
         Localization();
