@@ -5,8 +5,9 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import org.bitbuckets.drive.auto.AutoControl;
+import org.bitbuckets.drive.auto.AutoPaths;
 import org.bitbuckets.drive.controlsds.DriveControlSDS;
-import org.bitbuckets.drive.module.AutoControl;
 import org.bitbuckets.lib.util.MathUtil;
 
 
@@ -21,6 +22,7 @@ public class DriveSDSSubsystem {
     final DriveControlSDS control;
 
     final AutoControl autoControl;
+    private AutoPaths path;
 
 
     public DriveSDSSubsystem(DriveInput input, DriveControlSDS control, AutoControl autoControl) {
@@ -32,6 +34,15 @@ public class DriveSDSSubsystem {
     DriveFSM state = DriveFSM.TELEOP_NORMAL;
     Pose2d pose = new Pose2d();
     private Timer m_timer = new Timer();
+
+    public void followAutoPath(AutoPaths path) {
+        this.path = path;
+        state = DriveFSM.AUTO_PATHFINDING;
+    }
+
+    public void driveNormal() {
+        state = DriveFSM.TELEOP_NORMAL;
+    }
 
     //Needs to stop if we're going fw or bw
     public void teleopPeriodic() {
@@ -45,14 +56,14 @@ public class DriveSDSSubsystem {
             case AUTO_PATHFINDING:
                 //auto stuff for pathfinder etc
                 double curTime = m_timer.get();
-                var targetChassisSpeeds = autoControl.getAutoChassisSpeeds(curTime, pose);
+                var targetChassisSpeeds = autoControl.getAutoChassisSpeeds(path, curTime, pose);
                 control.drive(targetChassisSpeeds);
 
                 //PathPlannerTrajectory testPath = PathPlanner.loadPath("test path", new PathConstraints(1,1));
 
 
                 //for when auto is finished
-                if (m_timer.hasElapsed(autoControl.getTrajectoryTime())) {
+                if (m_timer.hasElapsed(autoControl.getTrajectoryTime(path))) {
                     state = DriveFSM.TELEOP_NORMAL; //switch to teleop
                 }
                 break;

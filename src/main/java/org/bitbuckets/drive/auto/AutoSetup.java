@@ -1,4 +1,4 @@
-package org.bitbuckets.drive.module;
+package org.bitbuckets.drive.auto;
 
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;

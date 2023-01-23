@@ -5,8 +5,9 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.Timer;
+import org.bitbuckets.drive.auto.AutoControl;
+import org.bitbuckets.drive.auto.AutoPaths;
 import org.bitbuckets.drive.control.DriveControl;
-import org.bitbuckets.drive.module.AutoControl;
 import org.bitbuckets.robot.RobotConstants;
 
 
@@ -23,6 +24,7 @@ public class DriveSubsystem {
     private Timer m_timer = new Timer();
 
     DriveFSM state = DriveFSM.TELEOP_NORMAL;
+    AutoPaths path = AutoPaths.NONE;
     Pose2d pose = new Pose2d();
 
     public DriveSubsystem(DriveInput input, DriveControl control, AutoControl autoControl) {
@@ -56,14 +58,14 @@ public class DriveSubsystem {
             case AUTO_PATHFINDING:
                 //auto stuff for pathfinder etc
                 double curTime = m_timer.get();
-                var targetChassisSpeeds = autoControl.getAutoChassisSpeeds(curTime, pose);
+                var targetChassisSpeeds = autoControl.getAutoChassisSpeeds(path, curTime, pose);
                 driveAt(targetChassisSpeeds);
 
                 //PathPlannerTrajectory testPath = PathPlanner.loadPath("test path", new PathConstraints(1,1));
 
 
                 //for when auto is finished
-                if (m_timer.hasElapsed(autoControl.getTrajectoryTime())) {
+                if (m_timer.hasElapsed(autoControl.getTrajectoryTime(path))) {
                     state = DriveFSM.TELEOP_NORMAL; //switch to teleop
                 }
 
@@ -88,4 +90,5 @@ public class DriveSubsystem {
         driveAt(new ChassisSpeeds(-0.05, 0.0, 0.0));
     }
 
+   
 }

@@ -1,4 +1,4 @@
-package org.bitbuckets.drive.module;
+package org.bitbuckets.drive.auto;
 
 import com.pathplanner.lib.PathPlannerTrajectory;
 import edu.wpi.first.math.controller.HolonomicDriveController;
@@ -14,7 +14,7 @@ public class AutoControl {
         this.controller = controller;
     }
 
-    public ChassisSpeeds getAutoChassisSpeeds(double time, Pose2d pose) {
+    public ChassisSpeeds getAutoChassisSpeeds(AutoPaths path, double time, Pose2d pose) {
 
         var desiredState = (PathPlannerTrajectory.PathPlannerState) trajectory.sample(time);
 
@@ -23,7 +23,7 @@ public class AutoControl {
         return targetChassisSpeeds;
     }
 
-    public double getTrajectoryTime() {
+    public double getTrajectoryTime(AutoPaths path) {
         return trajectory.getTotalTimeSeconds();
     }
 }

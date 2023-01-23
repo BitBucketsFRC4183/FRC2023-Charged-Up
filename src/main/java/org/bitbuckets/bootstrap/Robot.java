@@ -94,4 +94,13 @@ public class Robot extends LoggedRobot {
         REVPhysicsSim.getInstance().run();
     }
 
+    @Override
+    public void autonomousInit() {
+        robotHandle.autoInit();
+    }
+
+    @Override
+    public void teleopInit() {
+        robotHandle.teleopInit();
+    }
 }
