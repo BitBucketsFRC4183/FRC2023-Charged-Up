@@ -174,7 +174,7 @@ public class DriveControlSDSSetup implements ISetup<DriveControlSDS> {
 
 
         DriveControlSDS control = new DriveControlSDS(logger, maxVelocity_metersPerSecond, maxAngularVelocity_radiansPerSecond,
-                gyro, balanceController, rotControllerRad, moduleFrontLeft, moduleFrontRight, moduleBackLeft, moduleBackRight, kinematics);
+                gyro, moduleFrontLeft, moduleFrontRight, moduleBackLeft, moduleBackRight, kinematics);
 
 
         path.registerLoop(control::guaranteedLoggingLoop, "logging");
