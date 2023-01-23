@@ -10,6 +10,7 @@ public class FilteredEncoder {
     public FilteredEncoder(IEncoder relative) {
         this.relative = relative;
     }
+
     double CIRCLE = Math.PI * 2.0;
     double HALF_CIRCLE = Math.PI;
 
@@ -36,7 +37,8 @@ public class FilteredEncoder {
             setpoint_encoderRads -= CIRCLE;
         } else if (setpoint_encoderRads - current_encoderRads < -HALF_CIRCLE) {
             setpoint_encoderRads += CIRCLE;
-        };
+        }
+        ;
         return setpoint_encoderRads;
     }
 
@@ -48,8 +50,7 @@ public class FilteredEncoder {
     }
 
     public double optimizeSetpoint_encoderRads(double setpoint_encoderRads) {
-        double accumulated = relative.getEncoderPositionAccumulated_radians()
-                ;
+        double accumulated = relative.getEncoderPositionAccumulated_radians();
 
         return optimizeWithBoth(setpoint_encoderRads, accumulated);
     }
