@@ -44,15 +44,8 @@ public class DriveSDSSubsystem {
         state = DriveFSM.TELEOP_NORMAL;
     }
 
-    //Needs to stop if we're going fw or bw
-    public void teleopPeriodic() {
-        SmartDashboard.putNumber("rotoutput", rotOutput);
-        SmartDashboard.putNumber("gyroVelX", control.getGyroXYZ_mps()[0]);
-
+    public void autoPeriodic() {
         switch (state) {
-            case UNINITIALIZED:
-                //do nothing
-                break;
             case AUTO_PATHFINDING:
                 //auto stuff for pathfinder etc
                 double curTime = m_timer.get();
@@ -66,6 +59,18 @@ public class DriveSDSSubsystem {
                 if (m_timer.hasElapsed(autoControl.getTrajectoryTime(path))) {
                     state = DriveFSM.TELEOP_NORMAL; //switch to teleop
                 }
+                break;
+        }
+    }
+
+    //Needs to stop if we're going fw or bw
+    public void teleopPeriodic() {
+        SmartDashboard.putNumber("rotoutput", rotOutput);
+        SmartDashboard.putNumber("gyroVelX", control.getGyroXYZ_mps()[0]);
+
+        switch (state) {
+            case UNINITIALIZED:
+                //do nothing
                 break;
             case TELEOP_NORMAL:
                 if (input.isPidswitches()) {

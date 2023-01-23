@@ -87,6 +87,10 @@ public class Robot extends LoggedRobot {
         robotHandle.teleopPeriodic();
     }
 
+    @Override
+    public void autonomousPeriodic() {
+        robotHandle.autoPeriodic();
+    }
 
     @Override
     public void simulationPeriodic() {

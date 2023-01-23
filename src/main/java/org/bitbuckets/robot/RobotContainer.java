@@ -15,6 +15,7 @@ public class RobotContainer {
     }
 
     public void autoPeriodic() {
+        subsystem.autoPeriodic();
     }
 
     //Shouldn't need to do anything here
