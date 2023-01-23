@@ -76,6 +76,10 @@ public class ArmInput {
         return operatorControl.getRawButtonPressed(XboxController.Button.kX.value);
     }
 
+    public boolean isCalibratedPressed() {
+        return operatorControl.getRawButtonPressed(XboxController.Button.kLeftStick.value);
+    }
+
     public boolean isDisablePositionControlPressed() {
         return operatorControl.getRawButtonPressed(XboxController.Button.kRightStick.value);
     }

@@ -25,6 +25,10 @@ public class ArmSubsystem {
 
     public void teleopPeriodic() {
 
+        if (armInput.isCalibratedPressed()) {
+            armControl.calibrateLowerArm();
+            armControl.calibrateUpperArm();
+        }
 
         switch (state) {
             case MANUAL:
