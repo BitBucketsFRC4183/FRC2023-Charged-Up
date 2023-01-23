@@ -1,19 +1,13 @@
 package org.bitbuckets.drive;
 
-import com.pathplanner.lib.PathPlannerTrajectory;
-import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.bitbuckets.drive.control.DriveControl;
 import org.bitbuckets.drive.module.AutoControl;
 import org.bitbuckets.robot.RobotConstants;
-
-import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 
 /**
@@ -47,7 +41,7 @@ public class DriveSubsystem {
                 state = DriveFSM.AUTO_NORMAL;
 
             case TELEOP_NORMAL:
-                ChassisSpeeds desired = new ChassisSpeeds(input.getInputX(), input.getInputY() , input.getInputRot() * DriveConstants.MAX_ANG_VELOCITY);
+                ChassisSpeeds desired = new ChassisSpeeds(input.getInputX(), input.getInputY(), input.getInputRot() * DriveConstants.MAX_ANG_VELOCITY);
                 driveAt(desired);
 
                 if (input.isAutoBalancePressed()) {
@@ -68,17 +62,12 @@ public class DriveSubsystem {
                 //PathPlannerTrajectory testPath = PathPlanner.loadPath("test path", new PathConstraints(1,1));
 
 
-
-
-
                 //for when auto is finished
-                if (input.isAutoPathFinished()) {
+                if (m_timer.hasElapsed(autoControl.getTrajectoryTime())) {
                     state = DriveFSM.TELEOP_NORMAL; //switch to teleop
                 }
 
         }
-
-
 
 
     }
@@ -90,8 +79,7 @@ public class DriveSubsystem {
     }
 
 
-    public void driveForward()
-    {
+    public void driveForward() {
         driveAt(new ChassisSpeeds(0.05, 0.0, 0.0));
     }
 

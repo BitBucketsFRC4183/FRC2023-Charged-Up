@@ -12,7 +12,7 @@ public enum DriveFSM {
     AUTO_BALANCING,
 
     PID_TUNING,
-
+    AUTO_NORMAL,
     PID_TUNING1
 
 
