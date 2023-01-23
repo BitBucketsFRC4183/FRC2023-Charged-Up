@@ -3,6 +3,8 @@ package org.bitbuckets.robot;
 import edu.wpi.first.wpilibj.Joystick;
 import org.bitbuckets.drive.DriveInput;
 import org.bitbuckets.drive.DriveSDSSubsystem;
+import org.bitbuckets.drive.auto.AutoControl;
+import org.bitbuckets.drive.auto.AutoSetup;
 import org.bitbuckets.drive.controlsds.DriveControlSDS;
 import org.bitbuckets.drive.controlsds.DriveControlSDSSetup;
 import org.bitbuckets.drive.controlsds.NeoControlSDSSetup;
@@ -105,8 +107,8 @@ public class RobotSetup implements ISetup<RobotContainer> {
         DriveControlSDS driveControl = new NeoControlSDSSetup().build(path.addChild("drive-control"));
 
         DriveInput input = new DriveInput(new Joystick(0));
-//        DriveSubsystem driveSubsystem = new DriveSubsystem(input, driveControl);
-        DriveSDSSubsystem driveSubsystem = new DriveSDSSubsystem(input, driveControl);
+        AutoControl autoControl = new AutoSetup().build(path.addChild("auto-control"));
+        DriveSDSSubsystem driveSubsystem = new DriveSDSSubsystem(input, driveControl, autoControl);
 
         //SYSTEMS_GREEN.setOn(); //LET'S WIN SOME DAMN REGIONALS!!
 
