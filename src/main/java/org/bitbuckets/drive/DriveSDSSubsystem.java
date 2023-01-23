@@ -68,7 +68,7 @@ public class DriveSDSSubsystem {
     //Needs to stop if we're going fw or bw
     public void teleopPeriodic() {
         SmartDashboard.putNumber("rotoutput", rotOutput);
-        SmartDashboard.putNumber("gyroVelX", control.getGyroXYZ_mps()[0]);
+        SmartDashboard.putNumber("gyroVelX", control.getGyroXYZ_dps()[0]);
 
         SmartDashboard.putNumber("rotoutput", rotOutput);
         SmartDashboard.putNumber("gyroVelX", Math.toRadians(control.getGyroXYZ_dps()[2]));
@@ -82,11 +82,7 @@ public class DriveSDSSubsystem {
 
                 break;
             case TELEOP_NORMAL:
-                if (input.isPidswitches()) {
-                    state = DriveFSM.PID_TUNING;
-                    break;
-
-                }
+            
                 if (input.isAutoBalancePressed()) {
                     state = DriveFSM.TELEOP_BALANCING; //do balancing next iteration
                     break;
