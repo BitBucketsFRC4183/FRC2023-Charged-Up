@@ -3,13 +3,20 @@ package org.bitbuckets.robot;
 import edu.wpi.first.wpilibj.Joystick;
 import org.bitbuckets.drive.DriveInput;
 import org.bitbuckets.drive.DriveSubsystem;
+import org.bitbuckets.drive.control.DriveControl;
+import org.bitbuckets.drive.control.DriveControlDataAutoGen;
+import org.bitbuckets.drive.control.DriveControlSetup;
 import org.bitbuckets.drive.controlsds.DriveControlSDS;
 import org.bitbuckets.drive.controlsds.DriveControlSDSSetup;
 import org.bitbuckets.drive.module.AutoControl;
 import org.bitbuckets.drive.module.AutoSetup;
-import org.bitbuckets.lib.ISetup;
-import org.bitbuckets.lib.ProcessPath;
+import org.bitbuckets.drive.module.DriveModule;
+import org.bitbuckets.drive.module.ModuleSetup;
 import org.bitbuckets.lib.hardware.PIDIndex;
+import org.bitbuckets.lib.ProcessPath;
+import org.bitbuckets.lib.ISetup;
+import org.bitbuckets.lib.log.DataLogger;
+import org.bitbuckets.lib.vendor.ctre.TalonSetup;
 
 public class RobotSetup implements ISetup<RobotContainer> {
 
