@@ -26,19 +26,19 @@ public class DriveSDSSubsystem {
 
     //Needs to stop if we're going fw or bw
     public void teleopPeriodic() {
+
         SmartDashboard.putNumber("rotoutput", rotOutput);
-        SmartDashboard.putNumber("gyroVelX", control.getGyroXYZ_mps()[0]);
+        SmartDashboard.putNumber("gyroVelX", Math.toRadians(control.getGyroXYZ_dps()[2]));
+        double IMU_Yaw = Math.toRadians(control.getYaw_deg());//Math.toRadians(-350);
+
+        IMU_Yaw = MathUtil.wrap(IMU_Yaw);
+        SmartDashboard.putNumber("AutoOrient_wrappedYaw", Math.toDegrees(IMU_Yaw));
 
         switch (state) {
             case UNINITIALIZED:
-                //do nothing
+
                 break;
             case TELEOP_NORMAL:
-                if (input.isPidswitches()) {
-                    state = DriveFSM.PID_TUNING;
-                    break;
-
-                }
                 if (input.isAutoBalancePressed()) {
                     state = DriveFSM.TELEOP_BALANCING; //do balancing next iteration
                     break;
@@ -83,12 +83,9 @@ public class DriveSDSSubsystem {
                     state = DriveFSM.TELEOP_NORMAL;
                     break;
                 }
-                double IMU_Yaw = Math.toRadians(control.getYaw_deg());//Math.toRadians(-350);
-
-                IMU_Yaw = MathUtil.wrap(IMU_Yaw);
 
                 //will add logic later
-                double setpoint = Math.toRadians(90);
+                double setpoint = Math.toRadians(0);
 
                 double error = setpoint - IMU_Yaw;
 
@@ -114,37 +111,6 @@ public class DriveSDSSubsystem {
 
 
                 break;
-            case PID_TUNING:
-                if (input.isPidswitches()) {
-                    state = DriveFSM.PID_TUNING1;
-                    break;
-                }
-                if (input.isDefaultPressed()) {
-                    state = DriveFSM.TELEOP_NORMAL;
-                    break;
-                }
-                rotOutput = 0.1;
-                control.drive(
-                        new ChassisSpeeds(0, 0, rotOutput));
-                break;
-            case PID_TUNING1:
-
-                if (input.isPidswitches1()) {
-                    state = DriveFSM.PID_TUNING;
-                    break;
-
-                }
-                if (input.isDefaultPressed()) {
-                    state = DriveFSM.TELEOP_NORMAL;
-                    break;
-                }
-                rotOutput = 0.3;
-                control.drive(
-
-                        new ChassisSpeeds(0, 0, rotOutput));
-
-                break;
-
         }
     }
 }

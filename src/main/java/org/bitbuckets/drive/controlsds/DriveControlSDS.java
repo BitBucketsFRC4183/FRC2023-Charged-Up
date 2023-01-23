@@ -8,6 +8,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import org.bitbuckets.drive.DriveSDSConstants;
+import org.bitbuckets.lib.control.ProfiledPIDFController;
 import org.bitbuckets.lib.log.DataLogger;
 
 import java.util.ArrayList;
@@ -44,7 +45,7 @@ public class DriveControlSDS {
 
     final PIDController balanceController;
 
-    final PIDController rotControllerRad;
+    final ProfiledPIDFController rotControllerRad;
 
 
     // Swerve Modules
@@ -66,7 +67,7 @@ public class DriveControlSDS {
     SwerveModuleState[] cachedSetpoint = new SwerveModuleState[4];
 
 
-    public DriveControlSDS(DataLogger<DriveControlSDSDataAutoGen> logger, double maxVelocity_metersPerSecond, double maxAngularVelocity_radiansPerSecond, WPI_PigeonIMU gyro, PIDController balanceController, PIDController rotControllerRad, SwerveModule moduleFrontLeft, SwerveModule moduleFrontRight, SwerveModule moduleBackLeft, SwerveModule moduleBackRight, SwerveDriveKinematics kinematics) {
+    public DriveControlSDS(DataLogger<DriveControlSDSDataAutoGen> logger, double maxVelocity_metersPerSecond, double maxAngularVelocity_radiansPerSecond, WPI_PigeonIMU gyro, PIDController balanceController, ProfiledPIDFController rotControllerRad, SwerveModule moduleFrontLeft, SwerveModule moduleFrontRight, SwerveModule moduleBackLeft, SwerveModule moduleBackRight, SwerveDriveKinematics kinematics) {
         this.logger = logger;
         this.maxVelocity_metersPerSecond = maxVelocity_metersPerSecond;
         this.maxAngularVelocity_radiansPerSecond = maxAngularVelocity_radiansPerSecond;
@@ -91,7 +92,7 @@ public class DriveControlSDS {
         });
     }
 
-    public double[] getGyroXYZ_mps() {
+    public double[] getGyroXYZ_dps() {
         double[] velArray1 = new double[]{0, 0, 0};
         gyro.getRawGyro(velArray1);
         return velArray1;
@@ -100,6 +101,7 @@ public class DriveControlSDS {
 
     public double getRoll_deg() {
         return gyro.getRoll();
+
     }
 
     public SwerveModuleState[] reportSetpointStates() {
@@ -177,6 +179,7 @@ public class DriveControlSDS {
     }
 
     public double calculateRotOutputRad(double imu_yaw, double setpoint) {
+        rotControllerRad.enableContinuousInput(0, Math.toRadians(360));
         return rotControllerRad.calculate(imu_yaw, setpoint);
     }
 }

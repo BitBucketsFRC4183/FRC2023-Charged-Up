@@ -3,6 +3,7 @@ package org.bitbuckets.drive;
 
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import org.bitbuckets.drive.controlsds.ModuleConfiguration;
+import org.bitbuckets.robot.RobotConstants;
 
 public interface DriveSDSConstants {
 
@@ -71,11 +72,22 @@ public interface DriveSDSConstants {
     final String kOrientPKey = "AutoOrient.pid.kP";
     final String kOrientIKey = "AutoOrient.pid.kI";
     final String kOrientDKey = "AutoOrient.pid.kD";
-    double kOrientkP = 3;
+
+    final String kOrientFKey = "AutoOrient.pid.kF";
+
+    double kOrientkP = 2.4;
     double kOrientkI = 0;
     double kOrientkD = 0;
-    final String AutoOrientPidMaxAngVelMPSKey = "AutoOrient.pid.MaxAngVel";
-    final String AutoOrientPidMaxAngAccMPSSKey = "AutoOrient.pid.MaxAngAcc";
+
+    double kOrientkF = 0.73;
+
+
+    double MAX_DRIVE_VELOCITY = 6380.0 / 60.0 * (14.0 / 50.0) * (27.0 / 17.0) * (15.0 / 45.0) * 0.10033 * Math.PI;
+
+    double MAX_ANG_VELOCITY = MAX_DRIVE_VELOCITY / Math.hypot(RobotConstants.WIDTH, RobotConstants.BASE);
+
+
+
 
 
     final String kBalancePKey = "AutoBalance.pid.kP";
