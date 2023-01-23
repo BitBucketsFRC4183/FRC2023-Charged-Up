@@ -21,7 +21,7 @@ public class ArmInput {
     Left Joystick to control lower joint on arm
     Right Joystick to control upper joint on arm
      */
-   public static double armDeadband(double input) {
+    public static double armDeadband(double input) {
         double value = input;
 
         value = MathUtil.applyDeadband(value, 0.1);
@@ -30,72 +30,55 @@ public class ArmInput {
         return value;
     }
 
-    public double getLowerArm_PercentOutput()
-    {
-        if (getReverseLowerArmHeld())
-        {
-            return -1 * armDeadband(XboxController.Axis.kLeftTrigger.value);
+    public double getLowerArm_PercentOutput() {
+        if (getReverseLowerArmHeld()) {
+            return -1 * armDeadband(operatorControl.getRawAxis(XboxController.Axis.kLeftTrigger.value));
         }
-        return armDeadband(XboxController.Axis.kLeftTrigger.value);
+        return armDeadband(operatorControl.getRawAxis(XboxController.Axis.kLeftTrigger.value));
     }
 
     //Checks if the user wants to move the lower arm back (if the left bumper is held)
-    public boolean getReverseLowerArmHeld()
-    {
-        return operatorControl.getRawButtonPressed(XboxController.Button.kLeftBumper.value);
+    public boolean getReverseLowerArmHeld() {
+        return (operatorControl.getRawButton(XboxController.Button.kLeftBumper.value));
     }
 
 
     //how fast the user wants to move the upper arm (controlled by right trigger)
-    public double getUpperArm_PercentOutput()
-    {
-        if (getReverseUpperArmHeld())
-        {
-            return -1 * armDeadband(XboxController.Axis.kRightTrigger.value);
+    public double getUpperArm_PercentOutput() {
+        if (getReverseUpperArmHeld()) {
+            return -1 * armDeadband(operatorControl.getRawAxis(XboxController.Axis.kRightTrigger.value));
         }
-        return armDeadband(XboxController.Axis.kRightTrigger.value);
+        return armDeadband(operatorControl.getRawAxis(XboxController.Axis.kRightTrigger.value));
     }
 
     //checks if the user wants to move the upper arm back (if the right bumper is held)
-    public boolean getReverseUpperArmHeld()
-    {
+    public boolean getReverseUpperArmHeld() {
         return operatorControl.getRawButton(XboxController.Button.kRightBumper.value);
     }
 
-    public boolean isIntakePressed()
-    {
+    public boolean isIntakePressed() {
         return operatorControl.getRawButtonPressed(XboxController.Button.kA.value);
     }
 
 
     //checks if the user wants to move the arms to the lower position (if y is pressed)
-    public boolean isLowPosPressed()
-    {
+    public boolean isLowPosPressed() {
         return operatorControl.getRawButtonPressed(XboxController.Button.kY.value);
     }
 
     //checks if the user wants to move the arms to the upper position (if b is pressed)
-    public boolean isHighPosPressed()
-    {
+    public boolean isHighPosPressed() {
         return operatorControl.getRawButtonPressed(XboxController.Button.kB.value);
     }
 
     //checks if the user wants to move the arms to the middle position (if x is pressed)
-    public boolean isMidPosPressed()
-    {
+    public boolean isMidPosPressed() {
         return operatorControl.getRawButtonPressed(XboxController.Button.kX.value);
     }
 
-    public boolean isDisablePositionControlPressed()
-    {
+    public boolean isDisablePositionControlPressed() {
         return operatorControl.getRawButtonPressed(XboxController.Button.kRightStick.value);
     }
-
-
-
-
-
-
 
 
 }

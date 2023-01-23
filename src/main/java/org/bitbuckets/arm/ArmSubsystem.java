@@ -30,10 +30,10 @@ public class ArmSubsystem {
             case MANUAL:
                 if (armInput.isIntakePressed() || armInput.isLowPosPressed() || armInput.isMidPosPressed() || armInput.isHighPosPressed()) {
                     state = ArmFSM.POSITION_CONTROL;
-                } else {
-                    armControl.moveLowerArm(armInput.getLowerArm_PercentOutput());
-                    armControl.moveUpperArm(armInput.getUpperArm_PercentOutput());
                 }
+                armControl.moveLowerArm(armInput.getLowerArm_PercentOutput());
+                armControl.moveUpperArm(armInput.getUpperArm_PercentOutput());
+
                 break;
             case POSITION_CONTROL:
                 if (armInput.isDisablePositionControlPressed()) {
