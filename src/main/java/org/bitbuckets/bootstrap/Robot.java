@@ -87,6 +87,10 @@ public class Robot extends LoggedRobot {
         robotHandle.teleopPeriodic();
     }
 
+    @Override
+    public void autonomousPeriodic() {
+        robotHandle.autoPeriodic();
+    }
 
     @Override
     public void simulationPeriodic() {
@@ -94,4 +98,13 @@ public class Robot extends LoggedRobot {
         REVPhysicsSim.getInstance().run();
     }
 
+    @Override
+    public void autonomousInit() {
+        robotHandle.autoInit();
+    }
+
+    @Override
+    public void teleopInit() {
+        robotHandle.teleopInit();
+    }
 }
