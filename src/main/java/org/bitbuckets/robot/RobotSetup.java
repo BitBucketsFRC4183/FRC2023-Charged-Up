@@ -2,21 +2,14 @@ package org.bitbuckets.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
 import org.bitbuckets.drive.DriveInput;
-import org.bitbuckets.drive.DriveSubsystem;
-import org.bitbuckets.drive.control.DriveControl;
-import org.bitbuckets.drive.control.DriveControlDataAutoGen;
-import org.bitbuckets.drive.control.DriveControlSetup;
+import org.bitbuckets.drive.DriveSDSSubsystem;
 import org.bitbuckets.drive.controlsds.DriveControlSDS;
 import org.bitbuckets.drive.controlsds.DriveControlSDSSetup;
 import org.bitbuckets.drive.module.AutoControl;
 import org.bitbuckets.drive.module.AutoSetup;
-import org.bitbuckets.drive.module.DriveModule;
-import org.bitbuckets.drive.module.ModuleSetup;
-import org.bitbuckets.lib.hardware.PIDIndex;
-import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.lib.ISetup;
-import org.bitbuckets.lib.log.DataLogger;
-import org.bitbuckets.lib.vendor.ctre.TalonSetup;
+import org.bitbuckets.lib.ProcessPath;
+import org.bitbuckets.lib.hardware.PIDIndex;
 
 public class RobotSetup implements ISetup<RobotContainer> {
 
@@ -113,7 +106,7 @@ public class RobotSetup implements ISetup<RobotContainer> {
 
         DriveInput input = new DriveInput(new Joystick(0));
         AutoControl autoControl = new AutoSetup().build(path.addChild("auto-control"));
-        DriveSubsystem driveSubsystem = new DriveSubsystem(input, driveControl, autoControl);
+        DriveSDSSubsystem driveSubsystem = new DriveSDSSubsystem(input, driveControl, autoControl);
 
         //SYSTEMS_GREEN.setOn(); //LET'S WIN SOME DAMN REGIONALS!!
 
