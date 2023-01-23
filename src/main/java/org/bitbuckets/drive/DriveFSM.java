@@ -3,7 +3,6 @@ package org.bitbuckets.drive;
 public enum DriveFSM {
 
     UNINITIALIZED,
-    AUTO_NORMAL,
     TELEOP_NORMAL,
     TELEOP_APPROACHING_CS,
     TELEOP_BALANCING,
@@ -11,7 +10,10 @@ public enum DriveFSM {
     TELEOP_AUTOHEADING,
     AUTO_PATHFINDING,
     AUTO_BALANCING,
-    DRIVE_NORMAL
+
+    PID_TUNING,
+
+    PID_TUNING1
 
 
 }

@@ -23,13 +23,12 @@ public interface DriveConstants {
     //TODO get rid of this
     SimpleMotorFeedforward FF = new SimpleMotorFeedforward(0.65292, 2.3053, 0.37626); //converts velocity to voltage
 
-    SwerveModuleState[] LOCK = new SwerveModuleState[] {
+    SwerveModuleState[] LOCK = new SwerveModuleState[]{
             new SwerveModuleState(0, Rotation2d.fromDegrees(45)),
             new SwerveModuleState(0, Rotation2d.fromDegrees(-45)),
             new SwerveModuleState(0, Rotation2d.fromDegrees(-45)),
             new SwerveModuleState(0, Rotation2d.fromDegrees(45))
     };
-
 
 
 }
