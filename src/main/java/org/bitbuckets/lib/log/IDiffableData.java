@@ -14,6 +14,7 @@ public interface IDiffableData {
     /**
      * this method should diff past value fields to current fields with auto generated code
      * it assumes the current fields have been set with new values by a unary operator
+     *
      * @param parentId
      * @param driver
      */

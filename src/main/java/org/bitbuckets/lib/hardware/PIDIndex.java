@@ -2,7 +2,7 @@ package org.bitbuckets.lib.hardware;
 
 /**
  * Index for pid constants to be used on an array storing pid constants
- *
+ * <p>
  * THIS IS A PLACEHOLDER UNTIL TUNEABELS CAN BE MERGED
  */
 public enum PIDIndex {
@@ -38,7 +38,7 @@ public enum PIDIndex {
     public final static byte IZONE = 4;
 
     public static double[] CONSTANTS(double p, double i, double d, double ff, double izone) {
-        return new double[] {
+        return new double[]{
                 p,
                 i,
                 d,

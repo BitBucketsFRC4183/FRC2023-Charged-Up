@@ -9,5 +9,9 @@ public enum DriveFSM {
     TELEOP_BALANCE_ENGAGED,
     TELEOP_AUTOHEADING,
 
+    PID_TUNING,
+
+    PID_TUNING1
+
 
 }
