@@ -2,9 +2,9 @@ package org.bitbuckets.drive.fenc;
 
 import com.ctre.phoenix.ErrorCode;
 import com.ctre.phoenix.sensors.*;
+import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.lib.hardware.IEncoder;
-import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.log.StartupLogger;
 
 public class FilteredEncoderSetup implements ISetup<FilteredEncoder> {

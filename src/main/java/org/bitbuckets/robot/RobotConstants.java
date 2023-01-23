@@ -18,7 +18,6 @@ public interface RobotConstants {
     );
 
 
-
     int SET_MAXCONFIGTIME_MS = 100;
 
 }
