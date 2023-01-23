@@ -1,9 +1,13 @@
 package org.bitbuckets.drive.controlsds;
 
-import com.ctre.phoenix.sensors.*;
-import com.revrobotics.*;
+import com.ctre.phoenix.sensors.WPI_PigeonIMU;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkMaxPIDController;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
@@ -14,7 +18,6 @@ import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.lib.log.DataLogger;
 
-import static org.bitbuckets.drive.controlsds.CtreUtils.checkCtreError;
 import static org.bitbuckets.drive.controlsds.RevUtils.checkNeoError;
 
 /**
@@ -31,9 +34,9 @@ public class NeoControlSDSSetup implements ISetup<DriveControlSDS> {
         double wheelWearFactor = 1;
 
         double maxVelocity_metersPerSecond = 60.0 *
-                        DriveSDSConstants.MK4I_L2.getDriveReduction() *
-                        (DriveSDSConstants.MK4I_L2.getWheelDiameter() * wheelWearFactor) *
-                        Math.PI;
+                DriveSDSConstants.MK4I_L2.getDriveReduction() *
+                (DriveSDSConstants.MK4I_L2.getWheelDiameter() * wheelWearFactor) *
+                Math.PI;
 
         double maxAngularVelocity_radiansPerSecond =
                 maxVelocity_metersPerSecond /
@@ -73,8 +76,7 @@ public class NeoControlSDSSetup implements ISetup<DriveControlSDS> {
         // Your module has two Falcon 500s on it. One for steering and one for driving.
         //
         // Similar helpers also exist for Mk4 modules using the Mk4SwerveModuleHelper class.
-
-        // By default we will use Falcon 500s in standard configuration. But if you use
+        // By default, we will use Falcon 500s in standard configuration. But if you use
         // a different configuration or motors
         // you MUST change it. If you do not, your code will crash on startup.
         // Setup motor configuration
@@ -166,8 +168,13 @@ public class NeoControlSDSSetup implements ISetup<DriveControlSDS> {
 
         CANSparkMax motor = new CANSparkMax(steerMotorPort, CANSparkMaxLowLevel.MotorType.kBrushless);
 
-        AbsoluteEncoder absoluteEncoder = createAbsoluteEncoder(steerEncoderPort, steerEncoderPort);
+//        SparkMaxAlternateEncoder alternateEncoder = motor.getAlternateEncoder(SparkMaxAlternateEncoder.Type.kQuadrature, );
+//        AbsoluteEncoder absoluteEncoder = createAbsoluteEncoder(steerEncoderPort, steerOffset)
+//        SparkMaxAnalogSensor analogEncoder = motor.getAnalog(SparkMaxAnalogSensor.Mode.kAbsolute);
 
+        AnalogInput ai = new AnalogInput(steerEncoderPort);
+
+        ThriftyEncoder absoluteEncoder = new ThriftyEncoder(ai);
 
         checkNeoError(motor.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus0, 100), "Failed to set periodic status frame 0 rate");
         checkNeoError(motor.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus1, 20), "Failed to set periodic status frame 1 rate");
@@ -175,46 +182,43 @@ public class NeoControlSDSSetup implements ISetup<DriveControlSDS> {
         checkNeoError(motor.setIdleMode(CANSparkMax.IdleMode.kBrake), "Failed to set NEO idle mode");
         motor.setInverted(!moduleConfiguration.isSteerInverted());
 
-            checkNeoError(motor.enableVoltageCompensation(DriveSDSConstants.nominalVoltage), "Failed to enable voltage compensation");
+        checkNeoError(motor.enableVoltageCompensation(DriveSDSConstants.nominalVoltage), "Failed to enable voltage compensation");
 
 
-            checkNeoError(motor.setSmartCurrentLimit((int) Math.round(DriveSDSConstants.steerCurrentLimit)), "Failed to set NEO current limits");
+        checkNeoError(motor.setSmartCurrentLimit((int) Math.round(DriveSDSConstants.steerCurrentLimit)), "Failed to set NEO current limits");
 
-
-        RelativeEncoder integratedEncoder = motor.getEncoder();
-        checkNeoError(integratedEncoder.setPositionConversionFactor(2.0 * Math.PI * moduleConfiguration.getSteerReduction()), "Failed to set NEO encoder conversion factor");
-        checkNeoError(integratedEncoder.setVelocityConversionFactor(2.0 * Math.PI * moduleConfiguration.getSteerReduction() / 60.0), "Failed to set NEO encoder conversion factor");
-        checkNeoError(integratedEncoder.setPosition(absoluteEncoder.getAbsoluteAngle()), "Failed to set NEO encoder position");
 
         SparkMaxPIDController controller = motor.getPIDController();
+
+//        controller.setFeedbackDevice(absoluteEncoder);
 
         checkNeoError(controller.setP(DriveSDSConstants.proportionalConstant), "Failed to set NEO PID proportional constant");
         checkNeoError(controller.setI(DriveSDSConstants.integralConstant), "Failed to set NEO PID integral constant");
         checkNeoError(controller.setD(DriveSDSConstants.derivativeConstant), "Failed to set NEO PID derivative constant");
 
-        checkNeoError(controller.setFeedbackDevice(integratedEncoder), "Failed to set NEO PID feedback device");
+//        checkNeoError(controller.setFeedbackDevice(absoluteEncoder), "Failed to set NEO PID feedback device");
 
         return new NeoSteerController(motor,
                 CANSparkMax.ControlType.kPosition,
                 absoluteEncoder);
     }
 
-    AbsoluteEncoder createAbsoluteEncoder(int steerEncoderPort, double steerOffset) {
-
-        Direction direction = Direction.COUNTER_CLOCKWISE;
-        CANCoderConfiguration config = new CANCoderConfiguration();
-        config.absoluteSensorRange = AbsoluteSensorRange.Unsigned_0_to_360;
-        config.magnetOffsetDegrees = Math.toDegrees(steerOffset);
-        config.sensorDirection = direction == Direction.CLOCKWISE;
-
-        var encoder = new WPI_CANCoder(steerEncoderPort);
-        checkCtreError(encoder.configAllSettings(config, 250), "Failed to configure CANCoder");
-
-        checkCtreError(encoder.setStatusFramePeriod(CANCoderStatusFrame.SensorData, DriveSDSConstants.canCoderPeriodMilliseconds, 250), "Failed to configure CANCoder update rate");
-
-        AbsoluteEncoder absoluteEncoder = new CANCoderAbsoluteEncoder(encoder);
-        return absoluteEncoder;
-    }
+//    AbsoluteEncoder createAbsoluteEncoder(int steerEncoderPort, double steerOffset) {
+//
+//        Direction direction = Direction.COUNTER_CLOCKWISE;
+//        CANCoderConfiguration config = new CANCoderConfiguration();
+//        config.absoluteSensorRange = AbsoluteSensorRange.Unsigned_0_to_360;
+//        config.magnetOffsetDegrees = Math.toDegrees(steerOffset);
+//        config.sensorDirection = direction == Direction.CLOCKWISE;
+//
+//        var encoder = new WPI_CANCoder(steerEncoderPort);
+//        checkCtreError(encoder.configAllSettings(config, 250), "Failed to configure CANCoder");
+//
+//        checkCtreError(encoder.setStatusFramePeriod(CANCoderStatusFrame.SensorData, DriveSDSConstants.canCoderPeriodMilliseconds, 250), "Failed to configure CANCoder update rate");
+//
+//        AbsoluteEncoder absoluteEncoder = new CANCoderAbsoluteEncoder(encoder);
+//        return absoluteEncoder;
+//    }
 
 
 }

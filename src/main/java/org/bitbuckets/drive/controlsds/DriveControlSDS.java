@@ -2,7 +2,6 @@ package org.bitbuckets.drive.controlsds;
 
 import com.ctre.phoenix.sensors.WPI_PigeonIMU;
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -42,9 +41,9 @@ public class DriveControlSDS {
     //  Uncomment if you are using a NavX
     final WPI_PigeonIMU gyro;
 
-    final PIDController balanceController;
+//    final PIDController balanceController;
 
-    final PIDController rotControllerRad;
+//    final PIDController rotControllerRad;
 
 
     // Swerve Modules
@@ -66,13 +65,13 @@ public class DriveControlSDS {
     SwerveModuleState[] cachedSetpoint = new SwerveModuleState[4];
 
 
-    public DriveControlSDS(DataLogger<DriveControlSDSDataAutoGen> logger, double maxVelocity_metersPerSecond, double maxAngularVelocity_radiansPerSecond, WPI_PigeonIMU gyro, PIDController balanceController, PIDController rotControllerRad, SwerveModule moduleFrontLeft, SwerveModule moduleFrontRight, SwerveModule moduleBackLeft, SwerveModule moduleBackRight, SwerveDriveKinematics kinematics) {
+    public DriveControlSDS(DataLogger<DriveControlSDSDataAutoGen> logger, double maxVelocity_metersPerSecond, double maxAngularVelocity_radiansPerSecond, WPI_PigeonIMU gyro, /*PIDController balanceController, PIDController rotControllerRad,*/ SwerveModule moduleFrontLeft, SwerveModule moduleFrontRight, SwerveModule moduleBackLeft, SwerveModule moduleBackRight, SwerveDriveKinematics kinematics) {
         this.logger = logger;
         this.maxVelocity_metersPerSecond = maxVelocity_metersPerSecond;
         this.maxAngularVelocity_radiansPerSecond = maxAngularVelocity_radiansPerSecond;
         this.gyro = gyro;
-        this.balanceController = balanceController;
-        this.rotControllerRad = rotControllerRad;
+//        this.balanceController = balanceController;
+//        this.rotControllerRad = rotControllerRad;
         this.moduleFrontLeft = moduleFrontLeft;
         this.moduleFrontRight = moduleFrontRight;
         this.moduleBackLeft = moduleBackLeft;
@@ -168,15 +167,15 @@ public class DriveControlSDS {
         return MathUtil.clamp(ff, -maxVoltage, maxVoltage);
     }
 
-    public double calculateBalanceOutput(double roll_deg, double setpoint) {
-        return balanceController.calculate(roll_deg, setpoint);
-    }
+//    public double calculateBalanceOutput(double roll_deg, double setpoint) {
+//        return balanceController.calculate(roll_deg, setpoint);
+//    }
 
     public double getYaw_deg() {
         return gyro.getYaw();
     }
 
-    public double calculateRotOutputRad(double imu_yaw, double setpoint) {
-        return rotControllerRad.calculate(imu_yaw, setpoint);
-    }
+//    public double calculateRotOutputRad(double imu_yaw, double setpoint) {
+//        return rotControllerRad.calculate(imu_yaw, setpoint);
+//    }
 }

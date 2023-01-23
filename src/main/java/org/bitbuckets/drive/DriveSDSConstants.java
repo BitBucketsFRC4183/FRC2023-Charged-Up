@@ -7,20 +7,20 @@ import org.bitbuckets.drive.controlsds.ModuleConfiguration;
 public interface DriveSDSConstants {
 
     // Drive Subsystem
-    int frontLeftModuleDriveMotor_ID = 2;
-    int frontLeftModuleSteerMotor_ID = 1;
+    int frontLeftModuleDriveMotor_ID = 5;
+    int frontLeftModuleSteerMotor_ID = 4;
     int frontLeftModuleSteerEncoder_ID = 9;
 
-    int frontRightModuleDriveMotor_ID = 7;
-    int frontRightModuleSteerMotor_ID = 8;
+    int frontRightModuleDriveMotor_ID = 6;
+    int frontRightModuleSteerMotor_ID = 7;
     int frontRightModuleSteerEncoder_ID = 12;
 
-    int backLeftModuleDriveMotor_ID = 5;
-    int backLeftModuleSteerMotor_ID = 6;
+    int backLeftModuleDriveMotor_ID = 1;
+    int backLeftModuleSteerMotor_ID = 2;
     int backLeftModuleSteerEncoder_ID = 11;
 
-    int backRightModuleDriveMotor_ID = 3;
-    int backRightModuleSteerMotor_ID = 4;
+    int backRightModuleDriveMotor_ID = 8;
+    int backRightModuleSteerMotor_ID = 10;
     int backRightModuleSteerEncoder_ID = 10;
 
     double drivetrainTrackWidth_meters = 0.6096; // set trackwidth
@@ -62,8 +62,8 @@ public interface DriveSDSConstants {
     double steerCurrentLimit = 20.0;
 
     double proportionalConstant = 1.0;
-    double integralConstant = 0.0;
-    double derivativeConstant = .1;
+    double integralConstant = 0;
+    double derivativeConstant = 0.1;
 
     int canCoderPeriodMilliseconds = 100;
 

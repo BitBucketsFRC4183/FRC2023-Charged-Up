@@ -1,7 +1,5 @@
 package org.bitbuckets.drive.controlsds;
 
-import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.revrobotics.CANSparkMax;
 
 public class NeoSteerController implements SteerController {
@@ -9,17 +7,19 @@ public class NeoSteerController implements SteerController {
     private static final double ENCODER_RESET_MAX_ANGULAR_VELOCITY = Math.toRadians(0.5);
 
     private final CANSparkMax motor;
-    private final AbsoluteEncoder absoluteEncoder;
+    private final ThriftyEncoder encoder;
+    //    private final SparkMaxAnalogSensor encoder;
+    private final CANSparkMax.ControlType motorControlType;
 
     private double referenceAngleRadians = 0.0;
 
     private double resetIteration = 0;
 
     NeoSteerController(CANSparkMax motor,
-                             CANSparkMax.ControlType motorControlMode,
-                             AbsoluteEncoder absoluteEncoder) {
+                       CANSparkMax.ControlType motorControlType, ThriftyEncoder encoder) {
         this.motor = motor;
-        this.absoluteEncoder = absoluteEncoder;
+        this.motorControlType = motorControlType;
+        this.encoder = encoder;
     }
 
     @Override
@@ -37,7 +37,7 @@ public class NeoSteerController implements SteerController {
         if (motor.getEncoder().getVelocity() < ENCODER_RESET_MAX_ANGULAR_VELOCITY) {
             if (++resetIteration >= ENCODER_RESET_ITERATIONS) {
                 resetIteration = 0;
-                double absoluteAngle = absoluteEncoder.getAbsoluteAngle();
+                double absoluteAngle = encoder.getAbsoluteAngle();
                 motor.getEncoder().setPosition(absoluteAngle);
                 currentAngleRadians = absoluteAngle;
             }
@@ -58,7 +58,7 @@ public class NeoSteerController implements SteerController {
             adjustedReferenceAngleRadians += 2.0 * Math.PI;
         }
 
-        motor.getPIDController().setReference(adjustedReferenceAngleRadians, CANSparkMax.ControlType.kPosition);
+        motor.getPIDController().setReference(adjustedReferenceAngleRadians, motorControlType.kPosition);
 
 
         this.referenceAngleRadians = referenceAngleRadians;
@@ -66,7 +66,7 @@ public class NeoSteerController implements SteerController {
 
     @Override
     public double getStateAngle() {
-        double motorAngleRadians = motor.getEncoder().getPosition();
+        double motorAngleRadians = encoder.getPositionRadians();
         motorAngleRadians %= 2.0 * Math.PI;
         if (motorAngleRadians < 0.0) {
             motorAngleRadians += 2.0 * Math.PI;
