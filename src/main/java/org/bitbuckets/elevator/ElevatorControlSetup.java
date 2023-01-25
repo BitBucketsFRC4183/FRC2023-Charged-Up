@@ -18,11 +18,14 @@ public class ElevatorControlSetup implements ISetup<ElevatorControl> {
 
         this.leftTilt = leftTilt;
         this.rightTilt = rightTilt;
+
+
     }
 
 
     @Override
     public ElevatorControl build(ProcessPath path) {
+
         ElevatorControl control = new ElevatorControl(
                 leftExtend.build(path.addChild("elevator-left-extension")),
                 rightExtend.build(path.addChild("elevator-right-extension")),
