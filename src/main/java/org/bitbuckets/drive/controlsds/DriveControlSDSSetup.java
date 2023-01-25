@@ -172,9 +172,6 @@ public class DriveControlSDSSetup implements ISetup<DriveControlSDS> {
         //Calibrate the gyro only once when the drive subsystem is first initialized
         gyro.calibrate();
 
-        DriveControlSDS control = new DriveControlSDS(logger,
-                moduleFrontRight, moduleBackLeft, moduleBackRight, kinematics);
-
         double BalanceKP = Preferences.getDouble(DriveSDSConstants.kBalancePKey, DriveSDSConstants.kBalancekP);
         double BalanceKI = Preferences.getDouble(DriveSDSConstants.kBalanceIKey, DriveSDSConstants.kBalancekI);
         double BalanceKD = Preferences.getDouble(DriveSDSConstants.kBalanceDKey, DriveSDSConstants.kBalancekD);
@@ -189,7 +186,7 @@ public class DriveControlSDSSetup implements ISetup<DriveControlSDS> {
 
 
         DriveControlSDS control = new DriveControlSDS(logger,
-                rotControllerRad, moduleFrontLeft, moduleFrontRight, moduleBackLeft, moduleBackRight, kinematics);
+                moduleFrontLeft, moduleFrontRight, moduleBackLeft, moduleBackRight, kinematics);
 
 
         path.registerLoop(control::guaranteedLoggingLoop, "logging");

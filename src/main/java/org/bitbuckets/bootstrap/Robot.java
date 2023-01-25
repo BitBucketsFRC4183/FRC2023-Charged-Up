@@ -10,6 +10,7 @@ import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.lib.core.*;
 import org.bitbuckets.robot.RobotContainer;
 import org.bitbuckets.robot.RobotSetup;
+import org.bitbuckets.robot.RobotStateControl;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
@@ -20,13 +21,6 @@ import org.littletonrobotics.junction.wpilog.WPILOGWriter;
  * Has all the bucketlib and advantagekit code in it so don't touch it unless you really need to
  */
 public class Robot extends LoggedRobot {
-
-
-    final ISetup<RobotContainer> setup;
-
-    public Robot(ISetup<RobotContainer> setup) {
-        this.setup = setup;
-    }
 
 
     RobotContainer robotHandle;
@@ -65,7 +59,8 @@ public class Robot extends LoggedRobot {
         TuneableDriver tuneableDriver = new TuneableDriver(NetworkTableInstance.getDefault().getTable("ass"), identityDriver);
 
         ProcessPath rootPath = new ProcessPath(0, identityDriver, errorDriver, logDriver, loopDriver, tuneableDriver);
-        RobotSetup setup = new RobotSetup();
+        RobotStateControl robotStateControl = new RobotStateControl(this);
+        RobotSetup setup = new RobotSetup(robotStateControl);
 
         try {
             robotHandle = setup.build(rootPath);

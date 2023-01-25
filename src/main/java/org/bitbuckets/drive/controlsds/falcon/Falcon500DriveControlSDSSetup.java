@@ -129,6 +129,7 @@ public class Falcon500DriveControlSDSSetup implements ISetup<DriveControlSDS> {
 
         DriveControlSDS control = new DriveControlSDS(
                 logger,
+                moduleFrontLeft,
                 moduleFrontRight,
                 moduleBackLeft,
                 moduleBackRight,

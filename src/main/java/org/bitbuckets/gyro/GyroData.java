@@ -1,5 +1,8 @@
 package org.bitbuckets.gyro;
 
+import org.bitbuckets.lib.log.Loggable;
+
+@Loggable
 public class GyroData {
 
     double pitch = 0;

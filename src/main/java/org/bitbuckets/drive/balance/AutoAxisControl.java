@@ -1,13 +1,14 @@
 package org.bitbuckets.drive.balance;
 
 import edu.wpi.first.math.controller.PIDController;
+import org.bitbuckets.lib.control.ProfiledPIDFController;
 
 public class AutoAxisControl {
 
     final PIDController balanceController;
-    final PIDController rotController;
+    final ProfiledPIDFController rotController;
 
-    public AutoAxisControl(PIDController balanceController, PIDController rotController) {
+    AutoAxisControl(PIDController balanceController, ProfiledPIDFController rotController) {
         this.balanceController = balanceController;
         this.rotController = rotController;
     }
