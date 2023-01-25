@@ -8,29 +8,25 @@ public class ArmControl {
 
     final CANSparkMax lowerJoint;
     final CANSparkMax upperJoint;
+    final RelativeEncoder lowerEncoder;
+    final RelativeEncoder upperEncoder;
 
-    RelativeEncoder lowerEncoder;
-    RelativeEncoder upperEncoder;
 
-
-    public ArmControl(CANSparkMax lowerJoint, CANSparkMax upperJoint) {
+    public ArmControl(CANSparkMax lowerJoint, CANSparkMax upperJoint, RelativeEncoder lowerEncoder, RelativeEncoder upperEncoder) {
         this.lowerJoint = lowerJoint;
         this.upperJoint = upperJoint;
-        lowerEncoder = setLowerEncoder();
-        upperEncoder = setUpperEncoder();
-
+        this.lowerEncoder = lowerEncoder;
+        this.upperEncoder = upperEncoder;
     }
 
     public void calibrateLowerArm() {
         System.out.println("Calibrated lower arm!");
-        RelativeEncoder lowerEncoder = lowerJoint.getEncoder();
         lowerEncoder.setPosition(convertDegreesToRotations(-90));
 
     }
 
     public void calibrateUpperArm() {
         System.out.println("Calibrated upper arm!");
-        RelativeEncoder upperEncoder = upperJoint.getEncoder();
         upperEncoder.setPosition(convertDegreesToRotations(0));
 
     }
@@ -59,16 +55,6 @@ public class ArmControl {
     public void setPositionConversionFactors() {
         lowerEncoder.setPositionConversionFactor(ArmConstants.lowerArmConversionFactor);
         upperEncoder.setPositionConversionFactor(ArmConstants.upperArmConversionFactor);
-    }
-
-    public RelativeEncoder setLowerEncoder() {
-        lowerEncoder = lowerJoint.getEncoder();
-        return lowerEncoder;
-    }
-
-    public RelativeEncoder setUpperEncoder() {
-        upperEncoder = upperJoint.getEncoder();
-        return upperEncoder;
     }
 
     public double convertDegreesToRotations(double degrees) {

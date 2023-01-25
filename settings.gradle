@@ -26,3 +26,5 @@ pluginManagement {
     }
 }
 include 'season-annotations'
+include 'season-lib'
+

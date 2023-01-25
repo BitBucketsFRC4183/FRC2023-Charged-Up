@@ -1,11 +1,12 @@
 package org.bitbuckets.drive.controlsds;
 
 import com.ctre.phoenix.sensors.CANCoder;
+import org.bitbuckets.drive.controlsds.sds.AbsoluteEncoder;
 
 public class CANCoderAbsoluteEncoder implements AbsoluteEncoder {
     private final CANCoder encoder;
 
-    CANCoderAbsoluteEncoder(CANCoder encoder) {
+    public CANCoderAbsoluteEncoder(CANCoder encoder) {
         this.encoder = encoder;
     }
 

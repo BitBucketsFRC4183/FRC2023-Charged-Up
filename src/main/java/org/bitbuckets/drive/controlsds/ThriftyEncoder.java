@@ -2,6 +2,7 @@ package org.bitbuckets.drive.controlsds;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.AnalogInput;
+import org.bitbuckets.drive.controlsds.sds.AbsoluteEncoder;
 
 public class ThriftyEncoder implements AbsoluteEncoder {
     public AnalogInput input;

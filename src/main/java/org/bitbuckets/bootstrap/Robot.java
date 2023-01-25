@@ -1,14 +1,13 @@
 package org.bitbuckets.bootstrap;
 
-import com.revrobotics.REVPhysicsSim;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.shuffleboard.EventImportance;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
-import org.bitbuckets.lib.core.ErrorDriver;
-import org.bitbuckets.lib.core.IdentityDriver;
-import org.bitbuckets.lib.core.LogDriver;
-import org.bitbuckets.lib.core.LoopDriver;
-import org.bitbuckets.lib.sim.CTREPhysicsSim;
+import org.bitbuckets.lib.core.*;
 import org.bitbuckets.robot.RobotContainer;
 import org.bitbuckets.robot.RobotSetup;
 import org.littletonrobotics.junction.LoggedRobot;
@@ -31,6 +30,7 @@ public class Robot extends LoggedRobot {
 
 
     RobotContainer robotHandle;
+    LoopDriver loopDriver;
 
     @Override
     public void robotInit() {
@@ -48,8 +48,8 @@ public class Robot extends LoggedRobot {
 
 
         if (isReal()) {
-            Logger.getInstance().addDataReceiver(new WPILOGWriter("/media/sda1/")); // Log to a USB stick
-            Logger.getInstance().addDataReceiver(new NT4Publisher()); // Publish data to NetworkTables
+            logger.addDataReceiver(new WPILOGWriter("/media/sda1/")); // Log to a USB stick
+            logger.addDataReceiver(new NT4Publisher()); // Publish data to NetworkTables
             new PowerDistribution(1, PowerDistribution.ModuleType.kRev); // Enables power distribution logging
         } else {
             logger.addDataReceiver(new WPILOGWriter("analysis/"));
@@ -58,28 +58,31 @@ public class Robot extends LoggedRobot {
 
         Logger.getInstance().start(); // Start logging! No more data receivers, replay sources, or metadata values may be added.
 
-        LoopDriver loopDriver = new LoopDriver();
+        loopDriver = new LoopDriver();
         IdentityDriver identityDriver = new IdentityDriver();
         LogDriver logDriver = new LogDriver(identityDriver);
         ErrorDriver errorDriver = new ErrorDriver(identityDriver);
+        TuneableDriver tuneableDriver = new TuneableDriver(NetworkTableInstance.getDefault().getTable("ass"), identityDriver);
 
-        ProcessPath rootPath = new ProcessPath(0, identityDriver, errorDriver, logDriver, loopDriver);
-
+        ProcessPath rootPath = new ProcessPath(0, identityDriver, errorDriver, logDriver, loopDriver, tuneableDriver);
         RobotSetup setup = new RobotSetup();
 
-        robotHandle = setup.build(rootPath);
+        try {
+            robotHandle = setup.build(rootPath);
+        } catch (Exception e) {
+            DriverStation.reportError("[BUCKET] Critical exception during setup: " + e.getLocalizedMessage(), e.getStackTrace());
+        }
+
 
 
     }
 
-    int counter = 0;
+    //periodics
 
     @Override
     public void robotPeriodic() {
-        //TODO run all logging loops here always
-
-
-        //TODO command scheduler should run here
+        loopDriver.runAlways();
+        robotHandle.robotPeriodic();
     }
 
     @Override
@@ -94,17 +97,8 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void simulationPeriodic() {
-        CTREPhysicsSim.getInstance().run();
-        REVPhysicsSim.getInstance().run();
+        loopDriver.runWhenSim();
     }
 
-    @Override
-    public void autonomousInit() {
-        robotHandle.autoInit();
-    }
 
-    @Override
-    public void teleopInit() {
-        robotHandle.teleopInit();
-    }
 }

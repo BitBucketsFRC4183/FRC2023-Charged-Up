@@ -16,8 +16,6 @@ public class LogDriver {
     }
 
 
-    //TODO migrate
-    //TODO threaded optimize + caching (most optimization done on Data side)
     public void report(int id, String keyName, double data) {
         Logger.getInstance().recordOutput(identityDriver.fullPath(id) + keyName, data);
     }
@@ -33,6 +31,7 @@ public class LogDriver {
     public void report(int id, String keyName, String str) {
         Logger.getInstance().recordOutput(identityDriver.fullPath(id) + keyName, str);
     }
+
 
 
 }
