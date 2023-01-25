@@ -24,9 +24,6 @@ public class DriveControlSDS {
     final DataLogger<DriveControlSDSDataAutoGen> logger;
 
 
-    final ProfiledPIDFController rotControllerRad;
-
-
     // Swerve Modules
     final SwerveModule moduleFrontLeft;
     final SwerveModule moduleFrontRight;
@@ -46,9 +43,8 @@ public class DriveControlSDS {
     SwerveModuleState[] cachedSetpoint = new SwerveModuleState[4];
 
 
-    public DriveControlSDS(DataLogger<DriveControlSDSDataAutoGen> logger, ProfiledPIDFController rotControllerRad, SwerveModule moduleFrontLeft, SwerveModule moduleFrontRight, SwerveModule moduleBackLeft, SwerveModule moduleBackRight, SwerveDriveKinematics kinematics) {
+    public DriveControlSDS(DataLogger<DriveControlSDSDataAutoGen> logger, SwerveModule moduleFrontLeft, SwerveModule moduleFrontRight, SwerveModule moduleBackLeft, SwerveModule moduleBackRight, SwerveDriveKinematics kinematics) {
         this.logger = logger;
-        this.rotControllerRad = rotControllerRad;
         this.moduleFrontLeft = moduleFrontLeft;
         this.moduleFrontRight = moduleFrontRight;
         this.moduleBackLeft = moduleBackLeft;

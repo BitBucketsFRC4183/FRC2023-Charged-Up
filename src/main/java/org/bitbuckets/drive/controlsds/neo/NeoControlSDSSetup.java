@@ -123,7 +123,9 @@ public class NeoControlSDSSetup implements ISetup<DriveControlSDS> {
         gyro.calibrate();
 
         DriveControlSDS control = new DriveControlSDS(logger,
-                moduleFrontRight, moduleBackLeft, moduleBackRight, kinematics);
+                moduleFrontLeft,
+                moduleFrontRight,
+                moduleBackLeft, moduleBackRight, kinematics);
 
 
         path.registerLoop(control::guaranteedLoggingLoop, "logging");

@@ -7,6 +7,6 @@ public class Main {
 
 
     public static void main(String[] args) {
-        RobotBase.startRobot(() -> new Robot(new RobotSetup()));
+        RobotBase.startRobot(Robot::new);
     }
 }

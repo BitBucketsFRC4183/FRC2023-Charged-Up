@@ -9,7 +9,7 @@ public class Falcon500DriveController implements DriveController {
     private final double sensorVelocityCoefficient;
     private final double nominalVoltage;
 
-    Falcon500DriveController(WPI_TalonFX motor, double sensorVelocityCoefficient, double nominalVoltage) {
+    public Falcon500DriveController(WPI_TalonFX motor, double sensorVelocityCoefficient, double nominalVoltage) {
         this.motor = motor;
         this.sensorVelocityCoefficient = sensorVelocityCoefficient;
         this.nominalVoltage = nominalVoltage;
