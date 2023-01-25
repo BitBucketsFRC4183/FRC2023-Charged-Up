@@ -15,31 +15,27 @@ public class ElevatorControl {
         this.leftTilt  = leftTilt;
         this.rightTilt = rightTilt;
 
-        leftExtend.follow(2,false);
-        leftTilt.follow(4,false);
+
 
 
     }
 
     public void extendUp()
     {
-        rightExtend.setInverted(false);
         rightExtend.moveAtPercent(20);
     }
     public void extendDown()
     {
-        rightExtend.setInverted(true);
-        rightExtend.moveAtPercent(20);
+        rightExtend.moveAtPercent(-20);
     }
     public void tiltLeft()
     {
-        rightTilt.setInverted(false);
         rightTilt.moveAtPercent(20);
     }
     public void tiltRight()
     {
-        rightTilt.setInverted(true);
-        rightTilt.moveAtPercent(20);    }
+        rightTilt.moveAtPercent(-20);
+    }
 
 
 
