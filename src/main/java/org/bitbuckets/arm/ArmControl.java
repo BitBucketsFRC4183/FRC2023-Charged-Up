@@ -1,37 +1,37 @@
 package org.bitbuckets.arm;
 
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.RelativeEncoder;
+import org.bitbuckets.lib.hardware.IEncoder;
+import org.bitbuckets.lib.hardware.IMotorController;
+
 
 public class ArmControl {
 
 
-    final CANSparkMax lowerJoint;
-    final CANSparkMax upperJoint;
+    final IMotorController lowerJoint;
+    final IMotorController upperJoint;
+    final IEncoder lowerEncoder;
+    final IEncoder upperEncoder;
 
-    RelativeEncoder lowerEncoder;
-    RelativeEncoder upperEncoder;
+    // How do set up IMotorController and IEncoder so that lowerJoint == lowerEncoder
 
 
-    public ArmControl(CANSparkMax lowerJoint, CANSparkMax upperJoint) {
+    public ArmControl(IMotorController lowerJoint, IMotorController upperJoint, IEncoder lowerEncoder, IEncoder upperEncoder) {
         this.lowerJoint = lowerJoint;
         this.upperJoint = upperJoint;
-        lowerEncoder = setLowerEncoder();
-        upperEncoder = setUpperEncoder();
+        this.lowerEncoder = lowerEncoder;
+        this.upperEncoder = upperEncoder;
 
     }
 
     public void calibrateLowerArm() {
         System.out.println("Calibrated lower arm!");
-        RelativeEncoder lowerEncoder = lowerJoint.getEncoder();
-        lowerEncoder.setPosition(convertDegreesToRotations(-90));
+        lowerEncoder.forceOffset(convertDegreesToRotations(-90));
 
     }
 
     public void calibrateUpperArm() {
         System.out.println("Calibrated upper arm!");
-        RelativeEncoder upperEncoder = upperJoint.getEncoder();
-        upperEncoder.setPosition(convertDegreesToRotations(0));
+        upperEncoder.forceOffset(convertDegreesToRotations(0));
 
     }
 
@@ -44,31 +44,15 @@ public class ArmControl {
 //        lowerJoint.getPIDController().setReference(lowerRotation, CANSparkMax.ControlType.kPosition);
 //
         //test if lower arm moves with outputs
-        lowerJoint.set(percentOutput * ArmConstants.CONTROL_JOINT_OUTPUT);
+        lowerJoint.moveAtPercent(percentOutput * ArmConstants.CONTROL_JOINT_OUTPUT);
     }
 
 
     //sets angular position of the upper joint on the arm
     public void moveUpperArm(double percentOutput) {
 
-//
-        upperJoint.set(percentOutput * ArmConstants.CONTROL_JOINT_OUTPUT);
+        upperJoint.moveAtPercent(percentOutput * ArmConstants.CONTROL_JOINT_OUTPUT);
 
-    }
-
-    public void setPositionConversionFactors() {
-        lowerEncoder.setPositionConversionFactor(ArmConstants.lowerArmConversionFactor);
-        upperEncoder.setPositionConversionFactor(ArmConstants.upperArmConversionFactor);
-    }
-
-    public RelativeEncoder setLowerEncoder() {
-        lowerEncoder = lowerJoint.getEncoder();
-        return lowerEncoder;
-    }
-
-    public RelativeEncoder setUpperEncoder() {
-        upperEncoder = upperJoint.getEncoder();
-        return upperEncoder;
     }
 
     public double convertDegreesToRotations(double degrees) {
@@ -91,11 +75,11 @@ public class ArmControl {
 
 
     public void stopLower() {
-        lowerJoint.set(0);
+        lowerJoint.moveAtPercent(0);
     }
 
     public void stopUpper() {
-        upperJoint.set(0);
+        upperJoint.moveAtPercent(0);
     }
 
 }
