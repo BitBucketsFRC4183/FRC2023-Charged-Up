@@ -1,6 +1,6 @@
 package org.bitbuckets.drive.module;
 
-import org.bitbuckets.drive.fenc.FilteredEncoder;
+import org.bitbuckets.drive.old.FilteredEncoder;
 import org.bitbuckets.lib.hardware.IEncoder;
 import org.bitbuckets.lib.hardware.IMotor;
 import org.bitbuckets.lib.log.DataLogger;

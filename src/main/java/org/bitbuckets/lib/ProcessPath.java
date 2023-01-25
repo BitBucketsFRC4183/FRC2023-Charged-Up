@@ -1,13 +1,11 @@
 package org.bitbuckets.lib;
 
 import org.bitbuckets.SimLevel;
-import org.bitbuckets.lib.core.ErrorDriver;
-import org.bitbuckets.lib.core.IdentityDriver;
-import org.bitbuckets.lib.core.LogDriver;
-import org.bitbuckets.lib.core.LoopDriver;
+import org.bitbuckets.lib.core.*;
 import org.bitbuckets.lib.log.DataLogger;
 import org.bitbuckets.lib.log.IDiffableData;
 import org.bitbuckets.lib.log.StartupLogger;
+import org.bitbuckets.lib.tune.IValueTuner;
 
 import java.util.function.Supplier;
 
@@ -20,13 +18,15 @@ public class ProcessPath {
     final ErrorDriver errorDriver;
     final LogDriver logDriver;
     final LoopDriver loopDriver;
+    final TuneableDriver tuneableDriver;
 
-    public ProcessPath(int currentId, IdentityDriver identityDriver, ErrorDriver errorDriver, LogDriver logDriver, LoopDriver loopDriver) {
+    public ProcessPath(int currentId, IdentityDriver identityDriver, ErrorDriver errorDriver, LogDriver logDriver, LoopDriver loopDriver, TuneableDriver tuneableDriver) {
         this.currentId = currentId;
         this.identityDriver = identityDriver;
         this.errorDriver = errorDriver;
         this.logDriver = logDriver;
         this.loopDriver = loopDriver;
+        this.tuneableDriver = tuneableDriver;
     }
 
     public SimLevel getSimLevel() {
@@ -43,7 +43,7 @@ public class ProcessPath {
     public ProcessPath addChild(String name) {
         int childId = identityDriver.childProcess(currentId, name);
 
-        return new ProcessPath(childId, identityDriver, errorDriver, logDriver, loopDriver);
+        return new ProcessPath(childId, identityDriver, errorDriver, logDriver, loopDriver, tuneableDriver);
     }
 
 
@@ -88,10 +88,26 @@ public class ProcessPath {
     }
 
 
-    public StartupLogger generateSignalLogger(String taskName) {
+    public StartupLogger generateStartupLogger(String taskName) {
         logDriver.report(currentId, taskName, "not started");
 
         return new StartupLogger(logDriver, currentId, taskName, errorDriver);
+    }
+
+
+
+    public <T> IValueTuner<T> generateTuneable(String key, T defaultData) {
+        return tuneableDriver.tuneable(currentId, key, defaultData);
+    }
+
+
+    /**
+     * Use this when you want to add a disabled subsystem. Will add a warning in place of it.
+     * @return
+     * @param <T>
+     */
+    public <T> ISetup<T> disabled() {
+        return null;
     }
 
 

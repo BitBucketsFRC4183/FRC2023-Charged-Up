@@ -25,15 +25,6 @@ public class IdentityDriver {
 
     int currentId = 0;
 
-
-    public int rootProcess(String name) {
-        currentId++;
-
-        nameCache.put(currentId, name);
-
-        return currentId;
-    }
-
     public int childProcess(int parentId, String name) {
         currentId++;
 

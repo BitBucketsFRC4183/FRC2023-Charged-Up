@@ -2,7 +2,7 @@ package org.bitbuckets.drive.module;
 
 import com.ctre.phoenix.sensors.*;
 import edu.wpi.first.hal.HAL;
-import org.bitbuckets.drive.fenc.FilteredEncoderSetup;
+import org.bitbuckets.drive.old.FilteredEncoderSetup;
 import org.bitbuckets.lib.util.CTRETestUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
