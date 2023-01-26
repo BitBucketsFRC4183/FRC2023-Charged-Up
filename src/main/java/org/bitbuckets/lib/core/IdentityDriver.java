@@ -20,19 +20,10 @@ public class IdentityDriver {
     }
 
     final List<Record> family = new ArrayList<>();
-    final Map<Integer,String> fullNameCache = new HashMap<>();
-    final Map<Integer,String> nameCache = new HashMap<>();
+    final Map<Integer, String> fullNameCache = new HashMap<>();
+    final Map<Integer, String> nameCache = new HashMap<>();
 
     int currentId = 0;
-
-
-    public int rootProcess(String name) {
-        currentId++;
-
-        nameCache.put(currentId, name);
-
-        return currentId;
-    }
 
     public int childProcess(int parentId, String name) {
         currentId++;
@@ -57,7 +48,7 @@ public class IdentityDriver {
 
 
         int searchId = id;
-        for (;;) {
+        for (; ; ) {
 
             Record parent = findParent(searchId);
             if (parent == null) break;

@@ -12,7 +12,6 @@ import org.bitbuckets.lib.log.DataLogger;
  */
 class TalonMotorController implements IMotorController, Runnable {
 
-    //will be run, for sure
     @Override
     public void run() {
         dataLogger.process(data -> {
@@ -85,6 +84,9 @@ class TalonMotorController implements IMotorController, Runnable {
     @Override
     public void moveToPosition(double position_encoderRotations) {
         double position_sensorUnits = position_encoderRotations / SU_TO_ROTATIONS; //ROTATIONS_TO_SU
+
+        //TODO signal being used in psoition mode ,
+
         talonFX.set(ControlMode.Position, position_sensorUnits);
     }
 
