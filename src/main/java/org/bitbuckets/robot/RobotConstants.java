@@ -2,6 +2,7 @@ package org.bitbuckets.robot;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import org.bitbuckets.lib.hardware.PIDIndex;
 
 public interface RobotConstants {
 
@@ -16,6 +17,8 @@ public interface RobotConstants {
             new Translation2d(-WIDTH, BASE),
             new Translation2d(-WIDTH, -BASE)
     );
+
+    double[] DEFAULT_PID_CONSTANTS = PIDIndex.CONSTANTS(0,0,0,0,0);
 
 
     int SET_MAXCONFIGTIME_MS = 100;

@@ -20,4 +20,6 @@ public class TalonData {
     public double busVoltage = 0.0;
     public double temp = 0.0;
 
+    public double someCoolNumber = 0.0;
+
 }

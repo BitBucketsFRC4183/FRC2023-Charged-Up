@@ -12,6 +12,17 @@ import java.util.function.Consumer;
  */
 public class ValueTuner<T> implements NetworkTable.TableEventListener, IValueTuner<T> {
 
+    final T defaultValue;
+
+
+    final AtomicReference<AtomicRecord> cachedValue;
+
+    public ValueTuner(T firstValue) {
+        this.defaultValue = firstValue;
+        this.cachedValue = new AtomicReference<>(new AtomicRecord(firstValue, false));
+    }
+
+
     @Override
     public T readValue() {
         return cachedValue.get().cachedPointer;
@@ -34,7 +45,16 @@ public class ValueTuner<T> implements NetworkTable.TableEventListener, IValueTun
     public void accept(NetworkTable table, String key, NetworkTableEvent event) {
         Object newObject = event.valueData.value.getValue();
 
-        cachedValue.set(new AtomicRecord((T) newObject, true));
+        if (defaultValue.getClass().isEnum()) {
+
+            Enum aaaa = (Enum) defaultValue;
+            Enum coerced = Enum.valueOf(aaaa.getClass(), (String)newObject);
+
+            cachedValue.set(new AtomicRecord((T) coerced, true));
+        } else {
+            cachedValue.set(new AtomicRecord((T) newObject, true));
+        }
+
     }
 
     class AtomicRecord {
@@ -47,11 +67,7 @@ public class ValueTuner<T> implements NetworkTable.TableEventListener, IValueTun
         }
     }
 
-    final AtomicReference<AtomicRecord> cachedValue;
 
-    public ValueTuner(T firstValue) {
-        this.cachedValue = new AtomicReference<>(new AtomicRecord(firstValue, false));
-    }
 
     public boolean hasUpdated() {
         return !cachedValue.get().hasUpdated; //

@@ -65,15 +65,23 @@ public class DriveControlSDS {
 
 
 
+    //TODO fix this shit
     public SwerveModuleState[] reportSetpointStates() {
-        return cachedSetpoint;
+        return new SwerveModuleState[] {
+                new SwerveModuleState(),
+                new SwerveModuleState(),
+                new SwerveModuleState(),
+                new SwerveModuleState()
+        };
     }
 
     public SwerveModuleState[] reportActualStates() {
-        if (chassisSpeeds != null) {
-            return kinematics.toSwerveModuleStates(chassisSpeeds);
-        }
-        return new SwerveModuleState[4];
+        return new SwerveModuleState[] {
+                new SwerveModuleState(),
+                new SwerveModuleState(),
+                new SwerveModuleState(),
+                new SwerveModuleState()
+        };
     }
 
 
