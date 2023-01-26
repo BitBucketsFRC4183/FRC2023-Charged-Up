@@ -137,7 +137,7 @@ public class DriveControlSDSSetup implements ISetup<DriveControlSDS> {
                 tab.getLayout("Front Left Module", BuiltInLayouts.kList).withSize(2, 4).withPosition(0, 0),
                 DriveSDSConstants.frontLeftModuleDriveMotor_ID, //Drive Motor
                 DriveSDSConstants.frontLeftModuleSteerMotor_ID, //Steer Motor
-                DriveSDSConstants.frontLeftModuleSteerEncoder_ID, //Steer Encoder
+                DriveSDSConstants.frontLeftModuleSteerEncoder_CHANNEL, //Steer Encoder
                 DriveSDSConstants.frontLeftModuleSteerOffset //Steer Offset
         );
 
@@ -146,7 +146,7 @@ public class DriveControlSDSSetup implements ISetup<DriveControlSDS> {
                 tab.getLayout("Front Right Module", BuiltInLayouts.kList).withSize(2, 4).withPosition(2, 0),
                 DriveSDSConstants.frontRightModuleDriveMotor_ID, //Drive Motor
                 DriveSDSConstants.frontRightModuleSteerMotor_ID, //Steer Motor
-                DriveSDSConstants.frontRightModuleSteerEncoder_ID, //Steer Encoder
+                DriveSDSConstants.frontRightModuleSteerEncoder_CHANNEL, //Steer Encoder
                 DriveSDSConstants.frontRightModuleSteerOffset //Steer Offset
         );
 
@@ -155,7 +155,7 @@ public class DriveControlSDSSetup implements ISetup<DriveControlSDS> {
                 tab.getLayout("Back Left Module", BuiltInLayouts.kList).withSize(2, 4).withPosition(4, 0),
                 DriveSDSConstants.backLeftModuleDriveMotor_ID, //Drive Motor
                 DriveSDSConstants.backLeftModuleSteerMotor_ID, //Steer Motor
-                DriveSDSConstants.backLeftModuleSteerEncoder_ID, //Steer Encoder
+                DriveSDSConstants.backLeftModuleSteerEncoder_CHANNEL, //Steer Encoder
                 DriveSDSConstants.backLeftModuleSteerOffset //Steer Offset
         );
 
@@ -164,10 +164,9 @@ public class DriveControlSDSSetup implements ISetup<DriveControlSDS> {
                 tab.getLayout("Back Right Module", BuiltInLayouts.kList).withSize(2, 4).withPosition(6, 0),
                 DriveSDSConstants.backRightModuleDriveMotor_ID, //Drive Motor
                 DriveSDSConstants.backRightModuleSteerMotor_ID, //Steer Motor
-                DriveSDSConstants.backRightModuleSteerEncoder_ID, //Steer Encoder
+                DriveSDSConstants.backRightModuleSteerEncoder_CHANNEL, //Steer Encoder
                 DriveSDSConstants.backRightModuleSteerOffset //Steer Offset
         );
-
 
         //Calibrate the gyro only once when the drive subsystem is first initialized
         gyro.calibrate();
@@ -180,7 +179,7 @@ public class DriveControlSDSSetup implements ISetup<DriveControlSDS> {
         double OrientKD = Preferences.getDouble(DriveSDSConstants.kOrientDKey, DriveSDSConstants.kOrientkD);
         double OrientKF = Preferences.getDouble(DriveSDSConstants.kOrientFKey, DriveSDSConstants.kOrientkF);
 
-        ProfiledPIDFController rotControllerRad = new ProfiledPIDFController(OrientKP, OrientKI, OrientKD, OrientKF,new TrapezoidProfile.Constraints(DriveSDSConstants.MAX_ANG_VELOCITY,DriveSDSConstants.MAX_ANG_VELOCITY));
+        ProfiledPIDFController rotControllerRad = new ProfiledPIDFController(OrientKP, OrientKI, OrientKD, OrientKF, new TrapezoidProfile.Constraints(DriveSDSConstants.MAX_ANG_VELOCITY, DriveSDSConstants.MAX_ANG_VELOCITY));
 
         PIDController balanceController = new PIDController(BalanceKP, BalanceKI, BalanceKD);
 

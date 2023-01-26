@@ -6,7 +6,11 @@ import org.bitbuckets.lib.hardware.IAbsoluteEncoder;
 public class ThriftyEncoder implements IAbsoluteEncoder {
 
 
-    final AnalogInput input = ;
+    final AnalogInput input;
+
+    public ThriftyEncoder(AnalogInput input) {
+        this.input = input;
+    }
 
     @Override
     public double getAbsoluteAngle() {
