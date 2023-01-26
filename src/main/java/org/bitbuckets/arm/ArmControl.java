@@ -1,6 +1,5 @@
 package org.bitbuckets.arm;
 
-import org.bitbuckets.lib.hardware.IEncoder;
 import org.bitbuckets.lib.hardware.IMotorController;
 
 
@@ -9,29 +8,27 @@ public class ArmControl {
 
     final IMotorController lowerJoint;
     final IMotorController upperJoint;
-    final IEncoder lowerEncoder;
-    final IEncoder upperEncoder;
+
 
     // How do set up IMotorController and IEncoder so that lowerJoint == lowerEncoder
 
 
-    public ArmControl(IMotorController lowerJoint, IMotorController upperJoint, IEncoder lowerEncoder, IEncoder upperEncoder) {
+    public ArmControl(IMotorController lowerJoint, IMotorController upperJoint) {
         this.lowerJoint = lowerJoint;
         this.upperJoint = upperJoint;
-        this.lowerEncoder = lowerEncoder;
-        this.upperEncoder = upperEncoder;
+
 
     }
 
     public void calibrateLowerArm() {
         System.out.println("Calibrated lower arm!");
-        lowerEncoder.forceOffset(convertDegreesToRotations(-90));
+        lowerJoint.forceOffset(convertDegreesToRotations(-90));
 
     }
 
     public void calibrateUpperArm() {
         System.out.println("Calibrated upper arm!");
-        upperEncoder.forceOffset(convertDegreesToRotations(0));
+        upperJoint.forceOffset(convertDegreesToRotations(0));
 
     }
 
