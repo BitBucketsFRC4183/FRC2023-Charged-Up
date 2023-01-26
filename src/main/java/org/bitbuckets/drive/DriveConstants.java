@@ -3,6 +3,7 @@ package org.bitbuckets.drive;
 
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import org.bitbuckets.robot.RobotConstants;
 
@@ -29,6 +30,10 @@ public interface DriveConstants {
             new SwerveModuleState(0, Rotation2d.fromDegrees(-45)),
             new SwerveModuleState(0, Rotation2d.fromDegrees(45))
     };
+
+    SwerveDriveKinematics KINEMATICS = new SwerveDriveKinematics(
+            RobotConstants
+    );
 
 
 }
