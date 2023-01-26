@@ -1,11 +1,7 @@
 package org.bitbuckets.lib.core;
 
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import org.bitbuckets.lib.log.DataLogger;
-import org.bitbuckets.lib.log.IDiffableData;
 import org.littletonrobotics.junction.Logger;
-
-import java.util.function.Supplier;
 
 /**
  * Users of the library should never see this
@@ -20,8 +16,6 @@ public class LogDriver {
     }
 
 
-    //TODO migrate
-    //TODO threaded optimize + caching (most optimization done on Data side)
     public void report(int id, String keyName, double data) {
         Logger.getInstance().recordOutput(identityDriver.fullPath(id) + keyName, data);
     }

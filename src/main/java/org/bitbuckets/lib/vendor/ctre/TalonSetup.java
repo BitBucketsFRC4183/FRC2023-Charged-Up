@@ -19,6 +19,7 @@ import static org.bitbuckets.robot.RobotConstants.SET_MAXCONFIGTIME_MS;
  * dont rely on it.
  * use the SimTalonSetup for an accurate flywheel impl (not here yet)
  */
+@Deprecated
 public class TalonSetup implements ISetup<IMotorController> {
 
     final int canId;
@@ -40,10 +41,10 @@ public class TalonSetup implements ISetup<IMotorController> {
     @Override
     public TalonMotorController build(ProcessPath path) {
         //signal for talon boot (find can id)
-        StartupLogger ctre_boot = path.generateSignalLogger("ctre-boot");
+        StartupLogger ctre_boot = path.generateStartupLogger("ctre-boot");
         //signal for talon configuration
-        StartupLogger ctre_config = path.generateSignalLogger("ctre-config");
-        StartupLogger log_register = path.generateSignalLogger("ctre-register-loops");
+        StartupLogger ctre_config = path.generateStartupLogger("ctre-config");
+        StartupLogger log_register = path.generateStartupLogger("ctre-register-loops");
 
         ctre_boot.signalProcessing();
         WPI_TalonFX talonFX = new WPI_TalonFX(canId); //talon is up!
@@ -58,7 +59,7 @@ public class TalonSetup implements ISetup<IMotorController> {
 
         talonFX.enableVoltageCompensation(true);
 
-        if (talonFX.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, currentLimit, 0,0), SET_MAXCONFIGTIME_MS) != ErrorCode.OK) {
+        if (talonFX.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, currentLimit, 0, 0), SET_MAXCONFIGTIME_MS) != ErrorCode.OK) {
             ctre_config.signalErrored("cant config supply limit");
         }
 
@@ -90,7 +91,8 @@ public class TalonSetup implements ISetup<IMotorController> {
         );
 
 
-        SimulateMotorController sim = new SimulateMotorController(talonFX, invert);
+        TalonSimulationAspect sim = new TalonSimulationAspect(talonFX, invert);
+        TalonTuningAspect tuningAspect = new TalonTuningAspect(talonFX, null);
 
         log_register.signalProcessing();
         path.registerLoop(talon, "teleop-loop");
