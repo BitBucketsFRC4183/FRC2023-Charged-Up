@@ -7,31 +7,61 @@ import java.util.Map;
 
 /**
  * i will remove it.
- *
+ * <p>
  * TODO make this class follow it's contracts
  */
 public class LoopDriver {
 
     final Map<Integer, Integer> mapLoopIdToParentId = new HashMap<>(); //TODO
 
-    final List<Runnable> alwaysRun = new ArrayList<>();
-    final List<Runnable> simulationRun = new ArrayList<>();
+    static class Record {
+        final Runnable runnable;
+        final long delayMs;
 
-    public int registerRunnable(int parentId, Runnable exe, int delay_ms) {
-        alwaysRun.add(exe); return 0;
+        long lastDelayMs = System.currentTimeMillis();
+
+        Record(Runnable runnable, long delayMs) {
+            this.runnable = runnable;
+            this.delayMs = delayMs;
+        }
     }
 
-    public int registerLoopSimulation(int parentId, Runnable loop, int period_ms) {
-        simulationRun.add(loop); return 0;
+    final List<Record> loopWhenSim = new ArrayList<>();
+    final List<Record> loopWhenOn = new ArrayList<>();
+
+
+    public void registerLoopSimulation(int parentId, Runnable loop, int period_ms) {
+        loopWhenSim.add(new Record(loop, period_ms));
 
     }
-    public int registerLoopTeleop(int parentId, Runnable loop, int period_ms) {
-        alwaysRun.add(loop); return 0;
+
+    public void registerLoopPeriodic(int parentId, Runnable loop, int period_ms) {
+        loopWhenOn.add(new Record(loop,period_ms));
 
     }
-    public int registerLoopPeriodic(int parentId, Runnable loop, int period_ms) {
-        alwaysRun.add(loop); return 0;
 
+    public void runAlways() {
+        long now = System.currentTimeMillis();
+
+        for (Record record : loopWhenOn) {
+            if (now - record.lastDelayMs >= record.delayMs) {
+                record.lastDelayMs = now;
+
+                record.runnable.run();
+            }
+        }
+    }
+
+    public void runWhenSim() {
+        long now = System.currentTimeMillis();
+
+        for (Record record : loopWhenSim) {
+            if (now - record.lastDelayMs >= record.delayMs) {
+                record.lastDelayMs = now;
+
+                record.runnable.run();
+            }
+        }
     }
 
 }

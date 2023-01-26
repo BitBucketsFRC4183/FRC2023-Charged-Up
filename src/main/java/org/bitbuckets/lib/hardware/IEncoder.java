@@ -11,18 +11,25 @@ public interface IEncoder extends IRaw {
     //actual methods
 
     double getMechanismFactor();
+
     double getRotationsToMetersFactor();
+
     double getRawToRotationsFactor();
+
     double getTimeFactor();
+
     double getPositionRaw();
+
     double getVelocityRaw();
 
 
-    @Deprecated //DONT USE THIS UNLESS YOU HAVE TO
+    @Deprecated
+        //DONT USE THIS UNLESS YOU HAVE TO
     void forceOffset(double offsetUnits_baseUnits);
 
 
     //utility methods
+
 
     default double getEncoderPositionAccumulated_radians() {
         return getPositionRaw() * getRawToRotationsFactor() * Math.PI * 2.0;
@@ -52,6 +59,7 @@ public interface IEncoder extends IRaw {
     default double getVelocityMechanism_metersPerSecond() {
         return getVelocityEncoder_metersPerSecond() * getMechanismFactor();
     }
+
     default double getVelocityEncoder_metersPerSecond() {
         return getVelocityRaw() * getRawToRotationsFactor() * getRotationsToMetersFactor() * getTimeFactor();
     }

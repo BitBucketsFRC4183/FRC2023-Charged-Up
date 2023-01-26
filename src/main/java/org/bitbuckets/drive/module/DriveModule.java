@@ -3,7 +3,7 @@ package org.bitbuckets.drive.module;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import org.bitbuckets.drive.fenc.FilteredEncoder;
+import org.bitbuckets.drive.old.FilteredEncoder;
 import org.bitbuckets.lib.hardware.IEncoder;
 import org.bitbuckets.lib.hardware.IMotor;
 import org.bitbuckets.lib.log.DataLogger;
@@ -40,7 +40,6 @@ public class DriveModule {
     }
 
     /**
-     *
      * @param velocitySetpoint_metersPerSecond I'm forwarding velocity right now, but turning it into voltage..
      * @param turnSetpoint_radians
      */
