@@ -29,7 +29,6 @@ public class RobotSetup implements ISetup<RobotContainer> {
                 new TalonSetup(2,false,0,0,0,new double[]{0,0,0}),
                 new TalonSetup(3,false,0,0,0,new double[]{0,0,0}),
                 new TalonSetup(4,false,0,0,0,new double[]{0,0,0}));
-                build(path.addChild("Elevator-Control-Setup"));
 
 //
 //        ModuleSetup frontLeft = new ModuleSetup(
