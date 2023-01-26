@@ -20,7 +20,7 @@ public class SparkSetup implements ISetup<IMotorController> {
     final int canId;
     final double[] motorConstants;
 
-    SparkSetup(int canId, double[] motorConstants) {
+    public SparkSetup(int canId, double[] motorConstants) {
         this.canId = canId;
         this.motorConstants = motorConstants;
     }

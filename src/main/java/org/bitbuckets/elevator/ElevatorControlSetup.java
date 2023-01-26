@@ -30,8 +30,11 @@ public class ElevatorControlSetup implements ISetup<ElevatorControl> {
                 leftExtend.build(path.addChild("elevator-left-extension")),
                 rightExtend.build(path.addChild("elevator-right-extension")),
                 leftTilt.build(path.addChild("elevator-left-tilt")),
-                rightTilt.build(path.addChild("elevator-right-extension"))
+                rightTilt.build(path.addChild("elevator-right-tilt"))
+
+
         );
+
         return control;
     }
 }

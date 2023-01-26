@@ -28,11 +28,11 @@ public class ElevatorControl {
     {
         rightExtend.moveAtPercent(-20);
     }
-    public void tiltLeft()
+    public void tiltForward()
     {
         rightTilt.moveAtPercent(20);
     }
-    public void tiltRight()
+    public void tiltBack()
     {
         rightTilt.moveAtPercent(-20);
     }

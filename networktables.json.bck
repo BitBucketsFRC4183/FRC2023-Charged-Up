@@ -1,5 +1,37 @@
 [
   {
+    "name": "/ass/root/elevator-control/elevator-left-extension/pid",
+    "type": "double[]",
+    "value": [0.0, 0.0, 0.0, 0.0, 0.0],
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/ass/root/elevator-control/elevator-right-extension/pid",
+    "type": "double[]",
+    "value": [0.0, 0.0, 0.0, 0.0, 0.0],
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/ass/root/elevator-control/elevator-left-tilt/pid",
+    "type": "double[]",
+    "value": [0.0, 0.0, 0.0, 0.0, 0.0],
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/ass/root/path",
+    "type": "string",
+    "value": "TEST_PATH",
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
     "name": "/Preferences/AutoOrient.pid.kP",
     "type": "double",
     "value": 2.4,
