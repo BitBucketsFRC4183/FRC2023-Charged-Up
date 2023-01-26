@@ -1,5 +1,7 @@
 package org.bitbuckets.elevator;
 
+import com.ctre.phoenix.motorcontrol.LimitSwitchNormal;
+import com.ctre.phoenix.motorcontrol.LimitSwitchSource;
 import org.bitbuckets.drive.control.DriveControl;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
@@ -12,6 +14,7 @@ public class ElevatorControlSetup implements ISetup<ElevatorControl> {
         final ISetup<IMotorController> leftTilt;
         final ISetup<IMotorController>rightTilt;
 
+    
     public ElevatorControlSetup(ISetup<IMotorController> leftExtend, ISetup<IMotorController> rightExtend, ISetup<IMotorController> leftTilt, ISetup<IMotorController> rightTilt) {
         this.leftExtend = leftExtend;
         this.rightExtend = rightExtend;
