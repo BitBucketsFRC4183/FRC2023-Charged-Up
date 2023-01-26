@@ -7,9 +7,5 @@ public interface IAbsoluteEncoder {
      *
      * @return The current angle in radians. Range: [0, 2pi)
      */
-    double getAbsoluteAngle() {
-
-    }
-
-    ;
+    double getAbsoluteAngle();
 }

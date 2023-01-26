@@ -14,7 +14,9 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.bitbuckets.drive.DriveSDSConstants;
-import org.bitbuckets.drive.controlsds.*;
+import org.bitbuckets.drive.controlsds.DriveControlSDS;
+import org.bitbuckets.drive.controlsds.DriveControlSDSDataAutoGen;
+import org.bitbuckets.drive.controlsds.ThriftyEncoder;
 import org.bitbuckets.drive.controlsds.sds.*;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
@@ -25,7 +27,6 @@ import static org.bitbuckets.drive.controlsds.sds.RevUtils.checkNeoError;
 /**
  * Sets up prereqs for a drive controller
  * <p>
- * really fucking simple because a drivecontrol is super simple LMAO
  */
 public class NeoControlSDSSetup implements ISetup<DriveControlSDS> {
 
