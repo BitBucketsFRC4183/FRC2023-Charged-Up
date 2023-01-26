@@ -8,10 +8,9 @@ package org.bitbuckets.lib.hardware;
 public interface IRaw {
 
     /**
-     *
      * @param clazz The underlying class of the abstraction that you are trying to get
-     * @return the raw hardware (like a TalonFX)
      * @param <T>
+     * @return the raw hardware (like a TalonFX)
      * @throws UnsupportedOperationException if you get the class identifier wrong (like if you tried to get a TalonSRX from a CANCODER)
      */
     <T> T rawAccess(Class<T> clazz) throws UnsupportedOperationException;

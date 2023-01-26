@@ -1,6 +1,6 @@
 package org.bitbuckets.robot;
 
-//TODO document this well
+
 public interface XboxConstants {
 
     int LEFT_STICK_X = 0;

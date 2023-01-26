@@ -8,9 +8,6 @@ import org.bitbuckets.robot.RobotConstants;
 
 public interface DriveConstants {
 
-    //TODO divide by 2
-    double SENSOR_UNITS_PER_REVOLUTION = 2048.0;
-
     double TURN_REDUCTION = (15.0 / 32.0) * (10.0 / 60.0);
     double DRIVE_REDUCTION = (14.0 / 50.0) * (27.0 / 17.0) * (15.0 / 45.0);
     double DRIVE_METERS_FACTOR = 1;
@@ -23,13 +20,12 @@ public interface DriveConstants {
     //TODO get rid of this
     SimpleMotorFeedforward FF = new SimpleMotorFeedforward(0.65292, 2.3053, 0.37626); //converts velocity to voltage
 
-    SwerveModuleState[] LOCK = new SwerveModuleState[] {
+    SwerveModuleState[] LOCK = new SwerveModuleState[]{
             new SwerveModuleState(0, Rotation2d.fromDegrees(45)),
             new SwerveModuleState(0, Rotation2d.fromDegrees(-45)),
             new SwerveModuleState(0, Rotation2d.fromDegrees(-45)),
             new SwerveModuleState(0, Rotation2d.fromDegrees(45))
     };
-
 
 
 }
