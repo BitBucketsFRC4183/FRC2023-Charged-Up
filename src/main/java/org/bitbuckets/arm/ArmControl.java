@@ -61,12 +61,11 @@ public class ArmControl {
 
     }
 
-
-    public void movetoHighPos() {
+    public void moveToMidPos() {
 
     }
 
-    public void moveToMidPos() {
+    public void movetoHighPos() {
 
     }
 

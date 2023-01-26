@@ -1,6 +1,8 @@
 package org.bitbuckets.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
+import org.bitbuckets.arm.ArmControl;
+import org.bitbuckets.arm.ArmControlSetup;
 import org.bitbuckets.arm.ArmInput;
 import org.bitbuckets.arm.ArmSubsystem;
 import org.bitbuckets.auto.AutoPath;
@@ -131,7 +133,7 @@ public class RobotSetup implements ISetup<RobotContainer> {
         DriveSDSSubsystem driveSubsystem = new DriveSDSSubsystem(input, robotStateControl, gyroControl, autoAxisControl, driveControl, autoControl, pathTuneable);
 
         ArmInput armInput = new ArmInput(
-                new Joystick(0)
+                new Joystick(1)
         );
 
 
@@ -142,7 +144,7 @@ public class RobotSetup implements ISetup<RobotContainer> {
 
         ArmControl armControl = armControlSetup.build(path.addChild("arm-control"));
 
-        ArmInput armInput = new ArmInput(new Joystick(1));
+        armInput = new ArmInput(new Joystick(1));
 
         ArmSubsystem armSubsystem = new ArmSubsystem(armInput, armControl);
 
