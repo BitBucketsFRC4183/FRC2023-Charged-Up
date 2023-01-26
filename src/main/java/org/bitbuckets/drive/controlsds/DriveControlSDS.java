@@ -18,6 +18,7 @@ import java.util.List;
  */
 public class DriveControlSDS {
 
+    public static WPI_PigeonIMU gyro;
     final DataLogger<DriveControlSDSDataAutoGen> logger;
     /**
      * The maximum velocity of the robot in meters per second.
@@ -40,7 +41,6 @@ public class DriveControlSDS {
     // cause the angle reading to increase until it wraps back over to zero.
     //  Remove if you are using a Pigeon
     //  Uncomment if you are using a NavX
-    final WPI_PigeonIMU gyro;
 
     final PIDController balanceController;
 
