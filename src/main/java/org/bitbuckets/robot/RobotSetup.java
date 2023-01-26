@@ -129,31 +129,26 @@ public class RobotSetup implements ISetup<RobotContainer> {
 //                backLeftModule,
 //                backRightModule
 //        ).build(path.addChild("drive-control"));
-        DriveControlSDS driveControl = new DriveControlSDSSetup().build(path.addChild("drive-control"));
-        ElevatorControl elevatorControl = elevatorControlSetup.build(path.addChild("elevator-control"));
+
         ElevatorInput elevatorInput = new ElevatorInput(new Joystick(1));
-        DriveInput input = new DriveInput(new Joystick(0));
+        ElevatorControl elevatorControl = elevatorControlSetup.build(path.addChild("elevator-control"));
+        ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem(elevatorControl,elevatorInput);
+
+
+        ArmInput armInput = new ArmInput(new Joystick(0));
+        ArmSubsystem armSubsystem = new ArmSubsystem(armInput, null);
 
         AutoControl autoControl = new AutoControlSetup().build(path.addChild("auto-control"));
         GyroControl gyroControl = new GyroControlSetup(5).build(path.addChild("gyro-control"));
         AutoAxisControl autoAxisControl = new AutoAxisSetup().build(path.addChild("axis-control"));
         IValueTuner<AutoPath> pathTuneable = path.generateTuneable("path", AutoPath.TEST_PATH);
 
-
+        DriveControlSDS driveControl = new DriveControlSDSSetup().build(path.addChild("drive-control"));
+        DriveInput input = new DriveInput(new Joystick(0));
         DriveSDSSubsystem driveSubsystem = new DriveSDSSubsystem(input, robotStateControl, gyroControl, autoAxisControl, driveControl, autoControl, pathTuneable);
-
-        ArmInput armInput = new ArmInput(
-                new Joystick(0)
-        );
-
-        ArmSubsystem armSubsystem = new ArmSubsystem(armInput, null);
-
-        AutoControl autoControl = new AutoSetup().build(path.addChild("auto-control"));
-        DriveSDSSubsystem driveSubsystem = new DriveSDSSubsystem(input, driveControl, autoControl);
-        ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem(elevatorControl,elevatorInput);
+        
         //SYSTEMS_GREEN.setOn(); //LET'S WIN SOME DAMN REGIONALS!!
 
-        return new RobotContainer(driveSubsystem, elevatorSubsystem);
-        return new RobotContainer(driveSubsystem, armSubsystem);
+        return new RobotContainer(driveSubsystem, armSubsystem,elevatorSubsystem);
     }
 }
