@@ -10,7 +10,6 @@ import org.bitbuckets.drive.DriveInput;
 import org.bitbuckets.drive.module.ModuleSetup;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
-import org.bitbuckets.lib.hardware.IMotorController;
 import org.bitbuckets.lib.hardware.PIDIndex;
 import org.bitbuckets.lib.vendor.ctre.TalonSetup;
 
@@ -102,22 +101,16 @@ public class RobotSetup implements ISetup<RobotContainer> {
         DriveInput driveInput = new DriveInput(new Joystick(0));
         // DriveSubsystem driveSubsystem = new DriveSubsystem(driveInput, driveControl);
 
-        ISetup<IMotorController> lowerJoint = new ISetup<IMotorController>() {
-            @Override
-            public IMotorController build(ProcessPath path) {
-                return null;
-            }
-        };
 
-        ISetup<IMotorController> upperJoint = new ISetup<IMotorController>() {
-            @Override
-            public IMotorController build(ProcessPath path) {
-                return null;
-            }
-        };
+        ArmControlSetup armControlSetup = new ArmControlSetup(
+                new TalonSetup(1, false, 0, 0, 0, new double[]{0, 0, 0}),
+                new TalonSetup(2, false, 0, 0, 0, new double[]{0, 0, 0})
+        );
 
-        ArmControl armControl = new ArmControlSetup(build(path.addChild("arm-control")), lowerJoint, upperJoint);
+        ArmControl armControl = armControlSetup.build(path.addChild("arm-control"));
+
         ArmInput armInput = new ArmInput(new Joystick(1));
+
         ArmSubsystem armSubsystem = new ArmSubsystem(armInput, armControl);
 
         //SYSTEMS_GREEN.setOn(); //LET'S WIN SOME DAMN REGIONALS!!
