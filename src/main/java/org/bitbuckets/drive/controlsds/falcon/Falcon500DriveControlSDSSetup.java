@@ -13,7 +13,10 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.bitbuckets.bootstrap.Robot;
 import org.bitbuckets.drive.DriveSDSConstants;
-import org.bitbuckets.drive.controlsds.*;
+import org.bitbuckets.drive.controlsds.CANCoderAbsoluteEncoder;
+import org.bitbuckets.drive.controlsds.Direction;
+import org.bitbuckets.drive.controlsds.DriveControlSDS;
+import org.bitbuckets.drive.controlsds.DriveControlSDSDataAutoGen;
 import org.bitbuckets.drive.controlsds.sds.*;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
@@ -92,7 +95,8 @@ public class Falcon500DriveControlSDSSetup implements ISetup<DriveControlSDS> {
                 tab.getLayout("Front Left Module", BuiltInLayouts.kList).withSize(2, 4).withPosition(0, 0),
                 DriveSDSConstants.frontLeftModuleDriveMotor_ID, //Drive Motor
                 DriveSDSConstants.frontLeftModuleSteerMotor_ID, //Steer Motor
-                DriveSDSConstants.frontLeftModuleSteerEncoder_ID, //Steer Encoder
+                0,
+//                DriveSDSConstants.frontLeftModuleSteerEncoder_ID, //Steer Encoder
                 DriveSDSConstants.frontLeftModuleSteerOffset //Steer Offset
         );
 
@@ -101,7 +105,8 @@ public class Falcon500DriveControlSDSSetup implements ISetup<DriveControlSDS> {
                 tab.getLayout("Front Right Module", BuiltInLayouts.kList).withSize(2, 4).withPosition(2, 0),
                 DriveSDSConstants.frontRightModuleDriveMotor_ID, //Drive Motor
                 DriveSDSConstants.frontRightModuleSteerMotor_ID, //Steer Motor
-                DriveSDSConstants.frontRightModuleSteerEncoder_ID, //Steer Encoder
+                0,
+//                DriveSDSConstants.frontRightModuleSteerEncoder_ID, //Steer Encoder
                 DriveSDSConstants.frontRightModuleSteerOffset //Steer Offset
         );
 
@@ -110,7 +115,8 @@ public class Falcon500DriveControlSDSSetup implements ISetup<DriveControlSDS> {
                 tab.getLayout("Back Left Module", BuiltInLayouts.kList).withSize(2, 4).withPosition(4, 0),
                 DriveSDSConstants.backLeftModuleDriveMotor_ID, //Drive Motor
                 DriveSDSConstants.backLeftModuleSteerMotor_ID, //Steer Motor
-                DriveSDSConstants.backLeftModuleSteerEncoder_ID, //Steer Encoder
+                0,
+//                DriveSDSConstants.backLeftModuleSteerEncoder_ID, //Steer Encoder
                 DriveSDSConstants.backLeftModuleSteerOffset //Steer Offset
         );
 
@@ -119,7 +125,8 @@ public class Falcon500DriveControlSDSSetup implements ISetup<DriveControlSDS> {
                 tab.getLayout("Back Right Module", BuiltInLayouts.kList).withSize(2, 4).withPosition(6, 0),
                 DriveSDSConstants.backRightModuleDriveMotor_ID, //Drive Motor
                 DriveSDSConstants.backRightModuleSteerMotor_ID, //Steer Motor
-                DriveSDSConstants.backRightModuleSteerEncoder_ID, //Steer Encoder
+                0,
+//                DriveSDSConstants.backRightModuleSteerEncoder_ID, //Steer Encoder
                 DriveSDSConstants.backRightModuleSteerOffset //Steer Offset
         );
 
