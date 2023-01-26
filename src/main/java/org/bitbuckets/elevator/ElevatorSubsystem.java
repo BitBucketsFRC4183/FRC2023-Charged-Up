@@ -20,11 +20,11 @@ public class ElevatorSubsystem {
         }
         if(elevatorInput.getInputDpadLeft())
         {
-            elevatorControl.tiltLeft();
+            elevatorControl.tiltForward();
         }
         if(elevatorInput.getInputDpadRight())
         {
-            elevatorControl.tiltRight();
+            elevatorControl.tiltBack();
         }
     }
 }

@@ -25,6 +25,7 @@ import org.bitbuckets.lib.log.DataLogger;
 import org.bitbuckets.lib.tune.IValueTuner;
 import org.bitbuckets.lib.vendor.ctre.TalonSetup;
 import org.bitbuckets.lib.vendor.ctre.TalonSetup;
+import org.bitbuckets.lib.vendor.spark.SparkSetup;
 
 import javax.xml.crypto.Data;
 
@@ -41,10 +42,10 @@ public class RobotSetup implements ISetup<RobotContainer> {
         double[] predefPid = PIDIndex.CONSTANTS(1, 0, 0.1, 0, 0);
 
         ElevatorControlSetup elevatorControlSetup = new ElevatorControlSetup(
-                new TalonSetup(1,false,0,0,0,new double[]{0,0,0}),
-                new TalonSetup(2,false,0,0,0,new double[]{0,0,0}),
-                new TalonSetup(3,false,0,0,0,new double[]{0,0,0}),
-                new TalonSetup(4,false,0,0,0,new double[]{0,0,0}));
+                new SparkSetup(1,new double[]{0,0,0,0}),
+                new SparkSetup(2,new double[]{0,0,0,0}),
+                new SparkSetup(3,new double[]{0,0,0,0}),
+                new SparkSetup(4,new double[]{0,0,0,0}));
 
 //
 //        ModuleSetup frontLeft = new ModuleSetup(
@@ -146,7 +147,7 @@ public class RobotSetup implements ISetup<RobotContainer> {
         DriveControlSDS driveControl = new DriveControlSDSSetup().build(path.addChild("drive-control"));
         DriveInput input = new DriveInput(new Joystick(0));
         DriveSDSSubsystem driveSubsystem = new DriveSDSSubsystem(input, robotStateControl, gyroControl, autoAxisControl, driveControl, autoControl, pathTuneable);
-        
+
         //SYSTEMS_GREEN.setOn(); //LET'S WIN SOME DAMN REGIONALS!!
 
         return new RobotContainer(driveSubsystem, armSubsystem,elevatorSubsystem);
