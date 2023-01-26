@@ -3,8 +3,7 @@ package org.bitbuckets.robot;
 import edu.wpi.first.wpilibj.Joystick;
 import org.bitbuckets.arm.ArmInput;
 import org.bitbuckets.arm.ArmSubsystem;
-import org.bitbuckets.auto.AutoControl;
-import org.bitbuckets.auto.AutoControlSetup;
+import org.bitbuckets.auto.AutoPath;
 import org.bitbuckets.drive.DriveInput;
 import org.bitbuckets.drive.DriveSDSSubsystem;
 import org.bitbuckets.drive.balance.AutoAxisControl;
@@ -16,6 +15,11 @@ import org.bitbuckets.gyro.GyroControlSetup;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.lib.hardware.PIDIndex;
+import org.bitbuckets.lib.log.DataLogger;
+import org.bitbuckets.lib.tune.IValueTuner;
+import org.bitbuckets.lib.vendor.ctre.TalonSetup;
+
+import javax.xml.crypto.Data;
 
 public class RobotSetup implements ISetup<RobotContainer> {
 
@@ -27,7 +31,6 @@ public class RobotSetup implements ISetup<RobotContainer> {
 
     @Override
     public RobotContainer build(ProcessPath path) {
-
         double[] predefPid = PIDIndex.CONSTANTS(1, 0, 0.1, 0, 0);
 
 //
@@ -121,8 +124,10 @@ public class RobotSetup implements ISetup<RobotContainer> {
         AutoControl autoControl = new AutoControlSetup().build(path.addChild("auto-control"));
         GyroControl gyroControl = new GyroControlSetup(5).build(path.addChild("gyro-control"));
         AutoAxisControl autoAxisControl = new AutoAxisSetup().build(path.addChild("axis-control"));
+        IValueTuner<AutoPath> pathTuneable = path.generateTuneable("path", AutoPath.TEST_PATH);
 
-        DriveSDSSubsystem driveSubsystem = new DriveSDSSubsystem(input, robotStateControl, gyroControl, autoAxisControl, driveControl, autoControl, null);
+
+        DriveSDSSubsystem driveSubsystem = new DriveSDSSubsystem(input, robotStateControl, gyroControl, autoAxisControl, driveControl, autoControl, pathTuneable);
 
         ArmInput armInput = new ArmInput(
                 new Joystick(0)
