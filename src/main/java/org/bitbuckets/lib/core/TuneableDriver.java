@@ -21,8 +21,15 @@ public class TuneableDriver {
     public <T> ValueTuner<T> tuneable(int id, String key, T defaultData) {
         String trueKey = driver.fullPath(id) + key;
 
+
+
         NetworkTableEntry entry = table.getEntry(trueKey);
-        entry.setDefaultValue(defaultData);
+        if (defaultData instanceof Enum) {
+            entry.setDefaultValue(((Enum)defaultData).toString());
+        } else {
+            entry.setDefaultValue(defaultData);
+        }
+
         entry.setPersistent();
 
         //this probably isn't safe
