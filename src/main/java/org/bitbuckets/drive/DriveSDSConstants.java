@@ -10,19 +10,19 @@ public interface DriveSDSConstants {
     // Drive Subsystem
     int frontLeftModuleDriveMotor_ID = 5;
     int frontLeftModuleSteerMotor_ID = 4;
-    int frontLeftModuleSteerEncoder_ID = 9;
+    int frontLeftModuleSteerEncoder_CHANNEL = 1;
 
     int frontRightModuleDriveMotor_ID = 6;
     int frontRightModuleSteerMotor_ID = 7;
-    int frontRightModuleSteerEncoder_ID = 12;
+    int frontRightModuleSteerEncoder_CHANNEL = 2;
 
     int backLeftModuleDriveMotor_ID = 1;
     int backLeftModuleSteerMotor_ID = 2;
-    int backLeftModuleSteerEncoder_ID = 11;
+    int backLeftModuleSteerEncoder_CHANNEL = 3;
 
     int backRightModuleDriveMotor_ID = 8;
     int backRightModuleSteerMotor_ID = 10;
-    int backRightModuleSteerEncoder_ID = 10;
+    int backRightModuleSteerEncoder_CHANNEL = 4;
 
     double drivetrainTrackWidth_meters = 0.6096; // set trackwidth
 
@@ -93,9 +93,6 @@ public interface DriveSDSConstants {
     double MAX_DRIVE_VELOCITY = 6380.0 / 60.0 * (14.0 / 50.0) * (27.0 / 17.0) * (15.0 / 45.0) * 0.10033 * Math.PI;
 
     double MAX_ANG_VELOCITY = MAX_DRIVE_VELOCITY / Math.hypot(RobotConstants.WIDTH, RobotConstants.BASE);
-
-
-
 
 
     final String kBalancePKey = "AutoBalance.pid.kP";

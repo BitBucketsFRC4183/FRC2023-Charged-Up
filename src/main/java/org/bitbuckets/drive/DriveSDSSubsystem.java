@@ -54,9 +54,12 @@ public class DriveSDSSubsystem {
                     state = DriveFSM.TELEOP_NORMAL;
                     break;
                 }
+
+                break;
             case AUTO_PATHFINDING:
                 if (robotStateControl.isRobotTeleop()) {
                     state = DriveFSM.TELEOP_NORMAL;
+                    break;
                 }
 
                 //TODO AutoControl should read from drive odometry
@@ -68,7 +71,7 @@ public class DriveSDSSubsystem {
 
                 driveControl.drive(targetChassisSpeeds);
 
-
+                break;
             case TELEOP_NORMAL:
             
                 if (input.isAutoBalancePressed()) {
@@ -81,6 +84,7 @@ public class DriveSDSSubsystem {
                 }
 
                 teleopNormal();
+                break;
             case TELEOP_BALANCING:
                 if (input.isDefaultPressed()) {
                     state = DriveFSM.TELEOP_NORMAL;
@@ -88,6 +92,7 @@ public class DriveSDSSubsystem {
                 }
 
                 teleopBalancing();
+                break;
             case TELEOP_AUTOHEADING:
                 if (input.isDefaultPressed()) {
                     state = DriveFSM.TELEOP_NORMAL;
@@ -95,6 +100,7 @@ public class DriveSDSSubsystem {
                 }
 
                 teleopAutoheading();
+                break;
         }
     }
 
