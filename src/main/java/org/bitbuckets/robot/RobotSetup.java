@@ -1,6 +1,8 @@
 package org.bitbuckets.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
+import org.bitbuckets.arm.ArmControl;
+import org.bitbuckets.arm.ArmControlSetup;
 import org.bitbuckets.arm.ArmInput;
 import org.bitbuckets.arm.ArmSubsystem;
 import org.bitbuckets.auto.AutoControl;
@@ -128,10 +130,20 @@ public class RobotSetup implements ISetup<RobotContainer> {
         DriveSDSSubsystem driveSubsystem = new DriveSDSSubsystem(input, robotStateControl, gyroControl, autoAxisControl, driveControl, autoControl, pathTuneable);
 
         ArmInput armInput = new ArmInput(
-                new Joystick(0)
+                new Joystick(1)
         );
 
-        ArmSubsystem armSubsystem = new ArmSubsystem(armInput, null);
+
+        ArmControlSetup armControlSetup = new ArmControlSetup(
+                new TalonSetup(1, false, 0, 0, 0, new double[]{0, 0, 0}),
+                new TalonSetup(2, false, 0, 0, 0, new double[]{0, 0, 0})
+        );
+
+        ArmControl armControl = armControlSetup.build(path.addChild("arm-control"));
+
+        armInput = new ArmInput(new Joystick(1));
+
+        ArmSubsystem armSubsystem = new ArmSubsystem(armInput, armControl);
 
         //SYSTEMS_GREEN.setOn(); //LET'S WIN SOME DAMN REGIONALS!!
 
