@@ -30,6 +30,7 @@ public interface IEncoder extends IRaw {
 
     //utility methods
 
+
     default double getEncoderPositionAccumulated_radians() {
         return getPositionRaw() * getRawToRotationsFactor() * Math.PI * 2.0;
     }

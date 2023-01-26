@@ -8,6 +8,7 @@ import com.ctre.phoenix.sensors.*;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.Timer;
@@ -18,12 +19,16 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.bitbuckets.bootstrap.Robot;
 import org.bitbuckets.drive.DriveSDSConstants;
+import org.bitbuckets.drive.controlsds.falcon.Falcon500DriveController;
+import org.bitbuckets.drive.controlsds.falcon.Falcon500SteerController;
+import org.bitbuckets.drive.controlsds.sds.*;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
+import org.bitbuckets.lib.control.ProfiledPIDFController;
 import org.bitbuckets.lib.log.DataLogger;
 import org.bitbuckets.lib.sim.CTREPhysicsSim;
 
-import static org.bitbuckets.drive.controlsds.CtreUtils.checkCtreError;
+import static org.bitbuckets.drive.controlsds.sds.CtreUtils.checkCtreError;
 
 /**
  * Sets up prereqs for a drive controller
@@ -36,6 +41,7 @@ public class DriveControlSDSSetup implements ISetup<DriveControlSDS> {
     public DriveControlSDS build(ProcessPath path) {
         DataLogger<DriveControlSDSDataAutoGen> logger = path.generatePushDataLogger(DriveControlSDSDataAutoGen::new);
 
+        //holy fuck what are you DOING
 
         if (!Preferences.containsKey(DriveSDSConstants.kOrientPKey)) {
             Preferences.setDouble(DriveSDSConstants.kOrientPKey, DriveSDSConstants.kOrientkP);
@@ -68,6 +74,10 @@ public class DriveControlSDSSetup implements ISetup<DriveControlSDS> {
         }
         if (!Preferences.containsKey(DriveSDSConstants.kDriveFeedForwardVKey)) {
             Preferences.setDouble(DriveSDSConstants.kDriveFeedForwardVKey, DriveSDSConstants.kDriveFeedForwardV);
+        }
+
+        if (!Preferences.containsKey(DriveSDSConstants.kOrientFKey)) {
+            Preferences.setDouble(DriveSDSConstants.kOrientFKey, DriveSDSConstants.kOrientkF);
         }
 
         double wheelWearFactor = 1;
@@ -161,20 +171,22 @@ public class DriveControlSDSSetup implements ISetup<DriveControlSDS> {
 
         //Calibrate the gyro only once when the drive subsystem is first initialized
         gyro.calibrate();
+
         double BalanceKP = Preferences.getDouble(DriveSDSConstants.kBalancePKey, DriveSDSConstants.kBalancekP);
         double BalanceKI = Preferences.getDouble(DriveSDSConstants.kBalanceIKey, DriveSDSConstants.kBalancekI);
         double BalanceKD = Preferences.getDouble(DriveSDSConstants.kBalanceDKey, DriveSDSConstants.kBalancekD);
         double OrientKP = Preferences.getDouble(DriveSDSConstants.kOrientPKey, DriveSDSConstants.kOrientkP);
         double OrientKI = Preferences.getDouble(DriveSDSConstants.kOrientIKey, DriveSDSConstants.kOrientkI);
         double OrientKD = Preferences.getDouble(DriveSDSConstants.kOrientDKey, DriveSDSConstants.kOrientkD);
+        double OrientKF = Preferences.getDouble(DriveSDSConstants.kOrientFKey, DriveSDSConstants.kOrientkF);
 
-        PIDController rotControllerRad = new PIDController(OrientKP, OrientKI, OrientKD);
+        ProfiledPIDFController rotControllerRad = new ProfiledPIDFController(OrientKP, OrientKI, OrientKD, OrientKF,new TrapezoidProfile.Constraints(DriveSDSConstants.MAX_ANG_VELOCITY,DriveSDSConstants.MAX_ANG_VELOCITY));
 
         PIDController balanceController = new PIDController(BalanceKP, BalanceKI, BalanceKD);
 
 
-        DriveControlSDS control = new DriveControlSDS(logger, maxVelocity_metersPerSecond, maxAngularVelocity_radiansPerSecond,
-                gyro, balanceController, rotControllerRad, moduleFrontLeft, moduleFrontRight, moduleBackLeft, moduleBackRight, kinematics);
+        DriveControlSDS control = new DriveControlSDS(logger,
+                moduleFrontLeft, moduleFrontRight, moduleBackLeft, moduleBackRight, kinematics);
 
 
         path.registerLoop(control::guaranteedLoggingLoop, "logging");

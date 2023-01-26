@@ -3,81 +3,77 @@ package org.bitbuckets.drive;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Preferences;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import org.bitbuckets.drive.auto.AutoControl;
-import org.bitbuckets.drive.auto.AutoPaths;
+import org.bitbuckets.auto.AutoControl;
+import org.bitbuckets.auto.AutoPath;
+import org.bitbuckets.drive.balance.AutoAxisControl;
 import org.bitbuckets.drive.controlsds.DriveControlSDS;
-import org.bitbuckets.lib.util.MathUtil;
+import org.bitbuckets.gyro.GyroControl;
+import org.bitbuckets.lib.tune.IValueTuner;
+import org.bitbuckets.robot.RobotStateControl;
 
 
 /**
- * subsystemize!
+ * tags: high priority
+ * TODO this is becoming a sort of god class, some of this logic has to break out into smaller subsystems
  */
 public class DriveSDSSubsystem {
 
     final DriveInput input;
 
-    double rotOutput = 0.1;
-    final DriveControlSDS control;
-
+    final RobotStateControl robotStateControl;
+    final GyroControl gyroControl;
+    final AutoAxisControl autoAxisControl;
+    final DriveControlSDS driveControl;
     final AutoControl autoControl;
-    private AutoPaths path;
+
+    final IValueTuner<AutoPath> path;
 
 
-    public DriveSDSSubsystem(DriveInput input, DriveControlSDS control, AutoControl autoControl) {
+    public DriveSDSSubsystem(DriveInput input, RobotStateControl robotStateControl, GyroControl gyroControl, AutoAxisControl autoAxisControl, DriveControlSDS driveControl, AutoControl autoControl, IValueTuner<AutoPath> path) {
         this.input = input;
-        this.control = control;
+        this.robotStateControl = robotStateControl;
+        this.gyroControl = gyroControl;
+        this.autoAxisControl = autoAxisControl;
+        this.driveControl = driveControl;
         this.autoControl = autoControl;
-    }
-
-    DriveFSM state = DriveFSM.TELEOP_NORMAL;
-    Pose2d pose = new Pose2d();
-    private Timer m_timer = new Timer();
-
-    public void followAutoPath(AutoPaths path) {
         this.path = path;
-        state = DriveFSM.AUTO_PATHFINDING;
     }
 
-    public void driveNormal() {
-        state = DriveFSM.TELEOP_NORMAL;
-    }
+    DriveFSM state = DriveFSM.UNINITIALIZED;
 
-    public void autoPeriodic() {
-        switch (state) {
-            case AUTO_PATHFINDING:
-                //auto stuff for pathfinder etc
-                double curTime = m_timer.get();
-                var targetChassisSpeeds = autoControl.getAutoChassisSpeeds(path, curTime, pose);
-                control.drive(targetChassisSpeeds);
-
-                //PathPlannerTrajectory testPath = PathPlanner.loadPath("test path", new PathConstraints(1,1));
-
-
-                //for when auto is finished
-                if (m_timer.hasElapsed(autoControl.getTrajectoryTime(path))) {
-                    state = DriveFSM.TELEOP_NORMAL; //switch to teleop
-                }
-                break;
-        }
-    }
-
-    //Needs to stop if we're going fw or bw
-    public void teleopPeriodic() {
-        SmartDashboard.putNumber("rotoutput", rotOutput);
-        SmartDashboard.putNumber("gyroVelX", control.getGyroXYZ_mps()[0]);
+    public void robotPeriodic() {
 
         switch (state) {
             case UNINITIALIZED:
-                //do nothing
+                if (robotStateControl.isRobotAutonomous()) {
+                    state = DriveFSM.AUTO_PATHFINDING;
+                    break;
+                }
+                if (robotStateControl.isRobotTeleop()) {
+                    state = DriveFSM.TELEOP_NORMAL;
+                    break;
+                }
+
+                break;
+            case AUTO_PATHFINDING:
+                if (robotStateControl.isRobotTeleop()) {
+                    state = DriveFSM.TELEOP_NORMAL;
+                    break;
+                }
+
+                //TODO AutoControl should read from drive odometry
+                ChassisSpeeds targetChassisSpeeds = autoControl.getAutoChassisSpeeds(
+                        path.readValue(),
+                        robotStateControl.robotAutonomousTime_seconds(),
+                        new Pose2d()
+                );
+
+                driveControl.drive(targetChassisSpeeds);
+
                 break;
             case TELEOP_NORMAL:
-                if (input.isPidswitches()) {
-                    state = DriveFSM.PID_TUNING;
-                    break;
-
-                }
+            
                 if (input.isAutoBalancePressed()) {
                     state = DriveFSM.TELEOP_BALANCING; //do balancing next iteration
                     break;
@@ -87,103 +83,83 @@ public class DriveSDSSubsystem {
                     break;
                 }
 
-                double xOutput = input.getInputX() * control.getMaxVelocity();
-                double yOutput = input.getInputY() * control.getMaxVelocity();
-                double rotationOutput = input.getInputRot() * control.getMaxAngularVelocity();
-
-                if (xOutput == 0 && yOutput == 0 && rotationOutput == 0) {
-                    control.stopSticky();
-                } else {
-                    ChassisSpeeds desired = new ChassisSpeeds(xOutput, yOutput, rotationOutput);
-                    control.drive(desired);
-                }
-
-                //check the buttons to make sure we dont want a state transition
+                teleopNormal();
                 break;
             case TELEOP_BALANCING:
                 if (input.isDefaultPressed()) {
                     state = DriveFSM.TELEOP_NORMAL;
                     break;
                 }
-                double BalanceDeadband_deg = Preferences.getDouble(DriveSDSConstants.autoBalanceDeadbandDegKey, DriveSDSConstants.BalanceDeadbandDeg);
 
-                double Roll_deg = control.getRoll_deg();
-                if (Math.abs(Roll_deg) > BalanceDeadband_deg) {
-                    double output = control.calculateBalanceOutput(Roll_deg, 0);
-                    control.drive(new ChassisSpeeds(output, 0.0, 0.0));
-                } else {
-                    control.stopSticky();
-
-                }
+                teleopBalancing();
                 break;
-            //DO teleop balancing here
             case TELEOP_AUTOHEADING:
                 if (input.isDefaultPressed()) {
                     state = DriveFSM.TELEOP_NORMAL;
                     break;
                 }
-                double IMU_Yaw = Math.toRadians(control.getYaw_deg());//Math.toRadians(-350);
 
-                IMU_Yaw = MathUtil.wrap(IMU_Yaw);
+                teleopAutoheading();
+                break;
+        }
+    }
 
-                //will add logic later
-                double setpoint = Math.toRadians(90);
+    void teleopNormal() {
+        double xOutput = input.getInputX() * driveControl.getMaxVelocity();
+        double yOutput = input.getInputY() * driveControl.getMaxVelocity();
+        double rotationOutput = input.getInputRot() * driveControl.getMaxAngularVelocity();
 
-                double error = setpoint - IMU_Yaw;
+        if (xOutput == 0 && yOutput == 0 && rotationOutput == 0) {
+            driveControl.stopSticky();
+        } else {
+            ChassisSpeeds desired = new ChassisSpeeds(xOutput, yOutput, rotationOutput);
+            driveControl.drive(desired);
+        }
+    }
 
-                SmartDashboard.putNumber("AutoOrient_setpoint", Math.toDegrees(setpoint));
-                SmartDashboard.putNumber("AutoOrient_wrappedYaw", Math.toDegrees(IMU_Yaw));
-                SmartDashboard.putNumber("AutoOrient_Error", Math.toDegrees(error));
+    void teleopBalancing() {
 
-                double rotationOutputOrient = control.calculateRotOutputRad(
-                        IMU_Yaw,
-                        setpoint
-                );
+        //This is bad and should be shifted somewhere else
+        double BalanceDeadband_deg = Preferences.getDouble(DriveSDSConstants.autoBalanceDeadbandDegKey, DriveSDSConstants.BalanceDeadbandDeg);
+
+        double Roll_deg = gyroControl.getRoll_deg();
+        if (Math.abs(Roll_deg) > BalanceDeadband_deg) {
+            double output = autoAxisControl.calculateBalanceOutput(Roll_deg, 0);
+            driveControl.drive(new ChassisSpeeds(output, 0.0, 0.0));
+        } else {
+            driveControl.stopSticky();
+
+        }
+    }
+
+    void teleopAutoheading() {
+
+        double IMU_Yaw = Math.toRadians(gyroControl.getYaw_deg());//Math.toRadians(-350);
+
+        //will add logic later
+        double setpoint = Math.toRadians(0);
+        double error = setpoint - IMU_Yaw;
+
+        SmartDashboard.putNumber("AutoOrient_setpoint", Math.toDegrees(setpoint));
+        SmartDashboard.putNumber("AutoOrient_wrappedYaw", Math.toDegrees(IMU_Yaw));
+        SmartDashboard.putNumber("AutoOrient_Error", Math.toDegrees(error));
+
+        double rotationOutputOrient = autoAxisControl.calculateRotOutputRad(
+                IMU_Yaw,
+                setpoint
+        );
 //        if(Math.abs(error) < 180)
 //        {
 //            rotationOutput = -rotationOutput;
 //        }
-                if (Math.abs(error) > Math.toRadians(2)) {
-                    control.drive(
-                            new ChassisSpeeds(0, 0, rotationOutputOrient)
-                    );
-                } else {
-                    control.stop();
-                }
-
-
-                break;
-            case PID_TUNING:
-                if (input.isPidswitches()) {
-                    state = DriveFSM.PID_TUNING1;
-                    break;
-                }
-                if (input.isDefaultPressed()) {
-                    state = DriveFSM.TELEOP_NORMAL;
-                    break;
-                }
-                rotOutput = 0.1;
-                control.drive(
-                        new ChassisSpeeds(0, 0, rotOutput));
-                break;
-            case PID_TUNING1:
-
-                if (input.isPidswitches1()) {
-                    state = DriveFSM.PID_TUNING;
-                    break;
-
-                }
-                if (input.isDefaultPressed()) {
-                    state = DriveFSM.TELEOP_NORMAL;
-                    break;
-                }
-                rotOutput = 0.3;
-                control.drive(
-
-                        new ChassisSpeeds(0, 0, rotOutput));
-
-                break;
-
+        if (Math.abs(error) > Math.toRadians(2)) {
+            driveControl.drive(
+                    new ChassisSpeeds(0, 0, rotationOutputOrient)
+            );
+        } else {
+            driveControl.stop();
         }
+
+
     }
 }
