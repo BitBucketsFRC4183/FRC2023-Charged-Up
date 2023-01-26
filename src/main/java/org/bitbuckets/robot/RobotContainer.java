@@ -1,5 +1,6 @@
 package org.bitbuckets.robot;
 
+import org.bitbuckets.arm.ArmSubsystem;
 import org.bitbuckets.drive.DriveSDSSubsystem;
 import org.bitbuckets.vision.VisionControl;
 
@@ -8,8 +9,12 @@ import org.bitbuckets.vision.VisionControl;
  */
 public class RobotContainer {
 
-    final DriveSDSSubsystem subsystem;
+    final DriveSDSSubsystem driveSubsystem;
+    final ArmSubsystem armSubsystem;
 
+    public RobotContainer(DriveSDSSubsystem driveSubsystem, ArmSubsystem armSubsystem) {
+        this.driveSubsystem = driveSubsystem;
+        this.armSubsystem = armSubsystem;
     final VisionControl visionControl;
 
     public RobotContainer(DriveSDSSubsystem subsystem, VisionControl visionControl) {
@@ -18,6 +23,11 @@ public class RobotContainer {
     }
 
     public void autoPeriodic() {
+
+    }
+
+    public void robotPeriodic() {
+        driveSubsystem.robotPeriodic();
     }
 
     //Shouldn't need to do anything here
@@ -25,6 +35,7 @@ public class RobotContainer {
         subsystem.teleopPeriodic();
         visionControl.teleopPeriodic();
 
+        armSubsystem.teleopPeriodic();
     }
 
 }

@@ -8,6 +8,9 @@ package org.bitbuckets.lib.hardware;
  * also let you use many  types of motors and not cry
  * <p>
  * Common ways of obtaining: TalonPositionSetup, TalonVelocitySetup, TalonPercentSetup
+ *
+ * tags: low priority
+ * TODO separate into percent motor and pid motor
  */
 public interface IMotor extends IRaw {
 

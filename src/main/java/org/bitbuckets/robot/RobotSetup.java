@@ -1,22 +1,40 @@
 package org.bitbuckets.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
+import org.bitbuckets.arm.ArmInput;
+import org.bitbuckets.arm.ArmSubsystem;
+import org.bitbuckets.auto.AutoPath;
 import org.bitbuckets.drive.DriveInput;
 import org.bitbuckets.drive.DriveSDSSubsystem;
+import org.bitbuckets.auto.AutoControl;
+import org.bitbuckets.auto.AutoControlSetup;
+import org.bitbuckets.drive.balance.AutoAxisControl;
+import org.bitbuckets.drive.balance.AutoAxisSetup;
 import org.bitbuckets.drive.controlsds.DriveControlSDS;
 import org.bitbuckets.drive.controlsds.DriveControlSDSSetup;
+import org.bitbuckets.gyro.GyroControl;
+import org.bitbuckets.gyro.GyroControlSetup;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.lib.hardware.PIDIndex;
+import org.bitbuckets.lib.log.DataLogger;
+import org.bitbuckets.lib.tune.IValueTuner;
+import org.bitbuckets.lib.vendor.ctre.TalonSetup;
 import org.bitbuckets.vision.VisionControl;
 import org.bitbuckets.vision.VisionControlSetup;
 
+import javax.xml.crypto.Data;
+
 public class RobotSetup implements ISetup<RobotContainer> {
 
+    final RobotStateControl robotStateControl;
+
+    public RobotSetup(RobotStateControl robotStateControl) {
+        this.robotStateControl = robotStateControl;
+    }
 
     @Override
     public RobotContainer build(ProcessPath path) {
-
         double[] predefPid = PIDIndex.CONSTANTS(1, 0, 0.1, 0, 0);
 //
 //        ModuleSetup frontLeft = new ModuleSetup(
@@ -107,11 +125,24 @@ public class RobotSetup implements ISetup<RobotContainer> {
         VisionControl visionControl = new VisionControlSetup().build(path.addChild("vision-control"));
 
         DriveInput input = new DriveInput(new Joystick(0));
-//        DriveSubsystem driveSubsystem = new DriveSubsystem(input, driveControl);
-        DriveSDSSubsystem driveSubsystem = new DriveSDSSubsystem(input, driveControl);
+
+        AutoControl autoControl = new AutoControlSetup().build(path.addChild("auto-control"));
+        GyroControl gyroControl = new GyroControlSetup(5).build(path.addChild("gyro-control"));
+        AutoAxisControl autoAxisControl = new AutoAxisSetup().build(path.addChild("axis-control"));
+        IValueTuner<AutoPath> pathTuneable = path.generateTuneable("path", AutoPath.TEST_PATH);
+
+
+        DriveSDSSubsystem driveSubsystem = new DriveSDSSubsystem(input, robotStateControl, gyroControl, autoAxisControl, driveControl, autoControl, pathTuneable);
+
+        ArmInput armInput = new ArmInput(
+                new Joystick(0)
+        );
+
+        ArmSubsystem armSubsystem = new ArmSubsystem(armInput, null);
 
         //SYSTEMS_GREEN.setOn(); //LET'S WIN SOME DAMN REGIONALS!!
 
+        return new RobotContainer(driveSubsystem, armSubsystem);
         return new RobotContainer(driveSubsystem, visionControl);
     }
 }
