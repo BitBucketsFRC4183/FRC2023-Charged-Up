@@ -1,5 +1,6 @@
 package org.bitbuckets.robot;
 
+import org.bitbuckets.arm.ArmSubsystem;
 import org.bitbuckets.drive.DriveSDSSubsystem;
 import org.bitbuckets.drive.auto.AutoPaths;
 import org.bitbuckets.elevator.ElevatorSubsystem;
@@ -9,8 +10,12 @@ import org.bitbuckets.elevator.ElevatorSubsystem;
  */
 public class RobotContainer {
 
-    final DriveSDSSubsystem subsystem;
+    final DriveSDSSubsystem driveSubsystem;
+    final ArmSubsystem armSubsystem;
 
+    public RobotContainer(DriveSDSSubsystem driveSubsystem, ArmSubsystem armSubsystem) {
+        this.driveSubsystem = driveSubsystem;
+        this.armSubsystem = armSubsystem;
     final ElevatorSubsystem elevatorSubsystem;
 
     public RobotContainer(DriveSDSSubsystem subsystem, ElevatorSubsystem elevatorSubsystem) {
@@ -19,8 +24,6 @@ public class RobotContainer {
     }
 
     public void autoPeriodic() {
-        subsystem.autoPeriodic();
-    }
 
     //Shouldn't need to do anything here
     public void teleopPeriodic() {
@@ -29,11 +32,13 @@ public class RobotContainer {
 
     }
 
-    public void autoInit() {
-        subsystem.followAutoPath(AutoPaths.TEST_PATH);
+    public void robotPeriodic() {
+        driveSubsystem.robotPeriodic();
     }
 
-    public void teleopInit() {
-        subsystem.driveNormal();
+    //Shouldn't need to do anything here
+    public void teleopPeriodic() {
+        armSubsystem.teleopPeriodic();
     }
+
 }

@@ -18,6 +18,11 @@ public class DataLogger<T extends IDiffableData> {
     }
 
 
+    /**
+     * Call this as much as you want
+     * It will optimize it's own bandwidth as it pleases
+     * @param dataProcessor
+     */
     public void process(Consumer<T> dataProcessor) {
         cachedData.startDiff();
 

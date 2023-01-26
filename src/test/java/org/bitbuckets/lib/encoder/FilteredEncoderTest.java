@@ -1,6 +1,6 @@
 package org.bitbuckets.lib.encoder;
 
-import org.bitbuckets.drive.fenc.FilteredEncoder;
+import org.bitbuckets.drive.old.FilteredEncoder;
 import org.bitbuckets.lib.hardware.IEncoder;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
