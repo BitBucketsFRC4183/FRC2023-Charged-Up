@@ -134,9 +134,7 @@ public class RobotSetup implements ISetup<RobotContainer> {
         ElevatorControl elevatorControl = elevatorControlSetup.build(path.addChild("elevator-control"));
         ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem(elevatorControl,elevatorInput);
 
-
-        ArmInput armInput = new ArmInput(new Joystick(0));
-        ArmSubsystem armSubsystem = new ArmSubsystem(armInput, null);
+    
 
         AutoControl autoControl = new AutoControlSetup().build(path.addChild("auto-control"));
         GyroControl gyroControl = new GyroControlSetup(5).build(path.addChild("gyro-control"));
