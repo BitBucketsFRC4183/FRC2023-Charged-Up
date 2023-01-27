@@ -7,7 +7,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import org.bitbuckets.drive.DriveConstants;
 import org.bitbuckets.drive.DriveSDSConstants;
-import org.bitbuckets.drive.controlsds.sds.SwerveModule;
+import org.bitbuckets.drive.controlsds.sds.ISwerveModule;
 import org.bitbuckets.lib.log.DataLogger;
 
 import java.util.ArrayList;
@@ -21,10 +21,10 @@ public class DriveControlSDS {
     final DataLogger<DriveControlSDSDataAutoGen> logger;
 
     // Swerve Modules
-    final SwerveModule moduleFrontLeft;
-    final SwerveModule moduleFrontRight;
-    final SwerveModule moduleBackLeft;
-    final SwerveModule moduleBackRight;
+    final ISwerveModule moduleFrontLeft;
+    final ISwerveModule moduleFrontRight;
+    final ISwerveModule moduleBackLeft;
+    final ISwerveModule moduleBackRight;
 
     // Instance Variables
     final SwerveDriveKinematics kinematics;
@@ -33,13 +33,13 @@ public class DriveControlSDS {
     double speedModifier = .75;
 
 
-    ArrayList<SwerveModule> modules;
+    ArrayList<ISwerveModule> modules;
     ChassisSpeeds chassisSpeeds;
 
     SwerveModuleState[] cachedSetpoint = new SwerveModuleState[4];
 
 
-    public DriveControlSDS(DataLogger<DriveControlSDSDataAutoGen> logger, SwerveModule moduleFrontLeft, SwerveModule moduleFrontRight, SwerveModule moduleBackLeft, SwerveModule moduleBackRight, SwerveDriveKinematics kinematics) {
+    public DriveControlSDS(DataLogger<DriveControlSDSDataAutoGen> logger, ISwerveModule moduleFrontLeft, ISwerveModule moduleFrontRight, ISwerveModule moduleBackLeft, ISwerveModule moduleBackRight, SwerveDriveKinematics kinematics) {
         this.logger = logger;
         this.moduleFrontLeft = moduleFrontLeft;
         this.moduleFrontRight = moduleFrontRight;

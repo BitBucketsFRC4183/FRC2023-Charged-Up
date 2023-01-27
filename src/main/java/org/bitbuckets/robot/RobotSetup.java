@@ -9,11 +9,15 @@ import org.bitbuckets.auto.AutoControl;
 import org.bitbuckets.auto.AutoControlSetup;
 import org.bitbuckets.auto.AutoPath;
 import org.bitbuckets.drive.DriveInput;
+import org.bitbuckets.drive.DriveSDSConstants;
 import org.bitbuckets.drive.DriveSDSSubsystem;
 import org.bitbuckets.drive.balance.AutoAxisControl;
 import org.bitbuckets.drive.balance.AutoAxisSetup;
 import org.bitbuckets.drive.controlsds.DriveControlSDS;
-import org.bitbuckets.drive.controlsds.DriveControlSDSSetup;
+import org.bitbuckets.drive.controlsds.neo.NeoControlSDSSetup;
+import org.bitbuckets.drive.controlsds.neo.NeoDriveControllerSetup;
+import org.bitbuckets.drive.controlsds.neo.NeoSteerControllerSetup;
+import org.bitbuckets.drive.controlsds.neo.SwerveModuleSetup;
 import org.bitbuckets.gyro.GyroControl;
 import org.bitbuckets.gyro.GyroControlSetup;
 import org.bitbuckets.lib.ISetup;
@@ -22,6 +26,8 @@ import org.bitbuckets.lib.hardware.PIDIndex;
 import org.bitbuckets.lib.tune.IValueTuner;
 
 import org.bitbuckets.lib.vendor.ctre.TalonSetup;
+import org.bitbuckets.lib.vendor.spark.SparkSetup;
+import org.bitbuckets.lib.vendor.thrifty.ThriftyEncoderSetup;
 
 public class RobotSetup implements ISetup<RobotContainer> {
 
@@ -119,7 +125,42 @@ public class RobotSetup implements ISetup<RobotContainer> {
 //                backRightModule
 //        ).build(path.addChild("drive-control"));
 
-        DriveControlSDS driveControl = new DriveControlSDSSetup().build(path.addChild("drive-control"));
+
+//        DriveControlSDS driveControl = new DriveControlSDSSetup().build(path.addChild("drive-control"));
+        DriveControlSDS driveControl = new NeoControlSDSSetup(
+                new SwerveModuleSetup(
+                        new NeoDriveControllerSetup(new SparkSetup(1, PIDIndex.EMPTY), DriveSDSConstants.MK4I_L2),
+                        new NeoSteerControllerSetup(
+                                new SparkSetup(2, PIDIndex.EMPTY),
+                                new ThriftyEncoderSetup(1),
+                                DriveSDSConstants.MK4I_L2
+                        )
+                ),
+                new SwerveModuleSetup(
+                        new NeoDriveControllerSetup(new SparkSetup(3, PIDIndex.EMPTY), DriveSDSConstants.MK4I_L2),
+                        new NeoSteerControllerSetup(
+                                new SparkSetup(4, PIDIndex.EMPTY),
+                                new ThriftyEncoderSetup(2),
+                                DriveSDSConstants.MK4I_L2
+                        )
+                ),
+                new SwerveModuleSetup(
+                        new NeoDriveControllerSetup(new SparkSetup(5, PIDIndex.EMPTY), DriveSDSConstants.MK4I_L2),
+                        new NeoSteerControllerSetup(
+                                new SparkSetup(6, PIDIndex.EMPTY),
+                                new ThriftyEncoderSetup(3),
+                                DriveSDSConstants.MK4I_L2
+                        )
+                ),
+                new SwerveModuleSetup(
+                        new NeoDriveControllerSetup(new SparkSetup(7, PIDIndex.EMPTY), DriveSDSConstants.MK4I_L2),
+                        new NeoSteerControllerSetup(
+                                new SparkSetup(8, PIDIndex.EMPTY),
+                                new ThriftyEncoderSetup(4),
+                                DriveSDSConstants.MK4I_L2
+                        )
+                )
+        ).build(path.addChild("drive-control"));
 
         DriveInput input = new DriveInput(new Joystick(0));
 

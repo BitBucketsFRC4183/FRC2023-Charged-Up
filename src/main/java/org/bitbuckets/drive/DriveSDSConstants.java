@@ -2,7 +2,7 @@ package org.bitbuckets.drive;
 
 
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
-import org.bitbuckets.drive.controlsds.sds.ModuleConfiguration;
+import org.bitbuckets.drive.controlsds.sds.SwerveModuleConfiguration;
 import org.bitbuckets.robot.RobotConstants;
 
 public interface DriveSDSConstants {
@@ -38,7 +38,7 @@ public interface DriveSDSConstants {
 
     SimpleMotorFeedforward feedForward = new SimpleMotorFeedforward(0.65292, 2.3053, 0.37626); //new SimpleMotorFeedforward(0.12817, 2.3423, 0.53114);
 
-    ModuleConfiguration MK4_L2 = new ModuleConfiguration(
+    SwerveModuleConfiguration MK4_L2 = new SwerveModuleConfiguration(
             0.10033,
             (14.0 / 50.0) * (27.0 / 17.0) * (15.0 / 45.0),
             true,
@@ -46,7 +46,7 @@ public interface DriveSDSConstants {
             true
     );
 
-    ModuleConfiguration MK4I_L2 = new ModuleConfiguration(
+    SwerveModuleConfiguration MK4I_L2 = new SwerveModuleConfiguration(
             0.10033,
             (14.0 / 50.0) * (27.0 / 17.0) * (15.0 / 45.0),
             true,

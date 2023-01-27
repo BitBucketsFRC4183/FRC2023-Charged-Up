@@ -1,6 +1,6 @@
 package org.bitbuckets.drive.controlsds.sds;
 
-public interface SteerController {
+public interface ISteerController {
     double getReferenceAngle();
 
     void setReferenceAngle(double referenceAngleRadians);

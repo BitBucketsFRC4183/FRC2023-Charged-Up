@@ -1,6 +1,6 @@
 package org.bitbuckets.drive.controlsds.sds;
 
-public interface DriveController {
+public interface IDriveController {
     void setReferenceVoltage(double voltage);
 
     double getStateVelocity();
