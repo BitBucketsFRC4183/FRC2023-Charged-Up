@@ -20,10 +20,11 @@ import org.bitbuckets.drive.controlsds.DriveControlSDSDataAutoGen;
 import org.bitbuckets.drive.controlsds.sds.*;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
+import org.bitbuckets.lib.hardware.IAbsoluteEncoder;
 import org.bitbuckets.lib.log.DataLogger;
 import org.bitbuckets.lib.sim.CTREPhysicsSim;
 
-import static org.bitbuckets.drive.controlsds.sds.CtreUtils.checkCtreError;
+import static org.bitbuckets.lib.vendor.ctre.CtreUtils.checkCtreError;
 
 /**
  * Sets up prereqs for a drive controller
@@ -90,7 +91,7 @@ public class Falcon500DriveControlSDSSetup implements ISetup<DriveControlSDS> {
         // a different configuration or motors
         // you MUST change it. If you do not, your code will crash on startup.
         // Setup motor configuration
-        SwerveModule moduleFrontLeft = createSwerveModule(
+        ISwerveModule moduleFrontLeft = createSwerveModule(
                 //Smart Dashboard Tab
                 tab.getLayout("Front Left Module", BuiltInLayouts.kList).withSize(2, 4).withPosition(0, 0),
                 DriveSDSConstants.frontLeftModuleDriveMotor_ID, //Drive Motor
@@ -100,7 +101,7 @@ public class Falcon500DriveControlSDSSetup implements ISetup<DriveControlSDS> {
                 DriveSDSConstants.frontLeftModuleSteerOffset //Steer Offset
         );
 
-        SwerveModule moduleFrontRight = createSwerveModule(
+        ISwerveModule moduleFrontRight = createSwerveModule(
                 //Smart Dashboard Tab
                 tab.getLayout("Front Right Module", BuiltInLayouts.kList).withSize(2, 4).withPosition(2, 0),
                 DriveSDSConstants.frontRightModuleDriveMotor_ID, //Drive Motor
@@ -110,7 +111,7 @@ public class Falcon500DriveControlSDSSetup implements ISetup<DriveControlSDS> {
                 DriveSDSConstants.frontRightModuleSteerOffset //Steer Offset
         );
 
-        SwerveModule moduleBackLeft = createSwerveModule(
+        ISwerveModule moduleBackLeft = createSwerveModule(
                 //Smart Dashboard Tab
                 tab.getLayout("Back Left Module", BuiltInLayouts.kList).withSize(2, 4).withPosition(4, 0),
                 DriveSDSConstants.backLeftModuleDriveMotor_ID, //Drive Motor
@@ -120,7 +121,7 @@ public class Falcon500DriveControlSDSSetup implements ISetup<DriveControlSDS> {
                 DriveSDSConstants.backLeftModuleSteerOffset //Steer Offset
         );
 
-        SwerveModule moduleBackRight = createSwerveModule(
+        ISwerveModule moduleBackRight = createSwerveModule(
                 //Smart Dashboard Tab
                 tab.getLayout("Back Right Module", BuiltInLayouts.kList).withSize(2, 4).withPosition(6, 0),
                 DriveSDSConstants.backRightModuleDriveMotor_ID, //Drive Motor
@@ -149,7 +150,7 @@ public class Falcon500DriveControlSDSSetup implements ISetup<DriveControlSDS> {
         return control;
     }
 
-    SwerveModule createSwerveModule(
+    ISwerveModule createSwerveModule(
             ShuffleboardLayout container,
             int driveMotorPort,
             int steerMotorPort,
@@ -158,13 +159,13 @@ public class Falcon500DriveControlSDSSetup implements ISetup<DriveControlSDS> {
     ) {
         var driveController = createDriveController(driveMotorPort, DriveSDSConstants.MK4_L2);
         var steerController = createSteerController(steerMotorPort, steerEncoderPort, steerOffset, DriveSDSConstants.MK4_L2);
-        return new ModuleImplementation(driveController, steerController);
+        return new SwerveModule(driveController, steerController);
     }
 
-    DriveController createDriveController(int driveMotorPort, ModuleConfiguration moduleConfiguration) {
+    IDriveController createDriveController(int driveMotorPort, SwerveModuleConfiguration swerveModuleConfiguration) {
         TalonFXConfiguration motorConfiguration = new TalonFXConfiguration();
 
-        double sensorPositionCoefficient = Math.PI * moduleConfiguration.getWheelDiameter() * moduleConfiguration.getDriveReduction() / DriveSDSConstants.TICKS_PER_ROTATION;
+        double sensorPositionCoefficient = Math.PI * swerveModuleConfiguration.getWheelDiameter() * swerveModuleConfiguration.getDriveReduction() / DriveSDSConstants.TICKS_PER_ROTATION;
         double sensorVelocityCoefficient = sensorPositionCoefficient * 10.0;
 
         motorConfiguration.voltageCompSaturation = DriveSDSConstants.nominalVoltage;
@@ -180,7 +181,7 @@ public class Falcon500DriveControlSDSSetup implements ISetup<DriveControlSDS> {
 
         motor.setNeutralMode(NeutralMode.Brake);
 
-        motor.setInverted(moduleConfiguration.isDriveInverted() ? TalonFXInvertType.Clockwise : TalonFXInvertType.CounterClockwise);
+        motor.setInverted(swerveModuleConfiguration.isDriveInverted() ? TalonFXInvertType.Clockwise : TalonFXInvertType.CounterClockwise);
         motor.setSensorPhase(true);
 
         // Reduce CAN status frame rates
@@ -197,14 +198,14 @@ public class Falcon500DriveControlSDSSetup implements ISetup<DriveControlSDS> {
             CTREPhysicsSim.getInstance().addTalonFX(motor, .5, 6800);
         }
 
-        return new Falcon500DriveController(motor, sensorVelocityCoefficient, DriveSDSConstants.nominalVoltage);
+        return new Falcon500IDriveController(motor, sensorVelocityCoefficient, DriveSDSConstants.nominalVoltage);
     }
 
-    SteerController createSteerController(int steerMotorPort, int steerEncoderPort, double steerOffset, ModuleConfiguration moduleConfiguration) {
+    ISteerController createSteerController(int steerMotorPort, int steerEncoderPort, double steerOffset, SwerveModuleConfiguration swerveModuleConfiguration) {
 
-        AbsoluteEncoder absoluteEncoder = createAbsoluteEncoder(steerEncoderPort, steerOffset);
+        IAbsoluteEncoder absoluteEncoder = createAbsoluteEncoder(steerEncoderPort, steerOffset);
 
-        final double sensorPositionCoefficient = 2.0 * Math.PI / DriveSDSConstants.TICKS_PER_ROTATION * moduleConfiguration.getSteerReduction();
+        final double sensorPositionCoefficient = 2.0 * Math.PI / DriveSDSConstants.TICKS_PER_ROTATION * swerveModuleConfiguration.getSteerReduction();
         final double sensorVelocityCoefficient = sensorPositionCoefficient * 10.0;
 
         TalonFXConfiguration motorConfiguration = new TalonFXConfiguration();
@@ -222,7 +223,7 @@ public class Falcon500DriveControlSDSSetup implements ISetup<DriveControlSDS> {
         motor.enableVoltageCompensation(true);
         checkCtreError(motor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, DriveSDSConstants.CAN_TIMEOUT_MS), "Failed to set Falcon 500 feedback sensor");
         motor.setSensorPhase(true);
-        motor.setInverted(moduleConfiguration.isSteerInverted() ? TalonFXInvertType.CounterClockwise : TalonFXInvertType.Clockwise);
+        motor.setInverted(swerveModuleConfiguration.isSteerInverted() ? TalonFXInvertType.CounterClockwise : TalonFXInvertType.Clockwise);
         motor.setNeutralMode(NeutralMode.Brake);
 
         checkCtreError(motor.setSelectedSensorPosition(absoluteEncoder.getAbsoluteAngle() / sensorPositionCoefficient, 0, DriveSDSConstants.CAN_TIMEOUT_MS), "Failed to set Falcon 500 encoder position");
@@ -241,14 +242,14 @@ public class Falcon500DriveControlSDSSetup implements ISetup<DriveControlSDS> {
             CTREPhysicsSim.getInstance().addTalonFX(motor, .5, 6800);
         }
 
-        return new Falcon500SteerController(motor,
+        return new Falcon500ISteerController(motor,
                 sensorPositionCoefficient,
                 sensorVelocityCoefficient,
                 TalonFXControlMode.Position,
                 absoluteEncoder);
     }
 
-    AbsoluteEncoder createAbsoluteEncoder(int steerEncoderPort, double steerOffset) {
+    IAbsoluteEncoder createAbsoluteEncoder(int steerEncoderPort, double steerOffset) {
 
         Direction direction = Direction.COUNTER_CLOCKWISE;
         CANCoderConfiguration config = new CANCoderConfiguration();
@@ -261,7 +262,7 @@ public class Falcon500DriveControlSDSSetup implements ISetup<DriveControlSDS> {
 
         checkCtreError(encoder.setStatusFramePeriod(CANCoderStatusFrame.SensorData, DriveSDSConstants.canCoderPeriodMilliseconds, 250), "Failed to configure CANCoder update rate");
 
-        AbsoluteEncoder absoluteEncoder = new CANCoderAbsoluteEncoder(encoder);
+        IAbsoluteEncoder absoluteEncoder = new CANCoderAbsoluteEncoder(encoder);
         return absoluteEncoder;
     }
 

@@ -1,27 +1,27 @@
 package org.bitbuckets.drive.controlsds.neo;
 
-import com.revrobotics.CANSparkMax;
-import org.bitbuckets.drive.controlsds.sds.DriveController;
+import org.bitbuckets.drive.controlsds.sds.IDriveController;
+import org.bitbuckets.lib.hardware.IMotorController;
 
-public class NeoDriveController implements DriveController {
+public class NeoDriveController implements IDriveController {
 
 
-    private final CANSparkMax motor;
+    private final IMotorController motor;
 
     private final double nominalVoltage;
 
-    public NeoDriveController(CANSparkMax motor, double nominalVoltage) {
+    public NeoDriveController(IMotorController motor, double nominalVoltage) {
         this.motor = motor;
         this.nominalVoltage = nominalVoltage;
     }
 
     @Override
     public void setReferenceVoltage(double voltage) {
-        motor.set(voltage / nominalVoltage);
+        motor.moveAtPercent(voltage / nominalVoltage);
     }
 
     @Override
     public double getStateVelocity() {
-        return motor.getEncoder().getVelocity();
+        return motor.getVelocityRaw();
     }
 }

@@ -2,10 +2,10 @@ package org.bitbuckets.drive.controlsds.falcon;
 
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import org.bitbuckets.drive.controlsds.sds.AbsoluteEncoder;
-import org.bitbuckets.drive.controlsds.sds.SteerController;
+import org.bitbuckets.drive.controlsds.sds.ISteerController;
+import org.bitbuckets.lib.hardware.IAbsoluteEncoder;
 
-public class Falcon500SteerController implements SteerController {
+public class Falcon500ISteerController implements ISteerController {
     private static final int ENCODER_RESET_ITERATIONS = 500;
     private static final double ENCODER_RESET_MAX_ANGULAR_VELOCITY = Math.toRadians(0.5);
 
@@ -13,17 +13,17 @@ public class Falcon500SteerController implements SteerController {
     private final double motorEncoderPositionCoefficient;
     private final double motorEncoderVelocityCoefficient;
     private final TalonFXControlMode motorControlMode;
-    private final AbsoluteEncoder absoluteEncoder;
+    private final IAbsoluteEncoder absoluteEncoder;
 
     private double referenceAngleRadians = 0.0;
 
     private double resetIteration = 0;
 
-    public Falcon500SteerController(TalonFX motor,
-                                    double motorEncoderPositionCoefficient,
-                                    double motorEncoderVelocityCoefficient,
-                                    TalonFXControlMode motorControlMode,
-                                    AbsoluteEncoder absoluteEncoder) {
+    public Falcon500ISteerController(TalonFX motor,
+                                     double motorEncoderPositionCoefficient,
+                                     double motorEncoderVelocityCoefficient,
+                                     TalonFXControlMode motorControlMode,
+                                     IAbsoluteEncoder absoluteEncoder) {
         this.motor = motor;
         this.motorEncoderPositionCoefficient = motorEncoderPositionCoefficient;
         this.motorEncoderVelocityCoefficient = motorEncoderVelocityCoefficient;
