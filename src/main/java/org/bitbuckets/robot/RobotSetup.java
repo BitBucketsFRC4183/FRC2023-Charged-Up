@@ -24,7 +24,6 @@ import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.lib.hardware.PIDIndex;
 import org.bitbuckets.lib.tune.IValueTuner;
-
 import org.bitbuckets.lib.vendor.ctre.TalonSetup;
 import org.bitbuckets.lib.vendor.ctre.TalonSetup;
 import org.bitbuckets.lib.vendor.spark.SparkSetup;

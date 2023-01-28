@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.DriverStation;
  * Allows ISetup to log critical errors that prevent the robot from starting
  * TODO: Rename ErrorManager to StartupFailer becuase it fails a robot during startup
  */
+@Deprecated
 public class ErrorDriver {
 
     final IdentityDriver identityFactory;

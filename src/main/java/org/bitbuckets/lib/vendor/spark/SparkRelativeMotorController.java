@@ -4,21 +4,21 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import org.bitbuckets.lib.hardware.IMotorController;
+import org.bitbuckets.lib.hardware.MotorConstants;
 import org.bitbuckets.lib.hardware.MotorControllerDataAutoGen;
-import org.bitbuckets.lib.hardware.MotorIndex;
 import org.bitbuckets.lib.log.DataLogger;
 
 public class SparkRelativeMotorController implements IMotorController, Runnable {
 
 
-    final double[] motorConstants;
+    final MotorConstants motorConstants;
     final CANSparkMax sparkMax;
     final DataLogger<MotorControllerDataAutoGen> dataLogger;
 
     final RelativeEncoder sparkMaxRelativeEncoder;
     final SparkMaxPIDController sparkMaxPIDController;
 
-    SparkRelativeMotorController(double[] motorConstants, CANSparkMax sparkMax, DataLogger<MotorControllerDataAutoGen> dataLogger) {
+    SparkRelativeMotorController(MotorConstants motorConstants, CANSparkMax sparkMax, DataLogger<MotorControllerDataAutoGen> dataLogger) {
         this.motorConstants = motorConstants;
         this.sparkMax = sparkMax;
         this.dataLogger = dataLogger;
@@ -29,12 +29,12 @@ public class SparkRelativeMotorController implements IMotorController, Runnable 
 
     @Override
     public double getMechanismFactor() {
-        return motorConstants[MotorIndex.MECHANISM_FACTOR];
+        return motorConstants.mechanismCoefficient;
     }
 
     @Override
     public double getRotationsToMetersFactor() {
-        return motorConstants[MotorIndex.ROTATION_TO_METER_FACTOR];
+        return motorConstants.rotationToMeterCoefficient;
     }
 
     @Override
@@ -44,7 +44,7 @@ public class SparkRelativeMotorController implements IMotorController, Runnable 
 
     @Override
     public double getTimeFactor() {
-        return motorConstants[MotorIndex.TIME_FACTOR];
+        return motorConstants.timeCoefficient;
     }
 
     @Override
