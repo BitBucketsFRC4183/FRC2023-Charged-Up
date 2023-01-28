@@ -22,6 +22,7 @@ import org.bitbuckets.gyro.GyroControl;
 import org.bitbuckets.gyro.GyroControlSetup;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
+import org.bitbuckets.lib.hardware.MotorConstants;
 import org.bitbuckets.lib.hardware.PIDIndex;
 import org.bitbuckets.lib.tune.IValueTuner;
 import org.bitbuckets.lib.vendor.ctre.TalonSetup;
@@ -41,10 +42,12 @@ public class RobotSetup implements ISetup<RobotContainer> {
         double[] predefPid = PIDIndex.CONSTANTS(1, 0, 0.1, 0, 0);
 
         ElevatorControlSetup elevatorControlSetup = new ElevatorControlSetup(
-                new SparkSetup(1,PIDIndex.CONSTANTS(0.3,0,0,0,0)),
-                new SparkSetup(2,PIDIndex.CONSTANTS(0.3,0,0,0,0)),
-                new SparkSetup(3,PIDIndex.CONSTANTS(0.3,0,0,0,0)),
-                new SparkSetup(4,PIDIndex.CONSTANTS(0.3,0,0,0,0)));
+                new SparkSetup(1,new MotorConstants(0,0,0,false,false,0)),
+                new SparkSetup(2,new MotorConstants(0,0,0,false,false,0)),
+                new SparkSetup(3,new MotorConstants(0,0,0,false,false,0)),
+                new SparkSetup(4,new MotorConstants(0,0,0,false,false,0))
+        );
+
 
 //
 //        ModuleSetup frontLeftModule = new ModuleSetup(

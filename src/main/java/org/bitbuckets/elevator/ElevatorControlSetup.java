@@ -42,14 +42,14 @@ public class ElevatorControlSetup implements ISetup<ElevatorControl> {
 
         Mechanism2d mech = new Mechanism2d(3, 3);
         // the mechanism root node
-        MechanismRoot2d root = mech.getRoot("pivot", 0, 0);
+        MechanismRoot2d root = mech.getRoot("pivot", 1.5, 0);
 
         // MechanismLigament2d objects represent each "section"/"stage" of the mechanism, and are based
         // off the root node or another ligament object
         elevator = root.append(new MechanismLigament2d("elevator", 2, 90));
         elevatorWrist =
                 elevator.append(
-                        new MechanismLigament2d("wrist", 0.5, 90, 6, new Color8Bit(Color.kPurple)));
+                        new MechanismLigament2d("wrist", -0.5, 90, 6, new Color8Bit(Color.kPurple)));
 
         // post the mechanism to the dashboard
         SmartDashboard.putData("Mech2d", mech);
@@ -59,8 +59,8 @@ public class ElevatorControlSetup implements ISetup<ElevatorControl> {
                 rightExtend.build(path.addChild("elevator-right-extension")),
                 leftTilt.build(path.addChild("elevator-left-tilt")),
                 rightTilt.build(path.addChild("elevator-right-tilt")),
-                elevatorWrist,
-                elevator
+                elevator,
+                elevatorWrist
 
 
         );
