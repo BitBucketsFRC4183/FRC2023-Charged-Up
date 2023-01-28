@@ -45,8 +45,8 @@ public class FilteredEncoderSetup implements ISetup<FilteredEncoder> {
     //TODO test this all more
     @Override
     public FilteredEncoder build(ProcessPath path) {
-        SetupProfiler initCancoder = path.generateSpanLogger("init-cancoder");
-        SetupProfiler forceRelative = path.generateSpanLogger("force-relative");
+        SetupProfiler initCancoder = path.generateSetupProfiler("init-cancoder");
+        SetupProfiler forceRelative = path.generateSetupProfiler("force-relative");
 
         initCancoder.markProcessing();
         CANCoderConfiguration config = new CANCoderConfiguration();
