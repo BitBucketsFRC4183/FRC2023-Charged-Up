@@ -97,7 +97,13 @@ public class ProcessPath {
     }
 
 
-
+    /**
+     * default value basically doesnt matter. Dont depend on it.
+     * @param key
+     * @param defaultData
+     * @return
+     * @param <T>
+     */
     public <T> IValueTuner<T> generateValueTuner(String key, T defaultData) {
         return tuneableDriver.tuneable(currentId, key, defaultData);
     }
