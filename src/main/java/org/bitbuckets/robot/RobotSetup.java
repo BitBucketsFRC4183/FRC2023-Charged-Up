@@ -42,10 +42,10 @@ public class RobotSetup implements ISetup<RobotContainer> {
         double[] predefPid = PIDIndex.CONSTANTS(1, 0, 0.1, 0, 0);
 
         ElevatorControlSetup elevatorControlSetup = new ElevatorControlSetup(
-                new SparkSetup(1,new double[]{0,0,0,0}),
-                new SparkSetup(2,new double[]{0,0,0,0}),
-                new SparkSetup(3,new double[]{0,0,0,0}),
-                new SparkSetup(4,new double[]{0,0,0,0}));
+                new SparkSetup(1,PIDIndex.CONSTANTS(0.3,0,0,0,0)),
+                new SparkSetup(2,PIDIndex.CONSTANTS(0.3,0,0,0,0)),
+                new SparkSetup(3,PIDIndex.CONSTANTS(0.3,0,0,0,0)),
+                new SparkSetup(4,PIDIndex.CONSTANTS(0.3,0,0,0,0)));
 
 //
 //        ModuleSetup frontLeftModule = new ModuleSetup(
