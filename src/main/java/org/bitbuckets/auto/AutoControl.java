@@ -18,9 +18,7 @@ public class AutoControl {
 
         var desiredState = (PathPlannerTrajectory.PathPlannerState) trajectory.sample(time);
 
-        var targetChassisSpeeds = controller.calculate(pose, desiredState, desiredState.holonomicRotation);
-
-        return targetChassisSpeeds;
+        return controller.calculate(pose, desiredState, desiredState.holonomicRotation);
     }
 
     public double getTrajectoryTime(AutoPath path) {

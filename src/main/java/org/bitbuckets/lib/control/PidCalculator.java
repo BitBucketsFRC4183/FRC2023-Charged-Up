@@ -14,7 +14,7 @@ public class PidCalculator implements IPIDCalculator, Runnable {
     }
 
     @Override
-    public double calculateNext() {
+    public double calculateNext(double setpoint) {
         return 0;
     }
 

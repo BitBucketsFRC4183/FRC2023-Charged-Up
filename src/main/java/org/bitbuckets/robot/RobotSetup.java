@@ -21,6 +21,7 @@ import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.lib.hardware.MotorIndex;
 import org.bitbuckets.lib.hardware.PIDIndex;
 import org.bitbuckets.lib.tune.IValueTuner;
+
 import org.bitbuckets.lib.vendor.ctre.TalonSetup;
 import org.bitbuckets.lib.vendor.spark.SparkSetup;
 
@@ -127,7 +128,7 @@ public class RobotSetup implements ISetup<RobotContainer> {
         AutoControl autoControl = new AutoControlSetup().build(path.addChild("auto-control"));
         GyroControl gyroControl = new GyroControlSetup(5).build(path.addChild("gyro-control"));
         AutoAxisControl autoAxisControl = new AutoAxisSetup().build(path.addChild("axis-control"));
-        IValueTuner<AutoPath> pathTuneable = path.generateTuneable("path", AutoPath.TEST_PATH);
+        IValueTuner<AutoPath> pathTuneable = path.generateValueTuner("path", AutoPath.TEST_PATH);
 
 
         DriveSDSSubsystem driveSubsystem = new DriveSDSSubsystem(input, robotStateControl, gyroControl, autoAxisControl, driveControl, autoControl, pathTuneable);
