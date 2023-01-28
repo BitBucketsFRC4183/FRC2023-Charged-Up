@@ -76,7 +76,7 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void robotPeriodic() {
-        loopDriver.runAlways();
+        loopDriver.runPeriodic();
         robotHandle.robotPeriodic();
     }
 

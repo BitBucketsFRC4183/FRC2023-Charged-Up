@@ -1,5 +1,7 @@
 package org.bitbuckets.lib.log;
 
-@Deprecated
-public @interface Loggable {
+public interface Loggable<T> {
+
+    void log(T data);
+
 }

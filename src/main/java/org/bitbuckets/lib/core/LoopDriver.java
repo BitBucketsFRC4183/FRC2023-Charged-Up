@@ -40,7 +40,7 @@ public class LoopDriver {
 
     }
 
-    public void runAlways() {
+    public void runPeriodic() {
         long now = System.currentTimeMillis();
 
         for (Record record : loopWhenOn) {
