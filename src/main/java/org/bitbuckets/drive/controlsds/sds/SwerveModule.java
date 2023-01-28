@@ -1,10 +1,14 @@
 package org.bitbuckets.drive.controlsds.sds;
 
+import org.bitbuckets.lib.log.DataLogger;
+
 public class SwerveModule implements ISwerveModule {
+    final DataLogger<SwerveModuleDataAutoGen> logger;
     private final IDriveController IDriveController;
     private final ISteerController ISteerController;
 
-    public SwerveModule(IDriveController IDriveController, ISteerController ISteerController) {
+    public SwerveModule(DataLogger<SwerveModuleDataAutoGen> logger, IDriveController IDriveController, ISteerController ISteerController) {
+        this.logger = logger;
         this.IDriveController = IDriveController;
         this.ISteerController = ISteerController;
     }
@@ -21,6 +25,12 @@ public class SwerveModule implements ISwerveModule {
 
     @Override
     public void set(double driveVoltage, double steerAngle) {
+        var dv = driveVoltage;
+        var sa = steerAngle;
+        logger.process(data -> {
+            data.driveVoltage = dv;
+            data.steerAngle = sa;
+        });
         steerAngle %= (2.0 * Math.PI);
         if (steerAngle < 0.0) {
             steerAngle += 2.0 * Math.PI;

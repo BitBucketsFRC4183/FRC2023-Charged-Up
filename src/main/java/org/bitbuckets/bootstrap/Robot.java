@@ -66,8 +66,8 @@ public class Robot extends LoggedRobot {
             //TODO extract exceptions
 
             DriverStation.reportError("[BUCKET] Critical exception during setup: " + e.getLocalizedMessage(), e.getStackTrace());
-        }
 
+        }
 
 
     }

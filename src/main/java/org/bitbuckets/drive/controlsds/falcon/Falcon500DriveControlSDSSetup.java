@@ -159,7 +159,7 @@ public class Falcon500DriveControlSDSSetup implements ISetup<DriveControlSDS> {
     ) {
         var driveController = createDriveController(driveMotorPort, DriveSDSConstants.MK4_L2);
         var steerController = createSteerController(steerMotorPort, steerEncoderPort, steerOffset, DriveSDSConstants.MK4_L2);
-        return new SwerveModule(driveController, steerController);
+        return new SwerveModule(null, driveController, steerController);
     }
 
     IDriveController createDriveController(int driveMotorPort, SwerveModuleConfiguration swerveModuleConfiguration) {

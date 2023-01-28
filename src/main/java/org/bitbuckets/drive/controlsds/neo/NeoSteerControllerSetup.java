@@ -55,7 +55,7 @@ public class NeoSteerControllerSetup implements ISetup<ISteerController> {
         RelativeEncoder integratedEncoder = motor.getEncoder();
         checkNeoError(integratedEncoder.setPositionConversionFactor(2.0 * Math.PI * swerveModuleConfiguration.getSteerReduction()), "Failed to set NEO encoder conversion factor");
         checkNeoError(integratedEncoder.setVelocityConversionFactor(2.0 * Math.PI * swerveModuleConfiguration.getSteerReduction() / 60.0), "Failed to set NEO encoder conversion factor");
-        checkNeoError(integratedEncoder.setPosition(absoluteEncoder.getAbsoluteAngle()), "Failed to set NEO encoder position");
+//        checkNeoError(integratedEncoder.setPosition(absoluteEncoder.getAbsoluteAngle()), "Failed to set NEO encoder position");
 
         SparkMaxPIDController controller = motor.getPIDController();
         checkNeoError(controller.setP(pidProportional), "Failed to set NEO PID proportional constant");
