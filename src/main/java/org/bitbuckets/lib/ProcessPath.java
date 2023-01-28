@@ -90,7 +90,7 @@ public class ProcessPath {
     }
 
 
-    public SetupProfiler generateSpanLogger(String taskName) {
+    public SetupProfiler generateSetupProfiler(String taskName) {
         int taskId = setupDriver.generateStartup(currentId, taskName);
 
         return new SetupProfiler(setupDriver, taskId);

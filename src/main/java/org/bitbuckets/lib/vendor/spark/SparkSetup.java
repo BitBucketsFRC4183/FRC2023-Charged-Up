@@ -37,8 +37,8 @@ public class SparkSetup implements ISetup<IMotorController> {
 
     @Override
     public IMotorController build(ProcessPath path) {
-        SetupProfiler configError = path.generateSpanLogger("config-error");
-            configError.markProcessing();
+        SetupProfiler configError = path.generateSetupProfiler("config-error");
+        configError.markProcessing();
 
         //check id for duplicate usage
         if (seen.contains(canId)) {
@@ -60,10 +60,13 @@ public class SparkSetup implements ISetup<IMotorController> {
         spark.setInverted(inverted);
         spark.setSmartCurrentLimit((int) motorConstants[MotorIndex.CURRENT_LIMIT]);
 
-        //mattlib
         DataLogger<MotorControllerDataAutoGen> logger = path.generatePushDataLogger(MotorControllerDataAutoGen::new);
-        IValueTuner<double[]> pid = path.generateValueTuner("pid", RobotConstants.DEFAULT_PID_CONSTANTS);
-        SparkTuningAspect sparkTuningAspect = new SparkTuningAspect(pid, spark.getPIDController());
+
+        IValueTuner<Double> p = path.generateValueTuner("p", 0.0);
+        IValueTuner<Double> i = path.generateValueTuner("i", 0.0);
+        IValueTuner<Double> d = path.generateValueTuner("d", 0.0);
+
+        SparkTuningAspect sparkTuningAspect = new SparkTuningAspect(p, i, d, spark.getPIDController());
         SparkRelativeMotorController ctrl = new SparkRelativeMotorController(motorConstants, spark, logger);
 
         path.registerLoop(ctrl, LoggingConstants.LOGGING_PERIOD, "logging-loop");

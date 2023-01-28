@@ -46,10 +46,10 @@ public class TalonSetup implements ISetup<IMotorController> {
     public TalonMotorController build(ProcessPath path) {
 
         //signal for talon boot (find can id)
-        SetupProfiler ctre_boot = path.generateSpanLogger("ctre-boot");
+        SetupProfiler ctre_boot = path.generateSetupProfiler("ctre-boot");
         //signal for talon configuration
-        SetupProfiler ctre_config = path.generateSpanLogger("ctre-config");
-        SetupProfiler log_register = path.generateSpanLogger("ctre-register-loops");
+        SetupProfiler ctre_config = path.generateSetupProfiler("ctre-config");
+        SetupProfiler log_register = path.generateSetupProfiler("ctre-register-loops");
 
         ctre_boot.markProcessing();
         WPI_TalonFX talonFX = new WPI_TalonFX(canId); //talon is up!
