@@ -95,13 +95,13 @@ public interface DriveSDSConstants {
     double MAX_ANG_VELOCITY = MAX_DRIVE_VELOCITY / Math.hypot(RobotConstants.WIDTH, RobotConstants.BASE);
 
 
-    final String kBalancePKey = "AutoBalance.pid.kP";
-    final String kBalanceIKey = "AutoBalance.pid.kI";
-    final String kBalanceDKey = "AutoBalance.pid.kD";
+    String kBalancePKey = "AutoBalance.pid.kP";
+    String kBalanceIKey = "AutoBalance.pid.kI";
+    String kBalanceDKey = "AutoBalance.pid.kD";
     double kBalancekP = -0.015;
     double kBalancekI = 0.0;
     double kBalancekD = 0.01;
-    final String autoBalanceDeadbandDegKey = "AutoBalance.deadbandDeg";
+    String autoBalanceDeadbandDegKey = "AutoBalance.deadbandDeg";
     double BalanceDeadbandDeg = 6;
 
 }
