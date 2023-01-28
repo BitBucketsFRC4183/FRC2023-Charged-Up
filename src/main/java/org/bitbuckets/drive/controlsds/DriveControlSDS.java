@@ -1,8 +1,6 @@
 package org.bitbuckets.drive.controlsds;
 
-import com.ctre.phoenix.sensors.WPI_PigeonIMU;
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -10,7 +8,6 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import org.bitbuckets.drive.DriveConstants;
 import org.bitbuckets.drive.DriveSDSConstants;
 import org.bitbuckets.drive.controlsds.sds.SwerveModule;
-import org.bitbuckets.lib.control.ProfiledPIDFController;
 import org.bitbuckets.lib.log.DataLogger;
 
 import java.util.ArrayList;
@@ -22,7 +19,6 @@ import java.util.List;
 public class DriveControlSDS {
 
     final DataLogger<DriveControlSDSDataAutoGen> logger;
-
 
     // Swerve Modules
     final SwerveModule moduleFrontLeft;
@@ -64,10 +60,9 @@ public class DriveControlSDS {
     }
 
 
-
     //TODO fix this shit
     public SwerveModuleState[] reportSetpointStates() {
-        return new SwerveModuleState[] {
+        return new SwerveModuleState[]{
                 new SwerveModuleState(),
                 new SwerveModuleState(),
                 new SwerveModuleState(),
@@ -76,14 +71,13 @@ public class DriveControlSDS {
     }
 
     public SwerveModuleState[] reportActualStates() {
-        return new SwerveModuleState[] {
+        return new SwerveModuleState[]{
                 new SwerveModuleState(),
                 new SwerveModuleState(),
                 new SwerveModuleState(),
                 new SwerveModuleState()
         };
     }
-
 
 
     public void drive(ChassisSpeeds chassisSpeeds) {
@@ -102,7 +96,6 @@ public class DriveControlSDS {
     }
 
 
-
     public double getMaxVelocity() {
         return DriveConstants.MAX_DRIVE_VELOCITY * speedModifier;
     }
@@ -110,7 +103,6 @@ public class DriveControlSDS {
     public double getMaxAngularVelocity() {
         return DriveConstants.MAX_ANG_VELOCITY * speedModifier;
     }
-
 
 
     public void stop() {
