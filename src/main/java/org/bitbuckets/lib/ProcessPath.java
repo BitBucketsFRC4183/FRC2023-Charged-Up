@@ -85,13 +85,13 @@ public class ProcessPath {
     }
 
 
-    @Deprecated @DontUse
+    @Deprecated @DontUseIncubating
     public <A extends IDiffableData> DataLogger<A> generatePushDataLogger(Supplier<A> dataInitializer) {
         return new DataLogger<>(currentId, logDriver, dataInitializer.get());
     }
 
 
-    @Deprecated @DontUse
+    @Deprecated @DontUseIncubating
     public SetupProfiler generateSetupProfiler(String taskName) {
         int taskId = setupDriver.generateStartup(currentId, taskName);
 

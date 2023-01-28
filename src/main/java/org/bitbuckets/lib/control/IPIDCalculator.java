@@ -1,13 +1,14 @@
 package org.bitbuckets.lib.control;
 
-import org.bitbuckets.lib.DontUse;
+import org.bitbuckets.lib.DontUseIncubating;
 import org.bitbuckets.lib.hardware.IRaw;
 
 /**
  * This class acts like a {@link edu.wpi.first.math.controller.PIDController} except
  * it tunes pid internally. Construct using {@link PIDCalculatorSetup}
  */
-@DontUse @Deprecated
+@DontUseIncubating
+@Deprecated
 public interface IPIDCalculator extends IRaw {
 
     /**
