@@ -22,10 +22,4 @@ public class IdentityDriverTest {
     }
 
 
-    //TODO DONT LET people register loggables with the same namespace as an actual process
-    @Test
-    public void shouldWorkWithSetup() {
-
-    }
-
 }
