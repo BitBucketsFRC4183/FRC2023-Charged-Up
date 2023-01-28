@@ -8,9 +8,12 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.lib.hardware.IMotorController;
+import org.bitbuckets.lib.hardware.MotorControllerDataAutoGen;
 import org.bitbuckets.lib.hardware.PIDIndex;
 import org.bitbuckets.lib.log.DataLogger;
-import org.bitbuckets.lib.log.StartupLogger;
+import org.bitbuckets.lib.SetupProfiler;
+import org.bitbuckets.lib.tune.IValueTuner;
+import org.bitbuckets.lib.vendor.LoggingConstants;
 
 import static org.bitbuckets.robot.RobotConstants.SET_MAXCONFIGTIME_MS;
 
@@ -21,6 +24,7 @@ import static org.bitbuckets.robot.RobotConstants.SET_MAXCONFIGTIME_MS;
  */
 @Deprecated
 public class TalonSetup implements ISetup<IMotorController> {
+
 
     final int canId;
     final boolean invert;
@@ -40,31 +44,32 @@ public class TalonSetup implements ISetup<IMotorController> {
 
     @Override
     public TalonMotorController build(ProcessPath path) {
-        //signal for talon boot (find can id)
-        StartupLogger ctre_boot = path.generateStartupLogger("ctre-boot");
-        //signal for talon configuration
-        StartupLogger ctre_config = path.generateStartupLogger("ctre-config");
-        StartupLogger log_register = path.generateStartupLogger("ctre-register-loops");
 
-        ctre_boot.signalProcessing();
+        //signal for talon boot (find can id)
+        SetupProfiler ctre_boot = path.generateSpanLogger("ctre-boot");
+        //signal for talon configuration
+        SetupProfiler ctre_config = path.generateSpanLogger("ctre-config");
+        SetupProfiler log_register = path.generateSpanLogger("ctre-register-loops");
+
+        ctre_boot.markProcessing();
         WPI_TalonFX talonFX = new WPI_TalonFX(canId); //talon is up!
-        ctre_boot.signalCompleted();
+        ctre_boot.markCompleted();
 
         //CONFIGURATION SECTOR
-        ctre_config.signalProcessing();
+        ctre_config.markProcessing();
 
         if (talonFX.configVoltageCompSaturation(12, SET_MAXCONFIGTIME_MS) != ErrorCode.OK) {
-            ctre_config.signalErrored("cant config voltage sat");
+            ctre_config.markErrored("cant config voltage sat");
         }
 
         talonFX.enableVoltageCompensation(true);
 
         if (talonFX.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, currentLimit, 0, 0), SET_MAXCONFIGTIME_MS) != ErrorCode.OK) {
-            ctre_config.signalErrored("cant config supply limit");
+            ctre_config.markErrored("cant config supply limit");
         }
 
         if (talonFX.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, 0, SET_MAXCONFIGTIME_MS) != ErrorCode.OK) {
-            ctre_config.signalErrored("cant config integrated sensor on slot 0");
+            ctre_config.markErrored("cant config integrated sensor on slot 0");
         }
 
         talonFX.config_kP(0, pidConstants[PIDIndex.P]);
@@ -72,7 +77,7 @@ public class TalonSetup implements ISetup<IMotorController> {
         talonFX.config_kD(0, pidConstants[PIDIndex.D]);
 
         if (talonFX.getLastError() != ErrorCode.OK) {
-            ctre_config.signalErrored("cant config pid");
+            ctre_config.markErrored("cant config pid");
         }
 
         //TODO is this right? if we invert sensor phase AND output does pid still work?
@@ -80,9 +85,9 @@ public class TalonSetup implements ISetup<IMotorController> {
         talonFX.setInverted(invert);
         talonFX.setNeutralMode(NeutralMode.Brake);
 
-        ctre_config.signalCompleted();
+        ctre_config.markCompleted();
 
-        DataLogger<TalonDataAutoGen> logger = path.generatePushDataLogger(TalonDataAutoGen::new); //TODO
+        DataLogger<MotorControllerDataAutoGen> logger = path.generatePushDataLogger(MotorControllerDataAutoGen::new); //TODO
         TalonMotorController talon = new TalonMotorController(
                 talonFX,
                 mechanismFactor,
@@ -91,13 +96,15 @@ public class TalonSetup implements ISetup<IMotorController> {
         );
 
 
+        IValueTuner<double[]> valueTuner = path.generateValueTuner("pid", PIDIndex.CONSTANTS(0,0,0,0,0));
         TalonSimulationAspect sim = new TalonSimulationAspect(talonFX, invert);
-        TalonTuningAspect tuningAspect = new TalonTuningAspect(talonFX, null);
+        TalonTuningAspect tuningAspect = new TalonTuningAspect(talonFX, valueTuner);
 
-        log_register.signalProcessing();
-        path.registerLoop(talon, "teleop-loop");
+        log_register.markProcessing();
+        path.registerLoop(talon, LoggingConstants.LOGGING_PERIOD, "logging-loop");
+        path.registerLoop(tuningAspect, LoggingConstants.TUNING_PERIOD, "tuning-loop" );
         path.registerSimLoop(sim, "simulate-loop");
-        log_register.signalCompleted();
+        log_register.markCompleted();
 
 
         return talon;

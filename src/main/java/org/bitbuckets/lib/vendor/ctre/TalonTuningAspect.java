@@ -2,17 +2,19 @@ package org.bitbuckets.lib.vendor.ctre;
 
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import org.bitbuckets.lib.hardware.PIDIndex;
+import org.bitbuckets.lib.tune.IValueTuner;
 import org.bitbuckets.lib.tune.ValueTuner;
 
 /**
  * Tunes a talon based on the funny tuneables
  */
+@Deprecated
 public class TalonTuningAspect implements Runnable {
 
     final TalonFX tuneableMotor;
-    final ValueTuner<double[]> pidConstants;
+    final IValueTuner<double[]> pidConstants;
 
-    public TalonTuningAspect(TalonFX tuneableMotor, ValueTuner<double[]> pidConstants) {
+    public TalonTuningAspect(TalonFX tuneableMotor, IValueTuner<double[]> pidConstants) {
         this.tuneableMotor = tuneableMotor;
         this.pidConstants = pidConstants;
     }

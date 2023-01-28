@@ -5,7 +5,7 @@ import com.ctre.phoenix.sensors.*;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.lib.hardware.IEncoder;
-import org.bitbuckets.lib.log.StartupLogger;
+import org.bitbuckets.lib.SetupProfiler;
 
 public class FilteredEncoderSetup implements ISetup<FilteredEncoder> {
 
@@ -45,10 +45,10 @@ public class FilteredEncoderSetup implements ISetup<FilteredEncoder> {
     //TODO test this all more
     @Override
     public FilteredEncoder build(ProcessPath path) {
-        StartupLogger initCancoder = path.generateStartupLogger("init-cancoder");
-        StartupLogger forceRelative = path.generateStartupLogger("force-relative");
+        SetupProfiler initCancoder = path.generateSpanLogger("init-cancoder");
+        SetupProfiler forceRelative = path.generateSpanLogger("force-relative");
 
-        initCancoder.signalProcessing();
+        initCancoder.markProcessing();
         CANCoderConfiguration config = new CANCoderConfiguration();
         config.initializationStrategy = SensorInitializationStrategy.BootToAbsolutePosition;
         config.sensorCoefficient = 2 * Math.PI / 4096.0;
@@ -60,21 +60,21 @@ public class FilteredEncoderSetup implements ISetup<FilteredEncoder> {
         CANCoder cancoder = new CANCoder(0);
         ErrorCode code = cancoder.configAllSettings(config, 250);
         if (code != null) {
-            initCancoder.signalErrored("cannot use can encoder for reading: bad encoder");
+            initCancoder.markErrored("cannot use can encoder for reading: bad encoder");
         }
         CANCoderFaults faults = new CANCoderFaults();
         cancoder.getFaults(faults);
 
         if (faults.hasAnyFault()) {
-            initCancoder.signalErrored("should not have any faults");
+            initCancoder.markErrored("should not have any faults");
         }
-        initCancoder.signalCompleted();
+        initCancoder.markCompleted();
 
-        forceRelative.signalProcessing();
+        forceRelative.markProcessing();
         double lastAbsolutePosition = retrieveCanCoderReadout_mechanismRadians(cancoder);
         IEncoder relativeEncoder = relative.build(path);
         forcePositionToEncoder(relativeEncoder, lastAbsolutePosition);
-        forceRelative.signalCompleted();
+        forceRelative.markCompleted();
 
         return new FilteredEncoder(relativeEncoder);
     }
