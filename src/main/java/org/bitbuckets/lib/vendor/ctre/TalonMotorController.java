@@ -4,12 +4,14 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import org.bitbuckets.lib.hardware.IMotorController;
+import org.bitbuckets.lib.hardware.MotorControllerDataAutoGen;
 import org.bitbuckets.lib.log.DataLogger;
 
 /**
  * Talon, it's an encoder (hall) and motor all in one!
  * I hate robots, return to manual impulse control
  */
+@Deprecated
 class TalonMotorController implements IMotorController, Runnable {
 
     @Override
@@ -28,10 +30,10 @@ class TalonMotorController implements IMotorController, Runnable {
     final TalonFX talonFX;
     final double mechanismFactor;
     final double rotationsToMetersFactor;
-    final DataLogger<TalonDataAutoGen> dataLogger;
+    final DataLogger<MotorControllerDataAutoGen> dataLogger;
 
 
-    TalonMotorController(TalonFX talonFX, double mechanismFactor, double rotationsToMetersFactor, DataLogger<TalonDataAutoGen> dataLogger) {
+    TalonMotorController(TalonFX talonFX, double mechanismFactor, double rotationsToMetersFactor, DataLogger<MotorControllerDataAutoGen> dataLogger) {
         this.talonFX = talonFX;
         this.mechanismFactor = mechanismFactor;
         this.rotationsToMetersFactor = rotationsToMetersFactor;
