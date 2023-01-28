@@ -37,6 +37,7 @@ public class SparkSetup implements ISetup<IMotorController> {
 
     @Override
     public IMotorController build(ProcessPath path) {
+
         SetupProfiler configError = path.generateSetupProfiler("config-error");
         configError.markProcessing();
 
@@ -48,6 +49,7 @@ public class SparkSetup implements ISetup<IMotorController> {
 
         //vendor
         CANSparkMax spark = new CANSparkMax(canId, CANSparkMaxLowLevel.MotorType.kBrushless);
+        spark.restoreFactoryDefaults(); //defaulitesi
         spark.enableVoltageCompensation(12.0);
 
         if (motorConstants[MotorIndex.IS_BRAKE] == 1.0) {
