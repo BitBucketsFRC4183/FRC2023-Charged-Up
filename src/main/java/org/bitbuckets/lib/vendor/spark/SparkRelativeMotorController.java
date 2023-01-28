@@ -4,21 +4,21 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import org.bitbuckets.lib.hardware.IMotorController;
+import org.bitbuckets.lib.hardware.MotorControllerDataAutoGen;
 import org.bitbuckets.lib.hardware.MotorIndex;
 import org.bitbuckets.lib.log.DataLogger;
-import org.bitbuckets.lib.vendor.ctre.TalonDataAutoGen;
 
 public class SparkRelativeMotorController implements IMotorController, Runnable {
 
 
     final double[] motorConstants;
     final CANSparkMax sparkMax;
-    final DataLogger<TalonDataAutoGen> dataLogger;
+    final DataLogger<MotorControllerDataAutoGen> dataLogger;
 
     final RelativeEncoder sparkMaxRelativeEncoder;
     final SparkMaxPIDController sparkMaxPIDController;
 
-    SparkRelativeMotorController(double[] motorConstants, CANSparkMax sparkMax, DataLogger<TalonDataAutoGen> dataLogger) {
+    SparkRelativeMotorController(double[] motorConstants, CANSparkMax sparkMax, DataLogger<MotorControllerDataAutoGen> dataLogger) {
         this.motorConstants = motorConstants;
         this.sparkMax = sparkMax;
         this.dataLogger = dataLogger;
@@ -93,6 +93,8 @@ public class SparkRelativeMotorController implements IMotorController, Runnable 
     public void run() {
         dataLogger.process(data -> {
 
+
+            //TODO log
         });
     }
 }

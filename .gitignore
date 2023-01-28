@@ -336,4 +336,5 @@ networktables.json
 simgui.json
 simgui-window.json
 simgui-ds.json
-/src/main/java/org/bitbuckets/bootstrap/BuildConstants.java
+src/main/java/org/bitbuckets/bootstrap/BuildConstants.java
+analysis/*
