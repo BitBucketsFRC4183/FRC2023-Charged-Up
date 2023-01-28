@@ -132,9 +132,11 @@ public class RobotSetup implements ISetup<RobotContainer> {
 
         DriveSDSSubsystem driveSubsystem = new DriveSDSSubsystem(input, robotStateControl, gyroControl, autoAxisControl, driveControl, autoControl, pathTuneable);
 
+        //lowerJoint = canId 9
+        //upperJoint = canId 3
         ArmControlSetup armControlSetup = new ArmControlSetup(
-                new SparkSetup(3, MotorIndex.CONSTANTS(1,1,1,false)),
-                new SparkSetup(9, MotorIndex.CONSTANTS(1,1,1,false))
+                new SparkSetup(9, MotorIndex.CONSTANTS(1,1,1,false)),
+                new SparkSetup(3, MotorIndex.CONSTANTS(1,1,1,false))
         );
 
         ArmControl armControl = armControlSetup.build(path.addChild("arm-control"));
