@@ -1,9 +1,9 @@
 package org.bitbuckets.drive.old;
 
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import org.bitbuckets.lib.log.Loggable;
+import org.bitbuckets.lib.log.LoggableObsolete;
 
-@Loggable
+@LoggableObsolete
 public class OldDriveData {
 
     SwerveModuleState[] targetStates;

@@ -1,9 +1,9 @@
 package org.bitbuckets.lib.hardware;
 
-import org.bitbuckets.lib.log.Loggable;
+import org.bitbuckets.lib.log.LoggableObsolete;
 import org.bitbuckets.lib.log.LoggableKey;
 
-@Loggable
+@LoggableObsolete
 public class MotorControllerData {
 
     @LoggableKey("reset")
