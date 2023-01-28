@@ -26,12 +26,12 @@ public class SparkTuningAspect implements Runnable {
         }
 
         if (iTuner.hasUpdated()) {
-            sparkMaxPIDController.setP(iTuner.consumeValue());
+            sparkMaxPIDController.setI(iTuner.consumeValue());
         }
 
 
         if (dTuner.hasUpdated()) {
-            sparkMaxPIDController.setP(dTuner.consumeValue());
+            sparkMaxPIDController.setD(dTuner.consumeValue());
         }
 
     }

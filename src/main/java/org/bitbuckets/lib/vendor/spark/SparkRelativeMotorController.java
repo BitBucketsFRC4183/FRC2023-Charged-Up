@@ -93,8 +93,9 @@ public class SparkRelativeMotorController implements IMotorController, Runnable 
     public void run() {
         dataLogger.process(data -> {
 
+            data.busVoltage = sparkMax.getBusVoltage();
+            data.read_encoderAccumRads = sparkMax.getEncoder().getPosition();
 
-            //TODO log
         });
     }
 }
