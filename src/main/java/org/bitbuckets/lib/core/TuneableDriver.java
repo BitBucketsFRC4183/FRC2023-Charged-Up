@@ -25,7 +25,7 @@ public class TuneableDriver {
 
         NetworkTableEntry entry = table.getEntry(trueKey);
         if (defaultData instanceof Enum) {
-            entry.setDefaultValue(((Enum)defaultData).toString());
+            entry.setDefaultValue(((Enum<?>)defaultData).toString());
         } else {
             entry.setDefaultValue(defaultData);
         }
