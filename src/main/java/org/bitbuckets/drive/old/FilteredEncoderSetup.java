@@ -4,8 +4,8 @@ import com.ctre.phoenix.ErrorCode;
 import com.ctre.phoenix.sensors.*;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
-import org.bitbuckets.lib.hardware.IEncoder;
 import org.bitbuckets.lib.SetupProfiler;
+import org.bitbuckets.lib.hardware.IEncoder;
 
 public class FilteredEncoderSetup implements ISetup<FilteredEncoder> {
 

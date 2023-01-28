@@ -2,6 +2,7 @@ package org.bitbuckets.lib;
 
 import org.bitbuckets.lib.startup.SetupDriver;
 
+@Deprecated @DontUse
 public class SetupProfiler {
 
     final SetupDriver startupDriver;
