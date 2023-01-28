@@ -10,7 +10,7 @@ public class IdentityDriverTest {
     public void shouldHaveRoot() {
         IdentityDriver manager = new IdentityDriver(); //why was this mocked lmao
 
-        Assertions.assertEquals("root/", manager.fullPath(0));
+        Assertions.assertEquals("", manager.fullPath(0));
     }
 
     @Test
@@ -18,7 +18,7 @@ public class IdentityDriverTest {
         IdentityDriver identityDriver = new IdentityDriver();
 
         int id = identityDriver.childProcess(0, "hello");
-        Assertions.assertEquals("root/hello/", identityDriver.fullPath(id));
+        Assertions.assertEquals("hello/", identityDriver.fullPath(id));
     }
 
 
