@@ -6,22 +6,26 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 
 public class AutoControl {
-    private final PathPlannerTrajectory trajectory;
+
+
+    //PathPlannerTrajectory is an array so it can call from the different paths in the enum
+    private final PathPlannerTrajectory[] trajectory;
     private final HolonomicDriveController controller;
 
-    public AutoControl(PathPlannerTrajectory trajectory, HolonomicDriveController controller) {
+    //creates paths and Holonomic Controller (used in PathPlanner and to get the code to run the path)
+    public AutoControl(PathPlannerTrajectory[] trajectory, HolonomicDriveController controller) {
         this.trajectory = trajectory;
         this.controller = controller;
     }
 
     public ChassisSpeeds getAutoChassisSpeeds(AutoPath path, double time, Pose2d pose) {
 
-        var desiredState = (PathPlannerTrajectory.PathPlannerState) trajectory.sample(time);
+        var desiredState = (PathPlannerTrajectory.PathPlannerState) trajectory[0].sample(time);
 
         return controller.calculate(pose, desiredState, desiredState.holonomicRotation);
     }
 
     public double getTrajectoryTime(AutoPath path) {
-        return trajectory.getTotalTimeSeconds();
+        return trajectory[0].getTotalTimeSeconds();
     }
 }
