@@ -21,6 +21,11 @@ public class AutoControlSetup implements ISetup<AutoControl> {
 
         load.markProcessing();
         PathPlannerTrajectory trajectory = PathPlanner.loadPath("test path", new PathConstraints(4.0, 3.0));
+        PathPlannerTrajectory[] traj = new PathPlannerTrajectory[]{
+                
+        };
+        //i am definitely coding and not pretending to code
+
         //load paths
 
         load.markCompleted();
@@ -46,6 +51,6 @@ public class AutoControlSetup implements ISetup<AutoControl> {
         );
         gen.markCompleted();
 
-        return new AutoControl(trajectory, controller);
+        return new AutoControl(traj, controller);
     }
 }
