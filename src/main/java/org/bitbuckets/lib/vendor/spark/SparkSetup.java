@@ -4,14 +4,13 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
-import org.bitbuckets.lib.hardware.IMotorController;
-import org.bitbuckets.lib.hardware.MotorControllerDataAutoGen;
-import org.bitbuckets.lib.hardware.MotorIndex;
-import org.bitbuckets.lib.log.DataLogger;
 import org.bitbuckets.lib.SetupProfiler;
+import org.bitbuckets.lib.hardware.IMotorController;
+import org.bitbuckets.lib.hardware.MotorConstants;
+import org.bitbuckets.lib.hardware.MotorControllerDataAutoGen;
+import org.bitbuckets.lib.log.DataLogger;
 import org.bitbuckets.lib.tune.IValueTuner;
-import org.bitbuckets.lib.vendor.LoggingConstants;
-import org.bitbuckets.robot.RobotConstants;
+import org.bitbuckets.lib.log.LoggingConstants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,9 +27,9 @@ public class SparkSetup implements ISetup<IMotorController> {
 
 
     final int canId;
-    final double[] motorConstants;
+    final MotorConstants motorConstants;
 
-    public SparkSetup(int canId, double[] motorConstants) {
+    public SparkSetup(int canId, MotorConstants motorConstants) {
         this.canId = canId;
         this.motorConstants = motorConstants;
     }
@@ -52,15 +51,14 @@ public class SparkSetup implements ISetup<IMotorController> {
         spark.restoreFactoryDefaults(); //defaulitesi
         spark.enableVoltageCompensation(12.0);
 
-        if (motorConstants[MotorIndex.IS_BRAKE] == 1.0) {
+        if (motorConstants.shouldBreakOnNoCommand) {
             spark.setIdleMode(CANSparkMax.IdleMode.kBrake);
         } else {
             spark.setIdleMode(CANSparkMax.IdleMode.kCoast);
         }
 
-        boolean inverted = motorConstants[MotorIndex.INVERTED] == 1.0;
-        spark.setInverted(inverted);
-        spark.setSmartCurrentLimit((int) motorConstants[MotorIndex.CURRENT_LIMIT]);
+        spark.setInverted(motorConstants.isInverted);
+        spark.setSmartCurrentLimit((int) motorConstants.currentLimit);
 
         DataLogger<MotorControllerDataAutoGen> logger = path.generatePushDataLogger(MotorControllerDataAutoGen::new);
 

@@ -1,6 +1,9 @@
 package org.bitbuckets.drive.module;
 
-import com.ctre.phoenix.sensors.*;
+import com.ctre.phoenix.sensors.CANCoderConfiguration;
+import com.ctre.phoenix.sensors.SensorInitializationStrategy;
+import com.ctre.phoenix.sensors.SensorTimeBase;
+import com.ctre.phoenix.sensors.WPI_CANCoder;
 import edu.wpi.first.hal.HAL;
 import org.bitbuckets.drive.old.FilteredEncoderSetup;
 import org.bitbuckets.lib.util.CTRETestUtil;

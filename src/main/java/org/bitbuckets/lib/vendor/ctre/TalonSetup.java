@@ -7,13 +7,12 @@ import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
+import org.bitbuckets.lib.SetupProfiler;
 import org.bitbuckets.lib.hardware.IMotorController;
 import org.bitbuckets.lib.hardware.MotorControllerDataAutoGen;
-import org.bitbuckets.lib.hardware.PIDIndex;
 import org.bitbuckets.lib.log.DataLogger;
-import org.bitbuckets.lib.SetupProfiler;
 import org.bitbuckets.lib.tune.IValueTuner;
-import org.bitbuckets.lib.vendor.LoggingConstants;
+import org.bitbuckets.lib.log.LoggingConstants;
 
 import static org.bitbuckets.robot.RobotConstants.SET_MAXCONFIGTIME_MS;
 
@@ -72,10 +71,6 @@ public class TalonSetup implements ISetup<IMotorController> {
             ctre_config.markErrored("cant config integrated sensor on slot 0");
         }
 
-        talonFX.config_kP(0, pidConstants[PIDIndex.P]);
-        talonFX.config_kI(0, pidConstants[PIDIndex.I]);
-        talonFX.config_kD(0, pidConstants[PIDIndex.D]);
-
         if (talonFX.getLastError() != ErrorCode.OK) {
             ctre_config.markErrored("cant config pid");
         }
@@ -96,7 +91,7 @@ public class TalonSetup implements ISetup<IMotorController> {
         );
 
 
-        IValueTuner<double[]> valueTuner = path.generateValueTuner("pid", PIDIndex.CONSTANTS(0,0,0,0,0));
+        IValueTuner<double[]> valueTuner = path.generateValueTuner("pid", new double[5]);
         TalonSimulationAspect sim = new TalonSimulationAspect(talonFX, invert);
         TalonTuningAspect tuningAspect = new TalonTuningAspect(talonFX, valueTuner);
 

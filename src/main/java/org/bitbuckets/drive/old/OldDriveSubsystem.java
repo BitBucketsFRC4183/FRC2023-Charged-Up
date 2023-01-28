@@ -5,11 +5,11 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.Timer;
+import org.bitbuckets.auto.AutoControl;
+import org.bitbuckets.auto.AutoPath;
 import org.bitbuckets.drive.DriveConstants;
 import org.bitbuckets.drive.DriveFSM;
 import org.bitbuckets.drive.DriveInput;
-import org.bitbuckets.auto.AutoControl;
-import org.bitbuckets.auto.AutoPath;
 import org.bitbuckets.robot.RobotConstants;
 
 

@@ -2,9 +2,9 @@ package org.bitbuckets.drive;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import org.bitbuckets.drive.module.DriveModule;
 import org.bitbuckets.drive.old.OldDriveControl;
 import org.bitbuckets.drive.old.OldDriveDataAutoGen;
-import org.bitbuckets.drive.module.DriveModule;
 import org.bitbuckets.lib.log.DataLogger;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

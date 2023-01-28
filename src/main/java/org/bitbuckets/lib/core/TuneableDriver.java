@@ -3,7 +3,6 @@ package org.bitbuckets.lib.core;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableEvent;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import org.bitbuckets.lib.tune.ValueTuner;
 
 import java.util.EnumSet;
@@ -25,7 +24,7 @@ public class TuneableDriver {
 
         NetworkTableEntry entry = table.getEntry(trueKey);
         if (defaultData instanceof Enum) {
-            entry.setDefaultValue(((Enum<?>)defaultData).toString());
+            entry.setDefaultValue(defaultData.toString());
         } else {
             entry.setDefaultValue(defaultData);
         }

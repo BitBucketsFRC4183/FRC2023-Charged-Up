@@ -1,4 +1,4 @@
-package org.bitbuckets.lib.vendor;
+package org.bitbuckets.lib.log;
 
 public interface LoggingConstants {
 

@@ -3,8 +3,8 @@ package org.bitbuckets.lib.hardware;
 import org.bitbuckets.lib.util.AngleUtil;
 
 /**
- * Represents an encoder that's on a motor controller
- * it's being read from the motor controller and not a DIO/analog port on the RIO
+ * This represents something that is or has an encoder.
+ * Encoders count movement of something (usually an axis)
  */
 public interface IEncoder extends IRaw {
 
