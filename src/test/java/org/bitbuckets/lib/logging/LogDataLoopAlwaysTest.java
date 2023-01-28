@@ -1,4 +1,4 @@
-package org.bitbuckets.lib.network.log;
+package org.bitbuckets.lib.logging;
 
 import org.junit.jupiter.api.Test;
 
