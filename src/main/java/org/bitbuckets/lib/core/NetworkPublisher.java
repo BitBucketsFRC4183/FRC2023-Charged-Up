@@ -4,6 +4,7 @@ import edu.wpi.first.networktables.*;
 import org.bitbuckets.robot.RobotConstants;
 import org.littletonrobotics.junction.LogDataReceiver;
 import org.littletonrobotics.junction.LogTable;
+import org.littletonrobotics.junction.networktables.NT4Publisher;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,6 +32,7 @@ public class NetworkPublisher implements LogDataReceiver {
             counter = 0;
             timestampPublisher.set(table.getTimestamp(), table.getTimestamp());
 
+
             Map<String, LogTable.LogValue> newMap = table.getAll(false);
 
             for (Map.Entry<String, LogTable.LogValue> field : newMap.entrySet()) {
@@ -46,19 +48,39 @@ public class NetworkPublisher implements LogDataReceiver {
 
                 // Write new data
                 switch (field.getValue().type) {
-                    case Raw -> publisher.setRaw(field.getValue().getRaw(), table.getTimestamp());
-                    case Boolean -> publisher.setBoolean(field.getValue().getBoolean(), table.getTimestamp());
-                    case BooleanArray ->
-                            publisher.setBooleanArray(field.getValue().getBooleanArray(), table.getTimestamp());
-                    case Integer -> publisher.setInteger(field.getValue().getInteger(), table.getTimestamp());
-                    case IntegerArray ->
-                            publisher.setIntegerArray(field.getValue().getIntegerArray(), table.getTimestamp());
-                    case Float -> publisher.setFloat(field.getValue().getFloat(), table.getTimestamp());
-                    case FloatArray -> publisher.setFloatArray(field.getValue().getFloatArray(), table.getTimestamp());
-                    case Double -> publisher.setDouble(field.getValue().getDouble(), table.getTimestamp());
-                    case DoubleArray -> publisher.setDoubleArray(field.getValue().getDoubleArray(), table.getTimestamp());
-                    case String -> publisher.setString(field.getValue().getString(), table.getTimestamp());
-                    case StringArray -> publisher.setStringArray(field.getValue().getStringArray(), table.getTimestamp());
+                    case Raw:
+                        publisher.setRaw(field.getValue().getRaw(), table.getTimestamp());
+                        break;
+                    case Boolean:
+                        publisher.setBoolean(field.getValue().getBoolean(), table.getTimestamp());
+                        break;
+                    case BooleanArray:
+                        publisher.setBooleanArray(field.getValue().getBooleanArray(), table.getTimestamp());
+                        break;
+                    case Integer:
+                        publisher.setInteger(field.getValue().getInteger(), table.getTimestamp());
+                        break;
+                    case IntegerArray:
+                        publisher.setIntegerArray(field.getValue().getIntegerArray(), table.getTimestamp());
+                        break;
+                    case Float:
+                        publisher.setFloat(field.getValue().getFloat(), table.getTimestamp());
+                        break;
+                    case FloatArray:
+                        publisher.setFloatArray(field.getValue().getFloatArray(), table.getTimestamp());
+                        break;
+                    case Double:
+                        publisher.setDouble(field.getValue().getDouble(), table.getTimestamp());
+                        break;
+                    case DoubleArray:
+                        publisher.setDoubleArray(field.getValue().getDoubleArray(), table.getTimestamp());
+                        break;
+                    case String:
+                        publisher.setString(field.getValue().getString(), table.getTimestamp());
+                        break;
+                    case StringArray:
+                        publisher.setStringArray(field.getValue().getStringArray(), table.getTimestamp());
+                        break;
                 }
             }
 
