@@ -9,7 +9,14 @@ public class ElevatorSubsystem {
         this.elevatorInput = elevatorInput;
     }
 
+    public void robotPeriodic()
+    {
+        elevatorControl.setElevatorMech2d();
+    }
+
+
     public void teleopPeriodic(){
+
         if(elevatorInput.getInputDpadUp())
         {
             elevatorControl.extendUp();

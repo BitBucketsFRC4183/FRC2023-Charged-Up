@@ -32,6 +32,7 @@ public class RobotContainer {
 
     public void robotPeriodic() {
         driveSubsystem.robotPeriodic();
+        elevatorSubsystem.robotPeriodic();
     }
 
 
