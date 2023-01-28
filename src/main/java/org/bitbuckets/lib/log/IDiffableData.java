@@ -3,6 +3,7 @@ package org.bitbuckets.lib.log;
 import org.bitbuckets.lib.core.LogDriver;
 
 //this is implemented by my annotation generator which will dynamically figure out what to do
+@Deprecated
 public interface IDiffableData {
 
     /**
