@@ -1,4 +1,4 @@
-package org.bitbuckets.lib.network;
+package org.bitbuckets.lib.logging;
 
 import edu.wpi.first.hal.HAL;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;

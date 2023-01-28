@@ -5,6 +5,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import org.bitbuckets.drive.controlsds.sds.AbsoluteEncoder;
 import org.bitbuckets.drive.controlsds.sds.SteerController;
 
+@Deprecated
 public class Falcon500SteerController implements SteerController {
     private static final int ENCODER_RESET_ITERATIONS = 500;
     private static final double ENCODER_RESET_MAX_ANGULAR_VELOCITY = Math.toRadians(0.5);

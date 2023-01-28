@@ -1,4 +1,4 @@
-package org.bitbuckets.lib.network;
+package org.bitbuckets.lib.id;
 
 import org.bitbuckets.lib.core.IdentityDriver;
 import org.junit.jupiter.api.Assertions;
