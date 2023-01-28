@@ -1,11 +1,10 @@
-package org.bitbuckets.lib.vendor.ctre;
+package org.bitbuckets.lib.hardware;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.bitbuckets.lib.log.Loggable;
 import org.bitbuckets.lib.log.LoggableKey;
 
 @Loggable
-public class TalonData {
+public class MotorControllerData {
 
     @LoggableKey("reset")
     public boolean isResetting = false;

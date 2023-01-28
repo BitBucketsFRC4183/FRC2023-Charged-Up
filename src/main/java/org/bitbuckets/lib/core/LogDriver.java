@@ -1,7 +1,11 @@
 package org.bitbuckets.lib.core;
 
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import org.bitbuckets.lib.startup.StartupState;
 import org.littletonrobotics.junction.Logger;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Users of the library should never see this
@@ -9,27 +13,28 @@ import org.littletonrobotics.junction.Logger;
  */
 public class LogDriver {
 
+    final Logger logger;
     final IdentityDriver identityDriver;
 
-    public LogDriver(IdentityDriver identityDriver) {
+    public LogDriver(Logger logger, IdentityDriver identityDriver) {
+        this.logger = logger;
         this.identityDriver = identityDriver;
     }
 
-
     public void report(int id, String keyName, double data) {
-        Logger.getInstance().recordOutput(identityDriver.fullPath(id) + keyName, data);
+        logger.recordOutput(identityDriver.fullPath(id) + keyName, data);
     }
 
     public void report(int id, String keyName, SwerveModuleState[] moduleStates) {
-        Logger.getInstance().recordOutput(identityDriver.fullPath(id) + keyName, moduleStates);
+        logger.recordOutput(identityDriver.fullPath(id) + keyName, moduleStates);
     }
 
     public void report(int id, String keyName, boolean bool) {
-        Logger.getInstance().recordOutput(identityDriver.fullPath(id) + keyName, bool);
+        logger.recordOutput(identityDriver.fullPath(id) + keyName, bool);
     }
 
     public void report(int id, String keyName, String str) {
-        Logger.getInstance().recordOutput(identityDriver.fullPath(id) + keyName, str);
+        logger.recordOutput(identityDriver.fullPath(id) + keyName, str);
     }
 
 
