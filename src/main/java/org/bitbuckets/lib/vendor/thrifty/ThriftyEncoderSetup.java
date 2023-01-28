@@ -17,6 +17,7 @@ public class ThriftyEncoderSetup implements ISetup<IAbsoluteEncoder> {
     @Override
     public IAbsoluteEncoder build(ProcessPath path) {
 
+        //this was throwing errors when i was trying to build
         StartupLogger libSetup = path.generateStartupLogger("lib-setup");
         AnalogInput input = new AnalogInput(channel);
 

@@ -20,7 +20,7 @@ public class AutoControl {
 
     public ChassisSpeeds getAutoChassisSpeeds(AutoPath path, double time, Pose2d pose) {
 
-        var desiredState = (PathPlannerTrajectory.PathPlannerState) trajectory[0].sample(time);
+        var desiredState = (PathPlannerTrajectory.PathPlannerState) trajectory[path.index].sample(time);
 
         return controller.calculate(pose, desiredState, desiredState.holonomicRotation);
     }

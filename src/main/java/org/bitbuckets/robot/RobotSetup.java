@@ -20,7 +20,6 @@ import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.lib.hardware.PIDIndex;
 import org.bitbuckets.lib.tune.IValueTuner;
-
 import org.bitbuckets.lib.vendor.ctre.TalonSetup;
 
 public class RobotSetup implements ISetup<RobotContainer> {
@@ -126,6 +125,7 @@ public class RobotSetup implements ISetup<RobotContainer> {
         AutoControl autoControl = new AutoControlSetup().build(path.addChild("auto-control"));
         GyroControl gyroControl = new GyroControlSetup(5).build(path.addChild("gyro-control"));
         AutoAxisControl autoAxisControl = new AutoAxisSetup().build(path.addChild("axis-control"));
+        //also throwing erros since I'm no longer using TestPath, but rather the array
         IValueTuner<AutoPath> pathTuneable = path.generateValueTuner("path", AutoPath.TEST_PATH);
 
 
