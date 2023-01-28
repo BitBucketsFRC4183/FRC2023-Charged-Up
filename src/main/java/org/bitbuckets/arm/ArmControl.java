@@ -22,13 +22,13 @@ public class ArmControl {
 
     public void calibrateLowerArm() {
         System.out.println("Calibrated lower arm!");
-        lowerJoint.forceOffset(convertDegreesToRotations(-90));
+        lowerJoint.forceOffset(convertMechanismRotationtoRawRotation_lowerJoint(convertDegreesToRotation(-90)));
 
     }
 
     public void calibrateUpperArm() {
         System.out.println("Calibrated upper arm!");
-        upperJoint.forceOffset(convertDegreesToRotations(0));
+        upperJoint.forceOffset(convertMechanismRotationtoRawRotation_upperJoint(convertDegreesToRotation(0)));
 
     }
 
@@ -48,25 +48,34 @@ public class ArmControl {
     //sets angular position of the upper joint on the arm
     public void moveUpperArm(double percentOutput) {
 
-        upperJoint.moveAtPercent(percentOutput * ArmConstants.CONTROL_JOINT_OUTPUT);
+        //upperJoint.moveAtPercent(percentOutput * ArmConstants.CONTROL_JOINT_OUTPUT);
+        upperJoint.moveToPosition(ArmConstants.upperArmConversionFactor);
 
     }
 
-    public double convertDegreesToRotations(double degrees) {
+    public double convertDegreesToRotation(double degrees) {
         return degrees / 360.;
     }
 
+    public double convertMechanismRotationtoRawRotation_lowerJoint(double mechanismRotation)
+    {
+        return mechanismRotation * ArmConstants.lowerArmGearRatio;
+    }
 
-    public void moveToLowPos() {
-
+    public double convertMechanismRotationtoRawRotation_upperJoint(double mechanismRotation) {
+        return mechanismRotation * ArmConstants.upperArmGearRatio;
     }
 
 
-    public void movetoHighPos() {
+        public void moveToLowPos() {
 
     }
 
     public void moveToMidPos() {
+
+    }
+
+    public void movetoHighPos() {
 
     }
 

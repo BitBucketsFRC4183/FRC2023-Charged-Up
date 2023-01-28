@@ -11,6 +11,7 @@ import static org.bitbuckets.lib.util.MathUtil.random;
  * <p>
  * i didnt write half of this and the code quality tells.
  */
+@Deprecated
 class TalonSimulationAspect implements Runnable {
 
     final TalonFX internalController;
