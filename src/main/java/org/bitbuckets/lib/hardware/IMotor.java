@@ -36,9 +36,8 @@ public interface IMotor extends IRaw {
     void moveAtVelocity(double velocity_encoderMetersPerSecond);
 
     /**
-     * TODO migrate this to a sane unit type
      *
-     * @return
+     * @return The current PID setpoint, if using PID, in the raw units of the motor controller
      */
     double getSetpoint_rawUnits();
 
