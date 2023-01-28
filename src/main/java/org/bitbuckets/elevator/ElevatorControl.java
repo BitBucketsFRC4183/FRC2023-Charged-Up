@@ -17,8 +17,15 @@ public class ElevatorControl {
     private MechanismLigament2d elevator;
     private MechanismLigament2d elevatorWrist;
 
+
     private static final double elevatorMinLength   = 2;
     final double elevatorAngle = 90;
+
+    double endEffectorMagnitude = 1;
+
+    double x1 = 0;
+    double theta1 = 0;
+
 
 
 
@@ -41,23 +48,57 @@ public class ElevatorControl {
         elevator.setAngle(90-Math.toDegrees(leftTilt.getMechanismPositionAccumulated_radians()));
         elevatorWrist.setAngle(90);
 
+
+    }
+
+    public void setElevatorMech2dIK()
+    {
+        SmartDashboard.putNumber("extensionX1",x1);
+        SmartDashboard.putNumber("angleTheta1",theta1);
+        elevator.setLength(x1);
+        elevator.setAngle(theta1);
+        elevatorWrist.setAngle(90);
+
+
+    }
+
+    public void goToPosition(double phi, double r)
+    {
+        double x = Math.sqrt(r*r) - endEffectorMagnitude*endEffectorMagnitude;
+        double theta = phi - Math.atan(endEffectorMagnitude/(Math.sqrt(x)));
+        x1 = x;
+        theta1 = theta;
+
+
+    }
+
+    public void gotoPositionButton()
+    {
+        goToPosition(60,2);
+
     }
 
 
     public void extendUp()
     {
         rightExtend.moveAtPercent(20);
+
+
+
     }
     public void extendDown()
     {
+
         rightExtend.moveAtPercent(-20);
     }
     public void tiltForward()
     {
+
         rightTilt.moveAtPercent(20);
     }
     public void tiltBack()
     {
+
         rightTilt.moveAtPercent(-20);
     }
 

@@ -1,5 +1,7 @@
 package org.bitbuckets.elevator;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 public class ElevatorSubsystem {
     final ElevatorControl elevatorControl;
     final ElevatorInput elevatorInput;
@@ -11,17 +13,21 @@ public class ElevatorSubsystem {
 
     public void robotPeriodic()
     {
-        elevatorControl.setElevatorMech2d();
+        elevatorControl.setElevatorMech2dIK();
     }
 
 
     public void teleopPeriodic(){
 
+        if(elevatorInput.getInputCirlce())
+        {
+            elevatorControl.gotoPositionButton();
+        }
         if(elevatorInput.getInputDpadUp())
         {
             elevatorControl.extendUp();
         }
-        if(elevatorInput.getInputDpadUp())
+        if(elevatorInput.getInputDpadDown())
         {
             elevatorControl.extendDown();
         }

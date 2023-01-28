@@ -6,11 +6,14 @@ import org.bitbuckets.robot.XboxConstants;
 
 public class ElevatorInput {
     final Joystick joystick;
-
     public ElevatorInput(Joystick joystick) {
         this.joystick = joystick;
     }
 
+    public boolean getInputCirlce()
+    {
+        return joystick.getRawButtonPressed(XboxConstants.CIRCLE);
+    }
     public boolean getInputDpadUp()
     {
         int pressed = joystick.getPOV();
