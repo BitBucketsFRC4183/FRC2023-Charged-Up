@@ -3,9 +3,6 @@ package org.bitbuckets.bootstrap;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
-import edu.wpi.first.wpilibj.shuffleboard.EventImportance;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.lib.core.*;
 import org.bitbuckets.robot.RobotContainer;
@@ -66,8 +63,8 @@ public class Robot extends LoggedRobot {
             robotHandle = setup.build(rootPath);
         } catch (Exception e) {
             DriverStation.reportError("[BUCKET] Critical exception during setup: " + e.getLocalizedMessage(), e.getStackTrace());
-        }
 
+        }
 
 
     }

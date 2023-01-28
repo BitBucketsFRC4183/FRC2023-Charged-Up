@@ -36,9 +36,9 @@ public class NeoSteerController implements ISteerController {
         if (motor.getVelocityRaw() < ENCODER_RESET_MAX_ANGULAR_VELOCITY) {
             if (++resetIteration >= ENCODER_RESET_ITERATIONS) {
                 resetIteration = 0;
-                double absoluteAngle = encoder.getAbsoluteAngle();
-                motor.forceOffset(absoluteAngle);
-                currentAngleRadians = absoluteAngle;
+//                double absoluteAngle = encoder.getAbsoluteAngle();
+//                motor.forceOffset(absoluteAngle);
+//                currentAngleRadians = absoluteAngle;
             }
         } else {
             resetIteration = 0;

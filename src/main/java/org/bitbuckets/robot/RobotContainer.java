@@ -26,7 +26,7 @@ public class RobotContainer {
 
     //Shouldn't need to do anything here
     public void teleopPeriodic() {
-        armSubsystem.teleopPeriodic();
+//        armSubsystem.teleopPeriodic();
     }
 
 }

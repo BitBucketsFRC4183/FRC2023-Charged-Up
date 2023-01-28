@@ -1,9 +1,6 @@
 package org.bitbuckets.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
-import org.bitbuckets.arm.ArmControl;
-import org.bitbuckets.arm.ArmControlSetup;
-import org.bitbuckets.arm.ArmInput;
 import org.bitbuckets.arm.ArmSubsystem;
 import org.bitbuckets.auto.AutoControl;
 import org.bitbuckets.auto.AutoControlSetup;
@@ -24,7 +21,6 @@ import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.lib.hardware.PIDIndex;
 import org.bitbuckets.lib.tune.IValueTuner;
-import org.bitbuckets.lib.vendor.ctre.TalonSetup;
 import org.bitbuckets.lib.vendor.spark.SparkSetup;
 import org.bitbuckets.lib.vendor.thrifty.ThriftyEncoderSetup;
 
@@ -124,37 +120,51 @@ public class RobotSetup implements ISetup<RobotContainer> {
 //                backRightModule
 //        ).build(path.addChild("drive-control"));
 
+        int frontLeftModuleDriveMotor_ID = 5;
+        int frontLeftModuleSteerMotor_ID = 4;
+        int frontLeftModuleSteerEncoder_CHANNEL = 1;
 
-//        DriveControlSDS driveControl = new DriveControlSDSSetup().build(path.addChild("drive-control"));
+        int frontRightModuleDriveMotor_ID = 6;
+        int frontRightModuleSteerMotor_ID = 7;
+        int frontRightModuleSteerEncoder_CHANNEL = 2;
+
+        int backLeftModuleDriveMotor_ID = 1;
+        int backLeftModuleSteerMotor_ID = 2;
+        int backLeftModuleSteerEncoder_CHANNEL = 3;
+
+        int backRightModuleDriveMotor_ID = 8;
+        int backRightModuleSteerMotor_ID = 10;
+        int backRightModuleSteerEncoder_CHANNEL = 4;
+
         DriveControlSDS driveControl = new NeoControlSDSSetup(
                 new SwerveModuleSetup(
-                        new NeoDriveControllerSetup(new SparkSetup(1, PIDIndex.EMPTY), DriveSDSConstants.MK4I_L2),
+                        new NeoDriveControllerSetup(new SparkSetup(frontLeftModuleDriveMotor_ID, PIDIndex.EMPTY), DriveSDSConstants.MK4I_L2),
                         new NeoSteerControllerSetup(
-                                new SparkSetup(2, PIDIndex.EMPTY),
+                                new SparkSetup(frontLeftModuleSteerMotor_ID, PIDIndex.EMPTY),
                                 new ThriftyEncoderSetup(1),
                                 DriveSDSConstants.MK4I_L2
                         )
                 ),
                 new SwerveModuleSetup(
-                        new NeoDriveControllerSetup(new SparkSetup(3, PIDIndex.EMPTY), DriveSDSConstants.MK4I_L2),
+                        new NeoDriveControllerSetup(new SparkSetup(frontRightModuleDriveMotor_ID, PIDIndex.EMPTY), DriveSDSConstants.MK4I_L2),
                         new NeoSteerControllerSetup(
-                                new SparkSetup(4, PIDIndex.EMPTY),
+                                new SparkSetup(frontRightModuleSteerMotor_ID, PIDIndex.EMPTY),
                                 new ThriftyEncoderSetup(2),
                                 DriveSDSConstants.MK4I_L2
                         )
                 ),
                 new SwerveModuleSetup(
-                        new NeoDriveControllerSetup(new SparkSetup(5, PIDIndex.EMPTY), DriveSDSConstants.MK4I_L2),
+                        new NeoDriveControllerSetup(new SparkSetup(backLeftModuleDriveMotor_ID, PIDIndex.EMPTY), DriveSDSConstants.MK4I_L2),
                         new NeoSteerControllerSetup(
-                                new SparkSetup(6, PIDIndex.EMPTY),
+                                new SparkSetup(backLeftModuleSteerMotor_ID, PIDIndex.EMPTY),
                                 new ThriftyEncoderSetup(3),
                                 DriveSDSConstants.MK4I_L2
                         )
                 ),
                 new SwerveModuleSetup(
-                        new NeoDriveControllerSetup(new SparkSetup(7, PIDIndex.EMPTY), DriveSDSConstants.MK4I_L2),
+                        new NeoDriveControllerSetup(new SparkSetup(backRightModuleDriveMotor_ID, PIDIndex.EMPTY), DriveSDSConstants.MK4I_L2),
                         new NeoSteerControllerSetup(
-                                new SparkSetup(8, PIDIndex.EMPTY),
+                                new SparkSetup(backRightModuleSteerMotor_ID, PIDIndex.EMPTY),
                                 new ThriftyEncoderSetup(4),
                                 DriveSDSConstants.MK4I_L2
                         )
@@ -171,21 +181,23 @@ public class RobotSetup implements ISetup<RobotContainer> {
 
         DriveSDSSubsystem driveSubsystem = new DriveSDSSubsystem(input, robotStateControl, gyroControl, autoAxisControl, driveControl, autoControl, pathTuneable);
 
-        ArmInput armInput = new ArmInput(
-                new Joystick(1)
-        );
+//        ArmInput armInput = new ArmInput(
+//                new Joystick(1)
+//        );
 
 
-        ArmControlSetup armControlSetup = new ArmControlSetup(
-                new TalonSetup(1, false, 0, 0, 0, new double[]{0, 0, 0}),
-                new TalonSetup(2, false, 0, 0, 0, new double[]{0, 0, 0})
-        );
+//        ArmControlSetup armControlSetup = new ArmControlSetup(
+//                new TalonSetup(1, false, 0, 0, 0, new double[]{0, 0, 0}),
+//                new TalonSetup(2, false, 0, 0, 0, new double[]{0, 0, 0})
+//        );
 
-        ArmControl armControl = armControlSetup.build(path.addChild("arm-control"));
+//        ArmControl armControl = armControlSetup.build(path.addChild("arm-control"));
 
-        armInput = new ArmInput(new Joystick(1));
+//        armInput = new ArmInput(new Joystick(1));
 
-        ArmSubsystem armSubsystem = new ArmSubsystem(armInput, armControl);
+//        ArmSubsystem armSubsystem = new ArmSubsystem(armInput, armControl);
+        ArmSubsystem armSubsystem = null;
+
 
         //SYSTEMS_GREEN.setOn(); //LET'S WIN SOME DAMN REGIONALS!!
 

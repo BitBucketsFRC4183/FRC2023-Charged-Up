@@ -9,7 +9,6 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
@@ -203,7 +202,7 @@ public class DriveControlSDSSetup implements ISetup<DriveControlSDS> {
     ) {
         var driveController = createDriveController(driveMotorPort, DriveSDSConstants.MK4_L2);
         var steerController = createSteerController(steerMotorPort, steerEncoderPort, steerOffset, DriveSDSConstants.MK4_L2);
-        return new SwerveModule(driveController, steerController);
+        return new SwerveModule(null, driveController, steerController);
     }
 
     IDriveController createDriveController(int driveMotorPort, SwerveModuleConfiguration swerveModuleConfiguration) {
@@ -327,7 +326,7 @@ public class DriveControlSDSSetup implements ISetup<DriveControlSDS> {
 
             shm = canCoder.getLastError();
             if (shm.equals(ErrorCode.OK)) {
-                DriverStation.reportWarning("init took: " + initTime, false);
+//                DriverStation.reportWarning("init took: " + initTime, false);
                 break;
             }
             Timer.delay(0.1);
@@ -337,7 +336,7 @@ public class DriveControlSDSSetup implements ISetup<DriveControlSDS> {
         System.out.println("how many tume rune " + initTime);
 
 
-        DriverStation.reportWarning("BAD BAD BAD BAD BAD BAD B" + shm, false);
+//        DriverStation.reportWarning("BAD BAD BAD BAD BAD BAD B" + shm, false);
     }
 
 }

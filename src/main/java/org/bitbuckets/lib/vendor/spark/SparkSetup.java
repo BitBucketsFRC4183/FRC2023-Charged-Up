@@ -37,9 +37,9 @@ public class SparkSetup implements ISetup<IMotorController> {
         spark.setInverted(inverted);
 
         DataLogger<TalonDataAutoGen> logger = path.generatePushDataLogger(TalonDataAutoGen::new);
-        SparkTuningAspect sparkTuningAspect = new SparkTuningAspect(pid, spark.getPIDController());
-
-        path.registerLoop(sparkTuningAspect, 200, "pid");
+//        SparkTuningAspect sparkTuningAspect = new SparkTuningAspect(pid, spark.getPIDController());
+//
+//        path.registerLoop(sparkTuningAspect, 200, "pid");
         return new SparkRelativeMotorController(motorConstants, spark, logger);
     }
 

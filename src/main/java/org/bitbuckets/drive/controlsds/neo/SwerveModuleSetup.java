@@ -1,9 +1,6 @@
 package org.bitbuckets.drive.controlsds.neo;
 
-import org.bitbuckets.drive.controlsds.sds.IDriveController;
-import org.bitbuckets.drive.controlsds.sds.ISteerController;
-import org.bitbuckets.drive.controlsds.sds.ISwerveModule;
-import org.bitbuckets.drive.controlsds.sds.SwerveModule;
+import org.bitbuckets.drive.controlsds.sds.*;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
 
@@ -18,7 +15,8 @@ public class SwerveModuleSetup implements ISetup<ISwerveModule> {
 
     @Override
     public ISwerveModule build(ProcessPath path) {
-        return new SwerveModule(driveController.build(path.addChild("drive-controller")),
+        var logger = path.generatePushDataLogger(SwerveModuleDataAutoGen::new);
+        return new SwerveModule(logger, driveController.build(path.addChild("drive-controller")),
                 steerController.build(path.addChild("steer-controller")));
     }
 }
