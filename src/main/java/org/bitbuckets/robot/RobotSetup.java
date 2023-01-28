@@ -18,9 +18,11 @@ import org.bitbuckets.gyro.GyroControl;
 import org.bitbuckets.gyro.GyroControlSetup;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
+import org.bitbuckets.lib.hardware.MotorIndex;
 import org.bitbuckets.lib.hardware.PIDIndex;
 import org.bitbuckets.lib.tune.IValueTuner;
 import org.bitbuckets.lib.vendor.ctre.TalonSetup;
+import org.bitbuckets.lib.vendor.spark.SparkSetup;
 
 public class RobotSetup implements ISetup<RobotContainer> {
 
@@ -130,19 +132,14 @@ public class RobotSetup implements ISetup<RobotContainer> {
 
         DriveSDSSubsystem driveSubsystem = new DriveSDSSubsystem(input, robotStateControl, gyroControl, autoAxisControl, driveControl, autoControl, pathTuneable);
 
-        ArmInput armInput = new ArmInput(
-                new Joystick(1)
-        );
-
-
         ArmControlSetup armControlSetup = new ArmControlSetup(
-                new TalonSetup(1, false, 0, 0, 0, new double[]{0, 0, 0}),
-                new TalonSetup(2, false, 0, 0, 0, new double[]{0, 0, 0})
+                new SparkSetup(3, MotorIndex.CONSTANTS(1,1,1,false)),
+                new SparkSetup(9, MotorIndex.CONSTANTS(1,1,1,false))
         );
 
         ArmControl armControl = armControlSetup.build(path.addChild("arm-control"));
 
-        armInput = new ArmInput(new Joystick(1));
+        ArmInput armInput = new ArmInput(new Joystick(1));
 
         ArmSubsystem armSubsystem = new ArmSubsystem(armInput, armControl);
 
