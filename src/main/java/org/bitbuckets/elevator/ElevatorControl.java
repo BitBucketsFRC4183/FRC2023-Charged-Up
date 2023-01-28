@@ -26,6 +26,8 @@ public class ElevatorControl {
     double x1 = 0;
     double theta1 = 0;
 
+    ElevatorConstants elevatorConstants = new ElevatorConstants();
+
 
 
 
@@ -36,6 +38,7 @@ public class ElevatorControl {
         this.rightTilt = rightTilt;
         this.elevatorWrist = elevatorWrist;
         this.elevator = elevator;
+
 
 
 
@@ -57,7 +60,17 @@ public class ElevatorControl {
         SmartDashboard.putNumber("angleTheta1",theta1);
         elevator.setLength(x1);
         elevator.setAngle(theta1);
+
         elevatorWrist.setAngle(90);
+
+
+    }
+    public void setElevatorActualIK()
+    {
+        SmartDashboard.putNumber("extensionX1",x1);
+        SmartDashboard.putNumber("angleTheta1",theta1);
+        leftExtend.moveToPosition(x1*elevatorConstants.getGearRatioExtend);
+        leftTilt.moveToPosition(theta1*elevatorConstants.gearRatioTilt  );
 
 
     }
@@ -75,6 +88,8 @@ public class ElevatorControl {
     public void gotoPositionButton()
     {
         goToPosition(60,2);
+        setElevatorMech2dIK();
+
 
     }
 

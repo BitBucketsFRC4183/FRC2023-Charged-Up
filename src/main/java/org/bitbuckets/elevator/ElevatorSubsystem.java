@@ -13,7 +13,6 @@ public class ElevatorSubsystem {
 
     public void robotPeriodic()
     {
-        elevatorControl.setElevatorMech2dIK();
     }
 
 
