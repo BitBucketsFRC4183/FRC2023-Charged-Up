@@ -121,7 +121,7 @@ public class RobotSetup implements ISetup<RobotContainer> {
 //                backRightModule
 //        ).build(path.addChild("drive-control"));
 
-        DriveControlSDS driveControl = new DriveControlSDSSetup().build(path.addChild("drive-control"));
+        //DriveControlSDS driveControl = new DriveControlSDSSetup().build(path.addChild("drive-control"));
 
         DriveInput input = new DriveInput(new Joystick(0));
 
@@ -131,13 +131,13 @@ public class RobotSetup implements ISetup<RobotContainer> {
         IValueTuner<AutoPath> pathTuneable = path.generateValueTuner("path", AutoPath.TEST_PATH);
 
 
-        DriveSDSSubsystem driveSubsystem = new DriveSDSSubsystem(input, robotStateControl, gyroControl, autoAxisControl, driveControl, autoControl, pathTuneable);
+        //DriveSDSSubsystem driveSubsystem = new DriveSDSSubsystem(input, robotStateControl, gyroControl, autoAxisControl, driveControl, autoControl, pathTuneable);
 
         //lowerJoint = canId 9
         //upperJoint = canId 3
         ArmControlSetup armControlSetup = new ArmControlSetup(
-                new SparkSetup(9, MotorIndex.CONSTANTS(1,1,1,false)),
-                new SparkSetup(3, MotorIndex.CONSTANTS(1,1,1,false))
+                new SparkSetup(9, MotorIndex.CONSTANTS(1,1,1,false, 20, false)),
+                new SparkSetup(3, MotorIndex.CONSTANTS(1,1,1,false, 20, false))
         );
 
         ArmControl armControl = armControlSetup.build(path.addChild("arm-control"));
@@ -148,6 +148,6 @@ public class RobotSetup implements ISetup<RobotContainer> {
 
         //SYSTEMS_GREEN.setOn(); //LET'S WIN SOME DAMN REGIONALS!!
 
-        return new RobotContainer(driveSubsystem, armSubsystem);
+        return new RobotContainer(armSubsystem);
     }
 }
