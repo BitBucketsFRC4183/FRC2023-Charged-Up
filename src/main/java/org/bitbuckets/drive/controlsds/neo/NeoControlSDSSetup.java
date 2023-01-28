@@ -14,10 +14,13 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.bitbuckets.drive.DriveSDSConstants;
-import org.bitbuckets.drive.controlsds.*;
+import org.bitbuckets.drive.controlsds.DriveControlSDS;
+import org.bitbuckets.drive.controlsds.DriveControlSDSDataAutoGen;
+import org.bitbuckets.drive.controlsds.ThriftyEncoder;
 import org.bitbuckets.drive.controlsds.sds.*;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
+import org.bitbuckets.lib.hardware.IAbsoluteEncoder;
 import org.bitbuckets.lib.log.DataLogger;
 
 import static org.bitbuckets.drive.controlsds.sds.RevUtils.checkNeoError;
@@ -25,9 +28,21 @@ import static org.bitbuckets.drive.controlsds.sds.RevUtils.checkNeoError;
 /**
  * Sets up prereqs for a drive controller
  * <p>
- * really fucking simple because a drivecontrol is super simple LMAO
  */
 public class NeoControlSDSSetup implements ISetup<DriveControlSDS> {
+
+    final ISetup<IAbsoluteEncoder> frontLeftEncoder;
+    final ISetup<IAbsoluteEncoder> frontRightEncoder;
+    final ISetup<AbsoluteEncoder> backLeftEncoder;
+    final ISetup<AbsoluteEncoder> backRightEncoder;
+
+    public NeoControlSDSSetup(ISetup<IAbsoluteEncoder> frontLeftEncoder, ISetup<IAbsoluteEncoder> frontRightEncoder, ISetup<AbsoluteEncoder> backLeftEncoder, ISetup<AbsoluteEncoder> backRightEncoder) {
+        this.frontLeftEncoder = frontLeftEncoder;
+        this.frontRightEncoder = frontRightEncoder;
+        this.backLeftEncoder = backLeftEncoder;
+        this.backRightEncoder = backRightEncoder;
+    }
+
 
     @Override
     public DriveControlSDS build(ProcessPath path) {
@@ -87,7 +102,7 @@ public class NeoControlSDSSetup implements ISetup<DriveControlSDS> {
                 tab.getLayout("Front Left Module", BuiltInLayouts.kList).withSize(2, 4).withPosition(0, 0),
                 DriveSDSConstants.frontLeftModuleDriveMotor_ID, //Drive Motor
                 DriveSDSConstants.frontLeftModuleSteerMotor_ID, //Steer Motor
-                DriveSDSConstants.frontLeftModuleSteerEncoder_ID, //Steer Encoder
+                DriveSDSConstants.frontLeftModuleSteerEncoder_CHANNEL, //Steer Encoder
                 DriveSDSConstants.frontLeftModuleSteerOffset //Steer Offset
         );
 
@@ -96,7 +111,7 @@ public class NeoControlSDSSetup implements ISetup<DriveControlSDS> {
                 tab.getLayout("Front Right Module", BuiltInLayouts.kList).withSize(2, 4).withPosition(2, 0),
                 DriveSDSConstants.frontRightModuleDriveMotor_ID, //Drive Motor
                 DriveSDSConstants.frontRightModuleSteerMotor_ID, //Steer Motor
-                DriveSDSConstants.frontRightModuleSteerEncoder_ID, //Steer Encoder
+                DriveSDSConstants.frontRightModuleSteerEncoder_CHANNEL, //Steer Encoder
                 DriveSDSConstants.frontRightModuleSteerOffset //Steer Offset
         );
 
@@ -105,7 +120,7 @@ public class NeoControlSDSSetup implements ISetup<DriveControlSDS> {
                 tab.getLayout("Back Left Module", BuiltInLayouts.kList).withSize(2, 4).withPosition(4, 0),
                 DriveSDSConstants.backLeftModuleDriveMotor_ID, //Drive Motor
                 DriveSDSConstants.backLeftModuleSteerMotor_ID, //Steer Motor
-                DriveSDSConstants.backLeftModuleSteerEncoder_ID, //Steer Encoder
+                DriveSDSConstants.backLeftModuleSteerEncoder_CHANNEL, //Steer Encoder
                 DriveSDSConstants.backLeftModuleSteerOffset //Steer Offset
         );
 
@@ -114,7 +129,7 @@ public class NeoControlSDSSetup implements ISetup<DriveControlSDS> {
                 tab.getLayout("Back Right Module", BuiltInLayouts.kList).withSize(2, 4).withPosition(6, 0),
                 DriveSDSConstants.backRightModuleDriveMotor_ID, //Drive Motor
                 DriveSDSConstants.backRightModuleSteerMotor_ID, //Steer Motor
-                DriveSDSConstants.backRightModuleSteerEncoder_ID, //Steer Encoder
+                DriveSDSConstants.backRightModuleSteerEncoder_CHANNEL, //Steer Encoder
                 DriveSDSConstants.backRightModuleSteerOffset //Steer Offset
         );
 
@@ -138,8 +153,8 @@ public class NeoControlSDSSetup implements ISetup<DriveControlSDS> {
             int driveMotorPort,
             int steerMotorPort,
             int steerEncoderPort,
-            double steerOffset
-    ) {
+            double steerOffset) {
+
         var driveController = createDriveController(driveMotorPort, DriveSDSConstants.MK4I_L2);
         var steerController = createSteerController(steerMotorPort, steerEncoderPort, steerOffset, DriveSDSConstants.MK4I_L2);
         return new ModuleImplementation(driveController, steerController);
@@ -157,6 +172,7 @@ public class NeoControlSDSSetup implements ISetup<DriveControlSDS> {
         checkNeoError(motor.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus0, 100), "Failed to set periodic status frame 0 rate");
         checkNeoError(motor.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus1, 20), "Failed to set periodic status frame 1 rate");
         checkNeoError(motor.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus2, 20), "Failed to set periodic status frame 2 rate");
+
         // Set neutral mode to brake
         motor.setIdleMode(CANSparkMax.IdleMode.kBrake);
 
@@ -172,10 +188,6 @@ public class NeoControlSDSSetup implements ISetup<DriveControlSDS> {
 
         CANSparkMax motor = new CANSparkMax(steerMotorPort, CANSparkMaxLowLevel.MotorType.kBrushless);
 
-//        SparkMaxAlternateEncoder alternateEncoder = motor.getAlternateEncoder(SparkMaxAlternateEncoder.Type.kQuadrature, );
-//        AbsoluteEncoder absoluteEncoder = createAbsoluteEncoder(steerEncoderPort, steerOffset)
-//        SparkMaxAnalogSensor analogEncoder = motor.getAnalog(SparkMaxAnalogSensor.Mode.kAbsolute);
-
         AnalogInput ai = new AnalogInput(steerEncoderPort);
 
         ThriftyEncoder absoluteEncoder = new ThriftyEncoder(ai);
@@ -188,9 +200,7 @@ public class NeoControlSDSSetup implements ISetup<DriveControlSDS> {
 
         checkNeoError(motor.enableVoltageCompensation(DriveSDSConstants.nominalVoltage), "Failed to enable voltage compensation");
 
-
         checkNeoError(motor.setSmartCurrentLimit((int) Math.round(DriveSDSConstants.steerCurrentLimit)), "Failed to set NEO current limits");
-
 
         SparkMaxPIDController controller = motor.getPIDController();
 
@@ -202,27 +212,6 @@ public class NeoControlSDSSetup implements ISetup<DriveControlSDS> {
 
 //        checkNeoError(controller.setFeedbackDevice(absoluteEncoder), "Failed to set NEO PID feedback device");
 
-        return new NeoSteerController(motor,
-                CANSparkMax.ControlType.kPosition,
-                absoluteEncoder);
+        return new NeoSteerController(motor, CANSparkMax.ControlType.kPosition, absoluteEncoder);
     }
-
-//    AbsoluteEncoder createAbsoluteEncoder(int steerEncoderPort, double steerOffset) {
-//
-//        Direction direction = Direction.COUNTER_CLOCKWISE;
-//        CANCoderConfiguration config = new CANCoderConfiguration();
-//        config.absoluteSensorRange = AbsoluteSensorRange.Unsigned_0_to_360;
-//        config.magnetOffsetDegrees = Math.toDegrees(steerOffset);
-//        config.sensorDirection = direction == Direction.CLOCKWISE;
-//
-//        var encoder = new WPI_CANCoder(steerEncoderPort);
-//        checkCtreError(encoder.configAllSettings(config, 250), "Failed to configure CANCoder");
-//
-//        checkCtreError(encoder.setStatusFramePeriod(CANCoderStatusFrame.SensorData, DriveSDSConstants.canCoderPeriodMilliseconds, 250), "Failed to configure CANCoder update rate");
-//
-//        AbsoluteEncoder absoluteEncoder = new CANCoderAbsoluteEncoder(encoder);
-//        return absoluteEncoder;
-//    }
-
-
 }
