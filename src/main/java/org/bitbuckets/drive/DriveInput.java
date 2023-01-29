@@ -5,7 +5,6 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.Joystick;
 import org.bitbuckets.robot.XboxConstants;
 
-//TODO logging, factory
 public class DriveInput {
 
     final SlewRateLimiter x = new SlewRateLimiter(2);
