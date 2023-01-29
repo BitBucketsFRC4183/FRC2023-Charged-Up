@@ -91,7 +91,6 @@ public class RobotSetup implements ISetup<RobotContainer> {
         ).build(path.addChild("drive-control"));
 
         DriveInput input = new DriveInput(new Joystick(0));
-
         AutoControl autoControl = new AutoControlSetup().build(path.addChild("auto-control"));
         GyroControl gyroControl = new GyroControlSetup(5).build(path.addChild("gyro-control"));
         AutoAxisControl autoAxisControl = new AutoAxisSetup().build(path.addChild("axis-control"));
