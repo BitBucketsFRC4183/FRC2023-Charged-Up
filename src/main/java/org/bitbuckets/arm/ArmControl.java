@@ -22,7 +22,7 @@ public class ArmControl {
 
     public void calibrateLowerArm() {
         System.out.println("Calibrated lower arm!");
-        lowerJoint.forceOffset(convertMechanismRotationtoRawRotation_lowerJoint(convertDegreesToRotation(-90)));
+        lowerJoint.forceOffset(convertMechanismRotationtoRawRotation_lowerJoint(convertDegreesToRotation(0)));
 
     }
 
@@ -32,10 +32,7 @@ public class ArmControl {
 
     }
 
-    // motors output in rotations converted into degrees
-
-
-    public void moveLowerArm(double percentOutput) {
+    public void manuallyMoveLowerArm(double percentOutput) {
 
 //        double lowerRotation = gearRatio * percentOutput / 360;
 //        lowerJoint.getPIDController().setReference(lowerRotation, CANSparkMax.ControlType.kPosition);
@@ -46,12 +43,21 @@ public class ArmControl {
 
 
     //sets angular position of the upper joint on the arm
-    public void moveUpperArm(double percentOutput) {
+    public void manuallyMoveUpperArm(double percentOutput) {
 
-        //upperJoint.moveAtPercent(percentOutput * ArmConstants.CONTROL_JOINT_OUTPUT);
-        upperJoint.moveToPosition(ArmConstants.upperArmConversionFactor);
-
+        upperJoint.moveAtPercent(percentOutput * 3);
     }
+
+    public void moveLowerArmToPosition_DEGREES(double angle)
+    {
+        lowerJoint.moveToPosition(convertMechanismRotationtoRawRotation_lowerJoint(angle));
+    }
+
+    public void moveUpperArmToPosition_DEGREES(double angle)
+    {
+        upperJoint.moveToPosition(convertMechanismRotationtoRawRotation_upperJoint(angle));
+    }
+
 
     public double convertDegreesToRotation(double degrees) {
         return degrees / 360.;
@@ -66,15 +72,23 @@ public class ArmControl {
         return mechanismRotation * ArmConstants.upperArmGearRatio;
     }
 
-
-        public void moveToLowPos() {
+    public void moveToIntakePos() {
 
     }
 
+    // Press Y
+    public void moveToLowPos() {
+
+        moveLowerArmToPosition_DEGREES(1);
+
+    }
+
+    // Press X
     public void moveToMidPos() {
 
     }
 
+    // Press B
     public void movetoHighPos() {
 
     }
