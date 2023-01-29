@@ -1,10 +1,15 @@
 package org.bitbuckets.lib;
 
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import org.bitbuckets.SimLevel;
 import org.bitbuckets.lib.core.*;
 import org.bitbuckets.lib.log.DataLogger;
 import org.bitbuckets.lib.log.IDiffableData;
-import org.bitbuckets.lib.log.StartupLogger;
+import org.bitbuckets.lib.log.ILoggable;
+import org.bitbuckets.lib.log.type.DataLoggable;
+import org.bitbuckets.lib.log.type.DoubleLoggable;
+import org.bitbuckets.lib.log.type.StateLoggable;
+import org.bitbuckets.lib.startup.SetupDriver;
 import org.bitbuckets.lib.tune.IValueTuner;
 
 import java.util.function.Supplier;
@@ -14,14 +19,16 @@ public class ProcessPath {
 
     final int currentId;
 
+    final SetupDriver setupDriver;
     final IdentityDriver identityDriver;
     final ErrorDriver errorDriver;
     final LogDriver logDriver;
     final LoopDriver loopDriver;
     final TuneableDriver tuneableDriver;
 
-    public ProcessPath(int currentId, IdentityDriver identityDriver, ErrorDriver errorDriver, LogDriver logDriver, LoopDriver loopDriver, TuneableDriver tuneableDriver) {
+    public ProcessPath(int currentId, SetupDriver setupDriver, IdentityDriver identityDriver, ErrorDriver errorDriver, LogDriver logDriver, LoopDriver loopDriver, TuneableDriver tuneableDriver) {
         this.currentId = currentId;
+        this.setupDriver = setupDriver;
         this.identityDriver = identityDriver;
         this.errorDriver = errorDriver;
         this.logDriver = logDriver;
@@ -43,7 +50,7 @@ public class ProcessPath {
     public ProcessPath addChild(String name) {
         int childId = identityDriver.childProcess(currentId, name);
 
-        return new ProcessPath(childId, identityDriver, errorDriver, logDriver, loopDriver, tuneableDriver);
+        return new ProcessPath(childId, setupDriver, identityDriver, errorDriver, logDriver, loopDriver, tuneableDriver);
     }
 
 
@@ -83,31 +90,51 @@ public class ProcessPath {
     }
 
 
+    @Deprecated @DontUseIncubating
     public <A extends IDiffableData> DataLogger<A> generatePushDataLogger(Supplier<A> dataInitializer) {
         return new DataLogger<>(currentId, logDriver, dataInitializer.get());
     }
 
 
-    public StartupLogger generateStartupLogger(String taskName) {
-        logDriver.report(currentId, taskName, "not started");
+    @Deprecated @DontUseIncubating
+    public SetupProfiler generateSetupProfiler(String taskName) {
+        int taskId = setupDriver.generateStartup(currentId, taskName);
 
-        return new StartupLogger(logDriver, currentId, taskName, errorDriver);
-    }
-
-
-
-    public <T> IValueTuner<T> generateTuneable(String key, T defaultData) {
-        return tuneableDriver.tuneable(currentId, key, defaultData);
+        return new SetupProfiler(setupDriver, taskId);
     }
 
 
     /**
-     * Use this when you want to add a disabled subsystem. Will add a warning in place of it.
+     * default value basically doesnt matter. Dont depend on it.
+     * @param key
+     * @param defaultData
      * @return
      * @param <T>
      */
-    public <T> ISetup<T> disabled() {
-        return null;
+    public <T> IValueTuner<T> generateValueTuner(String key, T defaultData) {
+        return tuneableDriver.tuneable(currentId, key, defaultData);
+    }
+
+
+    public ILoggable<Double> generateDoubleLogger(String name) {
+
+        return new DoubleLoggable(logDriver, currentId, name);
+
+    }
+
+    public ILoggable<Boolean> generateBooleanLogger(String name) {
+        return data -> logDriver.report(currentId, name, data);
+    }
+
+    public ILoggable<double[]> generateDoubleLoggers(String... namesInOrder) {
+        return new DataLoggable(namesInOrder, logDriver, currentId);
+    }
+
+
+    public ILoggable<SwerveModuleState[]> generateStateLogger(String name) {
+
+        return new StateLoggable(logDriver, currentId, name);
+
     }
 
 

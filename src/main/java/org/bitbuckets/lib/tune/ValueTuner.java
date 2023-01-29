@@ -4,7 +4,6 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEvent;
 
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Consumer;
 
 /**
  * A tuneable value.
@@ -70,7 +69,7 @@ public class ValueTuner<T> implements NetworkTable.TableEventListener, IValueTun
 
 
     public boolean hasUpdated() {
-        return !cachedValue.get().hasUpdated; //
+        return cachedValue.get().hasUpdated; //
     }
 
 

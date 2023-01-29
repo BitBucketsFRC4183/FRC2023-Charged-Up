@@ -9,6 +9,7 @@ import java.util.ArrayList;
 /**
  * Manages physics simulation for CTRE products.
  */
+@Deprecated
 public class CTREPhysicsSim {
     private static final CTREPhysicsSim sim = new CTREPhysicsSim();
 

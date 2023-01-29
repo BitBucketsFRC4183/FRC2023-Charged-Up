@@ -2,12 +2,8 @@ package org.bitbuckets.lib.core;
 
 import java.util.*;
 
-//TODO someone write tests for this
+//This needs a major rework
 public class IdentityDriver {
-
-    public IdentityDriver() {
-        nameCache.put(0, "root");
-    }
 
     class Record {
         final int parent;
@@ -23,13 +19,14 @@ public class IdentityDriver {
     final Map<Integer, String> fullNameCache = new HashMap<>();
     final Map<Integer, String> nameCache = new HashMap<>();
 
-    int currentId = 0;
+
+    int currentId = 0; //root id
 
     public int childProcess(int parentId, String name) {
         currentId++;
 
-        family.add(new Record(parentId, currentId));
         nameCache.put(currentId, name);
+        family.add(new Record(parentId, currentId));
 
         return currentId;
     }
@@ -44,8 +41,12 @@ public class IdentityDriver {
         if (possible != null) return possible;
 
         Deque<String> deque = new ArrayDeque<>();
-        deque.addLast(nameCache.get(id));
+        String cached = nameCache.get(id); //This is done so that root can build a name without a deque insert
+        //this is terrible code.
 
+        if (cached != null) {
+            deque.addLast(cached);
+        }
 
         int searchId = id;
         for (; ; ) {
@@ -53,6 +54,9 @@ public class IdentityDriver {
             Record parent = findParent(searchId);
             if (parent == null) break;
             searchId = parent.parent;
+            if (searchId == 0) { //TODO make this non hacky
+                break;
+            }
 
             deque.addFirst(nameCache.get(parent.parent));
         }
@@ -67,7 +71,7 @@ public class IdentityDriver {
 
         String str = builder.toString();
 
-        if (!str.endsWith("/")) {
+        if (!str.endsWith("/") && builder.length() != 0) {
             str += "/";
         }
 

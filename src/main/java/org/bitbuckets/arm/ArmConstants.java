@@ -1,7 +1,5 @@
 package org.bitbuckets.arm;
 
-import edu.wpi.first.math.controller.PIDController;
-
 public interface ArmConstants {
 
     // calculated gearRatio
