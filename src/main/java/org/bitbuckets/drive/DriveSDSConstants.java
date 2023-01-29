@@ -8,20 +8,20 @@ public interface DriveSDSConstants {
 
     // Drive Subsystem
     int frontLeftModuleDriveMotor_ID = 5;
-    int frontLeftModuleSteerMotor_ID = 4;
-    int frontLeftModuleSteerEncoder_CHANNEL = 1;
+    int frontLeftModuleSteerMotor_ID = 6;
+    int frontLeftModuleSteerEncoder_CHANNEL = 2;
 
-    int frontRightModuleDriveMotor_ID = 6;
-    int frontRightModuleSteerMotor_ID = 7;
-    int frontRightModuleSteerEncoder_CHANNEL = 2;
+    int frontRightModuleDriveMotor_ID = 7;
+    int frontRightModuleSteerMotor_ID = 8;
+    int frontRightModuleSteerEncoder_CHANNEL = 3;
 
-    int backLeftModuleDriveMotor_ID = 8;
-    int backLeftModuleSteerMotor_ID = 10;
-    int backLeftModuleSteerEncoder_CHANNEL = 3;
+    int backLeftModuleDriveMotor_ID = 3;
+    int backLeftModuleSteerMotor_ID = 4;
+    int backLeftModuleSteerEncoder_CHANNEL = 1;
 
     int backRightModuleDriveMotor_ID = 1;
     int backRightModuleSteerMotor_ID = 2;
-    int backRightModuleSteerEncoder_CHANNEL = 4;
+    int backRightModuleSteerEncoder_CHANNEL = 0;
 
     double drivetrainTrackWidth_meters = 0.6096; // set trackwidth
 
