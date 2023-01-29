@@ -56,7 +56,7 @@ public class Robot extends LoggedRobot {
         ErrorDriver errorDriver = new ErrorDriver(identityDriver);
         TuneableDriver tuneableDriver = new TuneableDriver(NetworkTableInstance.getDefault().getTable("RealOutputs/MattTuneables"), identityDriver);
         int consoleId = identityDriver.childProcess(0, "Console");
-        SetupDriver setupDriver = new SetupDriver(identityDriver, logDriver,consoleId);
+        SetupDriver setupDriver = new SetupDriver(identityDriver, logDriver, consoleId);
         ProcessPath rootPath = new ProcessPath(0, setupDriver, identityDriver, errorDriver, logDriver, loopDriver, tuneableDriver);
         RobotStateControl robotStateControl = new RobotStateControl(this);
         RobotSetup setup = new RobotSetup(robotStateControl);
@@ -65,10 +65,9 @@ public class Robot extends LoggedRobot {
             robotHandle = setup.build(rootPath);
         } catch (Exception e) {
             //TODO extract exceptions
-
             DriverStation.reportError("[BUCKET] Critical exception during setup: " + e.getLocalizedMessage(), e.getStackTrace());
+            throw e;
         }
-
 
 
     }
