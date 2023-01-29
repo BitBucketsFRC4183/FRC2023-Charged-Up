@@ -60,6 +60,10 @@ public class Robot extends LoggedRobot {
         RobotStateControl robotStateControl = new RobotStateControl(this);
         RobotSetup setup = new RobotSetup(robotStateControl);
 
+        rootPath.registerLoop(robotStateControl, "stateControl");
+
+
+
         try {
             robotHandle = setup.build(rootPath);
         } catch (Exception e) {
