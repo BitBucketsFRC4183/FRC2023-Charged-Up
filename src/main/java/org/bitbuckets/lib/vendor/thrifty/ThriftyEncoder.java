@@ -9,17 +9,8 @@ import org.bitbuckets.lib.log.ILoggable;
 public class ThriftyEncoder implements IAbsoluteEncoder, Runnable {
 
     private static final double READ_VOLTAGE_MAX = 4.8;
-
-
-
-
-
     final AnalogInput input;
     final ILoggable<double[]> allThriftyEncoderData;
-
-
-
-
     Rotation2d rotOffset;
 
 

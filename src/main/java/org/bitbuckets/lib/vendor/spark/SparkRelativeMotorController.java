@@ -15,7 +15,6 @@ public class SparkRelativeMotorController implements IMotorController, Runnable 
     final RelativeEncoder sparkMaxRelativeEncoder;
     final SparkMaxPIDController sparkMaxPIDController;
     final ILoggable<double[]> motorData;
-
     SparkRelativeMotorController(MotorConfig motorConfig, CANSparkMax sparkMax, ILoggable<double[]> motorData) {
         this.motorConfig = motorConfig;
         this.sparkMax = sparkMax;
