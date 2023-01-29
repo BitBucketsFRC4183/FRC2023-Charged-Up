@@ -136,8 +136,8 @@ public class RobotSetup implements ISetup<RobotContainer> {
         //lowerJoint = canId 9
         //upperJoint = canId 3
         ArmControlSetup armControlSetup = new ArmControlSetup(
-                new SparkSetup(9, MotorIndex.CONSTANTS(1,1,1,false, 20, false)),
-                new SparkSetup(3, MotorIndex.CONSTANTS(1,1,1,false, 20, false))
+                new SparkSetup(9, MotorIndex.CONSTANTS(1,1,1,false, 5, false)),
+                new SparkSetup(3, MotorIndex.CONSTANTS(1,1,1,false, 5, false))
         );
 
         ArmControl armControl = armControlSetup.build(path.addChild("arm-control"));
