@@ -7,12 +7,10 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.bitbuckets.drive.module.AutoConstants;
-import org.bitbuckets.lib.ProcessPath;
+import org.bitbuckets.drive.old.OldDriveSubsystem;
 import org.bitbuckets.lib.hardware.PIDIndex;
-import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
@@ -20,6 +18,12 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 import java.util.List;
 
 public class VisionControl {
+
+    OldDriveSubsystem oldDriveSubsystem;
+
+    double range;
+
+    double yaw;
 
     ;
     public void Localization() {
@@ -38,7 +42,7 @@ public class VisionControl {
         List<PhotonTrackedTarget> allTargets = result.getTargets();
 
         SmartDashboard.putNumber("size", allTargets.size());
-        double range = 0;
+
         if (result.hasTargets()) {
             yaw = target.getYaw();
             pitch = target.getPitch();
@@ -56,6 +60,7 @@ public class VisionControl {
                     Units.degreesToRadians(result.getBestTarget().getPitch()));
 
 
+
         }
         SmartDashboard.putNumber("yaw", yaw);
         SmartDashboard.putNumber("pitch", pitch);
@@ -67,12 +72,30 @@ public class VisionControl {
 
     }
 
+    public void chaseTag() {
+        if (range > 0.3) {
+            oldDriveSubsystem.driveBack();
+            }
+        else if (range < 0.3) {
+            oldDriveSubsystem.driveForward();
+        }
+
+
+        if ( yaw > 3) {
+            oldDriveSubsystem.driveLeft();
+        }
+        else if (yaw < 3) {
+            oldDriveSubsystem.driveRight();
+        }
+
+    }
+
     HolonomicDriveController controller = new HolonomicDriveController(new PIDController(AutoConstants.pathXYPID[PIDIndex.P],AutoConstants.pathXYPID[PIDIndex.I],AutoConstants.pathXYPID[PIDIndex.D]),new PIDController(AutoConstants.pathXYPID[PIDIndex.P], AutoConstants.pathXYPID[PIDIndex.I], AutoConstants.pathXYPID[PIDIndex.D]),new ProfiledPIDController(AutoConstants.pathThetaPID[PIDIndex.P], AutoConstants.pathThetaPID[PIDIndex.I], AutoConstants.pathThetaPID[PIDIndex.D], new TrapezoidProfile.Constraints(AutoConstants.maxPathFollowVelocity, AutoConstants.maxPathFollowAcceleration)));
 
     public void driveToPosition(ChassisSpeeds chassisSpeeds) {
-        controller.calculate(
+        //controller.calculate(
 
-        )
+      //  )
 
 
     }

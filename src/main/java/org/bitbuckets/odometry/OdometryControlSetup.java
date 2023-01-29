@@ -1,20 +1,29 @@
 package org.bitbuckets.odometry;
 
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import org.bitbuckets.bootstrap.Robot;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import org.bitbuckets.drive.IDriveControl;
+import org.bitbuckets.drive.controlsds.DriveControlSDS;
+import org.bitbuckets.lib.ISetup;
+import org.bitbuckets.lib.ProcessPath;
 
-import static org.bitbuckets.drive.controlsds.DriveControlSDS.gyro;
+public class OdometryControlSetup implements ISetup<OdometryControl> {
 
-public class OdometryControlSetup {
-    if (Robot.isSimulation()) {
-        RobotSim.getInstance().addTalonSRX(topleft, .75, 5100, false);
-        RobotSim.getInstance().addTalonSRX(topright, .75, 5100, false);
+
+    final IDriveControl control;
+
+    final DriveControlSDS driveControlSDS;
+
+    final Field2d field2d;
+
+
+    public OdometryControlSetup(IDriveControl control, DriveControlSDS driveControlSDS, Field2d field2d) {
+        this.control = control;
+        this.driveControlSDS = driveControlSDS;
+        this.field2d = field2d;
     }
 
-    {
-        gyro.reset();
-        SmartDashboard.putData(OdometryControl.field);
+    @Override
+    public OdometryControl build(ProcessPath path) {
+        return new OdometryControl(control, driveControlSDS, field2d.getRobotPose());
     }
 }

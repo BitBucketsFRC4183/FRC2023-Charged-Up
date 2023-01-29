@@ -3,29 +3,33 @@ package org.bitbuckets.drive.old;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import org.bitbuckets.drive.DriveConstants;
+import org.bitbuckets.drive.IDriveControl;
 import org.bitbuckets.drive.module.DriveModule;
-import org.bitbuckets.lib.log.DataLogger;
 
 /**
  * Represents a real drive controller that implements control of the drivetrain using a list of SwerveModule interfaces
  */
-public class OldDriveControl {
+public class OldDriveControl implements IDriveControl {
 
-    final DataLogger<OldDriveDataAutoGen> logger;
+    //final DataLogger<OldDriveDataAutoGen> logger;
     final DriveModule[] driveModules;
 
-    public OldDriveControl(DataLogger<OldDriveDataAutoGen> logger, DriveModule... driveModules) {
-        this.logger = logger;
-        this.driveModules = driveModules;
-    }
+ // public OldDriveControl(DataLogger<OldDriveDataAutoGen> logger, DriveModule... driveModules) {
+ //     this.logger = logger;
+ //     this.driveModules = driveModules;
+ // }
 
     SwerveModuleState[] cachedSetpoint = DriveConstants.LOCK;
 
+    public OldDriveControl(DriveModule[] driveModules) {
+        this.driveModules = driveModules;
+    }
+
     void guaranteedLoggingLoop() {
-        logger.process(data -> {
-            data.targetStates = reportSetpointStates();
-            data.realStates = reportActualStates();
-        });
+ //   logger.process(data -> {
+ //       data.targetStates = reportSetpointStates();
+ //       data.realStates = reportActualStates();
+ //   });
     }
 
     public SwerveModuleState[] reportSetpointStates() {
@@ -65,4 +69,8 @@ public class OldDriveControl {
     }
 
 
+    @Override
+    public SwerveModulePosition[] currentPositions() {
+        return reportActualPositions();
+    }
 }
