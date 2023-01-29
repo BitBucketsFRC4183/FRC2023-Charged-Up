@@ -1,4 +1,4 @@
-package org.bitbuckets.drive.controlsds;
+package org.bitbuckets.drive;
 
 import org.junit.jupiter.api.Test;
 

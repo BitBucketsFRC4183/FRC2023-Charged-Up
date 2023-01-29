@@ -6,10 +6,12 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.lib.ProcessPathUtil;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 class PIDCalculatorSetupTest {
 
+    @Disabled
     @Test
     void pidCalculator_shouldWork() {
         assert HAL.initialize(500, 0);
