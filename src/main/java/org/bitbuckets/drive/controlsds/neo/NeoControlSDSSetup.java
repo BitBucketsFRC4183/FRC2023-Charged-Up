@@ -19,12 +19,6 @@ import org.bitbuckets.lib.log.DataLogger;
  * <p>
  */
 public class NeoControlSDSSetup implements ISetup<DriveControlSDS> {
-
-//    final ISetup<IAbsoluteEncoder> frontLeftEncoder;
-//    final ISetup<IAbsoluteEncoder> frontRightEncoder;
-//    final ISetup<AbsoluteEncoder> backLeftEncoder;
-//    final ISetup<AbsoluteEncoder> backRightEncoder;
-
     final ISetup<ISwerveModule> frontLeft;
     final ISetup<ISwerveModule> frontRight;
     final ISetup<ISwerveModule> backLeft;

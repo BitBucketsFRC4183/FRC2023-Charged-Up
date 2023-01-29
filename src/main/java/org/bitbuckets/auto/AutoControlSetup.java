@@ -16,8 +16,8 @@ public class AutoControlSetup implements ISetup<AutoControl> {
 
     @Override
     public AutoControl build(ProcessPath path) {
-        SetupProfiler load = path.generateSpanLogger("load-auto-paths");
-        SetupProfiler gen = path.generateSpanLogger("generate-objects");
+        SetupProfiler load = path.generateSetupProfiler("load-auto-paths");
+        SetupProfiler gen = path.generateSetupProfiler("generate-objects");
 
         load.markProcessing();
         PathPlannerTrajectory trajectory = PathPlanner.loadPath("test path", new PathConstraints(4.0, 3.0));

@@ -9,11 +9,11 @@ import org.bitbuckets.drive.DriveSDSSubsystem;
 public class RobotContainer {
 
     final DriveSDSSubsystem driveSubsystem;
-    final ArmSubsystem armSubsystem;
+    //final ArmSubsystem armSubsystem;
 
-    public RobotContainer(DriveSDSSubsystem driveSubsystem, ArmSubsystem armSubsystem) {
+    public RobotContainer(DriveSDSSubsystem driveSubsystem) {
         this.driveSubsystem = driveSubsystem;
-        this.armSubsystem = armSubsystem;
+        //this.armSubsystem = armSubsystem;
     }
 
     public void autoPeriodic() {

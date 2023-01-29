@@ -35,6 +35,7 @@ import static org.bitbuckets.lib.vendor.ctre.CtreUtils.checkCtreError;
  * <p>
  * really simple because a drivecontrol is super simple LMAO
  */
+@Deprecated
 public class DriveControlSDSSetup implements ISetup<DriveControlSDS> {
 
     @Override

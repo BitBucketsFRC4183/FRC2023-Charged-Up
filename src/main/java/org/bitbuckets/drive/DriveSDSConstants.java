@@ -16,12 +16,12 @@ public interface DriveSDSConstants {
     int frontRightModuleSteerMotor_ID = 7;
     int frontRightModuleSteerEncoder_CHANNEL = 2;
 
-    int backLeftModuleDriveMotor_ID = 1;
-    int backLeftModuleSteerMotor_ID = 2;
+    int backLeftModuleDriveMotor_ID = 8;
+    int backLeftModuleSteerMotor_ID = 10;
     int backLeftModuleSteerEncoder_CHANNEL = 3;
 
-    int backRightModuleDriveMotor_ID = 8;
-    int backRightModuleSteerMotor_ID = 10;
+    int backRightModuleDriveMotor_ID = 1;
+    int backRightModuleSteerMotor_ID = 2;
     int backRightModuleSteerEncoder_CHANNEL = 4;
 
     double drivetrainTrackWidth_meters = 0.6096; // set trackwidth
