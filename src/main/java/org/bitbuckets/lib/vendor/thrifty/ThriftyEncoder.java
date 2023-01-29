@@ -2,46 +2,41 @@ package org.bitbuckets.lib.vendor.thrifty;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.AnalogInput;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import org.bitbuckets.lib.hardware.IAbsoluteEncoder;
-import org.bitbuckets.lib.log.Loggable;
+import org.bitbuckets.lib.log.ILoggable;
 
-public class ThriftyEncoder implements IAbsoluteEncoder {
-    public AnalogInput input;
-    public Rotation2d rotOffset;
-    public double readVoltageMax;
 
-    private static double standardReadVoltageMax = 4.8;
+public class ThriftyEncoder implements IAbsoluteEncoder, Runnable {
+
+    private static final double READ_VOLTAGE_MAX = 4.8;
+
+
+
+
+
+    final AnalogInput input;
+    final ILoggable<double[]> allThriftyEncoderData;
+
+
+
+
+    Rotation2d rotOffset;
+
 
     // read voltage, get input
-    public ThriftyEncoder(AnalogInput input, double readVoltageMax) {
+    public ThriftyEncoder(AnalogInput input, ILoggable<double[]> allThriftyEncoderData) {
         this.input = input;
+        this.allThriftyEncoderData = allThriftyEncoderData;
         this.rotOffset = new Rotation2d(0.0);
-        this.readVoltageMax = readVoltageMax;
     }
 
     // read voltage, get input
-    public ThriftyEncoder(AnalogInput input, Rotation2d rotOffset, double readVoltageMax) {
+    public ThriftyEncoder(AnalogInput input, Rotation2d rotOffset, ILoggable<double[]> allThriftyEncoderData) {
         this.input = input;
         this.rotOffset = rotOffset;
-        this.readVoltageMax = readVoltageMax;
+        this.allThriftyEncoderData = allThriftyEncoderData;
     }
 
-    // read voltage, get input
-    public ThriftyEncoder(AnalogInput input) {
-        this.input = input;
-        this.rotOffset = new Rotation2d(0.0);
-        this.readVoltageMax = ThriftyEncoder.standardReadVoltageMax;
-    }
-
-    // read voltage, get input
-    public ThriftyEncoder(AnalogInput input, Rotation2d rotOffset) {
-        this.input = input;
-        this.rotOffset = rotOffset;
-        this.readVoltageMax = ThriftyEncoder.standardReadVoltageMax;
-    }
 
     // get position
     public Rotation2d getRawPosition() {
@@ -53,12 +48,11 @@ public class ThriftyEncoder implements IAbsoluteEncoder {
     }
 
     public Rotation2d getPosition() {
-        SmartDashboard.putNumber("Position", getRawPositionRadians());
         return this.getRawPosition().plus(this.rotOffset);
     }
 
     public double getRawPositionRadians() {
-        return (input.getVoltage() * 2 * Math.PI) / this.readVoltageMax;
+        return (input.getVoltage() * 2 * Math.PI) / READ_VOLTAGE_MAX;
     }
 
     public Rotation2d get() {
@@ -71,8 +65,14 @@ public class ThriftyEncoder implements IAbsoluteEncoder {
 
     @Override
     public double getAbsoluteAngle() {
-        double absAngle = (input.getVoltage() / 5) * 2 * Math.PI;
-        SmartDashboard.putNumber("Absolute Angle Radians", absAngle);
-        return absAngle;
+        return (input.getVoltage() / 5) * 2 * Math.PI;
+    }
+
+    @Override
+    public void run() {
+        allThriftyEncoderData.log(new double[] {
+                getRawPositionRadians(),
+                getAbsoluteAngle()
+        });
     }
 }

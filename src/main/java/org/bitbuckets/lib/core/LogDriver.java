@@ -1,11 +1,7 @@
 package org.bitbuckets.lib.core;
 
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import org.bitbuckets.lib.startup.StartupState;
 import org.littletonrobotics.junction.Logger;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Users of the library should never see this

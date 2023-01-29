@@ -5,6 +5,7 @@ import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.lib.SetupProfiler;
 import org.bitbuckets.lib.hardware.IAbsoluteEncoder;
+import org.bitbuckets.lib.log.ILoggable;
 
 public class ThriftyEncoderSetup implements ISetup<IAbsoluteEncoder> {
 
@@ -19,8 +20,13 @@ public class ThriftyEncoderSetup implements ISetup<IAbsoluteEncoder> {
 
         SetupProfiler libSetup = path.generateSetupProfiler("lib-setup");
         AnalogInput input = new AnalogInput(channel);
+        
+        ILoggable<double[]> thriftydata = path.generateDoubleLoggers("Position", "Angle");
+        ThriftyEncoder thrifty = new ThriftyEncoder(input, thriftydata);
 
-        return new ThriftyEncoder(input);
+        path.registerLoop(thrifty, 100, "thrifty-log-loop");
+
+        return thrifty;
     }
 
 }
