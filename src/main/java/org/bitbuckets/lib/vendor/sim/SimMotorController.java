@@ -86,6 +86,6 @@ public class SimMotorController implements IMotorController, Runnable{
 
     @Override
     public void run() {
-        simulatedMotor.update(20); //TODO this needs to be accurate
+        simulatedMotor.update(0.02); //TODO this needs to be accurate
     }
 }
