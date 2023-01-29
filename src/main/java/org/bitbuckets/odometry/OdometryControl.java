@@ -35,7 +35,7 @@ public class OdometryControl {
 
 
 
-    Rotation2d gyroangle = Rotation2d.fromRadians(gyro.getYaw());
+    Rotation2d gyroangle = Rotation2d.fromRadians(gyro.getCompassHeading());
 
 
 
@@ -48,9 +48,9 @@ public class OdometryControl {
 
     }
 
-  // public void estimatedCombinedPose() {
-  //     swerveDrivePoseEstimator.addVisionMeasurement();
-  // }
+   public void estimatedCombinedPose() {
+       swerveDrivePoseEstimator.addVisionMeasurement();
+   }
 
 
 
