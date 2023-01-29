@@ -1,22 +1,42 @@
 package org.bitbuckets.vision;
-import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.util.Units;
+import org.bitbuckets.drive.old.OldDriveSubsystem;
+
+import java.io.IOException;
 import java.util.Map;
 
 public class VisionConstants {
 
+    OldDriveSubsystem oldDriveSubsystem;
+
+    AprilTagFieldLayout aprilTagFieldLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2023ChargedUp.m_resourceFile);;
+
+    double range;
+
+    double yaw;
+
+    Pose3d robotPose;
+
+    Translation2d translationToTag;
+
+    Rotation2d targetYaw;
 
 
 
-        public static final double fieldLength = Units.inchesToMeters(651.25);
+
+
+    public static final double fieldLength = Units.inchesToMeters(651.25);
         public static final double fieldWidth = Units.inchesToMeters(315.5);
         public static final double tapeWidth = Units.inchesToMeters(2.0);
         public static final double aprilTagWidth = Units.inchesToMeters(6.0);
 
-        // Dimensions for community and charging station, including the tape.
+    public VisionConstants() throws IOException {
+    }
+
+    // Dimensions for community and charging station, including the tape.
         public static final class Community {
             // Region dimensions
             public static final double innerX = 0.0;
