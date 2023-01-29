@@ -13,14 +13,16 @@ import org.bitbuckets.drive.DriveSDSSubsystem;
 import org.bitbuckets.drive.balance.AutoAxisControl;
 import org.bitbuckets.drive.balance.AutoAxisSetup;
 import org.bitbuckets.drive.controlsds.DriveControlSDS;
-import org.bitbuckets.drive.controlsds.DriveControlSDSSetup;
+import org.bitbuckets.drive.controlsds.neo.NeoControlSDSSetup;
 import org.bitbuckets.gyro.GyroControl;
 import org.bitbuckets.gyro.GyroControlSetup;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
+import org.bitbuckets.lib.hardware.IMotorController;
 import org.bitbuckets.lib.hardware.PIDIndex;
 import org.bitbuckets.lib.tune.IValueTuner;
-import org.bitbuckets.lib.vendor.ctre.TalonSetup;
+import org.bitbuckets.lib.util.MockingUtil;
+import org.bitbuckets.lib.vendor.spark.SparkRelativeMotorController;
 
 public class RobotSetup implements ISetup<RobotContainer> {
 
@@ -118,7 +120,9 @@ public class RobotSetup implements ISetup<RobotContainer> {
 //                backRightModule
 //        ).build(path.addChild("drive-control"));
 
-        DriveControlSDS driveControl = new DriveControlSDSSetup().build(path.addChild("drive-control"));
+        //labels: high priority
+        //TODO use neo controller here
+        DriveControlSDS driveControl = MockingUtil.buddy(DriveControlSDS.class);
 
         DriveInput input = new DriveInput(new Joystick(0));
 
@@ -135,9 +139,11 @@ public class RobotSetup implements ISetup<RobotContainer> {
         );
 
 
+        //labels: high priority
+        //TODO use neos here
         ArmControlSetup armControlSetup = new ArmControlSetup(
-                new TalonSetup(1, false, 0, 0, 0, new double[]{0, 0, 0}),
-                new TalonSetup(2, false, 0, 0, 0, new double[]{0, 0, 0})
+                MockingUtil.noops(IMotorController.class),
+                MockingUtil.noops(IMotorController.class)
         );
 
         ArmControl armControl = armControlSetup.build(path.addChild("arm-control"));
