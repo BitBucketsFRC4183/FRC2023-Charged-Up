@@ -5,6 +5,7 @@ package org.bitbuckets.lib.hardware;
  * <p>
  * THIS IS A PLACEHOLDER UNTIL TUNEABELS CAN BE MERGED
  */
+@Deprecated
 public enum PIDIndex {
 
     ;
@@ -37,6 +38,7 @@ public enum PIDIndex {
      */
     public final static byte IZONE = 4;
 
+    @Deprecated
     public static double[] CONSTANTS(double p, double i, double d, double ff, double izone) {
         return new double[]{
                 p,
@@ -47,6 +49,7 @@ public enum PIDIndex {
         };
     }
 
+    @Deprecated
     public static final double[] EMPTY = new double[5];
 
 }

@@ -15,7 +15,6 @@ public class GyroControlSetup implements ISetup<GyroControl> {
 
     @Override
     public GyroControl build(ProcessPath path) {
-        DataLogger<GyroDataAutoGen> logger = path.generatePushDataLogger(GyroDataAutoGen::new);
         WPI_PigeonIMU pigeonIMU = new WPI_PigeonIMU(canId);
 
         pigeonIMU.calibrate(); //calibrate on spawn

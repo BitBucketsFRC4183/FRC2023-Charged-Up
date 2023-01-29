@@ -1,5 +1,6 @@
 package org.bitbuckets.lib.hardware;
 
+@Deprecated
 public enum MotorIndex {
 
     ;
@@ -21,6 +22,7 @@ public enum MotorIndex {
      * @param isBreak true if the motor should use breaking when idle (resist changes by flipping current), false if motor should neutral when idle (do nothing)
      * @return constants array
      */
+    @Deprecated
     public static double[] CONSTANTS(double mechanismFactor, double rotationToMeterFactor, double timeFactor, boolean inverted, double currentLimit, boolean isBreak) {
         return new double[] {
                 mechanismFactor,

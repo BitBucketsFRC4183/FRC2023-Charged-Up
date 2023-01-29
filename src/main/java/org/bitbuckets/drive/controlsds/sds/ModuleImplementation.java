@@ -1,9 +1,5 @@
 package org.bitbuckets.drive.controlsds.sds;
 
-import org.bitbuckets.drive.controlsds.sds.DriveController;
-import org.bitbuckets.drive.controlsds.sds.SteerController;
-import org.bitbuckets.drive.controlsds.sds.SwerveModule;
-
 public class ModuleImplementation implements SwerveModule {
     private final DriveController driveController;
     private final SteerController steerController;
