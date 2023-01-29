@@ -28,6 +28,14 @@ public class ElevatorControl {
 
     ElevatorConstants elevatorConstants = new ElevatorConstants();
 
+    public void smartDashboard()
+    {
+        SmartDashboard.putNumber("extendEncoderLeft", leftExtend.getPositionMechanism_meters());
+        SmartDashboard.putNumber("extendEncoderRight", rightExtend.getPositionMechanism_meters());
+        SmartDashboard.putNumber("tiltEncoderLeft", Math.toDegrees(leftTilt.getMechanismPositionAccumulated_radians()));
+        SmartDashboard.putNumber("tiltEncoderRight", Math.toDegrees(rightTilt.getMechanismPositionAccumulated_radians()));
+    }
+
 
 
 
@@ -88,7 +96,7 @@ public class ElevatorControl {
     public void gotoPositionButton()
     {
         goToPosition(60,2);
-        setElevatorMech2dIK();
+        setElevatorMech2d();
 
 
     }

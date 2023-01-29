@@ -17,7 +17,8 @@ public class ElevatorSubsystem {
 
 
     public void teleopPeriodic(){
-
+        elevatorControl.smartDashboard();
+        elevatorControl.setElevatorMech2d();
         if(elevatorInput.getInputCirlce())
         {
             elevatorControl.gotoPositionButton();
