@@ -76,9 +76,9 @@ public class SparkSetup implements ISetup<IMotorController> {
         }
 
         ILoggable<double[]> data = path.generateDoubleLoggers("appliedOutput", "busVoltage", "positionRotations", "velocityRotatations");
-        IValueTuner<Double> p = path.generateValueTuner("p", 0.0);
-        IValueTuner<Double> i = path.generateValueTuner("i", 0.0);
-        IValueTuner<Double> d = path.generateValueTuner("d", 0.0);
+        IValueTuner<Double> p = path.generateValueTuner("p", motorConfig.defaultKp);
+        IValueTuner<Double> i = path.generateValueTuner("i", motorConfig.defaultKi);
+        IValueTuner<Double> d = path.generateValueTuner("d", motorConfig.defaultKd);
 
         SparkTuningAspect sparkTuningAspect = new SparkTuningAspect(p, i, d, spark.getPIDController());
         SparkRelativeMotorController ctrl = new SparkRelativeMotorController(motorConfig, spark, data);
@@ -87,12 +87,12 @@ public class SparkSetup implements ISetup<IMotorController> {
         path.registerLoop(sparkTuningAspect, LoggingConstants.TUNING_PERIOD, "tuning-loop");
         if (forwardSwitch != null) {
             ILoggable<Boolean> loggable = path.generateBooleanLogger("forwardSwitchPressed");
-            SparkLimitLoggingAspect loggingAspect = new SparkLimitLoggingAspect(loggable,  forwardSwitch);
+            SparkLimitLoggingAspect loggingAspect = new SparkLimitLoggingAspect(loggable, forwardSwitch);
             path.registerLoop(loggingAspect, LoggingConstants.LOGGING_PERIOD, "forw-log-loop");
         }
         if (reverseSwitch != null) {
             ILoggable<Boolean> loggable = path.generateBooleanLogger("reverseSwitchPressed");
-            SparkLimitLoggingAspect loggingAspect = new SparkLimitLoggingAspect(loggable,  reverseSwitch);
+            SparkLimitLoggingAspect loggingAspect = new SparkLimitLoggingAspect(loggable, reverseSwitch);
             path.registerLoop(loggingAspect, LoggingConstants.LOGGING_PERIOD, "revr-log-loop");
         }
 

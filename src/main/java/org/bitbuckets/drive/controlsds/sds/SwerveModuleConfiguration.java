@@ -7,12 +7,14 @@ import java.util.Objects;
  * A swerve module configuration.
  */
 public class SwerveModuleConfiguration {
-    private final double wheelDiameter;
-    private final double driveReduction;
-    private final boolean driveInverted;
+    final double wheelDiameter;
+    final double driveReduction;
+    final boolean driveInverted;
+    final double driveCurrentLimit = 80; // from SDS
 
-    private final double steerReduction;
-    private final boolean steerInverted;
+    final double steerReduction;
+    final boolean steerInverted;
+    final double steerCurrentLimit = 20; // from SDS
 
     /**
      * Creates a new module configuration.
@@ -52,6 +54,10 @@ public class SwerveModuleConfiguration {
         return driveReduction;
     }
 
+    public double getDriveCurrentLimit() {
+        return driveCurrentLimit;
+    }
+
     /**
      * Gets if the drive motor should be inverted.
      */
@@ -73,6 +79,10 @@ public class SwerveModuleConfiguration {
      */
     public boolean isSteerInverted() {
         return steerInverted;
+    }
+
+    public double getSteerCurrentLimit() {
+        return steerCurrentLimit;
     }
 
     @Override

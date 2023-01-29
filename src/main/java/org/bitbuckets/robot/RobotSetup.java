@@ -35,6 +35,8 @@ import org.bitbuckets.lib.vendor.spark.SparkDriveMotorSetup;
 import org.bitbuckets.lib.vendor.spark.SparkSteerMotorSetup;
 import org.bitbuckets.lib.vendor.thrifty.ThriftyEncoderSetup;
 
+import java.util.Optional;
+
 public class RobotSetup implements ISetup<RobotContainer> {
 
     final RobotStateControl robotStateControl;
@@ -45,8 +47,8 @@ public class RobotSetup implements ISetup<RobotContainer> {
 
     @Override
     public RobotContainer build(ProcessPath path) {
-//        DriveControl driveControl = buildNeoDriveControl(path);
-        DriveControl driveControl = buildTalonDriveControl(path);
+        DriveControl driveControl = buildNeoDriveControl(path);
+//        DriveControl driveControl = buildTalonDriveControl(path);
 
         DriveInput input = new DriveInput(new Joystick(0));
         AutoControl autoControl = new AutoControlSetup().build(path.addChild("auto-control"));
@@ -67,14 +69,18 @@ public class RobotSetup implements ISetup<RobotContainer> {
         ArmControl armControl = armControlSetup.build(path.addChild("arm-control"));
         ArmInput armInput = new ArmInput(new Joystick(1));
         ArmSubsystem armSubsystem = new ArmSubsystem(armInput, armControl);
-        armSubsystem = null;
-
 
         //SYSTEMS_GREEN.setOn(); //LET'S WIN SOME DAMN REGIONALS!!
 
         return new RobotContainer(driveSubsystem, armSubsystem);
     }
 
+    /**
+     * Build a new neo/mk4I based drive control
+     *
+     * @param path
+     * @return
+     */
     private static DriveControl buildNeoDriveControl(ProcessPath path) {
         int frontLeftModuleDriveMotor_ID = 5;
         int frontLeftModuleSteerMotor_ID = 4;
@@ -92,29 +98,57 @@ public class RobotSetup implements ISetup<RobotContainer> {
         int backRightModuleSteerMotor_ID = 10;
         int backRightModuleSteerEncoder_CHANNEL = 4;
 
+        // used to configure the spark motor in SparkSetup
+        MotorConfig driveMotorConfig = new MotorConfig(
+                DriveSDSConstants.MK4I_L2.getDriveReduction(),
+                1,
+                DriveSDSConstants.MK4I_L2.getWheelDiameter(),
+                true,
+                true,
+                20,
+                false,
+                false,
+                Optional.empty()
+        );
+
+        // we know the PID constants from swervelib, so set them here
+        MotorConfig steerMotorConfig = new MotorConfig(
+                DriveSDSConstants.MK4I_L2.getSteerReduction(),
+                1,
+                DriveSDSConstants.MK4I_L2.getWheelDiameter(),
+                true,
+                true,
+                20,
+                false,
+                false,
+                1,
+                0,
+                .1
+        );
+
         DriveControl driveControl = new DriveControlSetup(
                 new SwerveModuleSetup(
-                        new DriveControllerSetup(new SparkDriveMotorSetup(frontLeftModuleDriveMotor_ID, MotorConfig.Empty, DriveSDSConstants.MK4I_L2)),
+                        new DriveControllerSetup(new SparkDriveMotorSetup(frontLeftModuleDriveMotor_ID, driveMotorConfig, DriveSDSConstants.MK4I_L2)),
                         new SteerControllerSetup(
-                                new SparkSteerMotorSetup(frontLeftModuleSteerMotor_ID, MotorConfig.Empty, DriveSDSConstants.MK4I_L2),
+                                new SparkSteerMotorSetup(frontLeftModuleSteerMotor_ID, steerMotorConfig, DriveSDSConstants.MK4I_L2),
                                 new ThriftyEncoderSetup(frontLeftModuleSteerEncoder_CHANNEL))
                 ),
                 new SwerveModuleSetup(
-                        new DriveControllerSetup(new SparkDriveMotorSetup(frontRightModuleDriveMotor_ID, MotorConfig.Empty, DriveSDSConstants.MK4I_L2)),
+                        new DriveControllerSetup(new SparkDriveMotorSetup(frontRightModuleDriveMotor_ID, driveMotorConfig, DriveSDSConstants.MK4I_L2)),
                         new SteerControllerSetup(
-                                new SparkSteerMotorSetup(frontRightModuleSteerMotor_ID, MotorConfig.Empty, DriveSDSConstants.MK4I_L2),
+                                new SparkSteerMotorSetup(frontRightModuleSteerMotor_ID, steerMotorConfig, DriveSDSConstants.MK4I_L2),
                                 new ThriftyEncoderSetup(frontRightModuleSteerEncoder_CHANNEL))
                 ),
                 new SwerveModuleSetup(
-                        new DriveControllerSetup(new SparkDriveMotorSetup(backLeftModuleDriveMotor_ID, MotorConfig.Empty, DriveSDSConstants.MK4I_L2)),
+                        new DriveControllerSetup(new SparkDriveMotorSetup(backLeftModuleDriveMotor_ID, driveMotorConfig, DriveSDSConstants.MK4I_L2)),
                         new SteerControllerSetup(
-                                new SparkSteerMotorSetup(backLeftModuleSteerMotor_ID, MotorConfig.Empty, DriveSDSConstants.MK4I_L2),
+                                new SparkSteerMotorSetup(backLeftModuleSteerMotor_ID, steerMotorConfig, DriveSDSConstants.MK4I_L2),
                                 new ThriftyEncoderSetup(backLeftModuleSteerEncoder_CHANNEL))
                 ),
                 new SwerveModuleSetup(
-                        new DriveControllerSetup(new SparkDriveMotorSetup(backRightModuleDriveMotor_ID, MotorConfig.Empty, DriveSDSConstants.MK4I_L2)),
+                        new DriveControllerSetup(new SparkDriveMotorSetup(backRightModuleDriveMotor_ID, driveMotorConfig, DriveSDSConstants.MK4I_L2)),
                         new SteerControllerSetup(
-                                new SparkSteerMotorSetup(backRightModuleSteerMotor_ID, MotorConfig.Empty, DriveSDSConstants.MK4I_L2),
+                                new SparkSteerMotorSetup(backRightModuleSteerMotor_ID, steerMotorConfig, DriveSDSConstants.MK4I_L2),
                                 new ThriftyEncoderSetup(backRightModuleSteerEncoder_CHANNEL))
                 ),
                 new WPI_PigeonIMU(5)
@@ -124,6 +158,12 @@ public class RobotSetup implements ISetup<RobotContainer> {
         return driveControl;
     }
 
+    /**
+     * Build a new talon/mk4 based drive control
+     *
+     * @param path
+     * @return
+     */
     private static DriveControl buildTalonDriveControl(ProcessPath path) {
 
         int frontLeftModuleDriveMotor_ID = 1;

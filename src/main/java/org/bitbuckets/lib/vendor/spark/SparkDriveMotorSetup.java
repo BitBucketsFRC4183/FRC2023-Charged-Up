@@ -18,7 +18,6 @@ public class SparkDriveMotorSetup extends SparkSetup {
     final SwerveModuleConfiguration swerveModuleConfiguration;
 
     double nominalVoltage = 12;
-    double currentLimit = 80;
 
     public SparkDriveMotorSetup(int canId, MotorConfig motorConfig, SwerveModuleConfiguration swerveModuleConfiguration) {
         super(canId, motorConfig);
@@ -37,7 +36,7 @@ public class SparkDriveMotorSetup extends SparkSetup {
         // Setup voltage compensation
         checkNeoError(neo.enableVoltageCompensation(nominalVoltage), "Failed to enable voltage compensation");
 
-        checkNeoError(neo.setSmartCurrentLimit((int) currentLimit), "Failed to set current limit for NEO");
+        checkNeoError(neo.setSmartCurrentLimit((int) swerveModuleConfiguration.getDriveCurrentLimit()), "Failed to set current limit for NEO");
 
         checkNeoError(neo.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus0, 100), "Failed to set periodic status frame 0 rate");
         checkNeoError(neo.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus1, 20), "Failed to set periodic status frame 1 rate");
@@ -51,7 +50,6 @@ public class SparkDriveMotorSetup extends SparkSetup {
         double positionConversionFactor = Math.PI * swerveModuleConfiguration.getWheelDiameter() * swerveModuleConfiguration.getDriveReduction();
         encoder.setPositionConversionFactor(positionConversionFactor);
         encoder.setVelocityConversionFactor(positionConversionFactor / 60.0);
-
 
         return motor;
 

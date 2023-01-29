@@ -19,10 +19,10 @@ public class SparkSteerMotorSetup extends SparkSetup {
     final SwerveModuleConfiguration swerveModuleConfiguration;
 
     double nominalVoltage = 12;
-    double steerCurrentLimit = 20;
-    double pidProportional = 1;
-    double pidIntegral = 0;
-    double pidDerivative = .1;
+    // set by RobotSetup in default motor config
+//    double pidProportional = 1;
+//    double pidIntegral = 0;
+//    double pidDerivative = .1;
 
     public SparkSteerMotorSetup(int canId, MotorConfig motorConfig, SwerveModuleConfiguration swerveModuleConfiguration) {
         super(canId, motorConfig);
@@ -43,7 +43,7 @@ public class SparkSteerMotorSetup extends SparkSetup {
         checkNeoError(motor.setIdleMode(CANSparkMax.IdleMode.kBrake), "Failed to set NEO idle mode");
         motor.setInverted(!swerveModuleConfiguration.isSteerInverted());
         checkNeoError(motor.enableVoltageCompensation(nominalVoltage), "Failed to enable voltage compensation");
-        checkNeoError(motor.setSmartCurrentLimit((int) Math.round(steerCurrentLimit)), "Failed to set NEO current limits");
+        checkNeoError(motor.setSmartCurrentLimit((int) Math.round(swerveModuleConfiguration.getSteerCurrentLimit())), "Failed to set NEO current limits");
 
         RelativeEncoder integratedEncoder = motor.getEncoder();
         checkNeoError(integratedEncoder.setPositionConversionFactor(2.0 * Math.PI * swerveModuleConfiguration.getSteerReduction()), "Failed to set NEO encoder conversion factor");
@@ -51,7 +51,7 @@ public class SparkSteerMotorSetup extends SparkSetup {
 //        checkNeoError(integratedEncoder.setPosition(absoluteEncoder.getAbsoluteAngle()), "Failed to set NEO encoder position");
 
         SparkMaxPIDController controller = motor.getPIDController();
-        // PID is set by the smartdashboard
+        // PID is set as tuneable by SparkSetup
 //        checkNeoError(controller.setP(pidProportional), "Failed to set NEO PID proportional constant");
 //        checkNeoError(controller.setI(pidIntegral), "Failed to set NEO PID integral constant");
 //        checkNeoError(controller.setD(pidDerivative), "Failed to set NEO PID derivative constant");
