@@ -8,23 +8,21 @@ package org.bitbuckets.lib.hardware;
  * also let you use many  types of motors and not cry
  * <p>
  * Common ways of obtaining: TalonPositionSetup, TalonVelocitySetup, TalonPercentSetup
- *
- * tags: low priority
- * TODO separate into percent motor and pid motor
  */
 public interface IMotor extends IRaw {
 
 
     /**
-     * Moves to percent output
+     * This method will tell the motor controller underneath to move at a specified percent of
+     * its max speed. Cannot be used in conjunction with {@link #moveToPosition(double)} or {@link #moveAtVelocity(double)}
      *
      * @param percent -1.0 to 1.0 representing a percentage of speed
      */
     void moveAtPercent(double percent);
 
     /**
-     * commands to move with pid control to a position
-     * should throw if not pid
+     * commands to move using pid position control to a specified position of units rotations.
+     * To tune the pid constants of this device please use the shuffleboard
      *
      * @param position_encoderRotations
      */
@@ -39,9 +37,9 @@ public interface IMotor extends IRaw {
     void moveAtVelocity(double velocity_encoderMetersPerSecond);
 
     /**
-     * TODO migrate this to a sane unit type
      *
-     * @return
+     * Gets the current desired position of the pid algorithm in the units used by the controller
+     * @return The current PID setpoint, if using PID, in the raw units of the motor controller
      */
     double getSetpoint_rawUnits();
 

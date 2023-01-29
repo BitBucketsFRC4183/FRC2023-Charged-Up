@@ -7,6 +7,7 @@ import static org.bitbuckets.lib.sim.CTREPhysicsSim.random;
 /**
  * Holds information about a simulated TalonSRX.
  */
+@Deprecated
 class TalonSRXSimProfile extends CTREPhysicsSim.SimProfile {
     private final TalonSRX _talon;
     private final double _accelToFullTime;

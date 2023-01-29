@@ -1,40 +1,11 @@
 package org.bitbuckets.drive.controlsds;
 
-import com.ctre.phoenix.ErrorCode;
-import com.ctre.phoenix.motorcontrol.*;
-import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import com.ctre.phoenix.sensors.*;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Preferences;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import org.bitbuckets.bootstrap.Robot;
-import org.bitbuckets.drive.DriveSDSConstants;
-import org.bitbuckets.drive.controlsds.falcon.Falcon500DriveController;
-import org.bitbuckets.drive.controlsds.falcon.Falcon500SteerController;
-import org.bitbuckets.drive.controlsds.sds.*;
-import org.bitbuckets.lib.ISetup;
-import org.bitbuckets.lib.ProcessPath;
-import org.bitbuckets.lib.control.ProfiledPIDFController;
-import org.bitbuckets.lib.log.DataLogger;
-import org.bitbuckets.lib.sim.CTREPhysicsSim;
-
-import static org.bitbuckets.drive.controlsds.sds.CtreUtils.checkCtreError;
-
-/**
+/*
+*
  * Sets up prereqs for a drive controller
  * <p>
  * really simple because a drivecontrol is super simple LMAO
- */
+@Deprecated
 public class DriveControlSDSSetup implements ISetup<DriveControlSDS> {
 
     @Override
@@ -137,7 +108,7 @@ public class DriveControlSDSSetup implements ISetup<DriveControlSDS> {
                 tab.getLayout("Front Left Module", BuiltInLayouts.kList).withSize(2, 4).withPosition(0, 0),
                 DriveSDSConstants.frontLeftModuleDriveMotor_ID, //Drive Motor
                 DriveSDSConstants.frontLeftModuleSteerMotor_ID, //Steer Motor
-                DriveSDSConstants.frontLeftModuleSteerEncoder_ID, //Steer Encoder
+                DriveSDSConstants.frontLeftModuleSteerEncoder_CHANNEL, //Steer Encoder
                 DriveSDSConstants.frontLeftModuleSteerOffset //Steer Offset
         );
 
@@ -146,7 +117,7 @@ public class DriveControlSDSSetup implements ISetup<DriveControlSDS> {
                 tab.getLayout("Front Right Module", BuiltInLayouts.kList).withSize(2, 4).withPosition(2, 0),
                 DriveSDSConstants.frontRightModuleDriveMotor_ID, //Drive Motor
                 DriveSDSConstants.frontRightModuleSteerMotor_ID, //Steer Motor
-                DriveSDSConstants.frontRightModuleSteerEncoder_ID, //Steer Encoder
+                DriveSDSConstants.frontRightModuleSteerEncoder_CHANNEL, //Steer Encoder
                 DriveSDSConstants.frontRightModuleSteerOffset //Steer Offset
         );
 
@@ -155,7 +126,7 @@ public class DriveControlSDSSetup implements ISetup<DriveControlSDS> {
                 tab.getLayout("Back Left Module", BuiltInLayouts.kList).withSize(2, 4).withPosition(4, 0),
                 DriveSDSConstants.backLeftModuleDriveMotor_ID, //Drive Motor
                 DriveSDSConstants.backLeftModuleSteerMotor_ID, //Steer Motor
-                DriveSDSConstants.backLeftModuleSteerEncoder_ID, //Steer Encoder
+                DriveSDSConstants.backLeftModuleSteerEncoder_CHANNEL, //Steer Encoder
                 DriveSDSConstants.backLeftModuleSteerOffset //Steer Offset
         );
 
@@ -164,10 +135,9 @@ public class DriveControlSDSSetup implements ISetup<DriveControlSDS> {
                 tab.getLayout("Back Right Module", BuiltInLayouts.kList).withSize(2, 4).withPosition(6, 0),
                 DriveSDSConstants.backRightModuleDriveMotor_ID, //Drive Motor
                 DriveSDSConstants.backRightModuleSteerMotor_ID, //Steer Motor
-                DriveSDSConstants.backRightModuleSteerEncoder_ID, //Steer Encoder
+                DriveSDSConstants.backRightModuleSteerEncoder_CHANNEL, //Steer Encoder
                 DriveSDSConstants.backRightModuleSteerOffset //Steer Offset
         );
-
 
         //Calibrate the gyro only once when the drive subsystem is first initialized
         gyro.calibrate();
@@ -180,7 +150,7 @@ public class DriveControlSDSSetup implements ISetup<DriveControlSDS> {
         double OrientKD = Preferences.getDouble(DriveSDSConstants.kOrientDKey, DriveSDSConstants.kOrientkD);
         double OrientKF = Preferences.getDouble(DriveSDSConstants.kOrientFKey, DriveSDSConstants.kOrientkF);
 
-        ProfiledPIDFController rotControllerRad = new ProfiledPIDFController(OrientKP, OrientKI, OrientKD, OrientKF,new TrapezoidProfile.Constraints(DriveSDSConstants.MAX_ANG_VELOCITY,DriveSDSConstants.MAX_ANG_VELOCITY));
+        ProfiledPIDFController rotControllerRad = new ProfiledPIDFController(OrientKP, OrientKI, OrientKD, OrientKF, new TrapezoidProfile.Constraints(DriveSDSConstants.MAX_ANG_VELOCITY, DriveSDSConstants.MAX_ANG_VELOCITY));
 
         PIDController balanceController = new PIDController(BalanceKP, BalanceKI, BalanceKD);
 
@@ -311,14 +281,16 @@ public class DriveControlSDSSetup implements ISetup<DriveControlSDS> {
     }
 
     private static void waitForCanCoder(WPI_CANCoder canCoder) {
-        /*
+        */
+/*
          * Wait for up to 1000 ms for a good CANcoder signal.
          *
          * This prevents a race condition during program startup
          * where we try to synchronize the Falcon encoder to the
          * CANcoder before we have received any position signal
          * from the CANcoder.
-         */
+         *//*
+
         int initTime = 0;
 
         ErrorCode shm = canCoder.getLastError();
@@ -341,3 +313,4 @@ public class DriveControlSDSSetup implements ISetup<DriveControlSDS> {
     }
 
 }
+*/

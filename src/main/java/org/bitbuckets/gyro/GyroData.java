@@ -1,8 +1,8 @@
 package org.bitbuckets.gyro;
 
-import org.bitbuckets.lib.log.Loggable;
+import org.bitbuckets.lib.log.LoggableObsolete;
 
-@Loggable
+@LoggableObsolete
 public class GyroData {
 
     double pitch = 0;

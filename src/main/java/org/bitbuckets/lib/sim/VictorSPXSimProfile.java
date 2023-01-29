@@ -7,6 +7,7 @@ import static org.bitbuckets.lib.sim.CTREPhysicsSim.random;
 /**
  * Holds information about a simulated VictorSPX.
  */
+@Deprecated
 class VictorSPXSimProfile extends CTREPhysicsSim.SimProfile {
     public final VictorSPX _victor;
 

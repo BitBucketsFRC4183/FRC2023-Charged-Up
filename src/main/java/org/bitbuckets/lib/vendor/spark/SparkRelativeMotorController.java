@@ -4,37 +4,35 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import org.bitbuckets.lib.hardware.IMotorController;
-import org.bitbuckets.lib.hardware.MotorIndex;
-import org.bitbuckets.lib.log.DataLogger;
-import org.bitbuckets.lib.vendor.ctre.TalonDataAutoGen;
+import org.bitbuckets.lib.hardware.MotorConfig;
+import org.bitbuckets.lib.log.ILoggable;
 
 public class SparkRelativeMotorController implements IMotorController, Runnable {
 
 
-    final double[] motorConstants;
+    final MotorConfig motorConfig;
     final CANSparkMax sparkMax;
-    final DataLogger<TalonDataAutoGen> dataLogger;
-
     final RelativeEncoder sparkMaxRelativeEncoder;
     final SparkMaxPIDController sparkMaxPIDController;
+    final ILoggable<double[]> motorData;
 
-    SparkRelativeMotorController(double[] motorConstants, CANSparkMax sparkMax, DataLogger<TalonDataAutoGen> dataLogger) {
-        this.motorConstants = motorConstants;
+    SparkRelativeMotorController(MotorConfig motorConfig, CANSparkMax sparkMax, ILoggable<double[]> motorData) {
+        this.motorConfig = motorConfig;
         this.sparkMax = sparkMax;
-        this.dataLogger = dataLogger;
         this.sparkMaxPIDController = sparkMax.getPIDController();
         this.sparkMaxRelativeEncoder = sparkMax.getEncoder();
+        this.motorData = motorData;
     }
 
 
     @Override
     public double getMechanismFactor() {
-        return motorConstants[MotorIndex.MECHANISM_FACTOR];
+        return motorConfig.mechanismCoefficient;
     }
 
     @Override
     public double getRotationsToMetersFactor() {
-        return motorConstants[MotorIndex.ROTATION_TO_METER_FACTOR];
+        return motorConfig.rotationToMeterCoefficient;
     }
 
     @Override
@@ -44,7 +42,7 @@ public class SparkRelativeMotorController implements IMotorController, Runnable 
 
     @Override
     public double getTimeFactor() {
-        return motorConstants[MotorIndex.TIME_FACTOR];
+        return motorConfig.timeCoefficient;
     }
 
     @Override
@@ -91,8 +89,23 @@ public class SparkRelativeMotorController implements IMotorController, Runnable 
 
     @Override
     public void run() {
-        dataLogger.process(data -> {
 
+        double appliedOutput = sparkMax.getAppliedOutput();
+        double busVoltage = sparkMax.getBusVoltage();
+
+        double positionRotations = sparkMaxRelativeEncoder.getPosition();
+        double velocityRotations = sparkMaxRelativeEncoder.getVelocity();
+
+        //labels: high priority
+        //TODO figure out how to get error from a sparkmax
+
+        motorData.log(new double[] {
+                appliedOutput,
+                busVoltage,
+                positionRotations,
+                velocityRotations
         });
+
+
     }
 }
