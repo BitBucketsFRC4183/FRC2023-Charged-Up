@@ -2,15 +2,15 @@ package org.bitbuckets.lib.vendor.spark;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
+import com.revrobotics.SparkMaxLimitSwitch;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.lib.SetupProfiler;
 import org.bitbuckets.lib.hardware.IMotorController;
-import org.bitbuckets.lib.hardware.MotorConstants;
-import org.bitbuckets.lib.hardware.MotorControllerDataAutoGen;
-import org.bitbuckets.lib.log.DataLogger;
-import org.bitbuckets.lib.tune.IValueTuner;
+import org.bitbuckets.lib.hardware.MotorConfig;
+import org.bitbuckets.lib.log.ILoggable;
 import org.bitbuckets.lib.log.LoggingConstants;
+import org.bitbuckets.lib.tune.IValueTuner;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,11 +27,11 @@ public class SparkSetup implements ISetup<IMotorController> {
 
 
     final int canId;
-    final MotorConstants motorConstants;
+    final MotorConfig motorConfig;
 
-    public SparkSetup(int canId, MotorConstants motorConstants) {
+    public SparkSetup(int canId, MotorConfig motorConfig) {
         this.canId = canId;
-        this.motorConstants = motorConstants;
+        this.motorConfig = motorConfig;
     }
 
     @Override
@@ -51,26 +51,48 @@ public class SparkSetup implements ISetup<IMotorController> {
         spark.restoreFactoryDefaults(); //defaulitesi
         spark.enableVoltageCompensation(12.0);
 
-        if (motorConstants.shouldBreakOnNoCommand) {
+        if (motorConfig.shouldBreakOnNoCommand) {
             spark.setIdleMode(CANSparkMax.IdleMode.kBrake);
         } else {
             spark.setIdleMode(CANSparkMax.IdleMode.kCoast);
         }
 
-        spark.setInverted(motorConstants.isInverted);
-        spark.setSmartCurrentLimit((int) motorConstants.currentLimit);
+        spark.setInverted(motorConfig.isInverted);
+        spark.setSmartCurrentLimit((int) motorConfig.currentLimit);
 
-        DataLogger<MotorControllerDataAutoGen> logger = path.generatePushDataLogger(MotorControllerDataAutoGen::new);
+        SparkMaxLimitSwitch forwardSwitch = null;
+        SparkMaxLimitSwitch reverseSwitch = null;
 
+        if (motorConfig.isForwardLimitEnabled) {
+            forwardSwitch = spark.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
+            forwardSwitch.enableLimitSwitch(true);
+        }
+
+        if (motorConfig.isBackwardLimitEnabled) {
+            reverseSwitch = spark.getReverseLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
+            reverseSwitch.enableLimitSwitch(true);
+        }
+
+        ILoggable<double[]> data = path.generateDoubleLoggers("appliedOutput", "busVoltage", "positionRotations", "velocityRotatations");
         IValueTuner<Double> p = path.generateValueTuner("p", 0.0);
         IValueTuner<Double> i = path.generateValueTuner("i", 0.0);
         IValueTuner<Double> d = path.generateValueTuner("d", 0.0);
 
         SparkTuningAspect sparkTuningAspect = new SparkTuningAspect(p, i, d, spark.getPIDController());
-        SparkRelativeMotorController ctrl = new SparkRelativeMotorController(motorConstants, spark, logger);
+        SparkRelativeMotorController ctrl = new SparkRelativeMotorController(motorConfig, spark, data);
 
         path.registerLoop(ctrl, LoggingConstants.LOGGING_PERIOD, "logging-loop");
         path.registerLoop(sparkTuningAspect, LoggingConstants.TUNING_PERIOD, "tuning-loop");
+        if (forwardSwitch != null) {
+            ILoggable<Boolean> loggable = path.generateBooleanLogger("forwardSwitchPressed");
+            SparkLimitLoggingAspect loggingAspect = new SparkLimitLoggingAspect(loggable,  forwardSwitch);
+            path.registerLoop(loggingAspect, LoggingConstants.LOGGING_PERIOD, "forw-log-loop");
+        }
+        if (reverseSwitch != null) {
+            ILoggable<Boolean> loggable = path.generateBooleanLogger("reverseSwitchPressed");
+            SparkLimitLoggingAspect loggingAspect = new SparkLimitLoggingAspect(loggable,  reverseSwitch);
+            path.registerLoop(loggingAspect, LoggingConstants.LOGGING_PERIOD, "revr-log-loop");
+        }
 
         return ctrl;
     }

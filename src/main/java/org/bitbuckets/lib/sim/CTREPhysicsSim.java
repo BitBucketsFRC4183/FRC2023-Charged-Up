@@ -3,7 +3,6 @@ package org.bitbuckets.lib.sim;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
-import com.revrobotics.REVPhysicsSim;
 
 import java.util.ArrayList;
 

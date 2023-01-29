@@ -4,8 +4,8 @@ import edu.wpi.first.math.controller.PIDController;
 import org.bitbuckets.lib.DontUseIncubating;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
-import org.bitbuckets.lib.tune.IValueTuner;
 import org.bitbuckets.lib.log.LoggingConstants;
+import org.bitbuckets.lib.tune.IValueTuner;
 
 @DontUseIncubating
 @Deprecated

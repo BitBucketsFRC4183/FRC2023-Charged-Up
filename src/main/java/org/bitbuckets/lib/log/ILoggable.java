@@ -1,6 +1,6 @@
 package org.bitbuckets.lib.log;
 
-public interface Loggable<T> {
+public interface ILoggable<T> {
 
     void log(T data);
 

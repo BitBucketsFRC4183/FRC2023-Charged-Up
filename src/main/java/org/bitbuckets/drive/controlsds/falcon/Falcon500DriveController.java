@@ -1,8 +1,6 @@
 package org.bitbuckets.drive.controlsds.falcon;
 
-import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import org.bitbuckets.drive.controlsds.sds.DriveController;
+/*
 
 @Deprecated
 public class Falcon500DriveController implements DriveController {
@@ -25,4 +23,4 @@ public class Falcon500DriveController implements DriveController {
     public double getStateVelocity() {
         return motor.getSelectedSensorVelocity() * sensorVelocityCoefficient;
     }
-}
+}*/

@@ -1,40 +1,10 @@
 package org.bitbuckets.drive.controlsds;
 
-import com.ctre.phoenix.ErrorCode;
-import com.ctre.phoenix.motorcontrol.*;
-import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import com.ctre.phoenix.sensors.*;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Preferences;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import org.bitbuckets.bootstrap.Robot;
-import org.bitbuckets.drive.DriveSDSConstants;
-import org.bitbuckets.drive.controlsds.falcon.Falcon500DriveController;
-import org.bitbuckets.drive.controlsds.falcon.Falcon500SteerController;
-import org.bitbuckets.drive.controlsds.sds.*;
-import org.bitbuckets.lib.ISetup;
-import org.bitbuckets.lib.ProcessPath;
-import org.bitbuckets.lib.control.ProfiledPIDFController;
-import org.bitbuckets.lib.log.DataLogger;
-import org.bitbuckets.lib.sim.CTREPhysicsSim;
-
-import static org.bitbuckets.drive.controlsds.sds.CtreUtils.checkCtreError;
-
-/**
+/*
+*
  * Sets up prereqs for a drive controller
  * <p>
  * really simple because a drivecontrol is super simple LMAO
- */
 @Deprecated
 public class DriveControlSDSSetup implements ISetup<DriveControlSDS> {
 
@@ -311,14 +281,16 @@ public class DriveControlSDSSetup implements ISetup<DriveControlSDS> {
     }
 
     private static void waitForCanCoder(WPI_CANCoder canCoder) {
-        /*
+        */
+/*
          * Wait for up to 1000 ms for a good CANcoder signal.
          *
          * This prevents a race condition during program startup
          * where we try to synchronize the Falcon encoder to the
          * CANcoder before we have received any position signal
          * from the CANcoder.
-         */
+         *//*
+
         int initTime = 0;
 
         ErrorCode shm = canCoder.getLastError();
@@ -341,3 +313,4 @@ public class DriveControlSDSSetup implements ISetup<DriveControlSDS> {
     }
 
 }
+*/

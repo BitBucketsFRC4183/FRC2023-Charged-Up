@@ -1,35 +1,7 @@
 package org.bitbuckets.drive.controlsds.falcon;
 
-import com.ctre.phoenix.motorcontrol.*;
-import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import com.ctre.phoenix.sensors.*;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import org.bitbuckets.bootstrap.Robot;
-import org.bitbuckets.drive.DriveSDSConstants;
-import org.bitbuckets.drive.controlsds.CANCoderAbsoluteEncoder;
-import org.bitbuckets.drive.controlsds.Direction;
-import org.bitbuckets.drive.controlsds.DriveControlSDS;
-import org.bitbuckets.drive.controlsds.DriveControlSDSDataAutoGen;
-import org.bitbuckets.drive.controlsds.sds.*;
-import org.bitbuckets.lib.ISetup;
-import org.bitbuckets.lib.ProcessPath;
-import org.bitbuckets.lib.log.DataLogger;
-import org.bitbuckets.lib.sim.CTREPhysicsSim;
+/*
 
-import static org.bitbuckets.drive.controlsds.sds.CtreUtils.checkCtreError;
-
-/**
- * Sets up prereqs for a drive controller
- * <p>
- * really fucking simple because a drivecontrol is super simple LMAO
- */
 @Deprecated
 public class Falcon500DriveControlSDSSetup implements ISetup<DriveControlSDS> {
 
@@ -268,3 +240,4 @@ public class Falcon500DriveControlSDSSetup implements ISetup<DriveControlSDS> {
 
 
 }
+*/

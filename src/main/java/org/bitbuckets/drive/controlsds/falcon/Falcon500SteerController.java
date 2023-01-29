@@ -1,9 +1,6 @@
 package org.bitbuckets.drive.controlsds.falcon;
 
-import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import org.bitbuckets.drive.controlsds.sds.AbsoluteEncoder;
-import org.bitbuckets.drive.controlsds.sds.SteerController;
+/*
 
 @Deprecated
 public class Falcon500SteerController implements SteerController {
@@ -85,3 +82,4 @@ public class Falcon500SteerController implements SteerController {
         return motorAngleRadians;
     }
 }
+*/
