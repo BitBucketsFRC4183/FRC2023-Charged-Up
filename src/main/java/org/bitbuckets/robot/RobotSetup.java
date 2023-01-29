@@ -12,9 +12,6 @@ import org.bitbuckets.drive.DriveInput;
 import org.bitbuckets.drive.DriveSDSSubsystem;
 import org.bitbuckets.drive.balance.AutoAxisControl;
 import org.bitbuckets.drive.balance.AutoAxisSetup;
-import org.bitbuckets.drive.controlsds.DriveControlSDS;
-import org.bitbuckets.drive.controlsds.neo.NeoControlSDSSetup;
-import org.bitbuckets.drive.controlsds.DriveControlSDSSetup;
 import org.bitbuckets.elevator.ElevatorControl;
 import org.bitbuckets.elevator.ElevatorControlSetup;
 import org.bitbuckets.elevator.ElevatorInput;
@@ -24,14 +21,12 @@ import org.bitbuckets.gyro.GyroControlSetup;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.lib.hardware.IMotorController;
-import org.bitbuckets.lib.hardware.MotorConstants;
-import org.bitbuckets.lib.hardware.PIDIndex;
+import org.bitbuckets.lib.hardware.MotorConfig;
 import org.bitbuckets.lib.tune.IValueTuner;
 import org.bitbuckets.lib.util.MockingUtil;
-import org.bitbuckets.lib.vendor.spark.SparkRelativeMotorController;
-import org.bitbuckets.lib.vendor.ctre.TalonSetup;
-import org.bitbuckets.lib.vendor.ctre.TalonSetup;
 import org.bitbuckets.lib.vendor.spark.SparkSetup;
+
+import java.util.Optional;
 
 public class RobotSetup implements ISetup<RobotContainer> {
 
@@ -45,98 +40,16 @@ public class RobotSetup implements ISetup<RobotContainer> {
     public RobotContainer build(ProcessPath path) {
 
         //TODO use neo controller here
-        DriveControlSDS driveControl = MockingUtil.buddy(DriveControlSDS.class);
+     //   DriveControlSDS driveControl = MockingUtil.buddy(DriveControlSDS.class);
         ElevatorControlSetup elevatorControlSetup = new ElevatorControlSetup(
-                new SparkSetup(1,new MotorConstants(0,0,0,false,false,0)),
-                new SparkSetup(2,new MotorConstants(0,0,0,false,false,0)),
-                new SparkSetup(3,new MotorConstants(0,0,0,false,false,0)),
-                new SparkSetup(4,new MotorConstants(0,0,0,false,false,0))
+                new SparkSetup(1,new MotorConfig(1,0,0,false,false,1,false,false, Optional.empty())),
+                new SparkSetup(2,new MotorConfig(1,0,0,false,false,1,false,false,Optional.empty())),
+                new SparkSetup(3,new MotorConfig(1,0,0,false,false,1,false,false,Optional.empty())),
+                new SparkSetup(4,new MotorConfig(1,0,0,false,false,1,false,false,Optional.empty()))
+
         );
 
 
-//
-//        ModuleSetup frontLeftModule = new ModuleSetup(
-//                new SparkSetup(
-//                        1,
-//                        true,
-//                        DriveConstants.DRIVE_REDUCTION,
-//                        DriveConstants.DRIVE_METERS_FACTOR,
-//                        80,
-//                        PIDIndex.EMPTY
-//                ),
-//                new SparkSetup(
-//                        2,
-//                        true,
-//                        DriveConstants.TURN_REDUCTION,
-//                        DriveConstants.TURN_METERS_FACTOR,
-//                        20,
-//                        predefPid
-//                )
-//        );
-//
-//        ModuleSetup frontRightModule = new ModuleSetup(
-//                new SparkSetup(
-//                        7,
-//                        true,
-//                        DriveConstants.DRIVE_REDUCTION,
-//                        DriveConstants.DRIVE_METERS_FACTOR,
-//                        80,
-//                        PIDIndex.EMPTY
-//                ),
-//                new SparkSetup(
-//                        8,
-//                        true,
-//                        DriveConstants.TURN_REDUCTION,
-//                        DriveConstants.TURN_METERS_FACTOR,
-//                        20,
-//                        predefPid
-//                )
-//        );
-//
-//        ModuleSetup backLeftModule = new ModuleSetup(
-//                new SparkSetup(
-//                        5,
-//                        true,
-//                        DriveConstants.DRIVE_REDUCTION,
-//                        DriveConstants.DRIVE_METERS_FACTOR,
-//                        80,
-//                        PIDIndex.EMPTY
-//                ),
-//                new SparkSetup(
-//                        6,
-//                        true,
-//                        DriveConstants.TURN_REDUCTION,
-//                        DriveConstants.TURN_METERS_FACTOR,
-//                        20,
-//                        predefPid
-//                )
-//        );
-//
-//        ModuleSetup backRightModule = new ModuleSetup(
-//                new SparkSetup(
-//                        3,
-//                        true,
-//                        DriveConstants.DRIVE_REDUCTION,
-//                        DriveConstants.DRIVE_METERS_FACTOR,
-//                        80,
-//                        PIDIndex.EMPTY
-//                ),
-//                new SparkSetup(
-//                        4,
-//                        true,
-//                        DriveConstants.TURN_REDUCTION,
-//                        DriveConstants.TURN_METERS_FACTOR,
-//                        20,
-//                        predefPid
-//                )
-//        );
-//
-//        DriveControlSDS driveControl = new DriveControlSDSSetup(
-//                frontLeftModule,
-//                frontRightModule,
-//                backLeftModule,
-//                backRightModule
-//        ).build(path.addChild("drive-control"));
 
         DriveInput input = new DriveInput(new Joystick(0));
         ElevatorInput elevatorInput = new ElevatorInput(new Joystick(1));
@@ -150,9 +63,9 @@ public class RobotSetup implements ISetup<RobotContainer> {
         AutoAxisControl autoAxisControl = new AutoAxisSetup().build(path.addChild("axis-control"));
         IValueTuner<AutoPath> pathTuneable = path.generateValueTuner("path", AutoPath.TEST_PATH);
 
-        DriveControlSDS driveControl = new DriveControlSDSSetup().build(path.addChild("drive-control"));
-        DriveInput input = new DriveInput(new Joystick(0));
-        DriveSDSSubsystem driveSubsystem = new DriveSDSSubsystem(input, robotStateControl, gyroControl, autoAxisControl, driveControl, autoControl, pathTuneable);
+//        DriveControlSDS driveControl = new DriveControlSDSSetup().build(path.addChild("drive-control"));
+//        DriveInput input = new DriveInput(new Joystick(0));
+//        DriveSDSSubsystem driveSubsystem = new DriveSDSSubsystem(input, robotStateControl, gyroControl, autoAxisControl, driveControl, autoControl, pathTuneable);
 
         ArmInput armInput = new ArmInput(
                 new Joystick(1)
@@ -174,6 +87,6 @@ public class RobotSetup implements ISetup<RobotContainer> {
 
         //SYSTEMS_GREEN.setOn(); //LET'S WIN SOME DAMN REGIONALS!!
 
-        return new RobotContainer(driveSubsystem, armSubsystem,elevatorSubsystem);
+        return new RobotContainer(MockingUtil.buddy(DriveSDSSubsystem.class),armSubsystem,elevatorSubsystem);
     }
 }
