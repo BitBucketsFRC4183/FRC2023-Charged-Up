@@ -13,16 +13,13 @@ import org.bitbuckets.drive.DriveSDSSubsystem;
 import org.bitbuckets.drive.balance.AutoAxisControl;
 import org.bitbuckets.drive.balance.AutoAxisSetup;
 import org.bitbuckets.drive.controlsds.DriveControlSDS;
-import org.bitbuckets.drive.controlsds.neo.NeoControlSDSSetup;
 import org.bitbuckets.gyro.GyroControl;
 import org.bitbuckets.gyro.GyroControlSetup;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.lib.hardware.IMotorController;
-import org.bitbuckets.lib.hardware.PIDIndex;
 import org.bitbuckets.lib.tune.IValueTuner;
 import org.bitbuckets.lib.util.MockingUtil;
-import org.bitbuckets.lib.vendor.spark.SparkRelativeMotorController;
 
 public class RobotSetup implements ISetup<RobotContainer> {
 
@@ -42,8 +39,8 @@ public class RobotSetup implements ISetup<RobotContainer> {
         AutoControl autoControl = new AutoControlSetup().build(path.addChild("auto-control"));
         GyroControl gyroControl = new GyroControlSetup(5).build(path.addChild("gyro-control"));
         AutoAxisControl autoAxisControl = new AutoAxisSetup().build(path.addChild("axis-control"));
-        //also throwing erros since I'm no longer using TestPath, but rather the array
-        IValueTuner<AutoPath> pathTuneable = path.generateValueTuner("path", AutoPath.TEST_PATH);
+        //also throwing errors since I'm no longer using TestPath, but rather the array
+        IValueTuner<AutoPath> pathTuneable = path.generateValueTuner("path", AutoPath.AUTO_TEST_PATH_ONE);
 
 
         DriveSDSSubsystem driveSubsystem = new DriveSDSSubsystem(input, robotStateControl, gyroControl, autoAxisControl, driveControl, autoControl, pathTuneable);

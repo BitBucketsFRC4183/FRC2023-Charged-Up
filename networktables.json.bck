@@ -88,7 +88,7 @@
     }
   },
   {
-    "name": "/RealOutputs/MattTuneables/path",
+    "name": "/ass/root/path",
     "type": "string",
     "value": "TEST_PATH",
     "properties": {
