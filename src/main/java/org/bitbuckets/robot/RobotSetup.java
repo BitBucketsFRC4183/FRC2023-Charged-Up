@@ -1,28 +1,20 @@
 package org.bitbuckets.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
-import org.bitbuckets.arm.ArmControl;
-import org.bitbuckets.arm.ArmControlSetup;
-import org.bitbuckets.arm.ArmInput;
-import org.bitbuckets.arm.ArmSubsystem;
+import org.bitbuckets.arm.*;
 import org.bitbuckets.auto.AutoControl;
 import org.bitbuckets.auto.AutoControlSetup;
 import org.bitbuckets.auto.AutoPath;
 import org.bitbuckets.drive.DriveInput;
-import org.bitbuckets.drive.DriveSDSSubsystem;
 import org.bitbuckets.drive.balance.AutoAxisControl;
 import org.bitbuckets.drive.balance.AutoAxisSetup;
 import org.bitbuckets.drive.controlsds.DriveControlSDS;
-import org.bitbuckets.drive.controlsds.neo.NeoControlSDSSetup;
 import org.bitbuckets.gyro.GyroControl;
 import org.bitbuckets.gyro.GyroControlSetup;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
-import org.bitbuckets.lib.hardware.IMotorController;
-import org.bitbuckets.lib.hardware.PIDIndex;
 import org.bitbuckets.lib.tune.IValueTuner;
 import org.bitbuckets.lib.util.MockingUtil;
-import org.bitbuckets.lib.vendor.spark.SparkRelativeMotorController;
 import org.bitbuckets.lib.vendor.spark.SparkSetup;
 
 public class RobotSetup implements ISetup<RobotContainer> {
@@ -39,6 +31,7 @@ public class RobotSetup implements ISetup<RobotContainer> {
         //TODO use neo controller here
         DriveControlSDS driveControl = MockingUtil.buddy(DriveControlSDS.class);
 
+
         DriveInput input = new DriveInput(new Joystick(0));
         AutoControl autoControl = new AutoControlSetup().build(path.addChild("auto-control"));
         GyroControl gyroControl = new GyroControlSetup(5).build(path.addChild("gyro-control"));
@@ -52,17 +45,17 @@ public class RobotSetup implements ISetup<RobotContainer> {
         //labels: high priority
         //TODO use neos here
         ArmControlSetup armControlSetup = new ArmControlSetup(
-                MockingUtil.noops(IMotorController.class),
-                MockingUtil.noops(IMotorController.class)
+            new SparkSetup(9, ArmConstants.lowerConfig),
+            new SparkSetup(10, ArmConstants.upperConfig)
         );
 
         ArmControl armControl = armControlSetup.build(path.addChild("arm-control"));
 
         ArmInput armInput = new ArmInput(new Joystick(1));
 
-        ArmSubsystem armSubsystem = new ArmSubsystem(armInput, armControl);
+        ArmSubsystem armSubsystem = new ArmSubsystem(armInput, armControl, path.generateStringLogger("arm-subsystem"));
 
-        //SYSTEMS_GREEN.setOn(); //LET'S WIN SOME DAMN REGIONALS!!
+        //SYSTEMS_GREEN.setOn(); //LET'S WIN SOME DAMN REGIONALS!!S
 
         return new RobotContainer(armSubsystem);
     }
