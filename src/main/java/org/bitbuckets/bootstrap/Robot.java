@@ -1,5 +1,6 @@
 package org.bitbuckets.bootstrap;
 
+import com.revrobotics.REVPhysicsSim;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
@@ -93,6 +94,7 @@ public class Robot extends LoggedRobot {
     @Override
     public void simulationPeriodic() {
         loopDriver.runWhenSim();
+        REVPhysicsSim.getInstance().run();
     }
 
 
