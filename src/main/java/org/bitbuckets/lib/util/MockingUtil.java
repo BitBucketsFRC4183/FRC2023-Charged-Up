@@ -1,4 +1,4 @@
-package org.bitbuckets;
+package org.bitbuckets.lib.util;
 
 import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.TypeCache;
@@ -14,7 +14,7 @@ import static net.bytebuddy.matcher.ElementMatchers.any;
  * that require no dependencies and do nothing.
  */
 @Deprecated @DontUseIncubating
-public class ShutUpNoOps {
+public class MockingUtil {
 
     final TypeCache<?> cache = new TypeCache<>();
 

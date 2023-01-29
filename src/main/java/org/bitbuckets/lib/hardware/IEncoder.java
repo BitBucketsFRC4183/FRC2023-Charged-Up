@@ -21,6 +21,8 @@ public interface IEncoder extends IRaw {
      *
      * @return a coefficient which converts from rotations of the motor to meters in position,
      * only used for velocity based PID or getting velocity readouts.
+     *
+     * TYPICALLY leave as 1
      */
     double getRotationsToMetersFactor();
 

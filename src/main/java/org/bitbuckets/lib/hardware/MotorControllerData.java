@@ -1,7 +1,7 @@
 package org.bitbuckets.lib.hardware;
 
-import org.bitbuckets.lib.log.LoggableObsolete;
 import org.bitbuckets.lib.log.LoggableKey;
+import org.bitbuckets.lib.log.LoggableObsolete;
 
 @LoggableObsolete
 public class MotorControllerData {

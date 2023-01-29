@@ -8,17 +8,18 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import org.bitbuckets.drive.DriveConstants;
 import org.bitbuckets.drive.DriveSDSConstants;
 import org.bitbuckets.drive.controlsds.sds.SwerveModule;
-import org.bitbuckets.lib.log.DataLogger;
+import org.bitbuckets.lib.log.ILoggable;
+import org.bitbuckets.robot.RobotConstants;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Represents a real drive controller that implements control of the drivetrain using a list of SwerveModule interfaces
  */
 public class DriveControlSDS {
 
-    final DataLogger<DriveControlSDSDataAutoGen> logger;
+    final ILoggable<SwerveModuleState[]> desiredStates;
+    final ILoggable<SwerveModuleState[]> actualStates;
 
     // Swerve Modules
     final SwerveModule moduleFrontLeft;
@@ -26,8 +27,6 @@ public class DriveControlSDS {
     final SwerveModule moduleBackLeft;
     final SwerveModule moduleBackRight;
 
-    // Instance Variables
-    final SwerveDriveKinematics kinematics;
 
     //Speed factor that edits the max velocity and max angular velocity
     double speedModifier = .75;
@@ -38,29 +37,21 @@ public class DriveControlSDS {
 
     SwerveModuleState[] cachedSetpoint = new SwerveModuleState[4];
 
-
-    public DriveControlSDS(DataLogger<DriveControlSDSDataAutoGen> logger, SwerveModule moduleFrontLeft, SwerveModule moduleFrontRight, SwerveModule moduleBackLeft, SwerveModule moduleBackRight, SwerveDriveKinematics kinematics) {
-        this.logger = logger;
+    public DriveControlSDS(ILoggable<SwerveModuleState[]> desiredStates, ILoggable<SwerveModuleState[]> actualStates, SwerveModule moduleFrontLeft, SwerveModule moduleFrontRight, SwerveModule moduleBackLeft, SwerveModule moduleBackRight) {
+        this.desiredStates = desiredStates;
+        this.actualStates = actualStates;
         this.moduleFrontLeft = moduleFrontLeft;
         this.moduleFrontRight = moduleFrontRight;
         this.moduleBackLeft = moduleBackLeft;
         this.moduleBackRight = moduleBackRight;
-        this.kinematics = kinematics;
-
-        // We will also create a list of all the modules so we can easily access them later
-        modules = new ArrayList<>(List.of(moduleFrontLeft, moduleFrontRight, moduleBackLeft, moduleBackRight));
-
     }
+
 
     public void guaranteedLoggingLoop() {
-        logger.process(data -> {
-            data.targetStates = reportSetpointStates();
-            data.realStates = reportActualStates();
-        });
+        desiredStates.log(reportSetpointStates());
+        actualStates.log(reportActualStates());
     }
 
-
-    //TODO fix this shit
     public SwerveModuleState[] reportSetpointStates() {
         return new SwerveModuleState[]{
                 new SwerveModuleState(),
@@ -83,7 +74,7 @@ public class DriveControlSDS {
     public void drive(ChassisSpeeds chassisSpeeds) {
         this.chassisSpeeds = chassisSpeeds;
 
-        doDriveWithStates(this.kinematics.toSwerveModuleStates(chassisSpeeds));
+        doDriveWithStates(RobotConstants.KINEMATICS.toSwerveModuleStates(chassisSpeeds));
     }
 
     public void stopSticky() {
