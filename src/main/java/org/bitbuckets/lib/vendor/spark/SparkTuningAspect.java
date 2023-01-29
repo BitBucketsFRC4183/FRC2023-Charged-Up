@@ -1,7 +1,6 @@
 package org.bitbuckets.lib.vendor.spark;
 
 import com.revrobotics.SparkMaxPIDController;
-import org.bitbuckets.lib.hardware.PIDIndex;
 import org.bitbuckets.lib.tune.IValueTuner;
 
 public class SparkTuningAspect implements Runnable {

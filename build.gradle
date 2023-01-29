@@ -3,6 +3,7 @@ plugins {
     id "java"
     id "edu.wpi.first.GradleRIO" version "2023.2.1"
     id "com.peterabeles.gversion" version "1.10"
+    id 'jacoco'
 }
 
 sourceCompatibility = JavaVersion.VERSION_11
@@ -79,13 +80,19 @@ dependencies {
     testImplementation 'org.mockito:mockito-core:4.11.0'
     testImplementation 'org.mockito:mockito-junit-jupiter:5.0.0'
 
-    annotationProcessor project("season-annotations")
+    implementation 'net.bytebuddy:byte-buddy:1.12.13'
 }
 
 test {
     useJUnitPlatform()
 
     systemProperty 'junit.jupiter.extensions.autodetection.enabled', 'true'
+    finalizedBy jacocoTestReport // report is always generated after tests run
+
+}
+
+jacocoTestReport {
+    dependsOn test // tests are required to run before generating the report
 }
 
 def includeDesktopSupport = true
