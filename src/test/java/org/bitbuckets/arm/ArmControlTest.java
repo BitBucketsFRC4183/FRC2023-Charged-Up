@@ -18,14 +18,14 @@ class ArmControlTest {
     }
 
     @Test
-    void convertMechanismRotationtoRawRotation_lowerJoint() {
+    void convertMechanismRotationToRawRotation_lowerJoint() {
         ArmControl control = new ArmControl(lowerJoint, upperJoint);
 
         assertEquals(27.69, control.convertMechanismRotationtoRawRotation_lowerJoint(1), .1);
     }
 
     @Test
-    void convertMechanismRotationtoRawRotation_upperJoint() {
+    void convertMechanismRotationToRawRotation_upperJoint() {
         ArmControl control = new ArmControl(lowerJoint, upperJoint);
 
         assertEquals(24., control.convertMechanismRotationtoRawRotation_upperJoint(1), .1);
