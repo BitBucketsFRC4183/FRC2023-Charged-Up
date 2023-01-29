@@ -11,15 +11,13 @@ public class RobotContainer {
 
     final DriveSDSSubsystem driveSubsystem;
     final ArmSubsystem armSubsystem;
-
-    public RobotContainer(DriveSDSSubsystem driveSubsystem, ArmSubsystem armSubsystem) {
-        this.driveSubsystem = driveSubsystem;
-        this.armSubsystem = armSubsystem;
     final VisionControl visionControl;
 
-    public RobotContainer(DriveSDSSubsystem subsystem, VisionControl visionControl) {
-        this.subsystem = subsystem;
+    public RobotContainer(DriveSDSSubsystem driveSubsystem, ArmSubsystem armSubsystem,  VisionControl visionControl) {
+        this.driveSubsystem = driveSubsystem;
+        this.armSubsystem = armSubsystem;
         this.visionControl = visionControl;
+
     }
 
     public void autoPeriodic() {
@@ -32,9 +30,7 @@ public class RobotContainer {
 
     //Shouldn't need to do anything here
     public void teleopPeriodic() {
-        subsystem.teleopPeriodic();
         visionControl.teleopPeriodic();
-
         armSubsystem.teleopPeriodic();
     }
 

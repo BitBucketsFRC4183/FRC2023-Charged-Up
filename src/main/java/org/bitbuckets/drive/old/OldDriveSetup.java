@@ -27,18 +27,7 @@ public class OldDriveSetup implements ISetup<OldDriveControl> {
 
     @Override
     public OldDriveControl build(ProcessPath path) {
-        DataLogger<OldDriveDataAutoGen> logger = path.generatePushDataLogger(OldDriveDataAutoGen::new);
-        OldDriveControl control = new OldDriveControl(
-                logger,
-                frontLeft.build(path.addChild("swerve-module-fl")),
-                frontRight.build(path.addChild("swerve-module-fr")),
-                backLeft.build(path.addChild("swerve-module-bl")),
-                backRight.build(path.addChild("swerve-module-br"))
-        );
-
-
-        path.registerLoop(control::guaranteedLoggingLoop, "logging");
-
-        return control;
+        return null;
     }
 }
+

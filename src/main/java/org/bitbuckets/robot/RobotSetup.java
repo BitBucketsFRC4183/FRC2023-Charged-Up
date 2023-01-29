@@ -20,6 +20,7 @@ import org.bitbuckets.lib.hardware.PIDIndex;
 import org.bitbuckets.lib.log.DataLogger;
 import org.bitbuckets.lib.tune.IValueTuner;
 import org.bitbuckets.lib.vendor.ctre.TalonSetup;
+import org.bitbuckets.odometry.OdometryControlSetup;
 import org.bitbuckets.vision.VisionControl;
 import org.bitbuckets.vision.VisionControlSetup;
 
@@ -138,11 +139,13 @@ public class RobotSetup implements ISetup<RobotContainer> {
                 new Joystick(0)
         );
 
+        //TODO
+        //new OdometryControlSetup();
+
         ArmSubsystem armSubsystem = new ArmSubsystem(armInput, null);
 
         //SYSTEMS_GREEN.setOn(); //LET'S WIN SOME DAMN REGIONALS!!
 
-        return new RobotContainer(driveSubsystem, armSubsystem);
-        return new RobotContainer(driveSubsystem, visionControl);
+        return new RobotContainer(driveSubsystem, armSubsystem,visionControl);
     }
 }

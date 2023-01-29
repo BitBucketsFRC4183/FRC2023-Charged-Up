@@ -65,8 +65,6 @@ public class OldDriveSubsystem {
 
                 //PathPlannerTrajectory testPath = PathPlanner.loadPath("test path", new PathConstraints(1,1));
 
-<<<<<<< HEAD:src/main/java/org/bitbuckets/drive/DriveSubsystem.java
-=======
 
                 //for when auto is finished
                 if (m_timer.hasElapsed(autoControl.getTrajectoryTime(path))) {
@@ -76,7 +74,6 @@ public class OldDriveSubsystem {
         }
 
 
->>>>>>> main:src/main/java/org/bitbuckets/drive/old/OldDriveSubsystem.java
     }
 
     void driveAt(ChassisSpeeds speeds) {
@@ -93,6 +90,14 @@ public class OldDriveSubsystem {
     public void driveBack() {
 
         driveAt(new ChassisSpeeds(-0.05, 0.0, 0.0));
+    }
+
+    public void driveLeft() {
+        driveAt(new ChassisSpeeds(0.00, 0.05, 0.0));
+    }
+
+    public void driveRight() {
+        driveAt(new ChassisSpeeds(0.0, -0.05, 0.0));
     }
 
    
