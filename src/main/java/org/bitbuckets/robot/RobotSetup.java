@@ -13,6 +13,7 @@ import org.bitbuckets.drive.DriveSDSSubsystem;
 import org.bitbuckets.drive.balance.AutoAxisControl;
 import org.bitbuckets.drive.balance.AutoAxisSetup;
 import org.bitbuckets.drive.controlsds.DriveControlSDS;
+import org.bitbuckets.drive.controlsds.neo.NeoControlSDSSetup;
 import org.bitbuckets.drive.controlsds.DriveControlSDSSetup;
 import org.bitbuckets.elevator.ElevatorControl;
 import org.bitbuckets.elevator.ElevatorControlSetup;
@@ -22,9 +23,12 @@ import org.bitbuckets.gyro.GyroControl;
 import org.bitbuckets.gyro.GyroControlSetup;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
+import org.bitbuckets.lib.hardware.IMotorController;
 import org.bitbuckets.lib.hardware.MotorConstants;
 import org.bitbuckets.lib.hardware.PIDIndex;
 import org.bitbuckets.lib.tune.IValueTuner;
+import org.bitbuckets.lib.util.MockingUtil;
+import org.bitbuckets.lib.vendor.spark.SparkRelativeMotorController;
 import org.bitbuckets.lib.vendor.ctre.TalonSetup;
 import org.bitbuckets.lib.vendor.ctre.TalonSetup;
 import org.bitbuckets.lib.vendor.spark.SparkSetup;
@@ -39,8 +43,9 @@ public class RobotSetup implements ISetup<RobotContainer> {
 
     @Override
     public RobotContainer build(ProcessPath path) {
-        double[] predefPid = PIDIndex.CONSTANTS(1, 0, 0.1, 0, 0);
 
+        //TODO use neo controller here
+        DriveControlSDS driveControl = MockingUtil.buddy(DriveControlSDS.class);
         ElevatorControlSetup elevatorControlSetup = new ElevatorControlSetup(
                 new SparkSetup(1,new MotorConstants(0,0,0,false,false,0)),
                 new SparkSetup(2,new MotorConstants(0,0,0,false,false,0)),
@@ -133,6 +138,7 @@ public class RobotSetup implements ISetup<RobotContainer> {
 //                backRightModule
 //        ).build(path.addChild("drive-control"));
 
+        DriveInput input = new DriveInput(new Joystick(0));
         ElevatorInput elevatorInput = new ElevatorInput(new Joystick(1));
         ElevatorControl elevatorControl = elevatorControlSetup.build(path.addChild("elevator-control"));
         ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem(elevatorControl,elevatorInput);
@@ -153,9 +159,11 @@ public class RobotSetup implements ISetup<RobotContainer> {
         );
 
 
+        //labels: high priority
+        //TODO use neos here
         ArmControlSetup armControlSetup = new ArmControlSetup(
-                new TalonSetup(1, false, 0, 0, 0, new double[]{0, 0, 0}),
-                new TalonSetup(2, false, 0, 0, 0, new double[]{0, 0, 0})
+                MockingUtil.noops(IMotorController.class),
+                MockingUtil.noops(IMotorController.class)
         );
 
         ArmControl armControl = armControlSetup.build(path.addChild("arm-control"));

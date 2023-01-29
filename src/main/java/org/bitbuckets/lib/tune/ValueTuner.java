@@ -69,7 +69,7 @@ public class ValueTuner<T> implements NetworkTable.TableEventListener, IValueTun
 
 
     public boolean hasUpdated() {
-        return !cachedValue.get().hasUpdated; //
+        return cachedValue.get().hasUpdated; //
     }
 
 

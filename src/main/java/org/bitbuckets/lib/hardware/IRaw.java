@@ -15,6 +15,7 @@ public interface IRaw {
      * @return the raw hardware (like a TalonFX)
      * @throws UnsupportedOperationException if you get the class identifier wrong (like if you tried to get a TalonSRX from a CANCODER)
      */
-    <T> T rawAccess(Class<T> clazz) throws UnsupportedOperationException;
+    @Deprecated
+    <T> T rawAccess(Class<T> clazz) throws UnsupportedOperationException; //needs to be migrated
 
 }

@@ -1,4 +1,4 @@
-package org.bitbuckets.drive.controlsds;
+package org.bitbuckets.drive;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
@@ -10,7 +10,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-class NEODriveControllerTest {
+class NeoDriveControllerTest {
 
     CANSparkMax motor;
 

@@ -7,6 +7,9 @@ import org.bitbuckets.lib.tune.ValueTuner;
 
 import java.util.EnumSet;
 
+/**
+ * Makes sure we know if certain parts of the robot are breaking or not
+ */
 public class TuneableDriver {
 
     final NetworkTable table;
