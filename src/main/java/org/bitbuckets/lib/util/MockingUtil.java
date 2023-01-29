@@ -34,7 +34,9 @@ public class MockingUtil {
                 .make();
 
         try {
-            return buddy.load(copy.getClassLoader()).getLoaded().newInstance();
+            Class<?> clazz =  buddy.load(MockingUtil.class.getClassLoader()).getLoaded();
+
+            return (T) clazz.newInstance();
 
         } catch (InstantiationException | IllegalAccessException e) {
             throw new RuntimeException(e);
