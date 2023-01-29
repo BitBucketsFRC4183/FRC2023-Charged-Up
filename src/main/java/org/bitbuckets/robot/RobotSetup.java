@@ -13,10 +13,7 @@ import org.bitbuckets.drive.DriveSDSSubsystem;
 import org.bitbuckets.drive.balance.AutoAxisControl;
 import org.bitbuckets.drive.balance.AutoAxisSetup;
 import org.bitbuckets.drive.controlsds.DriveControlSDS;
-import org.bitbuckets.elevator.ElevatorControl;
-import org.bitbuckets.elevator.ElevatorControlSetup;
-import org.bitbuckets.elevator.ElevatorInput;
-import org.bitbuckets.elevator.ElevatorSubsystem;
+import org.bitbuckets.elevator.*;
 import org.bitbuckets.gyro.GyroControl;
 import org.bitbuckets.gyro.GyroControlSetup;
 import org.bitbuckets.lib.ISetup;
@@ -25,6 +22,8 @@ import org.bitbuckets.lib.hardware.IMotorController;
 import org.bitbuckets.lib.hardware.MotorConfig;
 import org.bitbuckets.lib.tune.IValueTuner;
 import org.bitbuckets.lib.util.MockingUtil;
+import org.bitbuckets.lib.vendor.sim.SimMotorSetup;
+import org.bitbuckets.lib.vendor.sim.SimulationConfig;
 import org.bitbuckets.lib.vendor.spark.SparkSetup;
 
 import java.util.Optional;
@@ -42,14 +41,20 @@ public class RobotSetup implements ISetup<RobotContainer> {
 
         //TODO use neo controller here
      //   DriveControlSDS driveControl = MockingUtil.buddy(DriveControlSDS.class);
+//        ElevatorControlSetup elevatorControlSetup = new ElevatorControlSetup(
+//                new SparkSetup(1,new MotorConfig(ElevatorConstants.getGearRatioExtend,1,1,false,false,20,false,false, Optional.empty())),
+//                new SparkSetup(2,new MotorConfig(ElevatorConstants.getGearRatioExtend,1,1,false,false,20,false,false,Optional.empty())),
+//                new SparkSetup(3,new MotorConfig(ElevatorConstants.gearRatioTilt,1,1,false,false,20,false,false,Optional.empty())),
+//                new SparkSetup(4,new MotorConfig(ElevatorConstants.gearRatioTilt,1,1,false,false,20,false,false,Optional.empty()))
+//
+//        );
         ElevatorControlSetup elevatorControlSetup = new ElevatorControlSetup(
-                new SparkSetup(1,new MotorConfig(1,0,0,false,false,1,false,false, Optional.empty())),
-                new SparkSetup(2,new MotorConfig(1,0,0,false,false,1,false,false,Optional.empty())),
-                new SparkSetup(3,new MotorConfig(1,0,0,false,false,1,false,false,Optional.empty())),
-                new SparkSetup(4,new MotorConfig(1,0,0,false,false,1,false,false,Optional.empty()))
+                new SimMotorSetup(new MotorConfig(ElevatorConstants.getGearRatioExtend,1,1,false,false,20,false,false, Optional.empty()), new SimulationConfig(1d/12,0.1,0,0)),
+                new SimMotorSetup(new MotorConfig(ElevatorConstants.getGearRatioExtend,1,1,false,false,20,false,false,Optional.empty()), new SimulationConfig(1d/12,0.1,0,0)),
+                new SimMotorSetup(new MotorConfig(ElevatorConstants.gearRatioTilt,1,1,false,false,20,false,false,Optional.empty()), new SimulationConfig(1d/12,0.1,0,0)),
+                new SimMotorSetup(new MotorConfig(ElevatorConstants.gearRatioTilt,1,1,false,false,20,false,false,Optional.empty()), new SimulationConfig(1d/12,0.1,0,0))
 
         );
-
 
 
         DriveInput input = new DriveInput(new Joystick(0));
