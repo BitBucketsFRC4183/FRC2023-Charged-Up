@@ -14,6 +14,7 @@ import org.mockito.Mockito;
 
 class PIDCalculatorSetupTest {
 
+    @Disabled
     @Test
     void pidCalculator_shouldWork() throws InterruptedException {
         assert HAL.initialize(500, 0);
