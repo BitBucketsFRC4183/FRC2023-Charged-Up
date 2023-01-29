@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.interfaces.Gyro;
 import org.bitbuckets.drive.DriveConstants;
 import org.bitbuckets.drive.DriveSDSConstants;
 import org.bitbuckets.drive.controlsds.sds.ISwerveModule;
+import org.bitbuckets.lib.log.ILoggable;
 import org.bitbuckets.robot.RobotConstants;
 
 import java.util.List;
@@ -17,6 +18,9 @@ import java.util.List;
  * Represents a real drive controller that implements control of the drivetrain using a list of SwerveModule interfaces
  */
 public class DriveControl {
+
+    final ILoggable<SwerveModuleState[]> desiredStates;
+    final ILoggable<SwerveModuleState[]> actualStates;
 
     // Swerve Modules
     final ISwerveModule moduleFrontLeft;
@@ -34,14 +38,21 @@ public class DriveControl {
     List<ISwerveModule> modules;
     ChassisSpeeds chassisSpeeds;
 
-    SwerveModuleState[] cachedSetpoint = new SwerveModuleState[4];
+    SwerveModuleState[] cachedSetpoint = new SwerveModuleState[]{
+            new SwerveModuleState(),
+            new SwerveModuleState(),
+            new SwerveModuleState(),
+            new SwerveModuleState()
+    };
 
-    public DriveControl(ISwerveModule moduleFrontLeft, ISwerveModule moduleFrontRight, ISwerveModule moduleBackLeft, ISwerveModule moduleBackRight, Gyro gyro) {
+    public DriveControl(ISwerveModule moduleFrontLeft, ISwerveModule moduleFrontRight, ISwerveModule moduleBackLeft, ISwerveModule moduleBackRight, Gyro gyro, ILoggable<SwerveModuleState[]> desiredStates, ILoggable<SwerveModuleState[]> actualStates) {
         this.moduleFrontLeft = moduleFrontLeft;
         this.moduleFrontRight = moduleFrontRight;
         this.moduleBackLeft = moduleBackLeft;
         this.moduleBackRight = moduleBackRight;
         this.gyro = gyro;
+        this.desiredStates = desiredStates;
+        this.actualStates = actualStates;
 
         modules = List.of(
                 moduleFrontLeft,
@@ -52,17 +63,12 @@ public class DriveControl {
     }
 
     public void guaranteedLoggingLoop() {
-//        desiredStates.log(reportSetpointStates());
-//        actualStates.log(reportActualStates());
+        desiredStates.log(reportSetpointStates());
+        actualStates.log(reportActualStates());
     }
 
     public SwerveModuleState[] reportSetpointStates() {
-        return new SwerveModuleState[]{
-                new SwerveModuleState(),
-                new SwerveModuleState(),
-                new SwerveModuleState(),
-                new SwerveModuleState()
-        };
+        return cachedSetpoint;
     }
 
     public SwerveModuleState[] reportActualStates() {

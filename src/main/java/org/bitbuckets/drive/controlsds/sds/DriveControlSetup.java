@@ -74,7 +74,10 @@ public class DriveControlSetup implements ISetup<DriveControl> {
                 frontRight.build(path.addChild("front-right")),
                 backLeft.build(path.addChild("back-left")),
                 backRight.build(path.addChild("back-right")),
-                gyro);
+                gyro,
+                path.generateStateLogger("desired-states"),
+                path.generateStateLogger("actual-states")
+        );
 
         path.registerLoop(control::guaranteedLoggingLoop, "logging");
 
