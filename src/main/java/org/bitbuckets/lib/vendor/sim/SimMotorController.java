@@ -88,4 +88,6 @@ public class SimMotorController implements IMotorController, Runnable{
     public void run() {
         simulatedMotor.update(0.02); //TODO this needs to be accurate
     }
+
+
 }
