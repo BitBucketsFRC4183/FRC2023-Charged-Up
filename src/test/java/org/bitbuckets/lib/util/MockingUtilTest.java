@@ -3,6 +3,9 @@ package org.bitbuckets.lib.util;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+/**
+ * Mocking util only works if the class is visible to it
+ */
 public class MockingUtilTest {
 
     public static class StubClass {

@@ -24,6 +24,12 @@ public class MockingUtil {
     }
 
 
+    /**
+     * You can only use this on public classes, otherwise it will break
+     * @param copy
+     * @return a dynamic generated version of your class that will do nothing and return 0 or null wheenver it is called
+     * @param <T> type of class you want
+     */
     @Deprecated @DontUseIncubating
     public static <T> T buddy(Class<T> copy) {
 
