@@ -2,7 +2,9 @@ package org.bitbuckets.lib.vendor.spark;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
+import com.revrobotics.REVPhysicsSim;
 import com.revrobotics.SparkMaxLimitSwitch;
+import edu.wpi.first.math.system.plant.DCMotor;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.lib.SetupProfiler;
@@ -93,6 +95,8 @@ public class SparkSetup implements ISetup<IMotorController> {
             SparkLimitLoggingAspect loggingAspect = new SparkLimitLoggingAspect(loggable,  reverseSwitch);
             path.registerLoop(loggingAspect, LoggingConstants.LOGGING_PERIOD, "revr-log-loop");
         }
+
+        REVPhysicsSim.getInstance().addSparkMax(spark, DCMotor.getNeo550(1));
 
         return ctrl;
     }
