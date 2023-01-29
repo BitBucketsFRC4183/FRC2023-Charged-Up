@@ -64,10 +64,14 @@ public class SparkRelativeMotorController implements IMotorController, Runnable 
     public void moveAtPercent(double percent) {
         sparkMax.set(percent);
     }
+    
+    double positionSetpoint;
 
     @Override
     public void moveToPosition(double position_encoderRotations) {
         sparkMaxPIDController.setReference(position_encoderRotations, CANSparkMax.ControlType.kPosition);
+        
+        positionSetpoint = position_encoderRotations;
     }
 
     @Override
@@ -95,6 +99,10 @@ public class SparkRelativeMotorController implements IMotorController, Runnable 
 
         double positionRotations = sparkMaxRelativeEncoder.getPosition();
         double velocityRotations = sparkMaxRelativeEncoder.getVelocity();
+        
+        
+        double setpoint = positionSetpoint;
+        double error = setpoint - getPositionRaw();
 
         //labels: high priority
         //TODO figure out how to get error from a sparkmax
@@ -103,7 +111,9 @@ public class SparkRelativeMotorController implements IMotorController, Runnable 
                 appliedOutput,
                 busVoltage,
                 positionRotations,
-                velocityRotations
+                velocityRotations,
+                setpoint,
+                error
         });
 
 

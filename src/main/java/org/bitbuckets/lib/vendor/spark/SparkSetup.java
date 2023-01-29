@@ -75,7 +75,7 @@ public class SparkSetup implements ISetup<IMotorController> {
             reverseSwitch.enableLimitSwitch(true);
         }
 
-        ILoggable<double[]> data = path.generateDoubleLoggers("appliedOutput", "busVoltage", "positionRotations", "velocityRotatations");
+        ILoggable<double[]> data = path.generateDoubleLoggers("appliedOutput", "busVoltage", "positionRotations", "velocityRotatations", "setpointRotations", "error");
         IValueTuner<Double> p = path.generateValueTuner("p", 0.0);
         IValueTuner<Double> i = path.generateValueTuner("i", 0.0);
         IValueTuner<Double> d = path.generateValueTuner("d", 0.0);
