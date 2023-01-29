@@ -1,10 +1,11 @@
 package org.bitbuckets.lib.control;
 
 import edu.wpi.first.math.controller.PIDController;
-import org.bitbuckets.lib.DontUse;
+import org.bitbuckets.lib.DontUseIncubating;
 import org.bitbuckets.lib.tune.IValueTuner;
 
-@DontUse @Deprecated
+@DontUseIncubating
+@Deprecated
 public class PIDCalculator implements IPIDCalculator, Runnable {
 
     final PIDController controller;
