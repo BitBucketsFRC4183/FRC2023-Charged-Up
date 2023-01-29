@@ -13,16 +13,13 @@ import org.bitbuckets.drive.DriveSDSSubsystem;
 import org.bitbuckets.drive.balance.AutoAxisControl;
 import org.bitbuckets.drive.balance.AutoAxisSetup;
 import org.bitbuckets.drive.controlsds.DriveControlSDS;
-import org.bitbuckets.drive.controlsds.neo.NeoControlSDSSetup;
 import org.bitbuckets.gyro.GyroControl;
 import org.bitbuckets.gyro.GyroControlSetup;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.lib.hardware.IMotorController;
-import org.bitbuckets.lib.hardware.PIDIndex;
 import org.bitbuckets.lib.tune.IValueTuner;
 import org.bitbuckets.lib.util.MockingUtil;
-import org.bitbuckets.lib.vendor.spark.SparkRelativeMotorController;
 
 public class RobotSetup implements ISetup<RobotContainer> {
 
@@ -50,8 +47,6 @@ public class RobotSetup implements ISetup<RobotContainer> {
         ArmInput armInput = new ArmInput(
                 new Joystick(1)
         );
-
-
         //labels: high priority
         //TODO use neos here
         ArmControlSetup armControlSetup = new ArmControlSetup(
