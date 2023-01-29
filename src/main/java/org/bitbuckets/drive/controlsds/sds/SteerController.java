@@ -30,16 +30,16 @@ public class SteerController implements ISteerController {
 
     @Override
     public void setReferenceAngle(double referenceAngleRadians) {
-        double currentAngleRadians = motor.getPositionRaw();
+        double currentAngleRadians = motor.getPositionRaw() * sensorPositionCoefficient;
 
         // Reset the NEO's encoder periodically when the module is not rotating.
         // Sometimes (~5% of the time) when we initialize, the absolute encoder isn't fully set up, and we don't
         // end up getting a good reading. If we reset periodically this won't matter anymore.
-        if (motor.getVelocityRaw() < ENCODER_RESET_MAX_ANGULAR_VELOCITY) {
+        if (motor.getVelocityRaw() * (sensorPositionCoefficient * 10) < ENCODER_RESET_MAX_ANGULAR_VELOCITY) {
             if (++resetIteration >= ENCODER_RESET_ITERATIONS) {
                 resetIteration = 0;
                 double absoluteAngle = encoder.getAbsoluteAngle();
-                forceOffset(absoluteAngle / sensorPositionCoefficient);
+                motor.forceOffset(absoluteAngle / sensorPositionCoefficient);
                 currentAngleRadians = absoluteAngle;
             }
         } else {
@@ -59,7 +59,7 @@ public class SteerController implements ISteerController {
             adjustedReferenceAngleRadians += 2.0 * Math.PI;
         }
 
-        motor.moveToPosition(adjustedReferenceAngleRadians);
+        motor.moveToPosition(adjustedReferenceAngleRadians / sensorPositionCoefficient);
 
 
         this.referenceAngleRadians = referenceAngleRadians;
@@ -67,8 +67,7 @@ public class SteerController implements ISteerController {
 
     @Override
     public double getStateAngle() {
-        // TODO: convert motor position to radians
-        double motorAngleRadians = motor.getPositionRaw();
+        double motorAngleRadians = motor.getPositionRaw() * sensorPositionCoefficient;
         motorAngleRadians %= 2.0 * Math.PI;
         if (motorAngleRadians < 0.0) {
             motorAngleRadians += 2.0 * Math.PI;

@@ -205,7 +205,7 @@ public class RobotSetup implements ISetup<RobotContainer> {
                         new DriveControllerSetup(new TalonDriveMotorSetup(frontRightModuleDriveMotor_ID, DriveSDSConstants.MK4_L2)),
                         new SteerControllerSetup(
                                 new TalonSteerMotorSetup(frontRightModuleSteerMotor_ID, DriveSDSConstants.MK4_L2),
-                                new CANCoderAbsoluteEncoderSetup(frontRightModuleSteerEncoder_ID, frontRightModuleSteerOffset),
+                                new CANCoderAbsoluteEncoderSetup(frontRightModuleSteerEncoder_ID, frontLeftModuleSteerOffset),
                                 sensorPositionCoefficient
                         )
                 ),
