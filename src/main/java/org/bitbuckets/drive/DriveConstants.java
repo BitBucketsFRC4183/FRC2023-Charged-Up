@@ -31,9 +31,6 @@ public interface DriveConstants {
             new SwerveModuleState(0, Rotation2d.fromDegrees(45))
     };
 
-    SwerveDriveKinematics KINEMATICS = new SwerveDriveKinematics(
-            RobotConstants
-    );
 
 
 }
