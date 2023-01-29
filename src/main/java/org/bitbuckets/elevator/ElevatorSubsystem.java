@@ -39,5 +39,10 @@ public class ElevatorSubsystem {
         {
             elevatorControl.tiltBack();
         }
+        if(elevatorInput.getInputDpadZero())
+        {
+         elevatorControl.stopTilt();
+         elevatorControl.stopExtend();
+        }
     }
 }

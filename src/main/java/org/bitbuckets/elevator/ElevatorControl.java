@@ -104,7 +104,8 @@ public class ElevatorControl {
 
     public void extendUp()
     {
-        rightExtend.moveAtPercent(20);
+        rightExtend.moveAtPercent(0.2);
+        leftExtend.moveAtPercent(0.2);
 
 
 
@@ -112,19 +113,33 @@ public class ElevatorControl {
     public void extendDown()
     {
 
-        rightExtend.moveAtPercent(-20);
+        rightExtend.moveAtPercent(-0.2);
+        leftExtend.moveAtPercent(-0.2);
     }
     public void tiltForward()
     {
 
-        rightTilt.moveAtPercent(20);
+        rightTilt.moveAtPercent(0.2);
+        leftTilt.moveAtPercent(0.2);
     }
     public void tiltBack()
     {
 
-        rightTilt.moveAtPercent(-20);
+        rightTilt.moveAtPercent(-0.2);
+        leftTilt.moveAtPercent(-0.2);
     }
+    public void stopTilt()
+    {
 
+        rightTilt.moveAtPercent(0.0);
+        leftTilt.moveAtPercent(-0.0);
+    }
+    public void stopExtend()
+    {
+
+        leftExtend.moveAtPercent(0.0);
+        rightExtend.moveAtPercent(-0.0);
+    }
 
 
 

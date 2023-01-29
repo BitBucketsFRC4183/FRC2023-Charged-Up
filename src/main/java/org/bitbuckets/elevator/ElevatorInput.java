@@ -35,6 +35,12 @@ public class ElevatorInput {
         int pressed = joystick.getPOV();
         return pressed == 90;
     }
+    public boolean getInputDpadZero()
+    {
+
+        int pressed = joystick.getPOV();
+        return pressed == -1;
+    }
 
 
 }
