@@ -34,98 +34,11 @@ public class RobotSetup implements ISetup<RobotContainer> {
 
     @Override
     public RobotContainer build(ProcessPath path) {
-        double[] predefPid = PIDIndex.CONSTANTS(1, 0, 0.1, 0, 0);
 
-//
-//        ModuleSetup frontLeftModule = new ModuleSetup(
-//                new SparkSetup(
-//                        1,
-//                        true,
-//                        DriveConstants.DRIVE_REDUCTION,
-//                        DriveConstants.DRIVE_METERS_FACTOR,
-//                        80,
-//                        PIDIndex.EMPTY
-//                ),
-//                new SparkSetup(
-//                        2,
-//                        true,
-//                        DriveConstants.TURN_REDUCTION,
-//                        DriveConstants.TURN_METERS_FACTOR,
-//                        20,
-//                        predefPid
-//                )
-//        );
-//
-//        ModuleSetup frontRightModule = new ModuleSetup(
-//                new SparkSetup(
-//                        7,
-//                        true,
-//                        DriveConstants.DRIVE_REDUCTION,
-//                        DriveConstants.DRIVE_METERS_FACTOR,
-//                        80,
-//                        PIDIndex.EMPTY
-//                ),
-//                new SparkSetup(
-//                        8,
-//                        true,
-//                        DriveConstants.TURN_REDUCTION,
-//                        DriveConstants.TURN_METERS_FACTOR,
-//                        20,
-//                        predefPid
-//                )
-//        );
-//
-//        ModuleSetup backLeftModule = new ModuleSetup(
-//                new SparkSetup(
-//                        5,
-//                        true,
-//                        DriveConstants.DRIVE_REDUCTION,
-//                        DriveConstants.DRIVE_METERS_FACTOR,
-//                        80,
-//                        PIDIndex.EMPTY
-//                ),
-//                new SparkSetup(
-//                        6,
-//                        true,
-//                        DriveConstants.TURN_REDUCTION,
-//                        DriveConstants.TURN_METERS_FACTOR,
-//                        20,
-//                        predefPid
-//                )
-//        );
-//
-//        ModuleSetup backRightModule = new ModuleSetup(
-//                new SparkSetup(
-//                        3,
-//                        true,
-//                        DriveConstants.DRIVE_REDUCTION,
-//                        DriveConstants.DRIVE_METERS_FACTOR,
-//                        80,
-//                        PIDIndex.EMPTY
-//                ),
-//                new SparkSetup(
-//                        4,
-//                        true,
-//                        DriveConstants.TURN_REDUCTION,
-//                        DriveConstants.TURN_METERS_FACTOR,
-//                        20,
-//                        predefPid
-//                )
-//        );
-//
-//        DriveControlSDS driveControl = new DriveControlSDSSetup(
-//                frontLeftModule,
-//                frontRightModule,
-//                backLeftModule,
-//                backRightModule
-//        ).build(path.addChild("drive-control"));
-
-        //labels: high priority
         //TODO use neo controller here
         DriveControlSDS driveControl = MockingUtil.buddy(DriveControlSDS.class);
 
         DriveInput input = new DriveInput(new Joystick(0));
-
         AutoControl autoControl = new AutoControlSetup().build(path.addChild("auto-control"));
         GyroControl gyroControl = new GyroControlSetup(5).build(path.addChild("gyro-control"));
         AutoAxisControl autoAxisControl = new AutoAxisSetup().build(path.addChild("axis-control"));
