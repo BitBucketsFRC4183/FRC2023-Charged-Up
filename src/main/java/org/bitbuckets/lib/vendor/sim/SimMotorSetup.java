@@ -10,7 +10,6 @@ import org.bitbuckets.lib.hardware.MotorConfig;
 
 public class SimMotorSetup implements ISetup<IMotorController> {
 
-
     final MotorConfig config;
     final SimulationConfig simulationConfig;
 
@@ -24,7 +23,10 @@ public class SimMotorSetup implements ISetup<IMotorController> {
     public IMotorController build(ProcessPath path) {
         DCMotorSim motorSim = new DCMotorSim(DCMotor.getNeo550(1), 1, simulationConfig.simulatedMomentOfInertia);//TODO reverse, because for us numbers greater than one represent upgear not reduc)
         PIDController pidController = new PIDController(simulationConfig.simulatedP, simulationConfig.simulatedI, simulationConfig.simulatedD);
+        SimMotorController simMotorController = new SimMotorController(config, motorSim, pidController);
 
-        return new SimMotorController(config, motorSim, pidController);
+        path.registerLoop(simMotorController, 20, "ass");
+
+        return simMotorController;
     }
 }
