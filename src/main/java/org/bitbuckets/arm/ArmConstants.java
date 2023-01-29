@@ -1,5 +1,9 @@
 package org.bitbuckets.arm;
 
+import org.bitbuckets.lib.hardware.MotorConfig;
+
+import java.util.Optional;
+
 public interface ArmConstants {
 
     // calculated gearRatio
@@ -8,9 +12,8 @@ public interface ArmConstants {
     double lowerArmGearRatio = (5 * 4 * 3) * (12. / 26.); //roughly 27.69
     double upperArmGearRatio = (5 * 4 * 3) * (12. / 30.);
 
-    double lowerArmConversionFactor = (5 * 4 * 3) * (12. / 26.) * 360;
-    double upperArmConversionFactor = (5 * 4 * 3) * (12. / 30.) * 360;
-
+    MotorConfig lowerConfig = new MotorConfig(ArmConstants.lowerArmGearRatio, 1, 1, false, true, 20.0, false, false,Optional.empty());
+    MotorConfig upperConfig  = new MotorConfig(ArmConstants.upperArmGearRatio,1,1,false,true,20.0,false,false,Optional.empty());
 
     // Feel free to change to make arms faster/slower for input
     final double CONTROL_JOINT_OUTPUT = 0.3;

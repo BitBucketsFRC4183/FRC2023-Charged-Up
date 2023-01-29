@@ -1,7 +1,6 @@
 package org.bitbuckets.arm;
 
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import org.bitbuckets.lib.log.ILoggable;
 
 public class ArmSubsystem {
 
@@ -10,14 +9,17 @@ public class ArmSubsystem {
 
     final ArmInput armInput;
     final ArmControl armControl;
+    final ILoggable<String> mode;
+
 
     ArmFSM state = ArmFSM.MANUAL;
 
     private String positionMode;
 
-    public ArmSubsystem(ArmInput armInput, ArmControl armControl) {
+    public ArmSubsystem(ArmInput armInput, ArmControl armControl, ILoggable<String> mode) {
         this.armInput = armInput;
         this.armControl = armControl;
+        this.mode = mode;
     }
 
 
@@ -28,9 +30,9 @@ public class ArmSubsystem {
 
     public void robotPeriodic()
     {
-        SmartDashboard.putNumber("lowerEncoder",armControl.lowerJoint.getEncoderPositionAccumulated_radians());
-        SmartDashboard.putNumber("upperEncoder",armControl.upperJoint.getEncoderPositionAccumulated_radians());
-        SmartDashboard.putNumber("setpoint",armControl.convertMechanismRotationtoRawRotation_lowerJoint(1));
+        //SmartDashboard.putNumber("lowerEncoder",armControl.lowerJoint.getEncoderPositionAccumulated_radians());
+        //SmartDashboard.putNumber("upperEncoder",armControl.upperJoint.getEncoderPositionAccumulated_radians());
+        //SmartDashboard.putNumber("setpoint",armControl.convertMechanismRotationtoRawRotation_lowerJoint(1));
     }
 
     public void teleopPeriodic() {
@@ -96,10 +98,9 @@ public class ArmSubsystem {
                             break;
                     }
                 }
-
                 break;
         }
-
+        mode.log(positionMode);
 
     }
 

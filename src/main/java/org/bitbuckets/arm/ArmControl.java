@@ -1,6 +1,7 @@
 package org.bitbuckets.arm;
 
 import org.bitbuckets.lib.hardware.IMotorController;
+import org.bitbuckets.lib.log.ILoggable;
 
 
 public class ArmControl {
@@ -8,6 +9,7 @@ public class ArmControl {
 
     final IMotorController lowerJoint;
     final IMotorController upperJoint;
+
 
 
     // How do set up IMotorController and IEncoder so that lowerJoint == lowerEncoder
@@ -45,17 +47,17 @@ public class ArmControl {
     //sets angular position of the upper joint on the arm
     public void manuallyMoveUpperArm(double percentOutput) {
 
-        upperJoint.moveAtPercent(percentOutput * 3);
+        upperJoint.moveAtPercent(percentOutput * ArmConstants.CONTROL_JOINT_OUTPUT);
     }
 
     public void moveLowerArmToPosition_DEGREES(double angle)
     {
-        lowerJoint.moveToPosition(convertMechanismRotationtoRawRotation_lowerJoint(angle));
+        lowerJoint.moveToPosition(convertMechanismRotationtoRawRotation_lowerJoint(angle/360));
     }
 
     public void moveUpperArmToPosition_DEGREES(double angle)
     {
-        upperJoint.moveToPosition(convertMechanismRotationtoRawRotation_upperJoint(angle));
+        upperJoint.moveToPosition(convertMechanismRotationtoRawRotation_upperJoint(angle/360));
     }
 
 
@@ -72,6 +74,7 @@ public class ArmControl {
         return mechanismRotation * ArmConstants.upperArmGearRatio;
     }
 
+    // Press A
     public void moveToIntakePos() {
 
     }
@@ -79,18 +82,18 @@ public class ArmControl {
     // Press Y
     public void moveToLowPos() {
 
-        moveLowerArmToPosition_DEGREES(1);
+        moveUpperArmToPosition_DEGREES(5);
 
     }
 
     // Press X
     public void moveToMidPos() {
-
+        moveUpperArmToPosition_DEGREES(42.0);
     }
 
     // Press B
     public void movetoHighPos() {
-
+        moveUpperArmToPosition_DEGREES(69);
     }
 
 
