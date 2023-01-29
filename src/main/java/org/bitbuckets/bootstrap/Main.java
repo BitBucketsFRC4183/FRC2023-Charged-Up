@@ -1,7 +1,6 @@
 package org.bitbuckets.bootstrap;
 
 import edu.wpi.first.wpilibj.RobotBase;
-import org.bitbuckets.robot.RobotSetup;
 
 public class Main {
 
