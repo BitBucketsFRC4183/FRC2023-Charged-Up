@@ -12,6 +12,7 @@ import org.bitbuckets.drive.DriveInput;
 import org.bitbuckets.drive.DriveSDSSubsystem;
 import org.bitbuckets.drive.balance.AutoAxisControl;
 import org.bitbuckets.drive.balance.AutoAxisSetup;
+import org.bitbuckets.drive.controlsds.DriveControlSDS;
 import org.bitbuckets.elevator.ElevatorControl;
 import org.bitbuckets.elevator.ElevatorControlSetup;
 import org.bitbuckets.elevator.ElevatorInput;
@@ -70,8 +71,6 @@ public class RobotSetup implements ISetup<RobotContainer> {
         ArmInput armInput = new ArmInput(
                 new Joystick(1)
         );
-
-
         //labels: high priority
         //TODO use neos here
         ArmControlSetup armControlSetup = new ArmControlSetup(

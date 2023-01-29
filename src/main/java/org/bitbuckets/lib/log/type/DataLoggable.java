@@ -4,7 +4,6 @@ import org.bitbuckets.lib.DontUseIncubating;
 import org.bitbuckets.lib.core.LogDriver;
 import org.bitbuckets.lib.log.ILoggable;
 
-@Deprecated @DontUseIncubating
 public class DataLoggable implements ILoggable<double[]> {
 
     final String[] keys;
