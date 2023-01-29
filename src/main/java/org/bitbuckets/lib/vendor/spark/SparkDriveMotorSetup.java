@@ -29,7 +29,6 @@ public class SparkDriveMotorSetup extends SparkSetup {
         var motor = super.build(path);
 
         // configure the raw motor with the same settings for SDS
-        // TODO: this neo init code was taken straight from the SDS library. It should be moved to SparkSetup after being tested on a live robot
         CANSparkMax neo = motor.rawAccess(CANSparkMax.class);
         neo.setInverted(swerveModuleConfiguration.isDriveInverted());
 

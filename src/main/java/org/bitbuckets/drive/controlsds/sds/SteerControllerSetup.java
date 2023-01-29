@@ -31,7 +31,6 @@ public class SteerControllerSetup implements ISetup<ISteerController> {
                 encoder.build(path.addChild("encoder")),
                 sensorPositionCoefficient);
 
-        // TODO: Test neo absolute encoder offset
         // this used to be: checkNeoError(integratedEncoder.setPosition(absoluteEncoder.getAbsoluteAngle()), "Failed to set NEO encoder position");
         // in the motor setup
         controller.forceOffset(controller.getAbsoluteAngle() / sensorPositionCoefficient);

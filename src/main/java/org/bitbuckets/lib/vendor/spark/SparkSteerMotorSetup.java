@@ -34,7 +34,6 @@ public class SparkSteerMotorSetup extends SparkSetup {
         var motorController = super.build(path);
 
         // configure the raw motor with the same settings for SDS
-        // TODO: this neo init code was taken straight from the SDS library. It should be moved to SparkSetup after being tested on a live robot
         CANSparkMax motor = motorController.rawAccess(CANSparkMax.class);
 
         checkNeoError(motor.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus0, 100), "Failed to set periodic status frame 0 rate");
@@ -48,7 +47,6 @@ public class SparkSteerMotorSetup extends SparkSetup {
         RelativeEncoder integratedEncoder = motor.getEncoder();
         checkNeoError(integratedEncoder.setPositionConversionFactor(2.0 * Math.PI * swerveModuleConfiguration.getSteerReduction()), "Failed to set NEO encoder conversion factor");
         checkNeoError(integratedEncoder.setVelocityConversionFactor(2.0 * Math.PI * swerveModuleConfiguration.getSteerReduction() / 60.0), "Failed to set NEO encoder conversion factor");
-//        checkNeoError(integratedEncoder.setPosition(absoluteEncoder.getAbsoluteAngle()), "Failed to set NEO encoder position");
 
         SparkMaxPIDController controller = motor.getPIDController();
         // PID is set as tuneable by SparkSetup
