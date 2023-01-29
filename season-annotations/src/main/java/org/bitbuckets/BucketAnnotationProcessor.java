@@ -175,6 +175,6 @@ public class BucketAnnotationProcessor extends AbstractProcessor {
 
     @Override
     public Set<String> getSupportedAnnotationTypes() {
-        return Set.of("org.bitbuckets.lib.log.Loggable");
+        return Set.of("org.bitbuckets.lib.log.LoggableObsolete");
     }
 }

@@ -7,6 +7,7 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -15,13 +16,12 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.bitbuckets.drive.DriveSDSConstants;
 import org.bitbuckets.drive.controlsds.DriveControlSDS;
-import org.bitbuckets.drive.controlsds.DriveControlSDSDataAutoGen;
 import org.bitbuckets.drive.controlsds.ThriftyEncoder;
 import org.bitbuckets.drive.controlsds.sds.*;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.lib.hardware.IAbsoluteEncoder;
-import org.bitbuckets.lib.log.DataLogger;
+import org.bitbuckets.lib.log.ILoggable;
 
 import static org.bitbuckets.drive.controlsds.sds.RevUtils.checkNeoError;
 
@@ -46,8 +46,6 @@ public class NeoControlSDSSetup implements ISetup<DriveControlSDS> {
 
     @Override
     public DriveControlSDS build(ProcessPath path) {
-        DataLogger<DriveControlSDSDataAutoGen> logger = path.generatePushDataLogger(DriveControlSDSDataAutoGen::new);
-
         double wheelWearFactor = 1;
 
         double maxVelocity_metersPerSecond = 60.0 *
@@ -137,10 +135,16 @@ public class NeoControlSDSSetup implements ISetup<DriveControlSDS> {
         //Calibrate the gyro only once when the drive subsystem is first initialized
         gyro.calibrate();
 
-        DriveControlSDS control = new DriveControlSDS(logger,
+        ILoggable<SwerveModuleState[]> desired = path.generateStateLogger("desiredStates");
+        ILoggable<SwerveModuleState[]> actual = path.generateStateLogger("actualStates");
+
+        DriveControlSDS control = new DriveControlSDS(
+                desired,
+                actual,
                 moduleFrontLeft,
                 moduleFrontRight,
-                moduleBackLeft, moduleBackRight, kinematics);
+                moduleBackLeft,
+                moduleBackRight);
 
 
         path.registerLoop(control::guaranteedLoggingLoop, "logging");

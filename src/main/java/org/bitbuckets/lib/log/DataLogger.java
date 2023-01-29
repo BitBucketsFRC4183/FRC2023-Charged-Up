@@ -4,6 +4,7 @@ import org.bitbuckets.lib.core.LogDriver;
 
 import java.util.function.Consumer;
 
+@Deprecated
 public class DataLogger<T extends IDiffableData> {
 
     final int parentId;
