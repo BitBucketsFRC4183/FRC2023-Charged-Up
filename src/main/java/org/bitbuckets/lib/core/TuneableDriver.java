@@ -3,11 +3,13 @@ package org.bitbuckets.lib.core;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableEvent;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import org.bitbuckets.lib.tune.ValueTuner;
 
 import java.util.EnumSet;
 
+/**
+ * Makes sure we know if certain parts of the robot are breaking or not
+ */
 public class TuneableDriver {
 
     final NetworkTable table;
@@ -25,7 +27,7 @@ public class TuneableDriver {
 
         NetworkTableEntry entry = table.getEntry(trueKey);
         if (defaultData instanceof Enum) {
-            entry.setDefaultValue(((Enum<?>)defaultData).toString());
+            entry.setDefaultValue(defaultData.toString());
         } else {
             entry.setDefaultValue(defaultData);
         }

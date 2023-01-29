@@ -1,5 +1,6 @@
 package org.bitbuckets.lib.startup;
 
+@Deprecated
 public interface ISetupDriver {
 
     int generateStartup(int processId, String name);

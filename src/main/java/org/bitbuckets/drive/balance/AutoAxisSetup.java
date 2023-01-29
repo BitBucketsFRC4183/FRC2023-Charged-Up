@@ -1,7 +1,6 @@
 package org.bitbuckets.drive.balance;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.lib.control.ProfiledPIDFController;
