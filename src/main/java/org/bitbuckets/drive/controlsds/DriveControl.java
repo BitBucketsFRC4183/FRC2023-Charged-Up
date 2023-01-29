@@ -5,6 +5,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.interfaces.Gyro;
 import org.bitbuckets.drive.DriveConstants;
 import org.bitbuckets.drive.DriveSDSConstants;
 import org.bitbuckets.drive.controlsds.sds.ISwerveModule;
@@ -15,13 +16,15 @@ import java.util.List;
 /**
  * Represents a real drive controller that implements control of the drivetrain using a list of SwerveModule interfaces
  */
-public class DriveControlSDS {
+public class DriveControl {
 
     // Swerve Modules
     final ISwerveModule moduleFrontLeft;
     final ISwerveModule moduleFrontRight;
     final ISwerveModule moduleBackLeft;
     final ISwerveModule moduleBackRight;
+
+    final Gyro gyro;
 
 
     //Speed factor that edits the max velocity and max angular velocity
@@ -33,11 +36,12 @@ public class DriveControlSDS {
 
     SwerveModuleState[] cachedSetpoint = new SwerveModuleState[4];
 
-    public DriveControlSDS(ISwerveModule moduleFrontLeft, ISwerveModule moduleFrontRight, ISwerveModule moduleBackLeft, ISwerveModule moduleBackRight) {
+    public DriveControl(ISwerveModule moduleFrontLeft, ISwerveModule moduleFrontRight, ISwerveModule moduleBackLeft, ISwerveModule moduleBackRight, Gyro gyro) {
         this.moduleFrontLeft = moduleFrontLeft;
         this.moduleFrontRight = moduleFrontRight;
         this.moduleBackLeft = moduleBackLeft;
         this.moduleBackRight = moduleBackRight;
+        this.gyro = gyro;
 
         modules = List.of(
                 moduleFrontLeft,

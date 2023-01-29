@@ -1,12 +1,11 @@
-package org.bitbuckets.drive.controlsds.neo;
+package org.bitbuckets.drive.controlsds.sds;
 
-import com.ctre.phoenix.sensors.WPI_PigeonIMU;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.bitbuckets.drive.DriveSDSConstants;
-import org.bitbuckets.drive.controlsds.DriveControlSDS;
-import org.bitbuckets.drive.controlsds.sds.ISwerveModule;
+import org.bitbuckets.drive.controlsds.DriveControl;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
 
@@ -14,22 +13,25 @@ import org.bitbuckets.lib.ProcessPath;
  * Sets up prereqs for a drive controller
  * <p>
  */
-public class NeoControlSDSSetup implements ISetup<DriveControlSDS> {
+public class DriveControlSetup implements ISetup<DriveControl> {
 
     final ISetup<ISwerveModule> frontLeft;
     final ISetup<ISwerveModule> frontRight;
     final ISetup<ISwerveModule> backLeft;
     final ISetup<ISwerveModule> backRight;
 
-    public NeoControlSDSSetup(ISetup<ISwerveModule> frontLeft, ISetup<ISwerveModule> frontRight, ISetup<ISwerveModule> backLeft, ISetup<ISwerveModule> backRight) {
+    final Gyro gyro;
+
+    public DriveControlSetup(ISetup<ISwerveModule> frontLeft, ISetup<ISwerveModule> frontRight, ISetup<ISwerveModule> backLeft, ISetup<ISwerveModule> backRight, Gyro gyro) {
         this.frontLeft = frontLeft;
         this.frontRight = frontRight;
         this.backLeft = backLeft;
         this.backRight = backRight;
+        this.gyro = gyro;
     }
 
     @Override
-    public DriveControlSDS build(ProcessPath path) {
+    public DriveControl build(ProcessPath path) {
 
         double wheelWearFactor = 1;
 
@@ -64,19 +66,15 @@ public class NeoControlSDSSetup implements ISetup<DriveControlSDS> {
                         moduleBackRightLocation
                 );
 
-        WPI_PigeonIMU gyro = new WPI_PigeonIMU(5);
-
-
         //Calibrate the gyro only once when the drive subsystem is first initialized
         gyro.calibrate();
 
-        DriveControlSDS control = new DriveControlSDS(
+        DriveControl control = new DriveControl(
                 frontLeft.build(path.addChild("front-left")),
                 frontRight.build(path.addChild("front-right")),
                 backLeft.build(path.addChild("back-left")),
-                backRight.build(path.addChild("back-right"))
-        );
-
+                backRight.build(path.addChild("back-right")),
+                gyro);
 
         path.registerLoop(control::guaranteedLoggingLoop, "logging");
 

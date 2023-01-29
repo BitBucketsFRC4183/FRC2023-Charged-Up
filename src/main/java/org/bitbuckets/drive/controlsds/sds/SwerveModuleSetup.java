@@ -1,9 +1,5 @@
-package org.bitbuckets.drive.controlsds.neo;
+package org.bitbuckets.drive.controlsds.sds;
 
-import org.bitbuckets.drive.controlsds.sds.IDriveController;
-import org.bitbuckets.drive.controlsds.sds.ISteerController;
-import org.bitbuckets.drive.controlsds.sds.ISwerveModule;
-import org.bitbuckets.drive.controlsds.sds.SwerveModule;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
 

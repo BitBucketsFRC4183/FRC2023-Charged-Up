@@ -1,10 +1,9 @@
-package org.bitbuckets.drive.controlsds.neo;
+package org.bitbuckets.drive.controlsds.sds;
 
-import org.bitbuckets.drive.controlsds.sds.ISteerController;
 import org.bitbuckets.lib.hardware.IAbsoluteEncoder;
 import org.bitbuckets.lib.hardware.IMotorController;
 
-public class NeoSteerController implements ISteerController {
+public class SteerController implements ISteerController {
     private static final int ENCODER_RESET_ITERATIONS = 500;
     private static final double ENCODER_RESET_MAX_ANGULAR_VELOCITY = Math.toRadians(0.5);
 
@@ -15,8 +14,8 @@ public class NeoSteerController implements ISteerController {
 
     private double resetIteration = 0;
 
-    NeoSteerController(IMotorController motor,
-                       IAbsoluteEncoder encoder) {
+    public SteerController(IMotorController motor,
+                           IAbsoluteEncoder encoder) {
         this.motor = motor;
         this.encoder = encoder;
     }
@@ -37,7 +36,7 @@ public class NeoSteerController implements ISteerController {
             if (++resetIteration >= ENCODER_RESET_ITERATIONS) {
                 resetIteration = 0;
 //                double absoluteAngle = encoder.getAbsoluteAngle();
-//                motor.forceOffset(absoluteAngle);
+//                forceOffset(absoluteAngle);
 //                currentAngleRadians = absoluteAngle;
             }
         } else {
@@ -73,5 +72,15 @@ public class NeoSteerController implements ISteerController {
         }
 
         return motorAngleRadians;
+    }
+
+    @Override
+    public double getAbsoluteAngle() {
+        return encoder.getAbsoluteAngle();
+    }
+
+    @Override
+    public void forceOffset(double position) {
+        motor.forceOffset(position);
     }
 }
