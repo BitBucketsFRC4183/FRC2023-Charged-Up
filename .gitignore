@@ -333,6 +333,7 @@ bin/
 # End entries from WPI Lib team
 
 networktables.json
+networktables.json.bck
 simgui.json
 simgui-window.json
 simgui-ds.json

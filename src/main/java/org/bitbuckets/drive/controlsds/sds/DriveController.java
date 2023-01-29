@@ -1,16 +1,13 @@
-package org.bitbuckets.drive.controlsds.neo;
+package org.bitbuckets.drive.controlsds.sds;
 
-import org.bitbuckets.drive.controlsds.sds.IDriveController;
 import org.bitbuckets.lib.hardware.IMotorController;
 
-public class NeoDriveController implements IDriveController {
-
-
+public class DriveController implements IDriveController {
     private final IMotorController motor;
 
     private final double nominalVoltage;
 
-    public NeoDriveController(IMotorController motor, double nominalVoltage) {
+    public DriveController(IMotorController motor, double nominalVoltage) {
         this.motor = motor;
         this.nominalVoltage = nominalVoltage;
     }
