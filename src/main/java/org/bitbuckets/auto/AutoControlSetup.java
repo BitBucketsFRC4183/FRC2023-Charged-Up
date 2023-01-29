@@ -10,9 +10,13 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.lib.SetupProfiler;
-import org.bitbuckets.lib.hardware.PIDIndex;
 
+/**
+ * labels: low priority, easy
+ * TODO: This should use {@link org.bitbuckets.lib.control.IPIDCalculator instead of PidController when it is done}
+ */
 public class AutoControlSetup implements ISetup<AutoControl> {
+
 
     @Override
     public AutoControl build(ProcessPath path) {
@@ -26,21 +30,23 @@ public class AutoControlSetup implements ISetup<AutoControl> {
         load.markCompleted();
 
         gen.markProcessing();
+
+
         var controller = new HolonomicDriveController(
                 new PIDController(
-                        AutoConstants.pathXYPID[PIDIndex.P],
-                        AutoConstants.pathXYPID[PIDIndex.I],
-                        AutoConstants.pathXYPID[PIDIndex.D]
+                        AutoConstants.pathXYPID[0],
+                        AutoConstants.pathXYPID[1],
+                        AutoConstants.pathXYPID[2]
                 ),
                 new PIDController(
-                        AutoConstants.pathXYPID[PIDIndex.P],
-                        AutoConstants.pathXYPID[PIDIndex.I],
-                        AutoConstants.pathXYPID[PIDIndex.D]
+                        AutoConstants.pathXYPID[0],
+                        AutoConstants.pathXYPID[1],
+                        AutoConstants.pathXYPID[2]
                 ),
                 new ProfiledPIDController(
-                        AutoConstants.pathThetaPID[PIDIndex.P],
-                        AutoConstants.pathThetaPID[PIDIndex.I],
-                        AutoConstants.pathThetaPID[PIDIndex.D],
+                        AutoConstants.pathThetaPID[0],
+                        AutoConstants.pathThetaPID[1],
+                        AutoConstants.pathThetaPID[2],
                         new TrapezoidProfile.Constraints(AutoConstants.maxPathFollowVelocity, AutoConstants.maxPathFollowAcceleration)
                 )
         );
