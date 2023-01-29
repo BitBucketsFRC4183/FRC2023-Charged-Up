@@ -7,17 +7,20 @@ public class SteerController implements ISteerController {
     private static final int ENCODER_RESET_ITERATIONS = 500;
     private static final double ENCODER_RESET_MAX_ANGULAR_VELOCITY = Math.toRadians(0.5);
 
-    private final IMotorController motor;
-    private final IAbsoluteEncoder encoder;
+    final IMotorController motor;
+    final IAbsoluteEncoder encoder;
+
+    final double sensorPositionCoefficient;
 
     private double referenceAngleRadians = 0.0;
 
     private double resetIteration = 0;
 
     public SteerController(IMotorController motor,
-                           IAbsoluteEncoder encoder) {
+                           IAbsoluteEncoder encoder, double sensorPositionCoefficient) {
         this.motor = motor;
         this.encoder = encoder;
+        this.sensorPositionCoefficient = sensorPositionCoefficient;
     }
 
     @Override
@@ -35,9 +38,9 @@ public class SteerController implements ISteerController {
         if (motor.getVelocityRaw() < ENCODER_RESET_MAX_ANGULAR_VELOCITY) {
             if (++resetIteration >= ENCODER_RESET_ITERATIONS) {
                 resetIteration = 0;
-//                double absoluteAngle = encoder.getAbsoluteAngle();
-//                forceOffset(absoluteAngle);
-//                currentAngleRadians = absoluteAngle;
+                double absoluteAngle = encoder.getAbsoluteAngle();
+                forceOffset(absoluteAngle / sensorPositionCoefficient);
+                currentAngleRadians = absoluteAngle;
             }
         } else {
             resetIteration = 0;

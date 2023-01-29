@@ -47,8 +47,8 @@ public class RobotSetup implements ISetup<RobotContainer> {
 
     @Override
     public RobotContainer build(ProcessPath path) {
-        DriveControl driveControl = buildNeoDriveControl(path);
-//        DriveControl driveControl = buildTalonDriveControl(path);
+//        DriveControl driveControl = buildNeoDriveControl(path);
+        DriveControl driveControl = buildTalonDriveControl(path);
 
         DriveInput input = new DriveInput(new Joystick(0));
         AutoControl autoControl = new AutoControlSetup().build(path.addChild("auto-control"));
@@ -182,30 +182,48 @@ public class RobotSetup implements ISetup<RobotContainer> {
         int backRightModuleSteerMotor_ID = 4;
         int backRightModuleSteerEncoder_ID = 10;
 
+        double frontLeftModuleSteerOffset = -Math.toRadians(232.55); // set front left steer offset
+
+        double frontRightModuleSteerOffset = -Math.toRadians(331.96 - 180); // set front right steer offset
+
+        double backLeftModuleSteerOffset = -Math.toRadians(255.49); // set back left steer offset
+
+        double backRightModuleSteerOffset = -Math.toRadians(70.66 + 180); // set back right steer offset
+
+        double sensorPositionCoefficient = 2.0 * Math.PI / 2048 * DriveSDSConstants.MK4_L2.getSteerReduction();
+
         DriveControl driveControl = new DriveControlSetup(
                 new SwerveModuleSetup(
                         new DriveControllerSetup(new TalonDriveMotorSetup(frontLeftModuleDriveMotor_ID, DriveSDSConstants.MK4_L2)),
                         new SteerControllerSetup(
                                 new TalonSteerMotorSetup(frontLeftModuleSteerMotor_ID, DriveSDSConstants.MK4_L2),
-                                new CANCoderAbsoluteEncoderSetup(frontLeftModuleSteerEncoder_ID))
+                                new CANCoderAbsoluteEncoderSetup(frontLeftModuleSteerEncoder_ID, frontRightModuleSteerOffset),
+                                sensorPositionCoefficient
+                        )
                 ),
                 new SwerveModuleSetup(
                         new DriveControllerSetup(new TalonDriveMotorSetup(frontRightModuleDriveMotor_ID, DriveSDSConstants.MK4_L2)),
                         new SteerControllerSetup(
                                 new TalonSteerMotorSetup(frontRightModuleSteerMotor_ID, DriveSDSConstants.MK4_L2),
-                                new CANCoderAbsoluteEncoderSetup(frontRightModuleSteerEncoder_ID))
+                                new CANCoderAbsoluteEncoderSetup(frontRightModuleSteerEncoder_ID, frontRightModuleSteerOffset),
+                                sensorPositionCoefficient
+                        )
                 ),
                 new SwerveModuleSetup(
                         new DriveControllerSetup(new TalonDriveMotorSetup(backLeftModuleDriveMotor_ID, DriveSDSConstants.MK4_L2)),
                         new SteerControllerSetup(
                                 new TalonSteerMotorSetup(backLeftModuleSteerMotor_ID, DriveSDSConstants.MK4_L2),
-                                new CANCoderAbsoluteEncoderSetup(backLeftModuleSteerEncoder_ID))
+                                new CANCoderAbsoluteEncoderSetup(backLeftModuleSteerEncoder_ID, backLeftModuleSteerOffset),
+                                sensorPositionCoefficient
+                        )
                 ),
                 new SwerveModuleSetup(
                         new DriveControllerSetup(new TalonDriveMotorSetup(backRightModuleDriveMotor_ID, DriveSDSConstants.MK4_L2)),
                         new SteerControllerSetup(
                                 new TalonSteerMotorSetup(backRightModuleSteerMotor_ID, DriveSDSConstants.MK4_L2),
-                                new CANCoderAbsoluteEncoderSetup(backRightModuleSteerEncoder_ID))
+                                new CANCoderAbsoluteEncoderSetup(backRightModuleSteerEncoder_ID, backRightModuleSteerOffset),
+                                sensorPositionCoefficient
+                        )
                 ),
                 new WPI_PigeonIMU(5)
         ).build(path.addChild("drive-control"));
