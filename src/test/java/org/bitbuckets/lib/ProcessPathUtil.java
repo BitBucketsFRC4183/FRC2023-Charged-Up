@@ -12,7 +12,7 @@ public class ProcessPathUtil {
         ErrorDriver errorDriver = new ErrorDriver(identityDriver);
         LogDriver logDriver = new LogDriver(Logger.getInstance(), identityDriver);
         LoopDriver loopDriver = new LoopDriver();
-        TuneableDriver tuneableDriver = new TuneableDriver(NetworkTableInstance.getDefault().getTable("preferences"), identityDriver);
+        TuneableDriver tuneableDriver = new TuneableDriver(NetworkTableInstance.getDefault().getTable("RealOutputs/MattTuneables"), identityDriver);
         SetupDriver setupDriver = new SetupDriver(identityDriver, logDriver, 0);
 
         return new ProcessPath(0, setupDriver, identityDriver, errorDriver, logDriver, loopDriver, tuneableDriver);

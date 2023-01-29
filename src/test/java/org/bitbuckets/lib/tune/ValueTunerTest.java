@@ -8,7 +8,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.EnumSet;
 
-class ValueTunerTest {
+class
+ValueTunerTest {
 
     @Test
     void readValue_shouldWork() throws InterruptedException {
