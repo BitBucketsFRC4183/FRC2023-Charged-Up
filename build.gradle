@@ -81,8 +81,6 @@ dependencies {
     testImplementation 'org.mockito:mockito-junit-jupiter:5.0.0'
 
     implementation 'net.bytebuddy:byte-buddy:1.12.13'
-
-    annotationProcessor project("season-annotations")
 }
 
 test {
