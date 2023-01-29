@@ -1,7 +1,7 @@
 package org.bitbuckets.drive;
 
 import com.revrobotics.RelativeEncoder;
-import org.bitbuckets.drive.controlsds.neo.NeoDriveController;
+import org.bitbuckets.drive.controlsds.sds.DriveController;
 import org.bitbuckets.lib.hardware.IMotorController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -10,7 +10,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-class NeoDriveControllerTest {
+class DriveControllerTest {
 
     IMotorController motor;
 
@@ -24,7 +24,7 @@ class NeoDriveControllerTest {
 
     @Test
     void setReferenceVoltage() {
-        var controller = new NeoDriveController(motor, 12);
+        var controller = new DriveController(motor, 12);
 
         controller.setReferenceVoltage(9);
 

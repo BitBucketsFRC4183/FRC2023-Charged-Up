@@ -1,19 +1,19 @@
 package org.bitbuckets.robot;
 
 import org.bitbuckets.arm.ArmSubsystem;
-import org.bitbuckets.drive.DriveSDSSubsystem;
+import org.bitbuckets.drive.DriveSubsystem;
 
 /**
  * This class represents your robot's periodic behavior
  */
 public class RobotContainer {
 
-    final DriveSDSSubsystem driveSubsystem;
-    //final ArmSubsystem armSubsystem;
+    final DriveSubsystem driveSubsystem;
+    final ArmSubsystem armSubsystem;
 
-    public RobotContainer(DriveSDSSubsystem driveSubsystem) {
+    public RobotContainer(DriveSubsystem driveSubsystem, ArmSubsystem armSubsystem) {
         this.driveSubsystem = driveSubsystem;
-        //this.armSubsystem = armSubsystem;
+        this.armSubsystem = armSubsystem;
     }
 
     public void autoPeriodic() {
