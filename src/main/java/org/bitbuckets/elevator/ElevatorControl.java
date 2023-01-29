@@ -32,8 +32,8 @@ public class ElevatorControl {
     {
         SmartDashboard.putNumber("extendEncoderLeft", leftExtend.getPositionMechanism_meters());
         SmartDashboard.putNumber("extendEncoderRight", rightExtend.getPositionMechanism_meters());
-        SmartDashboard.putNumber("tiltEncoderLeft", Math.toDegrees(leftTilt.getMechanismPositionAccumulated_radians()));
-        SmartDashboard.putNumber("tiltEncoderRight", Math.toDegrees(rightTilt.getMechanismPositionAccumulated_radians()));
+        SmartDashboard.putNumber("tiltEncoderLeft", Math.toDegrees(leftTilt.getMechanismPositionAccum_rot()* 2.0 * Math.PI));
+        SmartDashboard.putNumber("tiltEncoderRight", Math.toDegrees(rightTilt.getMechanismPositionAccum_rot()* 2.0 * Math.PI));
     }
 
 
@@ -56,7 +56,7 @@ public class ElevatorControl {
     public void setElevatorMech2d()
     {
         elevator.setLength(elevatorMinLength + leftExtend.getPositionMechanism_meters());
-        elevator.setAngle(90-Math.toDegrees(leftTilt.getMechanismPositionAccumulated_radians()));
+        elevator.setAngle(90-Math.toDegrees(leftTilt.getMechanismPositionAccum_rot() * 2.0 * Math.PI));
         elevatorWrist.setAngle(90);
 
 
