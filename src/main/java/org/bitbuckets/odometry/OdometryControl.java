@@ -1,33 +1,36 @@
 package org.bitbuckets.odometry;
 
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
+import edu.wpi.first.math.numbers.N7;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import org.bitbuckets.drive.IDriveControl;
 
 import org.bitbuckets.drive.controlsds.DriveControlSDS;
+import org.bitbuckets.gyro.GyroControl;
+import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.robot.RobotConstants;
+import org.bitbuckets.vision.VisionControl;
 
-import static org.bitbuckets.drive.controlsds.DriveControlSDS.gyro;
-
-public class OdometryControl {
+public class OdometryControl implements Runnable {
 
     final IDriveControl driveControl;
 
-    final DriveControlSDS driveControlSDS;
+    final VisionControl visionControl;
 
-    final SwerveDriveOdometry swerveDriveOdometry;
+    final GyroControl gyroControl;
 
     final SwerveDrivePoseEstimator swerveDrivePoseEstimator;
 
-    public OdometryControl(IDriveControl driveControl, DriveControlSDS driveControlSDS, Pose2d pose2d) {
+    public OdometryControl(IDriveControl driveControl, VisionControl visionControl, GyroControl gyroControl, Pose2d pose2d) {
         this.driveControl = driveControl;
-        this.driveControlSDS = driveControlSDS;
-        this.swerveDriveOdometry = new SwerveDriveOdometry(RobotConstants.KINEMATICS, gyroangle, driveControl.currentPositions(), pose2d);
-        this.swerveDrivePoseEstimator = new SwerveDrivePoseEstimator(RobotConstants.KINEMATICS, gyroangle, driveControl.currentPositions(), pose2d);
+        this.visionControl = visionControl;
+        this.gyroControl = gyroControl;
+        this.swerveDrivePoseEstimator = new SwerveDrivePoseEstimator(RobotConstants.KINEMATICS, gyroControl.getGyroAngle(), driveControl.currentPositions(), pose2d);
 
 
     }
@@ -35,26 +38,30 @@ public class OdometryControl {
 
 
 
-    Rotation2d gyroangle = Rotation2d.fromRadians(gyro.getCompassHeading());
 
 
 
 
 
-    public void estimatedSwervePose() {
-        swerveDrivePoseEstimator.update(gyroangle, driveControl.currentPositions());
-        swerveDrivePoseEstimator.getEstimatedPosition();
+
+    public Pose2d estimatedSwervePose() {
+
+        return swerveDrivePoseEstimator.getEstimatedPosition();
 
 
     }
 
-   public void estimatedCombinedPose() {
-       swerveDrivePoseEstimator.addVisionMeasurement();
-   }
+  // public void estimatedCombinedPose() {
+   //    swerveDrivePoseEstimator.addVisionMeasurement();
+   //}
 
 
 
-    static Field2d field = new Field2d();
+    Field2d field = new Field2d();
+
+   // public void swervePoseStateStdDevs() {
+   //     final Vector<N7> stateStdDevs = VecBuilder.fill();
+    //}
 
  //   @Override
     public void teleopPeriodic() {
@@ -62,7 +69,12 @@ public class OdometryControl {
 
     }
 
+    @Override
+    public void run() {
+        Rotation2d gyroangle = gyroControl.getGyroAngle();
+        swerveDrivePoseEstimator.update(gyroangle, driveControl.currentPositions());
 
+    }
 
 
 

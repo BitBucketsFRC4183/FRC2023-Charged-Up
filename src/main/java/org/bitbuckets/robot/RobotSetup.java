@@ -1,6 +1,10 @@
 package org.bitbuckets.robot;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import org.bitbuckets.arm.ArmControl;
 import org.bitbuckets.arm.ArmControlSetup;
 import org.bitbuckets.arm.ArmInput;
@@ -10,6 +14,7 @@ import org.bitbuckets.auto.AutoControlSetup;
 import org.bitbuckets.auto.AutoPath;
 import org.bitbuckets.drive.DriveInput;
 import org.bitbuckets.drive.DriveSDSSubsystem;
+import org.bitbuckets.drive.IDriveControl;
 import org.bitbuckets.drive.balance.AutoAxisControl;
 import org.bitbuckets.drive.balance.AutoAxisSetup;
 import org.bitbuckets.drive.controlsds.DriveControlSDS;
@@ -21,7 +26,7 @@ import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.lib.hardware.IMotorController;
 import org.bitbuckets.lib.hardware.PIDIndex;
 import org.bitbuckets.lib.tune.IValueTuner;
-import org.bitbuckets.lib.vendor.ctre.TalonSetup;
+import org.bitbuckets.odometry.OdometryControl;
 import org.bitbuckets.odometry.OdometryControlSetup;
 import org.bitbuckets.vision.VisionControl;
 import org.bitbuckets.vision.VisionControlSetup;
@@ -55,9 +60,7 @@ public class RobotSetup implements ISetup<RobotContainer> {
 
         DriveSDSSubsystem driveSubsystem = new DriveSDSSubsystem(input, robotStateControl, gyroControl, autoAxisControl, driveControl, autoControl, pathTuneable);
 
-        ArmInput armInput = new ArmInput(
-                new Joystick(1)
-        );
+        ArmInput armInput = MockingUtil.buddy(ArmInput.class);
 
 
         //labels: high priority
@@ -74,6 +77,9 @@ public class RobotSetup implements ISetup<RobotContainer> {
         ArmSubsystem armSubsystem = new ArmSubsystem(armInput, armControl);
 
         //SYSTEMS_GREEN.setOn(); //LET'S WIN SOME DAMN REGIONALS!!
+
+        OdometryControlSetup odometryControlSetup = new OdometryControlSetup(driveControl, visionControl, gyroControl, new Pose2d(0,0, Rotation2d.fromDegrees(0)));
+        OdometryControl odometryControl = odometryControlSetup.build(path.addChild("odometry-control"));
 
         return new RobotContainer(driveSubsystem, armSubsystem,visionControl);
     }

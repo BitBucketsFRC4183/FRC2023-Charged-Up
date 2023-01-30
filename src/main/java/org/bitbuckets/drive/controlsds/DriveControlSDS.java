@@ -4,9 +4,11 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import org.bitbuckets.drive.DriveConstants;
 import org.bitbuckets.drive.DriveSDSConstants;
+import org.bitbuckets.drive.IDriveControl;
 import org.bitbuckets.drive.controlsds.sds.SwerveModule;
 import org.bitbuckets.lib.log.ILoggable;
 import org.bitbuckets.robot.RobotConstants;
@@ -16,7 +18,7 @@ import java.util.ArrayList;
 /**
  * Represents a real drive controller that implements control of the drivetrain using a list of SwerveModule interfaces
  */
-public class DriveControlSDS {
+public class DriveControlSDS implements IDriveControl {
 
     final ILoggable<SwerveModuleState[]> desiredStates;
     final ILoggable<SwerveModuleState[]> actualStates;
@@ -71,6 +73,15 @@ public class DriveControlSDS {
     }
 
 
+    public SwerveModulePosition[] reportActualPositions() {
+        return new SwerveModulePosition[] {
+                new SwerveModulePosition(),
+                new SwerveModulePosition(),
+                new SwerveModulePosition(),
+                new SwerveModulePosition()
+        };
+    }
+
     public void drive(ChassisSpeeds chassisSpeeds) {
         this.chassisSpeeds = chassisSpeeds;
 
@@ -123,4 +134,8 @@ public class DriveControlSDS {
     }
 
 
+    @Override
+    public SwerveModulePosition[] currentPositions() {
+        return reportActualPositions();
+    }
 }
