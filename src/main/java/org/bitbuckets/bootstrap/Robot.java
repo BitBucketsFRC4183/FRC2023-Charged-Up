@@ -1,9 +1,11 @@
 package org.bitbuckets.bootstrap;
 
 import com.revrobotics.REVPhysicsSim;
+import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.lib.core.*;
 import org.bitbuckets.lib.startup.SetupDriver;
@@ -53,13 +55,16 @@ public class Robot extends LoggedRobot {
         loopDriver = new LoopDriver();
         IdentityDriver identityDriver = new IdentityDriver();
         LogDriver logDriver = new LogDriver(logger, identityDriver);
-        ErrorDriver errorDriver = new ErrorDriver(identityDriver);
         TuneableDriver tuneableDriver = new TuneableDriver(NetworkTableInstance.getDefault().getTable("RealOutputs/MattTuneables"), identityDriver);
         int consoleId = identityDriver.childProcess(0, "Console");
         SetupDriver setupDriver = new SetupDriver(identityDriver, logDriver, consoleId);
-        ProcessPath rootPath = new ProcessPath(0, setupDriver, identityDriver, errorDriver, logDriver, loopDriver, tuneableDriver);
+        ProcessPath rootPath = new ProcessPath(0, setupDriver, identityDriver, logDriver, loopDriver, tuneableDriver);
         RobotStateControl robotStateControl = new RobotStateControl(this);
         RobotSetup setup = new RobotSetup(robotStateControl);
+
+        rootPath.registerLoop(robotStateControl, "stateControl");
+
+
 
         try {
             robotHandle = setup.build(rootPath);
