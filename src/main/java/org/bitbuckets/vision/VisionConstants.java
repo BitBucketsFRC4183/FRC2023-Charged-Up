@@ -3,14 +3,12 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.util.Units;
-import org.bitbuckets.drive.old.OldDriveSubsystem;
-
 import java.io.IOException;
 import java.util.Map;
 
 public class VisionConstants {
 
-    OldDriveSubsystem oldDriveSubsystem;
+
 
     AprilTagFieldLayout aprilTagFieldLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2023ChargedUp.m_resourceFile);;
 
