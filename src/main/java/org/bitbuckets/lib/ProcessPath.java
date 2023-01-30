@@ -4,8 +4,6 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.util.datalog.StringLogEntry;
 import org.bitbuckets.SimLevel;
 import org.bitbuckets.lib.core.*;
-import org.bitbuckets.lib.log.DataLogger;
-import org.bitbuckets.lib.log.IDiffableData;
 import org.bitbuckets.lib.log.ILoggable;
 import org.bitbuckets.lib.log.type.DataLoggable;
 import org.bitbuckets.lib.log.type.DoubleLoggable;
@@ -14,8 +12,6 @@ import org.bitbuckets.lib.log.type.StringLoggable;
 import org.bitbuckets.lib.startup.SetupDriver;
 import org.bitbuckets.lib.tune.IValueTuner;
 
-import java.util.function.Supplier;
-
 //TODO documet
 public class ProcessPath {
 
@@ -23,16 +19,14 @@ public class ProcessPath {
 
     final SetupDriver setupDriver;
     final IdentityDriver identityDriver;
-    final ErrorDriver errorDriver;
     final LogDriver logDriver;
     final LoopDriver loopDriver;
     final TuneableDriver tuneableDriver;
 
-    public ProcessPath(int currentId, SetupDriver setupDriver, IdentityDriver identityDriver, ErrorDriver errorDriver, LogDriver logDriver, LoopDriver loopDriver, TuneableDriver tuneableDriver) {
+    public ProcessPath(int currentId, SetupDriver setupDriver, IdentityDriver identityDriver, LogDriver logDriver, LoopDriver loopDriver, TuneableDriver tuneableDriver) {
         this.currentId = currentId;
         this.setupDriver = setupDriver;
         this.identityDriver = identityDriver;
-        this.errorDriver = errorDriver;
         this.logDriver = logDriver;
         this.loopDriver = loopDriver;
         this.tuneableDriver = tuneableDriver;
@@ -52,7 +46,7 @@ public class ProcessPath {
     public ProcessPath addChild(String name) {
         int childId = identityDriver.childProcess(currentId, name);
 
-        return new ProcessPath(childId, setupDriver, identityDriver, errorDriver, logDriver, loopDriver, tuneableDriver);
+        return new ProcessPath(childId, setupDriver, identityDriver, logDriver, loopDriver, tuneableDriver);
     }
 
 
@@ -92,10 +86,6 @@ public class ProcessPath {
     }
 
 
-    @Deprecated @DontUseIncubating
-    public <A extends IDiffableData> DataLogger<A> generatePushDataLogger(Supplier<A> dataInitializer) {
-        return new DataLogger<>(currentId, logDriver, dataInitializer.get());
-    }
 
 
     @Deprecated @DontUseIncubating
@@ -119,9 +109,7 @@ public class ProcessPath {
 
 
     public ILoggable<Double> generateDoubleLogger(String name) {
-
         return new DoubleLoggable(logDriver, currentId, name);
-
     }
 
     public ILoggable<Boolean> generateBooleanLogger(String name) {

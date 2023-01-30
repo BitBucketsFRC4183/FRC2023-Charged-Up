@@ -6,6 +6,7 @@ import org.bitbuckets.auto.AutoControl;
 import org.bitbuckets.auto.AutoControlSetup;
 import org.bitbuckets.auto.AutoPath;
 import org.bitbuckets.drive.DriveInput;
+import org.bitbuckets.drive.DriveSDSSubsystem;
 import org.bitbuckets.drive.balance.AutoAxisControl;
 import org.bitbuckets.drive.balance.AutoAxisSetup;
 import org.bitbuckets.drive.controlsds.DriveControlSDS;
@@ -39,14 +40,13 @@ public class RobotSetup implements ISetup<RobotContainer> {
         IValueTuner<AutoPath> pathTuneable = path.generateValueTuner("path", AutoPath.TEST_PATH);
 
 
-        //DriveSDSSubsystem driveSubsystem = new DriveSDSSubsystem(input, robotStateControl, gyroControl, autoAxisControl, driveControl, autoControl, pathTuneable);
-
+        DriveSDSSubsystem driveSubsystem = new DriveSDSSubsystem(input, robotStateControl, gyroControl, autoAxisControl, driveControl, autoControl, pathTuneable);
 
         //labels: high priority
         //TODO use neos here
         ArmControlSetup armControlSetup = new ArmControlSetup(
-            new SparkSetup(9, ArmConstants.lowerConfig),
-            new SparkSetup(10, ArmConstants.upperConfig)
+                new SparkSetup(9, ArmConstants.lowerConfig),
+                new SparkSetup(10, ArmConstants.upperConfig)
         );
 
         ArmControl armControl = armControlSetup.build(path.addChild("arm-control"));
@@ -57,6 +57,6 @@ public class RobotSetup implements ISetup<RobotContainer> {
 
         //SYSTEMS_GREEN.setOn(); //LET'S WIN SOME DAMN REGIONALS!!S
 
-        return new RobotContainer(armSubsystem);
+        return new RobotContainer(driveSubsystem, armSubsystem);
     }
 }

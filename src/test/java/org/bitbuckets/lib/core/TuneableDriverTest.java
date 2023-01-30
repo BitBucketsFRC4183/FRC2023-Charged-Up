@@ -6,8 +6,6 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 class TuneableDriverTest {
 
     @Test
