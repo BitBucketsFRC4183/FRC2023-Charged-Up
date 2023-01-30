@@ -3,6 +3,7 @@ package org.bitbuckets.lib.vendor.sim;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
+import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.lib.hardware.IMotorController;
@@ -21,7 +22,7 @@ public class SimMotorSetup implements ISetup<IMotorController> {
 
     @Override
     public IMotorController build(ProcessPath path) {
-        DCMotorSim motorSim = new DCMotorSim(DCMotor.getNeo550(1), 1, simulationConfig.simulatedMomentOfInertia);//TODO reverse, because for us numbers greater than one represent upgear not reduc)
+        FlywheelSim motorSim = new FlywheelSim(DCMotor.getNeo550(1), 1, simulationConfig.simulatedMomentOfInertia);//TODO reverse, because for us numbers greater than one represent upgear not reduc)
         PIDController pidController = new PIDController(simulationConfig.simulatedP, simulationConfig.simulatedI, simulationConfig.simulatedD);
         SimMotorController simMotorController = new SimMotorController(config, motorSim, pidController);
 

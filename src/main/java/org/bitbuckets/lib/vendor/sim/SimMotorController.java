@@ -2,6 +2,8 @@ package org.bitbuckets.lib.vendor.sim;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
+import edu.wpi.first.wpilibj.simulation.ElevatorSim;
+import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import org.bitbuckets.lib.hardware.IMotorController;
 import org.bitbuckets.lib.hardware.MotorConfig;
 
@@ -9,14 +11,16 @@ import org.bitbuckets.lib.hardware.MotorConfig;
 public class SimMotorController implements IMotorController, Runnable{
 
     final MotorConfig config;
-    final DCMotorSim simulatedMotor;
+    final FlywheelSim simulatedMotor;
     final PIDController simulatedPIDController;
 
-    public SimMotorController(MotorConfig config, DCMotorSim simulatedMotor, PIDController simulatedPIDController) {
+    public SimMotorController(MotorConfig config, FlywheelSim simulatedMotor, PIDController simulatedPIDController) {
         this.config = config;
         this.simulatedMotor = simulatedMotor;
         this.simulatedPIDController = simulatedPIDController;
     }
+
+    double seconds = 0;
 
     @Override
     public double getMechanismFactor() {
@@ -40,7 +44,7 @@ public class SimMotorController implements IMotorController, Runnable{
 
     @Override
     public double getPositionRaw() {
-        return simulatedMotor.getAngularPositionRotations();
+        return simulatedMotor.getAngularVelocityRPM() / seconds ;
     }
 
     @Override
@@ -86,6 +90,9 @@ public class SimMotorController implements IMotorController, Runnable{
 
     @Override
     public void run() {
+        seconds += 0.02;
+
+
         simulatedMotor.update(0.02); //TODO this needs to be accurate
     }
 
