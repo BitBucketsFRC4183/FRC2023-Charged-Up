@@ -1,7 +1,6 @@
 package org.bitbuckets.lib.id;
 
 import org.bitbuckets.lib.core.IdentityDriver;
-import org.bitbuckets.lib.core.LogDriver;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

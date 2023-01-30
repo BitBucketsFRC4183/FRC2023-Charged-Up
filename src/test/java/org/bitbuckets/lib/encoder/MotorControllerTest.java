@@ -25,7 +25,7 @@ class MotorControllerTest {
         Mockito.when(motorController.getRawToRotationsFactor()).thenReturn((1.0 / 2048.0));
         Mockito.when(motorController.getMechanismFactor()).thenReturn(1.0);
 
-        assertEquals(Math.toRadians(0), motorController.getMechanismPositionAccumulated_radians());
+        assertEquals(Math.toRadians(0), motorController.getEncoderPositionBound_rot());
 
 
     }
@@ -40,7 +40,7 @@ class MotorControllerTest {
         Mockito.when(motorController.getRawToRotationsFactor()).thenReturn((1.0 / 2048.0));
         Mockito.when(motorController.getMechanismFactor()).thenReturn(steerCoefficient);
 
-        assertEquals(Math.toRadians(540), motorController.getMechanismPositionAccumulated_radians());
+        assertEquals(Math.toRadians(540), motorController.getPositionMechanism_meters());
     }
 
     @Disabled
@@ -53,7 +53,7 @@ class MotorControllerTest {
         Mockito.when(motorController.getRawToRotationsFactor()).thenReturn((1.0 / 2048.0));
         Mockito.when(motorController.getMechanismFactor()).thenReturn(steerCoefficient);
 
-        assertEquals(Math.toRadians(180), motorController.getMechanismPositionBounded_radians());
+        assertEquals(Math.toRadians(180), motorController.getPositionMechanism_meters());
     }
 
     @Disabled
@@ -66,6 +66,6 @@ class MotorControllerTest {
         Mockito.when(motorController.getRawToRotationsFactor()).thenReturn((1.0 / 2048.0));
         Mockito.when(motorController.getMechanismFactor()).thenReturn(0.5);
 
-        assertEquals(Math.PI, motorController.getMechanismPositionAccumulated_radians());
+        assertEquals(Math.PI, motorController.getPositionMechanism_meters());
     }
 }

@@ -2,7 +2,6 @@ package org.bitbuckets.lib.control;
 
 import edu.wpi.first.hal.HAL;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import org.bitbuckets.lib.ProcessPath;
@@ -10,7 +9,6 @@ import org.bitbuckets.lib.ProcessPathUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
 class PIDCalculatorSetupTest {
 
@@ -20,7 +18,9 @@ class PIDCalculatorSetupTest {
         assert HAL.initialize(500, 0);
 
         ProcessPath path = ProcessPathUtil.testingProcessPath();
-        IPIDCalculator calculator = new PIDCalculatorSetup().build(path.addChild("calculator"));
+        IPIDCalculator calculator = new PIDCalculatorSetup(
+                1,0,0
+        ).build(path.addChild("calculator"));
 
         Assertions.assertTrue(NetworkTableInstance.getDefault().getTable("RealOutputs/MattTuneables").getEntry("calculator").exists());
 
