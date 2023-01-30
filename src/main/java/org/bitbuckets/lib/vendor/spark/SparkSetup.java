@@ -111,6 +111,7 @@ public class SparkSetup implements ISetup<IMotorController> {
         }
 
         REVPhysicsSim.getInstance().addSparkMax(spark, DCMotor.getNeo550(1));
+
         configError.markCompleted();
         return ctrl;
     }
