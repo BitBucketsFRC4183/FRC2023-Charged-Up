@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.bitbuckets.auto.AutoControl;
 import org.bitbuckets.auto.AutoPath;
 import org.bitbuckets.drive.balance.AutoAxisControl;
-import org.bitbuckets.drive.controlsds.DriveControlSDS;
+import org.bitbuckets.drive.controlsds.DriveControl;
 import org.bitbuckets.gyro.GyroControl;
 import org.bitbuckets.lib.tune.IValueTuner;
 import org.bitbuckets.robot.RobotStateControl;
@@ -17,20 +17,20 @@ import org.bitbuckets.robot.RobotStateControl;
  * tags: high priority
  * TODO this is becoming a sort of god class, some of this logic has to break out into smaller subsystems
  */
-public class DriveSDSSubsystem {
+public class DriveSubsystem {
 
     final DriveInput input;
 
     final RobotStateControl robotStateControl;
     final GyroControl gyroControl;
     final AutoAxisControl autoAxisControl;
-    final DriveControlSDS driveControl;
+    final DriveControl driveControl;
     final AutoControl autoControl;
 
     final IValueTuner<AutoPath> path;
 
 
-    public DriveSDSSubsystem(DriveInput input, RobotStateControl robotStateControl, GyroControl gyroControl, AutoAxisControl autoAxisControl, DriveControlSDS driveControl, AutoControl autoControl, IValueTuner<AutoPath> path) {
+    public DriveSubsystem(DriveInput input, RobotStateControl robotStateControl, GyroControl gyroControl, AutoAxisControl autoAxisControl, DriveControl driveControl, AutoControl autoControl, IValueTuner<AutoPath> path) {
         this.input = input;
         this.robotStateControl = robotStateControl;
         this.gyroControl = gyroControl;
@@ -73,7 +73,7 @@ public class DriveSDSSubsystem {
 
                 break;
             case TELEOP_NORMAL:
-            
+
                 if (input.isAutoBalancePressed()) {
                     state = DriveFSM.TELEOP_BALANCING; //do balancing next iteration
                     break;
@@ -106,7 +106,7 @@ public class DriveSDSSubsystem {
 
     void teleopNormal() {
         double xOutput = input.getInputX() * driveControl.getMaxVelocity();
-        double yOutput = input.getInputY() * driveControl.getMaxVelocity();
+        double yOutput = -input.getInputY() * driveControl.getMaxVelocity();
         double rotationOutput = input.getInputRot() * driveControl.getMaxAngularVelocity();
 
         if (xOutput == 0 && yOutput == 0 && rotationOutput == 0) {
@@ -120,7 +120,7 @@ public class DriveSDSSubsystem {
     void teleopBalancing() {
 
         //This is bad and should be shifted somewhere else
-        double BalanceDeadband_deg = Preferences.getDouble(DriveSDSConstants.autoBalanceDeadbandDegKey, DriveSDSConstants.BalanceDeadbandDeg);
+        double BalanceDeadband_deg = Preferences.getDouble(DriveConstants.autoBalanceDeadbandDegKey, DriveConstants.BalanceDeadbandDeg);
 
         double Roll_deg = gyroControl.getRoll_deg();
         if (Math.abs(Roll_deg) > BalanceDeadband_deg) {
