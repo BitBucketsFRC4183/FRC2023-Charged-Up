@@ -1,51 +1,27 @@
 package org.bitbuckets.drive.controlsds;
 
-import com.ctre.phoenix.sensors.WPI_PigeonIMU;
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import org.bitbuckets.drive.DriveConstants;
 import org.bitbuckets.drive.DriveSDSConstants;
-import org.bitbuckets.lib.log.DataLogger;
+import org.bitbuckets.drive.IDriveControl;
+import org.bitbuckets.drive.controlsds.sds.SwerveModule;
+import org.bitbuckets.lib.log.ILoggable;
+import org.bitbuckets.robot.RobotConstants;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Represents a real drive controller that implements control of the drivetrain using a list of SwerveModule interfaces
  */
-public class DriveControlSDS {
+public class DriveControlSDS implements IDriveControl {
 
-    public static WPI_PigeonIMU gyro;
-    final DataLogger<DriveControlSDSDataAutoGen> logger;
-    /**
-     * The maximum velocity of the robot in meters per second.
-     * <p>
-     * This is a measure of how fast the robot should be able to drive in a straight
-     * line.
-     */
-    final double maxVelocity_metersPerSecond;
-    /**
-     * The maximum angular velocity of the robot in radians per second.
-     * <p>
-     * This is a measure of how fast the robot can rotate in place.
-     */
-    final double maxAngularVelocity_radiansPerSecond;
-
-    // By default we use a Pigeon for our gyroscope. But if you use another
-    // gyroscope, like a NavX, you can change 
-    // The important thing about how you configure your gyroscope is that rotating
-    // the robot counter-clockwise should
-    // cause the angle reading to increase until it wraps back over to zero.
-    //  Remove if you are using a Pigeon
-    //  Uncomment if you are using a NavX
-
-    final PIDController balanceController;
-
-    final PIDController rotControllerRad;
-
+    final ILoggable<SwerveModuleState[]> desiredStates;
+    final ILoggable<SwerveModuleState[]> actualStates;
 
     // Swerve Modules
     final SwerveModule moduleFrontLeft;
@@ -53,8 +29,6 @@ public class DriveControlSDS {
     final SwerveModule moduleBackLeft;
     final SwerveModule moduleBackRight;
 
-    // Instance Variables
-    final SwerveDriveKinematics kinematics;
 
     //Speed factor that edits the max velocity and max angular velocity
     double speedModifier = .75;
@@ -65,58 +39,53 @@ public class DriveControlSDS {
 
     SwerveModuleState[] cachedSetpoint = new SwerveModuleState[4];
 
-
-    public DriveControlSDS(DataLogger<DriveControlSDSDataAutoGen> logger, double maxVelocity_metersPerSecond, double maxAngularVelocity_radiansPerSecond, WPI_PigeonIMU gyro, PIDController balanceController, PIDController rotControllerRad, SwerveModule moduleFrontLeft, SwerveModule moduleFrontRight, SwerveModule moduleBackLeft, SwerveModule moduleBackRight, SwerveDriveKinematics kinematics) {
-        this.logger = logger;
-        this.maxVelocity_metersPerSecond = maxVelocity_metersPerSecond;
-        this.maxAngularVelocity_radiansPerSecond = maxAngularVelocity_radiansPerSecond;
-        this.gyro = gyro;
-        this.balanceController = balanceController;
-        this.rotControllerRad = rotControllerRad;
+    public DriveControlSDS(ILoggable<SwerveModuleState[]> desiredStates, ILoggable<SwerveModuleState[]> actualStates, SwerveModule moduleFrontLeft, SwerveModule moduleFrontRight, SwerveModule moduleBackLeft, SwerveModule moduleBackRight) {
+        this.desiredStates = desiredStates;
+        this.actualStates = actualStates;
         this.moduleFrontLeft = moduleFrontLeft;
         this.moduleFrontRight = moduleFrontRight;
         this.moduleBackLeft = moduleBackLeft;
         this.moduleBackRight = moduleBackRight;
-        this.kinematics = kinematics;
-
-        // We will also create a list of all the modules so we can easily access them later
-        modules = new ArrayList<>(List.of(moduleFrontLeft, moduleFrontRight, moduleBackLeft, moduleBackRight));
-
-    }
-
-    void guaranteedLoggingLoop() {
-        logger.process(data -> {
-            data.targetStates = reportSetpointStates();
-            data.realStates = reportActualStates();
-        });
-    }
-
-    public double[] getGyroXYZ_mps() {
-        double[] velArray1 = new double[]{0, 0, 0};
-        gyro.getRawGyro(velArray1);
-        return velArray1;
     }
 
 
-    public double getRoll_deg() {
-        return gyro.getRoll();
+    public void guaranteedLoggingLoop() {
+        desiredStates.log(reportSetpointStates());
+        actualStates.log(reportActualStates());
     }
 
     public SwerveModuleState[] reportSetpointStates() {
-        return cachedSetpoint;
+        return new SwerveModuleState[]{
+                new SwerveModuleState(),
+                new SwerveModuleState(),
+                new SwerveModuleState(),
+                new SwerveModuleState()
+        };
     }
 
     public SwerveModuleState[] reportActualStates() {
-        if (chassisSpeeds != null) {
-            return kinematics.toSwerveModuleStates(chassisSpeeds);
-        }
-        return new SwerveModuleState[4];
+        return new SwerveModuleState[]{
+                new SwerveModuleState(),
+                new SwerveModuleState(),
+                new SwerveModuleState(),
+                new SwerveModuleState()
+        };
+    }
+
+
+    public SwerveModulePosition[] reportActualPositions() {
+        return new SwerveModulePosition[] {
+                new SwerveModulePosition(),
+                new SwerveModulePosition(),
+                new SwerveModulePosition(),
+                new SwerveModulePosition()
+        };
     }
 
     public void drive(ChassisSpeeds chassisSpeeds) {
         this.chassisSpeeds = chassisSpeeds;
 
-        doDriveWithStates(this.kinematics.toSwerveModuleStates(chassisSpeeds));
+        doDriveWithStates(RobotConstants.KINEMATICS.toSwerveModuleStates(chassisSpeeds));
     }
 
     public void stopSticky() {
@@ -128,23 +97,19 @@ public class DriveControlSDS {
         });
     }
 
-    public void zeroGyro() {
-        gyro.reset();
-    }
 
     public double getMaxVelocity() {
-        return maxVelocity_metersPerSecond * speedModifier;
+        return DriveConstants.MAX_DRIVE_VELOCITY * speedModifier;
     }
 
     public double getMaxAngularVelocity() {
-        return maxAngularVelocity_radiansPerSecond * speedModifier;
+        return DriveConstants.MAX_ANG_VELOCITY * speedModifier;
     }
 
-    public Rotation2d getGyroAngle() {
-        return this.gyro.getRotation2d();
-    }
 
     public void stop() {
+        //tags: low priority
+        //TODO this should use x-lock wheel constants
         this.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
     }
 
@@ -168,15 +133,9 @@ public class DriveControlSDS {
         return MathUtil.clamp(ff, -maxVoltage, maxVoltage);
     }
 
-    public double calculateBalanceOutput(double roll_deg, double setpoint) {
-        return balanceController.calculate(roll_deg, setpoint);
-    }
 
-    public double getYaw_deg() {
-        return gyro.getYaw();
-    }
-
-    public double calculateRotOutputRad(double imu_yaw, double setpoint) {
-        return rotControllerRad.calculate(imu_yaw, setpoint);
+    @Override
+    public SwerveModulePosition[] currentPositions() {
+        return reportActualPositions();
     }
 }
