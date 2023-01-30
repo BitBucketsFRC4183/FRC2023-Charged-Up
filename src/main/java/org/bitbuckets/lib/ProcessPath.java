@@ -1,6 +1,7 @@
 package org.bitbuckets.lib;
 
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.util.datalog.StringLogEntry;
 import org.bitbuckets.SimLevel;
 import org.bitbuckets.lib.core.*;
 import org.bitbuckets.lib.log.DataLogger;
@@ -9,6 +10,7 @@ import org.bitbuckets.lib.log.ILoggable;
 import org.bitbuckets.lib.log.type.DataLoggable;
 import org.bitbuckets.lib.log.type.DoubleLoggable;
 import org.bitbuckets.lib.log.type.StateLoggable;
+import org.bitbuckets.lib.log.type.StringLoggable;
 import org.bitbuckets.lib.startup.SetupDriver;
 import org.bitbuckets.lib.tune.IValueTuner;
 
@@ -138,4 +140,8 @@ public class ProcessPath {
     }
 
 
+    public ILoggable<String> generateStringLogger(String name) {
+        return new StringLoggable(logDriver, currentId, name);
+
+    }
 }
