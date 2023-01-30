@@ -7,7 +7,6 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 import org.bitbuckets.drive.DriveConstants;
-import org.bitbuckets.drive.DriveSDSConstants;
 import org.bitbuckets.drive.controlsds.sds.ISwerveModule;
 import org.bitbuckets.lib.log.ILoggable;
 import org.bitbuckets.robot.RobotConstants;
@@ -128,7 +127,7 @@ public class DriveControl {
 
     private double velocityToDriveVolts(double speedMetersPerSecond) {
         int maxVoltage = 12;
-        double ff = DriveSDSConstants.feedForward.calculate(speedMetersPerSecond);
+        double ff = DriveConstants.feedForward.calculate(speedMetersPerSecond);
         return MathUtil.clamp(ff, -maxVoltage, maxVoltage);
     }
 

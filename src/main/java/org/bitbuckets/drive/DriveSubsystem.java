@@ -106,7 +106,7 @@ public class DriveSubsystem {
 
     void teleopNormal() {
         double xOutput = input.getInputX() * driveControl.getMaxVelocity();
-        double yOutput = input.getInputY() * driveControl.getMaxVelocity();
+        double yOutput = -input.getInputY() * driveControl.getMaxVelocity();
         double rotationOutput = input.getInputRot() * driveControl.getMaxAngularVelocity();
 
         if (xOutput == 0 && yOutput == 0 && rotationOutput == 0) {
@@ -120,7 +120,7 @@ public class DriveSubsystem {
     void teleopBalancing() {
 
         //This is bad and should be shifted somewhere else
-        double BalanceDeadband_deg = Preferences.getDouble(DriveSDSConstants.autoBalanceDeadbandDegKey, DriveSDSConstants.BalanceDeadbandDeg);
+        double BalanceDeadband_deg = Preferences.getDouble(DriveConstants.autoBalanceDeadbandDegKey, DriveConstants.BalanceDeadbandDeg);
 
         double Roll_deg = gyroControl.getRoll_deg();
         if (Math.abs(Roll_deg) > BalanceDeadband_deg) {
