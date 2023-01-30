@@ -1,7 +1,9 @@
 package org.bitbuckets.robot;
 
 import org.bitbuckets.arm.ArmSubsystem;
+import org.bitbuckets.auto.AutoPath;
 import org.bitbuckets.drive.DriveSDSSubsystem;
+import org.bitbuckets.lib.tune.IValueTuner;
 
 /**
  * This class represents your robot's periodic behavior

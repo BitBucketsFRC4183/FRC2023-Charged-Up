@@ -2,14 +2,16 @@ package org.bitbuckets.lib.tune;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEvent;
+import edu.wpi.first.wpilibj.DriverStation;
 
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
 
 /**
  * A tuneable value.
  * @param <T>
  */
-public class ValueTuner<T> implements NetworkTable.TableEventListener, IValueTuner<T> {
+public class ValueTuner<T> implements Consumer<NetworkTableEvent>, IValueTuner<T> {
 
     final T defaultValue;
 
@@ -29,7 +31,9 @@ public class ValueTuner<T> implements NetworkTable.TableEventListener, IValueTun
 
     @Override
     public T consumeValue() {
-        AtomicRecord nowStale = cachedValue.getAndUpdate(record -> {
+        throw new IllegalStateException("SUCK MY BALLS");
+
+        /*tomicRecord nowStale = cachedValue.getAndUpdate(record -> {
             if (record.hasUpdated) {
                 return new AtomicRecord(record.cachedPointer, false);
             }
@@ -37,14 +41,16 @@ public class ValueTuner<T> implements NetworkTable.TableEventListener, IValueTun
             return record; //avoid CAS operation to save loops
         });
 
-        return nowStale.cachedPointer;
+        return nowStale.cachedPointer;*/
     }
 
+
     @Override
-    public void accept(NetworkTable table, String key, NetworkTableEvent event) {
-        Object newObject = event.valueData.value.getValue();
+    public void accept(NetworkTableEvent networkTableEvent) {
+        Object newObject = networkTableEvent.valueData.value.getValue();
 
         if (defaultValue.getClass().isEnum()) {
+
 
             Enum aaaa = (Enum) defaultValue;
             Enum coerced = Enum.valueOf(aaaa.getClass(), (String)newObject);
@@ -53,7 +59,6 @@ public class ValueTuner<T> implements NetworkTable.TableEventListener, IValueTun
         } else {
             cachedValue.set(new AtomicRecord((T) newObject, true));
         }
-
     }
 
     class AtomicRecord {
