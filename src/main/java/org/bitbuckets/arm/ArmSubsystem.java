@@ -58,7 +58,6 @@ public class ArmSubsystem {
                     state = ArmFSM.POSITION_CONTROL;
                     positionMode = "ScoreHigh";
                 } else {
-                    System.out.println("Currently in MANUAL");
                     armControl.manuallyMoveLowerArm(armInput.getLowerArm_PercentOutput());
                     armControl.manuallyMoveUpperArm(armInput.getUpperArm_PercentOutput());
                 }
@@ -68,7 +67,6 @@ public class ArmSubsystem {
                 if (armInput.isDisablePositionControlPressed()) {
                     state = ArmFSM.MANUAL;
                 } else {
-                    System.out.println("Currently in POSITION_CONTROL");
                     switch (positionMode) {
                         case "IntakeHuman":
                             armControl.intakeHumanPlayer();

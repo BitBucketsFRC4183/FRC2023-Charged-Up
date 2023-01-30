@@ -21,13 +21,11 @@ public class ArmControl {
     }
 
     public void calibrateLowerArm() {
-        System.out.println("Calibrated lower arm!");
         lowerJoint.forceOffset(convertMechanismRotationtoRawRotation_lowerJoint(convertDegreesToRotation(0)));
 
     }
 
     public void calibrateUpperArm() {
-        System.out.println("Calibrated upper arm!");
         upperJoint.forceOffset(convertMechanismRotationtoRawRotation_upperJoint(convertDegreesToRotation(0)));
 
     }
