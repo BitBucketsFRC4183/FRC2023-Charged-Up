@@ -21,21 +21,11 @@ public class ArmControl {
     }
 
     public void calibrateLowerArm() {
-<<<<<<< HEAD
-        System.out.println("Calibrated lower arm!");
-=======
->>>>>>> main
         lowerJoint.forceOffset(convertMechanismRotationtoRawRotation_lowerJoint(convertDegreesToRotation(0)));
-
     }
 
     public void calibrateUpperArm() {
-<<<<<<< HEAD
-        System.out.println("Calibrated upper arm!");
-=======
->>>>>>> main
         upperJoint.forceOffset(convertMechanismRotationtoRawRotation_upperJoint(convertDegreesToRotation(0)));
-
     }
 
     public void manuallyMoveLowerArm(double percentOutput) {
@@ -84,11 +74,8 @@ public class ArmControl {
         double upperAngle = 0;
         moveLowerArmToPosition_DEGREES(lowerAngle);
         moveUpperArmToPosition_DEGREES(upperAngle);
-<<<<<<< HEAD
 
     }
-=======
->>>>>>> main
 
     // Press Y
     public void intakeGround() {
@@ -99,32 +86,19 @@ public class ArmControl {
         moveUpperArmToPosition_DEGREES(upperAngle);
     }
 
-<<<<<<< HEAD
-    // Press A
     public void scoreMid() {
-=======
-    // Press Y
-    public void intakeGround() {
->>>>>>> main
         //Need inverse kinematics
         double lowerAngle = 0;
         double upperAngle = 0;
         moveLowerArmToPosition_DEGREES(lowerAngle);
         moveUpperArmToPosition_DEGREES(upperAngle);
-<<<<<<< HEAD
-
 
     }
 
     // Press B
     public void scoreHigh() {
-=======
 
-    }
-
-    // Press A
-    public void scoreMid() {
->>>>>>> main
+        // Press A
         //Need inverse kinematics
         double lowerAngle = 0;
         double upperAngle = 0;
