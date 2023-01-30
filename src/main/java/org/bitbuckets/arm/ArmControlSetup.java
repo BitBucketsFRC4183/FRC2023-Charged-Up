@@ -18,6 +18,7 @@ public class ArmControlSetup implements ISetup<ArmControl> {
 
     }
 
+
     @Override
     public ArmControl build(ProcessPath path) {
 
@@ -26,6 +27,8 @@ public class ArmControlSetup implements ISetup<ArmControl> {
                 upperJoint.build(path.addChild("upper-joint"))
 
         );
+
+
         return armControl;
     }
 }
