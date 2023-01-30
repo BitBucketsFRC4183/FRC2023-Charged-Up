@@ -88,7 +88,6 @@ public class ArmControl {
         double upperAngle = 0;
         moveLowerArmToPosition_DEGREES(lowerAngle);
         moveUpperArmToPosition_DEGREES(upperAngle);
-
     }
 
     // Press A
@@ -98,6 +97,7 @@ public class ArmControl {
         double upperAngle = 0;
         moveLowerArmToPosition_DEGREES(lowerAngle);
         moveUpperArmToPosition_DEGREES(upperAngle);
+
 
     }
 
