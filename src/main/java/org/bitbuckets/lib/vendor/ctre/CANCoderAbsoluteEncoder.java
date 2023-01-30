@@ -1,12 +1,12 @@
-package org.bitbuckets.drive.controlsds;
+package org.bitbuckets.lib.vendor.ctre;
 
-import com.ctre.phoenix.sensors.CANCoder;
+import com.ctre.phoenix.sensors.WPI_CANCoder;
 import org.bitbuckets.lib.hardware.IAbsoluteEncoder;
 
 public class CANCoderAbsoluteEncoder implements IAbsoluteEncoder {
-    private final CANCoder encoder;
+    final WPI_CANCoder encoder;
 
-    public CANCoderAbsoluteEncoder(CANCoder encoder) {
+    CANCoderAbsoluteEncoder(WPI_CANCoder encoder) {
         this.encoder = encoder;
     }
 
@@ -19,6 +19,6 @@ public class CANCoderAbsoluteEncoder implements IAbsoluteEncoder {
         }
 
         return angle;
+
     }
 }
-
