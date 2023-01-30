@@ -1,14 +1,14 @@
 package org.bitbuckets.lib.vendor.sim;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj.simulation.DCMotorSim;
-import edu.wpi.first.wpilibj.simulation.ElevatorSim;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import org.bitbuckets.lib.hardware.IMotorController;
 import org.bitbuckets.lib.hardware.MotorConfig;
 
 //TODO this needs to be run at 500 hz
 public class SimMotorController implements IMotorController, Runnable{
+
 
     final MotorConfig config;
     final FlywheelSim simulatedMotor;
@@ -91,7 +91,6 @@ public class SimMotorController implements IMotorController, Runnable{
     @Override
     public void run() {
         seconds += 0.02;
-
 
         simulatedMotor.update(0.02); //TODO this needs to be accurate
     }

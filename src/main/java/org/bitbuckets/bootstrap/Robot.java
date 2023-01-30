@@ -1,9 +1,11 @@
 package org.bitbuckets.bootstrap;
 
 import com.revrobotics.REVPhysicsSim;
+import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.lib.core.*;
 import org.bitbuckets.lib.startup.SetupDriver;
