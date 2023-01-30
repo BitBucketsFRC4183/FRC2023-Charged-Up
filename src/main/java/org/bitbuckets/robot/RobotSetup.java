@@ -12,7 +12,6 @@ import org.bitbuckets.drive.DriveInput;
 import org.bitbuckets.drive.DriveSubsystem;
 import org.bitbuckets.drive.balance.AutoAxisControl;
 import org.bitbuckets.drive.balance.AutoAxisSetup;
-import org.bitbuckets.drive.controlsds.DriveControlSDS;
 import org.bitbuckets.drive.controlsds.DriveControl;
 import org.bitbuckets.drive.controlsds.sds.DriveControlSetup;
 import org.bitbuckets.drive.controlsds.sds.DriveControllerSetup;
@@ -22,9 +21,6 @@ import org.bitbuckets.gyro.GyroControl;
 import org.bitbuckets.gyro.GyroControlSetup;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
-import org.bitbuckets.lib.hardware.IMotorController;
-import org.bitbuckets.lib.tune.IValueTuner;
-import org.bitbuckets.lib.util.MockingUtil;
 import org.bitbuckets.lib.hardware.MotorConfig;
 import org.bitbuckets.lib.tune.IValueTuner;
 import org.bitbuckets.lib.vendor.ctre.CANCoderAbsoluteEncoderSetup;
@@ -57,11 +53,6 @@ public class RobotSetup implements ISetup<RobotContainer> {
         AutoAxisControl autoAxisControl = new AutoAxisSetup().build(path.addChild("axis-control"));
         IValueTuner<AutoPath> pathTuneable = path.generateValueTuner("path", AutoPath.TEST_PATH);
 
-        DriveSDSSubsystem driveSubsystem = new DriveSDSSubsystem(input, robotStateControl, gyroControl, autoAxisControl, driveControl, autoControl, pathTuneable);
-
-        ArmInput armInput = new ArmInput(
-                new Joystick(1)
-        );
         DriveSubsystem driveSubsystem = new DriveSubsystem(input, robotStateControl, gyroControl, autoAxisControl, driveControl, autoControl, pathTuneable);
 
         //labels: high priority
