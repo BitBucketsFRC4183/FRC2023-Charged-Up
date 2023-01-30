@@ -12,8 +12,9 @@ public interface ArmConstants {
     double lowerArmGearRatio = (5 * 4 * 3) * (12. / 26.); //roughly 27.69
     double upperArmGearRatio = (5 * 4 * 3) * (12. / 30.);
 
-    MotorConfig lowerConfig = new MotorConfig(ArmConstants.lowerArmGearRatio, 1, 1, false, true, 20.0, false, false,Optional.empty());
-    MotorConfig upperConfig  = new MotorConfig(ArmConstants.upperArmGearRatio,1,1,false,true,20.0,false,false,Optional.empty());
+    MotorConfig lowerConfig = new MotorConfig(ArmConstants.lowerArmGearRatio, 1, 1, false, true, 20.0, false, false, Optional.empty());
+    MotorConfig upperConfig = new MotorConfig(ArmConstants.upperArmGearRatio, 1, 1, false, true, 20.0, false, false, Optional.empty());
+
 
     // Feel free to change to make arms faster/slower for input
     final double CONTROL_JOINT_OUTPUT = 0.3;
@@ -26,12 +27,6 @@ public interface ArmConstants {
      */
 
     // Neo Brushless Motor Relative Encoder: 42 counts per revolution
-
-
-    // PID constants
-    double kP = 1;
-    double kI = 0;
-    double kD = 0;
 
 
 }
