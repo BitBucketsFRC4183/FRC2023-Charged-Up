@@ -28,15 +28,13 @@ public class ArmSubsystem {
     //calculated gearRatio
     //private double gearRatio = (5 * 4 * 3) / (12. / 30.);
 
-    public void robotPeriodic()
-    {
+    public void robotPeriodic() {
         //SmartDashboard.putNumber("lowerEncoder",armControl.lowerJoint.getEncoderPositionAccumulated_radians());
         //SmartDashboard.putNumber("upperEncoder",armControl.upperJoint.getEncoderPositionAccumulated_radians());
         //SmartDashboard.putNumber("setpoint",armControl.convertMechanismRotationtoRawRotation_lowerJoint(1));
     }
 
     public void teleopPeriodic() {
-
 
 
         if (armInput.isCalibratedPressed()) {
@@ -46,27 +44,20 @@ public class ArmSubsystem {
 
         switch (state) {
             case MANUAL:
-                if (armInput.isIntakePressed())
-                {
+                if (armInput.isIntakeHumanPressed()) {
                     state = ArmFSM.POSITION_CONTROL;
-                    positionMode = "IntakePosition";
+                    positionMode = "IntakeHuman";
 
-                }
-                else if (armInput.isLowPosPressed()){
+                } else if (armInput.isIntakeGroundPressed()) {
                     state = ArmFSM.POSITION_CONTROL;
-                    positionMode = "LowPosition";
-                }
-                else if (armInput.isMidPosPressed())
-                {
+                    positionMode = "IntakeGround";
+                } else if (armInput.isScoreMidPressed()) {
                     state = ArmFSM.POSITION_CONTROL;
-                    positionMode = "MidPosition";
-                }
-                else if (armInput.isHighPosPressed())
-                {
+                    positionMode = "ScoreMid";
+                } else if (armInput.isScoreHighPressed()) {
                     state = ArmFSM.POSITION_CONTROL;
-                    positionMode = "HighPosition";
-                }
-                else {
+                    positionMode = "ScoreHigh";
+                } else {
                     System.out.println("Currently in MANUAL");
                     armControl.manuallyMoveLowerArm(armInput.getLowerArm_PercentOutput());
                     armControl.manuallyMoveUpperArm(armInput.getUpperArm_PercentOutput());
@@ -76,25 +67,20 @@ public class ArmSubsystem {
             case POSITION_CONTROL:
                 if (armInput.isDisablePositionControlPressed()) {
                     state = ArmFSM.MANUAL;
-                }
-                else {
+                } else {
                     System.out.println("Currently in POSITION_CONTROL");
                     switch (positionMode) {
-                        case "IntakePosition":
-                            armControl.moveToIntakePos();
-                            System.out.println("Moved to intake position!");
+                        case "IntakeHuman":
+                            armControl.intakeHumanPlayer();
                             break;
-                        case "LowPosition":
-                            armControl.moveToLowPos();
-                            System.out.println("Moved to low position!");
+                        case "IntakeGround":
+                            armControl.intakeGround();
                             break;
-                        case "MidPosition":
-                            armControl.moveToMidPos();
-                            System.out.println("Moved to mid position!");
+                        case "ScoreMid":
+                            armControl.scoreMid();
                             break;
-                        case "HighPosition":
-                            armControl.movetoHighPos();
-                            System.out.println("Moved to high position!");
+                        case "ScoreHigh":
+                            armControl.scoreHigh();
                             break;
                     }
                 }
