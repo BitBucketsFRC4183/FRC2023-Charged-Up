@@ -1,7 +1,24 @@
 package org.bitbuckets.drive.controlsds.sds;
 
-public interface DriveController {
-    void setReferenceVoltage(double voltage);
+import org.bitbuckets.lib.hardware.IMotorController;
 
-    double getStateVelocity();
+public class DriveController implements IDriveController {
+    private final IMotorController motor;
+
+    private final double nominalVoltage;
+
+    public DriveController(IMotorController motor, double nominalVoltage) {
+        this.motor = motor;
+        this.nominalVoltage = nominalVoltage;
+    }
+
+    @Override
+    public void setReferenceVoltage(double voltage) {
+        motor.moveAtPercent(voltage / nominalVoltage);
+    }
+
+    @Override
+    public double getStateVelocity() {
+        return motor.getVelocityRaw();
+    }
 }

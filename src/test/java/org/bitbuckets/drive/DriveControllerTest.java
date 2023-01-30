@@ -1,8 +1,8 @@
 package org.bitbuckets.drive;
 
-import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
-import org.bitbuckets.drive.controlsds.neo.NeoDriveController;
+import org.bitbuckets.drive.controlsds.sds.DriveController;
+import org.bitbuckets.lib.hardware.IMotorController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -10,9 +10,9 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-class NeoDriveControllerTest {
+class DriveControllerTest {
 
-    CANSparkMax motor;
+    IMotorController motor;
 
     RelativeEncoder encoder;
 
@@ -24,12 +24,12 @@ class NeoDriveControllerTest {
 
     @Test
     void setReferenceVoltage() {
-        var controller = new NeoDriveController(motor, 12);
+        var controller = new DriveController(motor, 12);
 
         controller.setReferenceVoltage(9);
 
         // should have called set with 9/12th voltage
-        verify(motor).set(eq(9.0 / 12));
+        verify(motor).moveAtPercent(eq(9.0 / 12));
     }
 
     /*
