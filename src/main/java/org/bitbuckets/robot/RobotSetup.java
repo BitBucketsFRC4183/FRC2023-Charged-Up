@@ -42,14 +42,11 @@ public class RobotSetup implements ISetup<RobotContainer> {
 
         DriveSDSSubsystem driveSubsystem = new DriveSDSSubsystem(input, robotStateControl, gyroControl, autoAxisControl, driveControl, autoControl, pathTuneable);
 
-        ArmInput armInput = new ArmInput(
-                new Joystick(1)
-        );
         //labels: high priority
         //TODO use neos here
         ArmControlSetup armControlSetup = new ArmControlSetup(
-            new SparkSetup(9, ArmConstants.lowerConfig),
-            new SparkSetup(10, ArmConstants.upperConfig)
+                new SparkSetup(9, ArmConstants.lowerConfig),
+                new SparkSetup(10, ArmConstants.upperConfig)
         );
 
         ArmControl armControl = armControlSetup.build(path.addChild("arm-control"));
