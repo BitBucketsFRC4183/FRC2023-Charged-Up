@@ -49,10 +49,10 @@ public class RobotSetup implements ISetup<RobotContainer> {
 //
 //        );
         ElevatorControlSetup elevatorControlSetup = new ElevatorControlSetup(
-                new SimMotorSetup(new MotorConfig(ElevatorConstants.getGearRatioExtend,1,1,false,false,20,false,false, Optional.empty()), new SimulationConfig(1d/12,0.1,0,0)),
-                new SimMotorSetup(new MotorConfig(ElevatorConstants.getGearRatioExtend,1,1,false,false,20,false,false,Optional.empty()), new SimulationConfig(1d/12,0.1,0,0)),
-                new SimMotorSetup(new MotorConfig(ElevatorConstants.gearRatioTilt,1,1,false,false,20,false,false,Optional.empty()), new SimulationConfig(1d/12,0.1,0,0)),
-                new SimMotorSetup(new MotorConfig(ElevatorConstants.gearRatioTilt,1,1,false,false,20,false,false,Optional.empty()), new SimulationConfig(1d/12,0.1,0,0))
+                new SimMotorSetup(new MotorConfig(ElevatorConstants.getGearRatioExtend,1,1,false,false,20,false,false, Optional.empty()), new SimulationConfig(1d/52,0.1,0,0)),
+                new SimMotorSetup(new MotorConfig(ElevatorConstants.getGearRatioExtend,1,1,false,false,20,false,false,Optional.empty()), new SimulationConfig(1d/52,0.1,0,0)),
+                new SimMotorSetup(new MotorConfig(ElevatorConstants.gearRatioTilt,1,1,false,false,20,false,false,Optional.empty()), new SimulationConfig(1d/52,0.1,0,0)),
+                new SimMotorSetup(new MotorConfig(ElevatorConstants.gearRatioTilt,1,1,false,false,20,false,false,Optional.empty()), new SimulationConfig(1d/52,0.1,0,0))
 
         );
 

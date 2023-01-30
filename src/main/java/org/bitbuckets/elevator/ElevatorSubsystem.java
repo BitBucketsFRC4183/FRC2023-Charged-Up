@@ -16,33 +16,28 @@ public class ElevatorSubsystem {
     }
 
 
-    public void teleopPeriodic(){
+    public void teleopPeriodic() {
         elevatorControl.smartDashboard();
         elevatorControl.setElevatorMech2d();
-        if(elevatorInput.getInputCirlce())
-        {
+
+        if (elevatorInput.getInputCirlce()) {
             elevatorControl.gotoPositionButton();
         }
-        if(elevatorInput.getInputDpadUp())
-        {
+        if (elevatorInput.getInputDpadUp()) {
             elevatorControl.extendUp();
         }
-        if(elevatorInput.getInputDpadDown())
-        {
+        else if (elevatorInput.getInputDpadDown()) {
             elevatorControl.extendDown();
         }
-        if(elevatorInput.getInputDpadLeft())
-        {
+        else if (elevatorInput.getInputDpadLeft()) {
             elevatorControl.tiltForward();
         }
-        if(elevatorInput.getInputDpadRight())
-        {
+        else if (elevatorInput.getInputDpadRight()) {
+
             elevatorControl.tiltBack();
-        }
-        if(elevatorInput.getInputDpadZero())
-        {
-         elevatorControl.stopTilt();
-         elevatorControl.stopExtend();
+        } else {
+            elevatorControl.stopTilt();
+            elevatorControl.stopExtend();
         }
     }
 }
