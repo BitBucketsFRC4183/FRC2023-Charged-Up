@@ -75,12 +75,18 @@ public class SparkSetup implements ISetup<IMotorController> {
             reverseSwitch.enableLimitSwitch(true);
         }
 
-        ILoggable<double[]> data = path.generateDoubleLoggers("appliedOutput", "busVoltage", "positionRotations", "velocityRotatations");
+        ILoggable<double[]> data = path.generateDoubleLoggers("appliedOutput", "busVoltage", "positionRotations", "velocityRotatations", "setpointRotations", "error");
         IValueTuner<Double> p = path.generateValueTuner("p", 0.0);
         IValueTuner<Double> i = path.generateValueTuner("i", 0.0);
         IValueTuner<Double> d = path.generateValueTuner("d", 0.0);
 
-        SparkTuningAspect sparkTuningAspect = new SparkTuningAspect(p, i, d, spark.getPIDController());
+        var pidController= spark.getPIDController();
+        SparkTuningAspect sparkTuningAspect = new SparkTuningAspect(p, i, d, pidController);
+        pidController.setP(p.consumeValue());
+        pidController.setI(i.consumeValue());
+        pidController.setD(d.consumeValue());
+
+
         SparkRelativeMotorController ctrl = new SparkRelativeMotorController(motorConfig, spark, data);
 
         path.registerLoop(ctrl, LoggingConstants.LOGGING_PERIOD, "logging-loop");
@@ -97,7 +103,7 @@ public class SparkSetup implements ISetup<IMotorController> {
         }
 
         REVPhysicsSim.getInstance().addSparkMax(spark, DCMotor.getNeo550(1));
-
+        configError.markCompleted();
         return ctrl;
     }
 
