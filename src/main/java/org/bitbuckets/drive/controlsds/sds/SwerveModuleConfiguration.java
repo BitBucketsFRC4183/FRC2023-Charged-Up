@@ -6,13 +6,15 @@ import java.util.Objects;
 /**
  * A swerve module configuration.
  */
-public class ModuleConfiguration {
-    private final double wheelDiameter;
-    private final double driveReduction;
-    private final boolean driveInverted;
+public class SwerveModuleConfiguration {
+    final double wheelDiameter;
+    final double driveReduction;
+    final boolean driveInverted;
+    final double driveCurrentLimit = 80; // from SDS
 
-    private final double steerReduction;
-    private final boolean steerInverted;
+    final double steerReduction;
+    final boolean steerInverted;
+    final double steerCurrentLimit = 20; // from SDS
 
     /**
      * Creates a new module configuration.
@@ -27,8 +29,8 @@ public class ModuleConfiguration {
      * @param steerInverted  Whether the steer motor should be inverted. If there is an odd number of gear reductions
      *                       this is typically true.
      */
-    public ModuleConfiguration(double wheelDiameter, double driveReduction, boolean driveInverted,
-                               double steerReduction, boolean steerInverted) {
+    public SwerveModuleConfiguration(double wheelDiameter, double driveReduction, boolean driveInverted,
+                                     double steerReduction, boolean steerInverted) {
         this.wheelDiameter = wheelDiameter;
         this.driveReduction = driveReduction;
         this.driveInverted = driveInverted;
@@ -50,6 +52,10 @@ public class ModuleConfiguration {
      */
     public double getDriveReduction() {
         return driveReduction;
+    }
+
+    public double getDriveCurrentLimit() {
+        return driveCurrentLimit;
     }
 
     /**
@@ -75,11 +81,15 @@ public class ModuleConfiguration {
         return steerInverted;
     }
 
+    public double getSteerCurrentLimit() {
+        return steerCurrentLimit;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ModuleConfiguration that = (ModuleConfiguration) o;
+        SwerveModuleConfiguration that = (SwerveModuleConfiguration) o;
         return Double.compare(that.getWheelDiameter(), getWheelDiameter()) == 0 &&
                 Double.compare(that.getDriveReduction(), getDriveReduction()) == 0 &&
                 isDriveInverted() == that.isDriveInverted() &&
