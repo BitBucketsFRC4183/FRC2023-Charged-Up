@@ -36,14 +36,12 @@ public class RobotSetup implements ISetup<RobotContainer> {
         DriveControlSDS driveControl = MockingUtil.buddy(DriveControlSDS.class);
 
         DriveInput input = new DriveInput(new Joystick(0));
-        AutoControl autoControl = new AutoControlSetup().build(path.addChild("auto-control"));
+
         GyroControl gyroControl = new GyroControlSetup(5).build(path.addChild("gyro-control"));
         AutoAxisControl autoAxisControl = new AutoAxisSetup().build(path.addChild("axis-control"));
         //also throwing errors since I'm no longer using TestPath, but rather the array
         IValueTuner<AutoPath> pathTuneable = path.generateValueTuner("path", AutoPath.AUTO_TEST_PATH_ONE);
 
-
-        DriveSDSSubsystem driveSubsystem = new DriveSDSSubsystem(input, robotStateControl, gyroControl, autoAxisControl, driveControl, autoControl, pathTuneable);
 
         ArmInput armInput = new ArmInput(
                 new Joystick(1)
@@ -62,6 +60,12 @@ public class RobotSetup implements ISetup<RobotContainer> {
         armInput = new ArmInput(new Joystick(1));
 
         ArmSubsystem armSubsystem = new ArmSubsystem(armInput, armControl);
+
+        AutoControl autoControl = new AutoControlSetup(
+                armControl
+        ).build(path.addChild("AutoControlSetup"));
+
+        DriveSDSSubsystem driveSubsystem = new DriveSDSSubsystem(input, robotStateControl, gyroControl, autoAxisControl, driveControl, autoControl, pathTuneable);
 
         //SYSTEMS_GREEN.setOn(); //LET'S WIN SOME DAMN REGIONALS!!
 

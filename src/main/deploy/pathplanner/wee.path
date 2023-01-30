@@ -98,5 +98,31 @@
   "maxVelocity": null,
   "maxAcceleration": 5.0,
   "isReversed": null,
-  "markers": []
+  "markers": [
+    {
+      "position": 0.0,
+      "names": [
+        "event"
+      ]
+    },
+    {
+      "position": 0.917112038352272,
+      "names": [
+        "moveArm"
+      ]
+    },
+    {
+      "position": 2.35001220703125,
+      "names": [
+        "intake"
+      ]
+    },
+    {
+      "position": 1.836874112215909,
+      "names": [
+        "event",
+        "armGoBack"
+      ]
+    }
+  ]
 }
