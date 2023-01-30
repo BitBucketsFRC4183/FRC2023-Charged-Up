@@ -96,7 +96,7 @@ public class ElevatorControl {
     public void gotoPositionButton()
     {
         goToPosition(60,2);
-        setElevatorMech2d();
+        setElevatorMech2dIK();
 
 
     }
