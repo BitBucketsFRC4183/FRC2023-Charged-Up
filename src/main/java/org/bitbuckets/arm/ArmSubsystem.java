@@ -29,9 +29,7 @@ public class ArmSubsystem {
     //private double gearRatio = (5 * 4 * 3) / (12. / 30.);
 
     public void robotPeriodic() {
-        //SmartDashboard.putNumber("lowerEncoder",armControl.lowerJoint.getEncoderPositionAccumulated_radians());
-        //SmartDashboard.putNumber("upperEncoder",armControl.upperJoint.getEncoderPositionAccumulated_radians());
-        //SmartDashboard.putNumber("setpoint",armControl.convertMechanismRotationtoRawRotation_lowerJoint(1));
+
     }
 
     public void teleopPeriodic() {
@@ -58,7 +56,6 @@ public class ArmSubsystem {
                     state = ArmFSM.POSITION_CONTROL;
                     positionMode = "ScoreHigh";
                 } else {
-                    System.out.println("Currently in MANUAL");
                     armControl.manuallyMoveLowerArm(armInput.getLowerArm_PercentOutput());
                     armControl.manuallyMoveUpperArm(armInput.getUpperArm_PercentOutput());
                 }
@@ -68,7 +65,6 @@ public class ArmSubsystem {
                 if (armInput.isDisablePositionControlPressed()) {
                     state = ArmFSM.MANUAL;
                 } else {
-                    System.out.println("Currently in POSITION_CONTROL");
                     switch (positionMode) {
                         case "IntakeHuman":
                             armControl.intakeHumanPlayer();
