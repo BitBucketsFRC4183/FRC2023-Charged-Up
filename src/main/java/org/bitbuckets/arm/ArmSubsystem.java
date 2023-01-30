@@ -29,9 +29,7 @@ public class ArmSubsystem {
     //private double gearRatio = (5 * 4 * 3) / (12. / 30.);
 
     public void robotPeriodic() {
-        //SmartDashboard.putNumber("lowerEncoder",armControl.lowerJoint.getEncoderPositionAccumulated_radians());
-        //SmartDashboard.putNumber("upperEncoder",armControl.upperJoint.getEncoderPositionAccumulated_radians());
-        //SmartDashboard.putNumber("setpoint",armControl.convertMechanismRotationtoRawRotation_lowerJoint(1));
+
     }
 
     public void teleopPeriodic() {
