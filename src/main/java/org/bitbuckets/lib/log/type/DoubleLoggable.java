@@ -4,7 +4,6 @@ import org.bitbuckets.lib.DontUseIncubating;
 import org.bitbuckets.lib.core.LogDriver;
 import org.bitbuckets.lib.log.ILoggable;
 
-@Deprecated @DontUseIncubating
 public class DoubleLoggable implements ILoggable<Double> {
 
     final LogDriver driver;

@@ -4,14 +4,14 @@ package org.bitbuckets.drive;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import org.bitbuckets.drive.DriveSDSConstants;
-import org.bitbuckets.drive.controlsds.falcon.Falcon500DriveController;
+import org.bitbuckets.drive.controlsds.falcon.Falcon500IDriveController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
-class Falcon500DriveControllerTest {
+class Falcon500IDriveControllerTest {
 
     WPI_TalonFX motor;
 
@@ -22,7 +22,7 @@ class Falcon500DriveControllerTest {
 
     @Test
     void setReferenceVoltage() {
-        var controller = new Falcon500DriveController(motor, 1, 12);
+        var controller = new Falcon500IDriveController(motor, 1, 12);
 
         controller.setReferenceVoltage(9);
 
@@ -32,7 +32,7 @@ class Falcon500DriveControllerTest {
 
     @Test
     void getStateVelocity() throws InterruptedException {
-        var controller = new Falcon500DriveController(motor, 1, 12);
+        var controller = new Falcon500IDriveController(motor, 1, 12);
 
         when(motor.getSelectedSensorVelocity()).thenReturn(6500d);
 
@@ -43,7 +43,7 @@ class Falcon500DriveControllerTest {
         double sensorPositionCoefficient = Math.PI * DriveSDSConstants.MK4_L2.getWheelDiameter() * DriveSDSConstants.MK4_L2.getDriveReduction() / DriveSDSConstants.TICKS_PER_ROTATION;
         double sensorVelocityCoefficient = sensorPositionCoefficient * 10.0;
 
-        controller = new Falcon500DriveController(motor, sensorVelocityCoefficient, 12);
+        controller = new Falcon500IDriveController(motor, sensorVelocityCoefficient, 12);
         assertEquals(1.5, controller.getStateVelocity(), .1);
     }
 }*/
