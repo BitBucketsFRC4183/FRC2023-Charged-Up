@@ -75,15 +75,18 @@ public class SparkSetup implements ISetup<IMotorController> {
             reverseSwitch.enableLimitSwitch(true);
         }
 
-        ILoggable<double[]> data = path.generateDoubleLoggers("appliedOutput", "busVoltage", "positionRotations", "velocityRotatations");
-
+        ILoggable<double[]> data = path.generateDoubleLoggers("appliedOutput", "busVoltage", "positionRotations", "velocityRotatations", "setpointRotations", "error");
 
         // setup tuneable pid
         if (motorConfig.defaultKp == 0 && motorConfig.defaultKi == 0 && motorConfig.defaultKd == 0) {
             IValueTuner<Double> p = path.generateValueTuner("p", 0d);
             IValueTuner<Double> i = path.generateValueTuner("i", 0d);
             IValueTuner<Double> d = path.generateValueTuner("d", 0d);
-            SparkTuningAspect sparkTuningAspect = new SparkTuningAspect(p, i, d, spark.getPIDController());
+            var pidController= spark.getPIDController();
+            SparkTuningAspect sparkTuningAspect = new SparkTuningAspect(p, i, d, pidController);
+            pidController.setP(p.consumeValue());
+            pidController.setI(i.consumeValue());
+            pidController.setD(d.consumeValue());
             path.registerLoop(sparkTuningAspect, LoggingConstants.TUNING_PERIOD, "tuning-loop");
         } else {
             checkNeoError(spark.getPIDController().setP(motorConfig.defaultKp), "Failed to set NEO PID proportional constant");
@@ -108,7 +111,7 @@ public class SparkSetup implements ISetup<IMotorController> {
         }
 
         REVPhysicsSim.getInstance().addSparkMax(spark, DCMotor.getNeo550(1));
-
+        configError.markCompleted();
         return ctrl;
     }
 

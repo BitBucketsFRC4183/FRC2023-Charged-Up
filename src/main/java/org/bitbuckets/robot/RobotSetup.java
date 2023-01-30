@@ -3,10 +3,7 @@ package org.bitbuckets.robot;
 import com.ctre.phoenix.sensors.WPI_PigeonIMU;
 import com.revrobotics.REVPhysicsSim;
 import edu.wpi.first.wpilibj.Joystick;
-import org.bitbuckets.arm.ArmControl;
-import org.bitbuckets.arm.ArmControlSetup;
-import org.bitbuckets.arm.ArmInput;
-import org.bitbuckets.arm.ArmSubsystem;
+import org.bitbuckets.arm.*;
 import org.bitbuckets.auto.AutoControl;
 import org.bitbuckets.auto.AutoControlSetup;
 import org.bitbuckets.auto.AutoPath;
@@ -32,6 +29,7 @@ import org.bitbuckets.lib.vendor.ctre.CANCoderAbsoluteEncoderSetup;
 import org.bitbuckets.lib.vendor.ctre.TalonDriveMotorSetup;
 import org.bitbuckets.lib.vendor.ctre.TalonSteerMotorSetup;
 import org.bitbuckets.lib.vendor.spark.SparkDriveMotorSetup;
+import org.bitbuckets.lib.vendor.spark.SparkSetup;
 import org.bitbuckets.lib.vendor.spark.SparkSteerMotorSetup;
 import org.bitbuckets.lib.vendor.thrifty.ThriftyEncoderSetup;
 
@@ -50,6 +48,7 @@ public class RobotSetup implements ISetup<RobotContainer> {
         DriveControl driveControl = buildNeoDriveControl(path);
 //        DriveControl driveControl = buildTalonDriveControl(path);
 
+
         DriveInput input = new DriveInput(new Joystick(0));
         AutoControl autoControl = new AutoControlSetup().build(path.addChild("auto-control"));
         GyroControl gyroControl = new GyroControlSetup(5).build(path.addChild("gyro-control"));
@@ -62,15 +61,17 @@ public class RobotSetup implements ISetup<RobotContainer> {
         //labels: high priority
         //TODO use neos here
         ArmControlSetup armControlSetup = new ArmControlSetup(
-                MockingUtil.noops(IMotorController.class),
-                MockingUtil.noops(IMotorController.class)
+                new SparkSetup(9, ArmConstants.lowerConfig),
+                new SparkSetup(10, ArmConstants.upperConfig)
         );
 
         ArmControl armControl = armControlSetup.build(path.addChild("arm-control"));
-        ArmInput armInput = new ArmInput(new Joystick(1));
-        ArmSubsystem armSubsystem = new ArmSubsystem(armInput, armControl);
 
-        //SYSTEMS_GREEN.setOn(); //LET'S WIN SOME DAMN REGIONALS!!
+        ArmInput armInput = new ArmInput(new Joystick(1));
+
+        ArmSubsystem armSubsystem = new ArmSubsystem(armInput, armControl, path.generateStringLogger("arm-subsystem"));
+
+        //SYSTEMS_GREEN.setOn(); //LET'S WIN SOME DAMN REGIONALS!!S
 
         return new RobotContainer(driveSubsystem, armSubsystem);
     }
