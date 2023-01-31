@@ -1,5 +1,9 @@
 package org.bitbuckets.lib.tune;
 
+import edu.wpi.first.networktables.NetworkTableEvent;
+
+import java.util.function.Consumer;
+
 public class MultiValueTuner implements IValueTuner<double[]> {
 
     final IValueTuner<Double>[] tunners;

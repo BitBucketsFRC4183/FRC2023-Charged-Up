@@ -1,10 +1,9 @@
 package org.bitbuckets.lib.tune;
 
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTableEvent;
-import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.*;
+import edu.wpi.first.wpilibj.DriverStation;
 import org.bitbuckets.lib.core.IdentityDriver;
+import org.bitbuckets.lib.tune.ValueTuner;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
