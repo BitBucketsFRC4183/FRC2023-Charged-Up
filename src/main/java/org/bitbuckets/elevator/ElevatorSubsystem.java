@@ -1,7 +1,5 @@
 package org.bitbuckets.elevator;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
 public class ElevatorSubsystem {
     final ElevatorControl elevatorControl;
     final ElevatorInput elevatorInput;
@@ -11,33 +9,163 @@ public class ElevatorSubsystem {
         this.elevatorInput = elevatorInput;
     }
 
-    public void robotPeriodic()
-    {
+    public void robotPeriodic() {
     }
 
+    ElevatorFSM state = ElevatorFSM.off;
 
     public void teleopPeriodic() {
-        elevatorControl.smartDashboard();
         elevatorControl.setElevatorMech2d();
+        if (elevatorInput.getInputSquare()) {
+            elevatorControl.zeroTilt();
+            elevatorControl.zeroExtend();
+        }
+        switch (state) {
+            case off:
+                if (elevatorInput.getInputDpadUp()) {
+                    state = ElevatorFSM.up;
+                    break;
 
-        if (elevatorInput.getInputCirlce()) {
-            elevatorControl.gotoPositionButton();
-        }
-        if (elevatorInput.getInputDpadUp()) {
-            elevatorControl.extendUp();
-        }
-        else if (elevatorInput.getInputDpadDown()) {
-            elevatorControl.extendDown();
-        }
-        else if (elevatorInput.getInputDpadLeft()) {
-            elevatorControl.tiltForward();
-        }
-        else if (elevatorInput.getInputDpadRight()) {
+                }
+                if (elevatorInput.getInputDpadDown()) {
+                    state = ElevatorFSM.down;
+                    break;
 
-            elevatorControl.tiltBack();
-        } else {
-            elevatorControl.stopTilt();
-            elevatorControl.stopExtend();
+                }
+                if (elevatorInput.getInputDpadLeft()) {
+                    state = ElevatorFSM.back;
+                    break;
+
+                }
+                if (elevatorInput.getInputDpadRight()) {
+                    state = ElevatorFSM.forward;
+                    break;
+
+                }
+                if (elevatorInput.getInputCirlce()) {
+                    state = ElevatorFSM.automatic;
+                    break;
+                }
+                break;
+            case up:
+                if (elevatorInput.getInputDpadDown()) {
+                    state = ElevatorFSM.down;
+                    break;
+
+                }
+                if (elevatorInput.getInputDpadLeft()) {
+                    state = ElevatorFSM.back;
+                    break;
+
+                }
+                if (elevatorInput.getInputDpadRight()) {
+                    state = ElevatorFSM.forward;
+                    break;
+
+                }
+                if (elevatorInput.getInputCirlce()) {
+                    state = ElevatorFSM.automatic;
+                    break;
+                }
+                elevatorControl.extendUp();
+                break;
+            case down:
+                if (elevatorInput.getInputDpadUp()) {
+                    state = ElevatorFSM.up;
+                    break;
+
+                }
+                if (elevatorInput.getInputDpadLeft()) {
+                    state = ElevatorFSM.back;
+                    break;
+
+                }
+                if (elevatorInput.getInputDpadRight()) {
+                    state = ElevatorFSM.forward;
+                    break;
+
+                }
+                if (elevatorInput.getInputCirlce()) {
+                    state = ElevatorFSM.automatic;
+                    break;
+                }
+                elevatorControl.extendDown();
+                break;
+            case forward:
+                if (elevatorInput.getInputDpadUp()) {
+                    state = ElevatorFSM.up;
+                    break;
+
+                }
+                if (elevatorInput.getInputDpadDown()) {
+                    state = ElevatorFSM.down;
+                    break;
+
+                }
+                if (elevatorInput.getInputDpadLeft()) {
+                    state = ElevatorFSM.back;
+                    break;
+
+                }
+                if (elevatorInput.getInputCirlce()) {
+                    state = ElevatorFSM.automatic;
+                    break;
+                }
+                elevatorControl.tiltForward();
+                break;
+
+            case back:
+                if (elevatorInput.getInputDpadUp()) {
+                    state = ElevatorFSM.up;
+                    break;
+
+                }
+                if (elevatorInput.getInputDpadDown()) {
+                    state = ElevatorFSM.down;
+                    break;
+
+                }
+                if (elevatorInput.getInputDpadRight()) {
+                    state = ElevatorFSM.forward;
+                    break;
+
+                }
+                if (elevatorInput.getInputCirlce()) {
+                    state = ElevatorFSM.automatic;
+                    break;
+                }
+                elevatorControl.tiltBack();
+                break;
+            case automatic:
+                if (elevatorInput.getInputDpadUp()) {
+                    state = ElevatorFSM.up;
+                    break;
+
+                }
+                if (elevatorInput.getInputDpadDown()) {
+                    state = ElevatorFSM.down;
+                    break;
+
+                }
+                if (elevatorInput.getInputDpadLeft()) {
+                    state = ElevatorFSM.back;
+                    break;
+
+                }
+                if (elevatorInput.getInputDpadRight()) {
+                    state = ElevatorFSM.forward;
+                    break;
+
+                }
+                elevatorControl.gotoPositionButton();
+
+
+                break;
+
         }
+
+        elevatorControl.smartDashboard();
+
+
     }
 }

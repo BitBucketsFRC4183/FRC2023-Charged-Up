@@ -1,10 +1,7 @@
 package org.bitbuckets.elevator;
 
-import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.util.Color8Bit;
 import org.bitbuckets.lib.hardware.IMotorController;
 
 public class ElevatorControl {
@@ -18,129 +15,138 @@ public class ElevatorControl {
     private MechanismLigament2d elevatorWrist;
 
 
-    private static final double elevatorMinLength   = 2;
+    private static final double elevatorMinLength = 2;
     final double elevatorAngle = 90;
 
-    double endEffectorMagnitude = 1;
+    double endEffectorMagnitude = 1.0;
 
     double x1 = 0;
     double theta1 = 0;
 
     ElevatorConstants elevatorConstants = new ElevatorConstants();
 
-    public void smartDashboard()
-    {
-        SmartDashboard.putNumber("extendEncoderLeft", leftExtend.getPositionMechanism_meters());
+    public void smartDashboard() {
+        SmartDashboard.putNumber("extendEncoderLeft", leftExtend.getPositionRaw());
         SmartDashboard.putNumber("extendEncoderRight", rightExtend.getPositionMechanism_meters());
-        SmartDashboard.putNumber("tiltEncoderLeft", Math.toDegrees(leftTilt.getMechanismPositionAccum_rot()* 2.0 * Math.PI));
-        SmartDashboard.putNumber("tiltEncoderRight", Math.toDegrees(rightTilt.getMechanismPositionAccum_rot()* 2.0 * Math.PI));
+        SmartDashboard.putNumber("tiltEncoderLeft", Math.toDegrees(leftTilt.getMechanismPositionAccum_rot() * 2.0 * Math.PI));
+        SmartDashboard.putNumber("tiltEncoderRight", Math.toDegrees(rightTilt.getMechanismPositionAccum_rot() * 2.0 * Math.PI));
+        SmartDashboard.putNumber("x1", x1);
+        SmartDashboard.putNumber("extenROt", unitToRotExtend(x1));
+
+
+        //SmartDashboard.putNumber("output", leftExtend.rawAccess(CANSparkMax.class).getAppliedOutput());
+        //SmartDashboard.putNumber("angleTheta1",theta1);
     }
-
-
 
 
     public ElevatorControl(IMotorController leftExtend, IMotorController rightExtend, IMotorController leftTilt, IMotorController rightTilt, MechanismLigament2d elevator, MechanismLigament2d elevatorWrist) {
         this.leftExtend = leftExtend;
         this.rightExtend = rightExtend;
-        this.leftTilt  = leftTilt;
+        this.leftTilt = leftTilt;
         this.rightTilt = rightTilt;
         this.elevatorWrist = elevatorWrist;
         this.elevator = elevator;
 
 
-
-
-
     }
 
-    public void setElevatorMech2d()
-    {
+
+    public void zeroExtend() {
+        leftExtend.forceOffset(0);
+        rightExtend.forceOffset(0);
+    }
+
+    public void zeroTilt() {
+        leftTilt.forceOffset(0);
+        rightTilt.forceOffset(0);
+    }
+
+    public void setElevatorMech2d() {
         elevator.setLength(elevatorMinLength + leftExtend.getPositionMechanism_meters());
-        elevator.setAngle(90-Math.toDegrees(leftTilt.getMechanismPositionAccum_rot() * 2.0 * Math.PI));
+        elevator.setAngle(90 - Math.toDegrees(leftTilt.getMechanismPositionAccum_rot() * 2.0 * Math.PI));
         elevatorWrist.setAngle(90);
 
 
     }
 
-    public void setElevatorMech2dIK()
-    {
-        SmartDashboard.putNumber("extensionX1",x1);
-        SmartDashboard.putNumber("angleTheta1",theta1);
-        elevator.setLength(x1);
-        elevator.setAngle(theta1);
 
-        elevatorWrist.setAngle(90);
+    public void setElevatorActualIK() {
 
-
-    }
-    public void setElevatorActualIK()
-    {
-        SmartDashboard.putNumber("extensionX1",x1);
-        SmartDashboard.putNumber("angleTheta1",theta1);
-        leftExtend.moveToPosition(x1*elevatorConstants.getGearRatioExtend);
-        leftTilt.moveToPosition(theta1*elevatorConstants.gearRatioTilt  );
+        // SmartDashboard.putNumber("pPPP", leftExtend.rawAccess(CANSparkMax.class).getPIDController().getP());
+        // leftExtend.rawAccess(CANSparkMax.class).getPIDController().setP(0.05);
+        SmartDashboard.putNumber("angleTheta1", theta1);
+        double rot = unitToRotExtend(x1);
+        SmartDashboard.putNumber("rotsw", rot);
+        leftExtend.moveToPosition(rot);       // leftTilt.moveToPosition(theta1*elevatorConstants.gearRatioTilt  );
 
 
     }
 
-    public void goToPosition(double phi, double r)
-    {
-        double x = Math.sqrt(r*r) - endEffectorMagnitude*endEffectorMagnitude;
-        double theta = phi - Math.atan(endEffectorMagnitude/(Math.sqrt(x)));
+    public double unitToRotExtend(double unit) {
+        return unit / ElevatorConstants.rotToMeterExtend / ElevatorConstants.getGearRatioExtend;
+
+    }
+
+    public void goToPosition(double phi, double r) {
+
+        double a = r * r;
+        double b = Math.sqrt(a - endEffectorMagnitude * endEffectorMagnitude);
+        double x = Math.sqrt(r * r - endEffectorMagnitude * endEffectorMagnitude);
+        double theta = phi - Math.atan(endEffectorMagnitude / (Math.sqrt(x)));
+        SmartDashboard.putNumber("x", x);
+
+
         x1 = x;
         theta1 = theta;
 
 
     }
 
-    public void gotoPositionButton()
-    {
-        goToPosition(60,2);
-        setElevatorMech2dIK();
+    public void gotoPositionButton() {
+        goToPosition(60.0, 3.0);
+        // setElevatorMech2dIK();
+        setElevatorActualIK();
 
 
     }
 
 
-    public void extendUp()
-    {
-        rightExtend.moveAtPercent(0.2);
-        leftExtend.moveAtPercent(0.2);
-
+    public void extendUp() {
+        //rightExtend.moveAtPercent(0.2);
+        leftExtend.moveAtPercent(-0.05);
 
 
     }
-    public void extendDown()
-    {
 
-        rightExtend.moveAtPercent(-0.2);
-        leftExtend.moveAtPercent(-0.2);
-    }
-    public void tiltForward()
-    {
+    public void extendDown() {
 
-        rightTilt.moveAtPercent(0.2);
-        leftTilt.moveAtPercent(0.2);
+        // rightExtend.moveAtPercent(-0.2);
+        leftExtend.moveAtPercent(0.05);
     }
-    public void tiltBack()
-    {
 
-        rightTilt.moveAtPercent(-0.2);
-        leftTilt.moveAtPercent(-0.2);
-    }
-    public void stopTilt()
-    {
+    public void tiltForward() {
 
-        rightTilt.moveAtPercent(0.0);
-        leftTilt.moveAtPercent(-0.0);
+        //  rightTilt.moveAtPercent(0.2);
+        //  leftTilt.moveAtPercent(0.2);
     }
-    public void stopExtend()
-    {
+
+    public void tiltBack() {
+
+        //  rightTilt.moveAtPercent(-0.2);
+        //   leftTilt.moveAtPercent(-0.2);
+    }
+
+    public void stopTilt() {
+
+        //   rightTilt.moveAtPercent(0.0);
+        //  leftTilt.moveAtPercent(-0.0);
+    }
+
+    public void stopExtend() {
 
         leftExtend.moveAtPercent(0.0);
         rightExtend.moveAtPercent(-0.0);
     }
-
 
 
 }
