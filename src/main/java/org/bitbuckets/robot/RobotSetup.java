@@ -2,6 +2,8 @@ package org.bitbuckets.robot;
 
 import com.ctre.phoenix.sensors.WPI_PigeonIMU;
 import com.revrobotics.REVPhysicsSim;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Joystick;
 import org.bitbuckets.arm.*;
 import org.bitbuckets.auto.AutoControl;
@@ -34,6 +36,10 @@ import org.bitbuckets.lib.vendor.spark.SparkDriveMotorSetup;
 import org.bitbuckets.lib.vendor.spark.SparkSetup;
 import org.bitbuckets.lib.vendor.spark.SparkSteerMotorSetup;
 import org.bitbuckets.lib.vendor.thrifty.ThriftyEncoderSetup;
+import org.bitbuckets.odometry.OdometryControl;
+import org.bitbuckets.odometry.OdometryControlSetup;
+import org.bitbuckets.vision.VisionControl;
+import org.bitbuckets.vision.VisionControlSetup;
 
 import java.util.Optional;
 
@@ -51,6 +57,8 @@ public class RobotSetup implements ISetup<RobotContainer> {
 //        DriveControl driveControl = buildTalonDriveControl(path);
 
 
+        VisionControl visionControl = new VisionControlSetup().build(path.addChild("vision-control"));
+
         DriveInput input = new DriveInput(new Joystick(0));
         AutoControl autoControl = new AutoControlSetup().build(path.addChild("auto-control"));
         GyroControl gyroControl = new GyroControlSetup(5).build(path.addChild("gyro-control"));
@@ -63,7 +71,6 @@ public class RobotSetup implements ISetup<RobotContainer> {
                 new Joystick(1)
         );
         DriveSubsystem driveSubsystem = new DriveSubsystem(input, robotStateControl, gyroControl, autoAxisControl, driveControl, autoControl, pathTuneable);
-
         //labels: high priority
         //TODO use neos here
         ArmControlSetup armControlSetup = new ArmControlSetup(
@@ -79,7 +86,10 @@ public class RobotSetup implements ISetup<RobotContainer> {
 
         //SYSTEMS_GREEN.setOn(); //LET'S WIN SOME DAMN REGIONALS!!S
 
-        return new RobotContainer(driveSubsystem, armSubsystem);
+        OdometryControlSetup odometryControlSetup = new OdometryControlSetup(driveControl, visionControl, gyroControl, new Pose2d(0, 0, Rotation2d.fromDegrees(0)));
+        OdometryControl odometryControl = odometryControlSetup.build(path.addChild("odometry-control"));
+
+        return new RobotContainer(driveSubsystem, armSubsystem, visionControl);
     }
 
     /**
