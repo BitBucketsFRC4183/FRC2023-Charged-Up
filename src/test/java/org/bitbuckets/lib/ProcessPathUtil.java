@@ -3,6 +3,7 @@ package org.bitbuckets.lib;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import org.bitbuckets.lib.core.*;
 import org.bitbuckets.lib.startup.SetupDriver;
+import org.bitbuckets.lib.tune.TuneableDriver;
 import org.littletonrobotics.junction.Logger;
 
 public class ProcessPathUtil {

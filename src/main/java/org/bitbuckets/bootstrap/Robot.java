@@ -1,14 +1,13 @@
 package org.bitbuckets.bootstrap;
 
 import com.revrobotics.REVPhysicsSim;
-import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
-import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.lib.core.*;
 import org.bitbuckets.lib.startup.SetupDriver;
+import org.bitbuckets.lib.tune.TuneableDriver;
 import org.bitbuckets.robot.RobotContainer;
 import org.bitbuckets.robot.RobotSetup;
 import org.bitbuckets.robot.RobotStateControl;
@@ -69,7 +68,6 @@ public class Robot extends LoggedRobot {
         try {
             robotHandle = setup.build(rootPath);
         } catch (Exception e) {
-            //TODO extract exceptions
             DriverStation.reportError("[BUCKET] Critical exception during setup: " + e.getLocalizedMessage(), e.getStackTrace());
             throw e;
         }

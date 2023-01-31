@@ -12,7 +12,6 @@ import org.bitbuckets.drive.DriveInput;
 import org.bitbuckets.drive.DriveSubsystem;
 import org.bitbuckets.drive.balance.AutoAxisControl;
 import org.bitbuckets.drive.balance.AutoAxisSetup;
-import org.bitbuckets.drive.controlsds.DriveControlSDS;
 import org.bitbuckets.drive.controlsds.DriveControl;
 import org.bitbuckets.drive.controlsds.sds.DriveControlSetup;
 import org.bitbuckets.drive.controlsds.sds.DriveControllerSetup;
@@ -22,9 +21,6 @@ import org.bitbuckets.gyro.GyroControl;
 import org.bitbuckets.gyro.GyroControlSetup;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
-import org.bitbuckets.lib.hardware.IMotorController;
-import org.bitbuckets.lib.tune.IValueTuner;
-import org.bitbuckets.lib.util.MockingUtil;
 import org.bitbuckets.lib.hardware.MotorConfig;
 import org.bitbuckets.lib.tune.IValueTuner;
 import org.bitbuckets.lib.vendor.ctre.CANCoderAbsoluteEncoderSetup;
@@ -57,15 +53,9 @@ public class RobotSetup implements ISetup<RobotContainer> {
         AutoAxisControl autoAxisControl = new AutoAxisSetup().build(path.addChild("axis-control"));
         IValueTuner<AutoPath> pathTuneable = path.generateValueTuner("path", AutoPath.TEST_PATH);
 
-        DriveSDSSubsystem driveSubsystem = new DriveSDSSubsystem(input, robotStateControl, gyroControl, autoAxisControl, driveControl, autoControl, pathTuneable);
-
-        ArmInput armInput = new ArmInput(
-                new Joystick(1)
-        );
         DriveSubsystem driveSubsystem = new DriveSubsystem(input, robotStateControl, gyroControl, autoAxisControl, driveControl, autoControl, pathTuneable);
 
         //labels: high priority
-        //TODO use neos here
         ArmControlSetup armControlSetup = new ArmControlSetup(
                 new SparkSetup(9, ArmConstants.lowerConfig),
                 new SparkSetup(10, ArmConstants.upperConfig)
@@ -119,28 +109,28 @@ public class RobotSetup implements ISetup<RobotContainer> {
 
         DriveControl driveControl = new DriveControlSetup(
                 new SwerveModuleSetup(
-                        new DriveControllerSetup(new SparkDriveMotorSetup(DriveConstants.frontLeftModuleDriveMotor_ID, driveMotorConfig, DriveConstants.MK4I_L2)),
+                        new DriveControllerSetup(new SparkDriveMotorSetup(DriveConstants.FRONT_LEFT_DRIVE_ID, driveMotorConfig, DriveConstants.MK4I_L2)),
                         new SteerControllerSetup(
-                                new SparkSteerMotorSetup(DriveConstants.frontLeftModuleSteerMotor_ID, steerMotorConfig, DriveConstants.MK4I_L2),
-                                new ThriftyEncoderSetup(DriveConstants.frontLeftModuleSteerEncoder_CHANNEL, DriveConstants.frontLeftModuleSteerOffset))
+                                new SparkSteerMotorSetup(DriveConstants.FRONT_LEFT_STEER_ID, steerMotorConfig, DriveConstants.MK4I_L2),
+                                new ThriftyEncoderSetup(DriveConstants.FRONT_LEFT_ENCODER_CHANNEL, DriveConstants.frontLeftModuleSteerOffset))
                 ),
                 new SwerveModuleSetup(
-                        new DriveControllerSetup(new SparkDriveMotorSetup(DriveConstants.frontRightModuleDriveMotor_ID, driveMotorConfig, DriveConstants.MK4I_L2)),
+                        new DriveControllerSetup(new SparkDriveMotorSetup(DriveConstants.FRONT_RIGHT_DRIVE_ID, driveMotorConfig, DriveConstants.MK4I_L2)),
                         new SteerControllerSetup(
-                                new SparkSteerMotorSetup(DriveConstants.frontRightModuleSteerMotor_ID, steerMotorConfig, DriveConstants.MK4I_L2),
-                                new ThriftyEncoderSetup(DriveConstants.frontRightModuleSteerEncoder_CHANNEL, DriveConstants.frontRightModuleSteerOffset))
+                                new SparkSteerMotorSetup(DriveConstants.FRONT_RIGHT_STEER_ID, steerMotorConfig, DriveConstants.MK4I_L2),
+                                new ThriftyEncoderSetup(DriveConstants.FRONT_RIGHT_ENCODER_CHANNEL, DriveConstants.frontRightModuleSteerOffset))
                 ),
                 new SwerveModuleSetup(
-                        new DriveControllerSetup(new SparkDriveMotorSetup(DriveConstants.backLeftModuleDriveMotor_ID, driveMotorConfig, DriveConstants.MK4I_L2)),
+                        new DriveControllerSetup(new SparkDriveMotorSetup(DriveConstants.BACK_LEFT_DRIVE_ID, driveMotorConfig, DriveConstants.MK4I_L2)),
                         new SteerControllerSetup(
-                                new SparkSteerMotorSetup(DriveConstants.backLeftModuleSteerMotor_ID, steerMotorConfig, DriveConstants.MK4I_L2),
-                                new ThriftyEncoderSetup(DriveConstants.backLeftModuleSteerEncoder_CHANNEL, DriveConstants.backLeftModuleSteerOffset))
+                                new SparkSteerMotorSetup(DriveConstants.BACK_LEFT_STEER_ID, steerMotorConfig, DriveConstants.MK4I_L2),
+                                new ThriftyEncoderSetup(DriveConstants.BACK_LEFT_ENCODER_CHANNEL, DriveConstants.backLeftModuleSteerOffset))
                 ),
                 new SwerveModuleSetup(
-                        new DriveControllerSetup(new SparkDriveMotorSetup(DriveConstants.backRightModuleDriveMotor_ID, driveMotorConfig, DriveConstants.MK4I_L2)),
+                        new DriveControllerSetup(new SparkDriveMotorSetup(DriveConstants.BACK_RIGHT_DRIVE_ID, driveMotorConfig, DriveConstants.MK4I_L2)),
                         new SteerControllerSetup(
-                                new SparkSteerMotorSetup(DriveConstants.backRightModuleSteerMotor_ID, steerMotorConfig, DriveConstants.MK4I_L2),
-                                new ThriftyEncoderSetup(DriveConstants.backRightModuleSteerEncoder_CHANNEL, DriveConstants.backRightModuleSteerOffset))
+                                new SparkSteerMotorSetup(DriveConstants.BACK_RIGHT_STEER_ID, steerMotorConfig, DriveConstants.MK4I_L2),
+                                new ThriftyEncoderSetup(DriveConstants.BACK_RIGHT_ENCODER_CHANNEL, DriveConstants.backRightModuleSteerOffset))
                 ),
                 new WPI_PigeonIMU(5)
         ).build(path.addChild("drive-control"));

@@ -1,10 +1,13 @@
-package org.bitbuckets.lib.core;
+package org.bitbuckets.lib.tune;
 
 import edu.wpi.first.networktables.*;
 import edu.wpi.first.wpilibj.DriverStation;
+import org.bitbuckets.lib.core.IdentityDriver;
 import org.bitbuckets.lib.tune.ValueTuner;
 
+import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.List;
 
 /**
  * Makes sure we know if certain parts of the robot are breaking or not
@@ -19,7 +22,7 @@ public class TuneableDriver {
         this.driver = driver;
     }
 
-    public <T> ValueTuner<T> tuneable(int id, String key, T defaultData) {
+    public <T> IValueTuner<T> tuneable(int id, String key, T defaultData) {
         String trueKey = driver.fullPath(id) + key;
 
         NetworkTableEntry entry = table.getEntry(trueKey);
@@ -38,6 +41,17 @@ public class TuneableDriver {
         NetworkTableInstance.getDefault().addListener(entry, EnumSet.of(NetworkTableEvent.Kind.kValueAll), tuneable);
 
         return tuneable;
+    }
+
+    @SuppressWarnings("unchecked")
+    public IValueTuner<double[]> multiTuneable(int id, String[] ids, double[] defaultValues) {
+        List<IValueTuner<Double>> tunners = new ArrayList<>();
+
+        for (int i = 0; i < ids.length; i++) {
+            tunners.add(tuneable(id, ids[i], defaultValues[i]));
+        }
+
+        return new MultiValueTuner(tunners.toArray(IValueTuner[]::new));
     }
 
 }
