@@ -41,6 +41,10 @@ public class ElevatorInput {
         int pressed = joystick.getPOV();
         return pressed == -1;
     }
+    public boolean getInputSquare()
+    {
+        return joystick.getRawButtonPressed(XboxConstants.SQUARE);
+    }
 
 
 }

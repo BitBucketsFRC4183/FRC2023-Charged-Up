@@ -12,19 +12,18 @@ import org.bitbuckets.lib.hardware.IMotorController;
 
 public class ElevatorControlSetup implements ISetup<ElevatorControl> {
 
-        final ISetup<IMotorController> leftExtend;
-        final ISetup<IMotorController> rightExtend;
-        final ISetup<IMotorController> leftTilt;
+    final ISetup<IMotorController> leftExtend;
+    final ISetup<IMotorController> rightExtend;
+    final ISetup<IMotorController> leftTilt;
 
-        final ISetup<IMotorController>rightTilt;
-
+    final ISetup<IMotorController> rightTilt;
 
 
     private MechanismLigament2d elevator;
 
     private MechanismLigament2d elevatorWrist;
 
-    
+
     public ElevatorControlSetup(ISetup<IMotorController> leftExtend, ISetup<IMotorController> rightExtend, ISetup<IMotorController> leftTilt, ISetup<IMotorController> rightTilt) {
         this.leftExtend = leftExtend;
         this.rightExtend = rightExtend;
@@ -38,7 +37,6 @@ public class ElevatorControlSetup implements ISetup<ElevatorControl> {
 
     @Override
     public ElevatorControl build(ProcessPath path) {
-
 
 
         Mechanism2d mech = new Mechanism2d(3, 3);

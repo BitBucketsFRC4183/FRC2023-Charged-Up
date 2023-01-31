@@ -12,7 +12,6 @@ import org.bitbuckets.drive.DriveInput;
 import org.bitbuckets.drive.DriveSDSSubsystem;
 import org.bitbuckets.drive.balance.AutoAxisControl;
 import org.bitbuckets.drive.balance.AutoAxisSetup;
-import org.bitbuckets.drive.controlsds.DriveControlSDS;
 import org.bitbuckets.elevator.*;
 import org.bitbuckets.gyro.GyroControl;
 import org.bitbuckets.gyro.GyroControlSetup;
@@ -24,7 +23,6 @@ import org.bitbuckets.lib.tune.IValueTuner;
 import org.bitbuckets.lib.util.MockingUtil;
 import org.bitbuckets.lib.vendor.sim.SimMotorSetup;
 import org.bitbuckets.lib.vendor.sim.SimulationConfig;
-import org.bitbuckets.lib.vendor.spark.SparkSetup;
 
 import java.util.Optional;
 
@@ -40,19 +38,19 @@ public class RobotSetup implements ISetup<RobotContainer> {
     public RobotContainer build(ProcessPath path) {
 
         //TODO use neo controller here
-     //   DriveControlSDS driveControl = MockingUtil.buddy(DriveControlSDS.class);
+        //      DriveControlSDS driveControl = MockingUtil.buddy(DriveControlSDS.class);
 //        ElevatorControlSetup elevatorControlSetup = new ElevatorControlSetup(
-//                new SparkSetup(1,new MotorConfig(ElevatorConstants.getGearRatioExtend,1,1,false,false,20,false,false, Optional.empty())),
-//                new SparkSetup(2,new MotorConfig(ElevatorConstants.getGearRatioExtend,1,1,false,false,20,false,false,Optional.empty())),
-//                new SparkSetup(3,new MotorConfig(ElevatorConstants.gearRatioTilt,1,1,false,false,20,false,false,Optional.empty())),
-//                new SparkSetup(4,new MotorConfig(ElevatorConstants.gearRatioTilt,1,1,false,false,20,false,false,Optional.empty()))
+//                new SparkSetup(10,new MotorConfig(ElevatorConstants.getGearRatioExtend,1,ElevatorConstants.rotToMeterExtend,false,false,20,false,false, Optional.empty())),
+//                new SparkSetup(2,new MotorConfig(ElevatorConstants.getGearRatioExtend,1,ElevatorConstants.rotToMeterExtend,false,false,20,false,false,Optional.empty())),
+//                new SparkSetup(3,new MotorConfig(ElevatorConstants.gearRatioTilt,1,ElevatorConstants.rotToMeterTilt,false,false,20,false,false,Optional.empty())),
+//                new SparkSetup(4,new MotorConfig(ElevatorConstants.gearRatioTilt,1,ElevatorConstants.rotToMeterTilt,false,false,20,false,false,Optional.empty()))
 //
 //        );
         ElevatorControlSetup elevatorControlSetup = new ElevatorControlSetup(
-                new SimMotorSetup(new MotorConfig(ElevatorConstants.getGearRatioExtend,1,1,false,false,20,false,false, Optional.empty()), new SimulationConfig(1d/52,0.1,0,0)),
-                new SimMotorSetup(new MotorConfig(ElevatorConstants.getGearRatioExtend,1,1,false,false,20,false,false,Optional.empty()), new SimulationConfig(1d/52,0.1,0,0)),
-                new SimMotorSetup(new MotorConfig(ElevatorConstants.gearRatioTilt,1,1,false,false,20,false,false,Optional.empty()), new SimulationConfig(1d/52,0.1,0,0)),
-                new SimMotorSetup(new MotorConfig(ElevatorConstants.gearRatioTilt,1,1,false,false,20,false,false,Optional.empty()), new SimulationConfig(1d/52,0.1,0,0))
+                new SimMotorSetup(new MotorConfig(ElevatorConstants.getGearRatioExtend, 1, ElevatorConstants.rotToMeterExtend, false, false, 20, false, false, Optional.empty()), new SimulationConfig(1d / 52, 1, 0, 0)),
+                new SimMotorSetup(new MotorConfig(ElevatorConstants.getGearRatioExtend, 1, ElevatorConstants.rotToMeterExtend, false, false, 20, false, false, Optional.empty()), new SimulationConfig(1d / 52, 1, 0, 0)),
+                new SimMotorSetup(new MotorConfig(ElevatorConstants.gearRatioTilt, 1, ElevatorConstants.rotToMeterTilt, false, false, 20, false, false, Optional.empty()), new SimulationConfig(1d / 52, 1, 0, 0)),
+                new SimMotorSetup(new MotorConfig(ElevatorConstants.gearRatioTilt, 1, ElevatorConstants.rotToMeterTilt, false, false, 20, false, false, Optional.empty()), new SimulationConfig(1d / 52, 1, 0, 0))
 
         );
 
@@ -60,9 +58,8 @@ public class RobotSetup implements ISetup<RobotContainer> {
         DriveInput input = new DriveInput(new Joystick(0));
         ElevatorInput elevatorInput = new ElevatorInput(new Joystick(1));
         ElevatorControl elevatorControl = elevatorControlSetup.build(path.addChild("elevator-control"));
-        ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem(elevatorControl,elevatorInput);
+        ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem(elevatorControl, elevatorInput);
 
-    
 
         AutoControl autoControl = new AutoControlSetup().build(path.addChild("auto-control"));
         GyroControl gyroControl = new GyroControlSetup(5).build(path.addChild("gyro-control"));
@@ -91,6 +88,6 @@ public class RobotSetup implements ISetup<RobotContainer> {
 
         //SYSTEMS_GREEN.setOn(); //LET'S WIN SOME DAMN REGIONALS!!
 
-        return new RobotContainer(MockingUtil.buddy(DriveSDSSubsystem.class),armSubsystem,elevatorSubsystem);
+        return new RobotContainer(MockingUtil.buddy(DriveSDSSubsystem.class), armSubsystem, elevatorSubsystem);
     }
 }
