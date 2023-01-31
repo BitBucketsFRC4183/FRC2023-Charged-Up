@@ -19,7 +19,7 @@ class PIDCalculatorSetupTest {
 
         ProcessPath path = ProcessPathUtil.testingProcessPath();
         IPIDCalculator calculator = new PIDCalculatorSetup(
-                1,0,0
+                new PIDConfig(1,0,0,0)
         ).build(path.addChild("calculator"));
 
         Assertions.assertTrue(NetworkTableInstance.getDefault().getTable("RealOutputs/MattTuneables").getEntry("calculator").exists());
