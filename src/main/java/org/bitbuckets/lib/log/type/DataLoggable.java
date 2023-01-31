@@ -1,6 +1,5 @@
 package org.bitbuckets.lib.log.type;
 
-import org.bitbuckets.lib.DontUseIncubating;
 import org.bitbuckets.lib.core.LogDriver;
 import org.bitbuckets.lib.log.ILoggable;
 

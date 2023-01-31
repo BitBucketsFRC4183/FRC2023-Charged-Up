@@ -1,8 +1,6 @@
 package org.bitbuckets.lib.tune;
 
-import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEvent;
-import edu.wpi.first.wpilibj.DriverStation;
 
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
