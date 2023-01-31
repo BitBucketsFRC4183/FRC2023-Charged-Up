@@ -3,11 +3,15 @@ package org.bitbuckets.drive;
 
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import org.bitbuckets.drive.controlsds.sds.SwerveModuleConfiguration;
 import org.bitbuckets.robot.RobotConstants;
 
 public interface DriveConstants {
+
+    //TODO divide by 2
+    double SENSOR_UNITS_PER_REVOLUTION = 2048.0;
 
     double TURN_REDUCTION = (15.0 / 32.0) * (10.0 / 60.0);
     double DRIVE_REDUCTION = (14.0 / 50.0) * (27.0 / 17.0) * (15.0 / 45.0);
