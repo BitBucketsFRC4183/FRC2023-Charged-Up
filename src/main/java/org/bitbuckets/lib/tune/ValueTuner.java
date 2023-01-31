@@ -31,9 +31,7 @@ public class ValueTuner<T> implements Consumer<NetworkTableEvent>, IValueTuner<T
 
     @Override
     public T consumeValue() {
-        throw new IllegalStateException("SUCK MY BALLS");
-
-        /*tomicRecord nowStale = cachedValue.getAndUpdate(record -> {
+        AtomicRecord nowStale = cachedValue.getAndUpdate(record -> {
             if (record.hasUpdated) {
                 return new AtomicRecord(record.cachedPointer, false);
             }
@@ -41,7 +39,7 @@ public class ValueTuner<T> implements Consumer<NetworkTableEvent>, IValueTuner<T
             return record; //avoid CAS operation to save loops
         });
 
-        return nowStale.cachedPointer;*/
+        return nowStale.cachedPointer;
     }
 
 

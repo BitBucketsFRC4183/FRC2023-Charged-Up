@@ -83,7 +83,7 @@ public class DriveControl {
     public void drive(ChassisSpeeds chassisSpeeds) {
         this.chassisSpeeds = chassisSpeeds;
 
-        doDriveWithStates(RobotConstants.KINEMATICS.toSwerveModuleStates(chassisSpeeds));
+        doDriveWithStates(DriveConstants.KINEMATICS.toSwerveModuleStates(chassisSpeeds));
     }
 
     public void stopSticky() {
@@ -122,12 +122,11 @@ public class DriveControl {
                 modules.get(i).set(velocityToDriveVolts(states[i].speedMetersPerSecond), states[i].angle.getRadians());
             }
         }
-        cachedSetpoint = states;
     }
 
     private double velocityToDriveVolts(double speedMetersPerSecond) {
         int maxVoltage = 12;
-        double ff = DriveConstants.feedForward.calculate(speedMetersPerSecond);
+        double ff = DriveConstants.FF.calculate(speedMetersPerSecond);
         return MathUtil.clamp(ff, -maxVoltage, maxVoltage);
     }
 
