@@ -85,14 +85,15 @@ public class SparkSetup implements ISetup<IMotorController> {
 
         path.registerLoop(ctrl, LoggingConstants.LOGGING_PERIOD, "logging-loop");
         path.registerLoop(sparkTuningAspect, LoggingConstants.TUNING_PERIOD, "tuning-loop");
+
         if (forwardSwitch != null) {
             ILoggable<Boolean> loggable = path.generateBooleanLogger("forwardSwitchPressed");
-            SparkLimitLoggingAspect loggingAspect = new SparkLimitLoggingAspect(loggable,  forwardSwitch);
+            SparkLimitLoggingAspect loggingAspect = new SparkLimitLoggingAspect(loggable, forwardSwitch);
             path.registerLoop(loggingAspect, LoggingConstants.LOGGING_PERIOD, "forw-log-loop");
         }
         if (reverseSwitch != null) {
             ILoggable<Boolean> loggable = path.generateBooleanLogger("reverseSwitchPressed");
-            SparkLimitLoggingAspect loggingAspect = new SparkLimitLoggingAspect(loggable,  reverseSwitch);
+            SparkLimitLoggingAspect loggingAspect = new SparkLimitLoggingAspect(loggable, reverseSwitch);
             path.registerLoop(loggingAspect, LoggingConstants.LOGGING_PERIOD, "revr-log-loop");
         }
 
