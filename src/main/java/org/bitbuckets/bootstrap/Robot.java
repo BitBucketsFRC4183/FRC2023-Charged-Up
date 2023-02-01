@@ -60,7 +60,7 @@ public class Robot extends LoggedRobot {
         TuneableDriver tuneableDriver = new TuneableDriver(NetworkTableInstance.getDefault().getTable("RealOutputs/MattTuneables"), identityDriver);
         int consoleId = identityDriver.childProcess(0, "Console");
         SetupDriver setupDriver = new SetupDriver(identityDriver, logDriver, consoleId);
-        ProcessPath rootPath = new ProcessPath(0, setupDriver, identityDriver, logDriver, loopDriver, tuneableDriver);
+        ProcessPath rootPath = new ProcessPath(0, setupDriver, identityDriver, logDriver, loopDriver, tuneableDriver, isReal());
         RobotStateControl robotStateControl = new RobotStateControl(this);
         RobotSetup setup = new RobotSetup(robotStateControl);
 
