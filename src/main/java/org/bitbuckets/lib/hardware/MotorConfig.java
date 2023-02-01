@@ -39,4 +39,5 @@ public class MotorConfig {
         this.isBackwardLimitEnabled = isBackwardLimitEnabled;
         this.following = following;
     }
+
 }

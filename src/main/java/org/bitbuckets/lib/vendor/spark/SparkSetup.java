@@ -8,6 +8,7 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.lib.SetupProfiler;
+import org.bitbuckets.lib.control.PIDConfig;
 import org.bitbuckets.lib.hardware.IMotorController;
 import org.bitbuckets.lib.hardware.MotorConfig;
 import org.bitbuckets.lib.log.ILoggable;
@@ -18,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static java.lang.String.format;
+import static org.bitbuckets.lib.vendor.spark.RevUtils.checkNeoError;
 
 /**
  * SparkPIDSetup is for control based shit
@@ -27,13 +29,14 @@ public class SparkSetup implements ISetup<IMotorController> {
 
     static final List<Integer> seen = new ArrayList<>();
 
-
     final int canId;
     final MotorConfig motorConfig;
+    final PIDConfig pidConfig;
 
-    public SparkSetup(int canId, MotorConfig motorConfig) {
+    public SparkSetup(int canId, MotorConfig motorConfig, PIDConfig pidConfig) {
         this.canId = canId;
         this.motorConfig = motorConfig;
+        this.pidConfig = pidConfig;
     }
 
     @Override
@@ -75,17 +78,29 @@ public class SparkSetup implements ISetup<IMotorController> {
             reverseSwitch.enableLimitSwitch(true);
         }
 
-        ILoggable<double[]> data = path.generateDoubleLoggers("appliedOutput", "busVoltage", "positionRotations", "velocityRotatations");
-        IValueTuner<Double> p = path.generateValueTuner("p", 0.0);
-        IValueTuner<Double> i = path.generateValueTuner("i", 0.0);
-        IValueTuner<Double> d = path.generateValueTuner("d", 0.0);
+        ILoggable<double[]> data = path.generateDoubleLoggers("appliedOutput", "busVoltage", "positionRotations", "velocityRotatations", "setpointRotations", "error");
 
-        SparkTuningAspect sparkTuningAspect = new SparkTuningAspect(p, i, d, spark.getPIDController());
+        // setup tuneable pid
+        if (pidConfig.kP == 0 && pidConfig.kI == 0 && pidConfig.kD == 0) {
+            IValueTuner<Double> p = path.generateValueTuner("p", pidConfig.kP);
+            IValueTuner<Double> i = path.generateValueTuner("i", pidConfig.kI);
+            IValueTuner<Double> d = path.generateValueTuner("d", pidConfig.kD);
+            var pidController= spark.getPIDController();
+            SparkTuningAspect sparkTuningAspect = new SparkTuningAspect(p, i, d, pidController);
+            pidController.setP(p.consumeValue());
+            pidController.setI(i.consumeValue());
+            pidController.setD(d.consumeValue());
+            path.registerLoop(sparkTuningAspect, LoggingConstants.TUNING_PERIOD, "tuning-loop");
+        } else {
+            checkNeoError(spark.getPIDController().setP(pidConfig.kP), "Failed to set NEO PID proportional constant");
+            checkNeoError(spark.getPIDController().setI(pidConfig.kI), "Failed to set NEO PID integral constant");
+            checkNeoError(spark.getPIDController().setD(pidConfig.kD), "Failed to set NEO PID derivative constant");
+        }
+
         SparkRelativeMotorController ctrl = new SparkRelativeMotorController(motorConfig, spark, data);
 
         path.registerLoop(ctrl, LoggingConstants.LOGGING_PERIOD, "logging-loop");
         path.registerLoop(sparkTuningAspect, LoggingConstants.TUNING_PERIOD, "tuning-loop");
-
         if (forwardSwitch != null) {
             ILoggable<Boolean> loggable = path.generateBooleanLogger("forwardSwitchPressed");
             SparkLimitLoggingAspect loggingAspect = new SparkLimitLoggingAspect(loggable, forwardSwitch);

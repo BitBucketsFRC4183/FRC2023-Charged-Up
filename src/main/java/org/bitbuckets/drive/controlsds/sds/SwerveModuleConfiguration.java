@@ -1,0 +1,121 @@
+package org.bitbuckets.drive.controlsds.sds;
+
+
+import java.util.Objects;
+
+/**
+ * A swerve module configuration.
+ */
+public class SwerveModuleConfiguration {
+    final double wheelDiameter;
+    final double driveReduction;
+    final boolean driveInverted;
+    final double driveCurrentLimit = 80; // from SDS
+
+    final double steerReduction;
+    final boolean steerInverted;
+    final double steerCurrentLimit = 20; // from SDS
+
+    /**
+     * Creates a new module configuration.
+     *
+     * @param wheelDiameter  The diameter of the module's wheel in meters.
+     * @param driveReduction The overall drive reduction of the module. Multiplying motor rotations by this value
+     *                       should result in wheel rotations.
+     * @param driveInverted  Whether the drive motor should be inverted. If there is an odd number of gea reductions
+     *                       this is typically true.
+     * @param steerReduction The overall steer reduction of the module. Multiplying motor rotations by this value
+     *                       should result in rotations of the steering pulley.
+     * @param steerInverted  Whether the steer motor should be inverted. If there is an odd number of gear reductions
+     *                       this is typically true.
+     */
+    public SwerveModuleConfiguration(double wheelDiameter, double driveReduction, boolean driveInverted,
+                                     double steerReduction, boolean steerInverted) {
+        this.wheelDiameter = wheelDiameter;
+        this.driveReduction = driveReduction;
+        this.driveInverted = driveInverted;
+        this.steerReduction = steerReduction;
+        this.steerInverted = steerInverted;
+    }
+
+    /**
+     * Gets the diameter of the wheel in meters.
+     */
+    public double getWheelDiameter() {
+        return wheelDiameter;
+    }
+
+    /**
+     * Gets the overall reduction of the drive system.
+     * <p>
+     * If this value is multiplied by drive motor rotations the result would be drive wheel rotations.
+     */
+    public double getDriveReduction() {
+        return driveReduction;
+    }
+
+    public double getDriveCurrentLimit() {
+        return driveCurrentLimit;
+    }
+
+    /**
+     * Gets if the drive motor should be inverted.
+     */
+    public boolean isDriveInverted() {
+        return driveInverted;
+    }
+
+    /**
+     * Gets the overall reduction of the steer system.
+     * <p>
+     * If this value is multiplied by steering motor rotations the result would be steering pulley rotations.
+     */
+    public double getSteerReduction() {
+        return steerReduction;
+    }
+
+    /**
+     * Gets if the steering motor should be inverted.
+     */
+    public boolean isSteerInverted() {
+        return steerInverted;
+    }
+
+    public double getSteerCurrentLimit() {
+        return steerCurrentLimit;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SwerveModuleConfiguration that = (SwerveModuleConfiguration) o;
+        return Double.compare(that.getWheelDiameter(), getWheelDiameter()) == 0 &&
+                Double.compare(that.getDriveReduction(), getDriveReduction()) == 0 &&
+                isDriveInverted() == that.isDriveInverted() &&
+                Double.compare(that.getSteerReduction(), getSteerReduction()) == 0 &&
+                isSteerInverted() == that.isSteerInverted();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(
+                getWheelDiameter(),
+                getDriveReduction(),
+                isDriveInverted(),
+                getSteerReduction(),
+                isSteerInverted()
+        );
+    }
+
+    @Override
+    public String toString() {
+        return "ModuleConfiguration{" +
+                "wheelDiameter=" + wheelDiameter +
+                ", driveReduction=" + driveReduction +
+                ", driveInverted=" + driveInverted +
+                ", steerReduction=" + steerReduction +
+                ", steerInverted=" + steerInverted +
+                '}';
+    }
+}
