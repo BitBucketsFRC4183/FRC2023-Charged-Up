@@ -2,8 +2,6 @@ package org.bitbuckets.robot;
 
 import com.ctre.phoenix.sensors.WPI_PigeonIMU;
 import com.revrobotics.REVPhysicsSim;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Joystick;
 import org.bitbuckets.arm.*;
 import org.bitbuckets.auto.AutoControl;
