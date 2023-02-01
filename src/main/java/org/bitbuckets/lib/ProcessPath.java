@@ -24,18 +24,16 @@ public class ProcessPath {
     final LogDriver logDriver;
     final LoopDriver loopDriver;
     final TuneableDriver tuneableDriver;
+    final boolean isReal;
 
-    public ProcessPath(int currentId, SetupDriver setupDriver, IdentityDriver identityDriver, LogDriver logDriver, LoopDriver loopDriver, TuneableDriver tuneableDriver) {
+    public ProcessPath(int currentId, SetupDriver setupDriver, IdentityDriver identityDriver, LogDriver logDriver, LoopDriver loopDriver, TuneableDriver tuneableDriver, boolean isReal) {
         this.currentId = currentId;
         this.setupDriver = setupDriver;
         this.identityDriver = identityDriver;
         this.logDriver = logDriver;
         this.loopDriver = loopDriver;
         this.tuneableDriver = tuneableDriver;
-    }
-
-    public SimLevel getSimLevel() {
-        return SimLevel.SIM_CLASSES;
+        this.isReal = isReal;
     }
 
     /**
@@ -48,7 +46,7 @@ public class ProcessPath {
     public ProcessPath addChild(String name) {
         int childId = identityDriver.childProcess(currentId, name);
 
-        return new ProcessPath(childId, setupDriver, identityDriver, logDriver, loopDriver, tuneableDriver);
+        return new ProcessPath(childId, setupDriver, identityDriver, logDriver, loopDriver, tuneableDriver, isReal);
     }
 
 
@@ -159,6 +157,10 @@ public class ProcessPath {
 
     }
 
+
+    public boolean isReal() {
+        return isReal;
+    }
 
     /**
      * read the other ones please
