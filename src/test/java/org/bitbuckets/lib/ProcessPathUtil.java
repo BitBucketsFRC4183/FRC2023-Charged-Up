@@ -17,7 +17,7 @@ public class ProcessPathUtil {
         TuneableDriver tuneableDriver = new TuneableDriver(NetworkTableInstance.getDefault().getTable("RealOutputs/MattTuneables"), identityDriver);
         SetupDriver setupDriver = new SetupDriver(identityDriver, logDriver, 0);
 
-        return new ProcessPath(0, setupDriver, identityDriver, logDriver, loopDriver, tuneableDriver);
+        return new ProcessPath(0, setupDriver, identityDriver, logDriver, loopDriver, tuneableDriver, false);
     }
 
 }
