@@ -5,10 +5,8 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import org.bitbuckets.drive.controlsds.sds.SwerveModuleConfiguration;
-import org.bitbuckets.robot.RobotConstants;
 
 public interface DriveConstants {
 
@@ -24,6 +22,7 @@ public interface DriveConstants {
             new Translation2d(-HALF_WIDTH, -HALF_BASE)
     );
 
+    double DRIVE_REDUCTION = (14.0 / 50.0) * (27.0 / 17.0) * (15.0 / 45.0);
 
     double MAX_DRIVE_VELOCITY = 6380.0 / 60.0 * (14.0 / 50.0) * (27.0 / 17.0) * (15.0 / 45.0) * 0.10033 * Math.PI;
     double MAX_ANG_VELOCITY = MAX_DRIVE_VELOCITY / Math.hypot(HALF_WIDTH, HALF_BASE);
@@ -53,15 +52,10 @@ public interface DriveConstants {
     int BACK_RIGHT_STEER_ID = 2;
     int BACK_RIGHT_ENCODER_CHANNEL = 0;
 
-    double frontLeftModuleSteerOffset = Math.toRadians(76.904289); // set front left steer offset
-
-    double frontRightModuleSteerOffset = Math.toRadians(94.75707037500001); // set front right steer offset
-
-    double backLeftModuleSteerOffset = Math.toRadians(2.1972654); // set back left steer offset
-
-    double backRightModuleSteerOffset = Math.toRadians(119.56785885000002); // set back right steer offset
-
-    SimpleMotorFeedforward feedForward = new SimpleMotorFeedforward(0.65292, 2.3053, 0.37626); //new SimpleMotorFeedforward(0.12817, 2.3423, 0.53114);
+    double FRONT_LEFT_OFFSET = Math.toRadians(76.904289); // set front left steer offset
+    double FRONT_RIGHT_OFFSET = Math.toRadians(94.75707037500001); // set front right steer offset
+    double BACK_LEFT_OFFSET = Math.toRadians(2.1972654); // set back left steer offset
+    double BACK_RIGHT_OFFSET = Math.toRadians(119.56785885000002); // set back right steer offset
 
     SwerveModuleConfiguration MK4_L2 = new SwerveModuleConfiguration(
             0.10033,
