@@ -2,7 +2,6 @@ package org.bitbuckets.lib.vendor.sim.elevator;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
-import org.bitbuckets.lib.control.IPIDCalculator;
 import org.bitbuckets.lib.hardware.IMotorController;
 import org.bitbuckets.lib.hardware.MotorConfig;
 
