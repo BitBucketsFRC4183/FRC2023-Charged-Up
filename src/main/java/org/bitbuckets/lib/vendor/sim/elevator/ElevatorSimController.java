@@ -84,8 +84,6 @@ public class ElevatorSimController implements IMotorController, Runnable {
 
     @Override
     public void run() {
-
-
         elevatorSim.update(0.02);
     }
 }
