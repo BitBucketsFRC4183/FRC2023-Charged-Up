@@ -1,15 +1,9 @@
 package org.bitbuckets.vision;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.math.controller.HolonomicDriveController;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
-import org.bitbuckets.drive.module.AutoConstants;
-import org.bitbuckets.lib.hardware.PIDIndex;
 import org.bitbuckets.lib.log.ILoggable;
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
@@ -17,7 +11,6 @@ import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
-
 
 import java.util.Optional;
 
@@ -125,8 +118,6 @@ public class VisionControl {
 
 
     }
-
-    HolonomicDriveController controller = new HolonomicDriveController(new PIDController(AutoConstants.pathXYPID[PIDIndex.P],AutoConstants.pathXYPID[PIDIndex.I],AutoConstants.pathXYPID[PIDIndex.D]),new PIDController(AutoConstants.pathXYPID[PIDIndex.P], AutoConstants.pathXYPID[PIDIndex.I], AutoConstants.pathXYPID[PIDIndex.D]),new ProfiledPIDController(AutoConstants.pathThetaPID[PIDIndex.P], AutoConstants.pathThetaPID[PIDIndex.I], AutoConstants.pathThetaPID[PIDIndex.D], new TrapezoidProfile.Constraints(AutoConstants.maxPathFollowVelocity, AutoConstants.maxPathFollowAcceleration)));
 
     public void driveToPosition(ChassisSpeeds chassisSpeeds) {
         //controller.calculate(

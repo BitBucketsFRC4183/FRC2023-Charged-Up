@@ -4,9 +4,11 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 import org.bitbuckets.drive.DriveConstants;
+import org.bitbuckets.drive.IDriveControl;
 import org.bitbuckets.drive.controlsds.sds.ISwerveModule;
 import org.bitbuckets.lib.log.ILoggable;
 
@@ -15,7 +17,7 @@ import java.util.List;
 /**
  * Represents a real drive controller that implements control of the drivetrain using a list of SwerveModule interfaces
  */
-public class DriveControl {
+public class DriveControl implements IDriveControl {
 
     final ILoggable<SwerveModuleState[]> desiredStates;
     final ILoggable<SwerveModuleState[]> actualStates;
@@ -130,4 +132,9 @@ public class DriveControl {
     }
 
 
+    //TODO implement this
+    @Override
+    public SwerveModulePosition[] currentPositions() {
+        return new SwerveModulePosition[0];
+    }
 }

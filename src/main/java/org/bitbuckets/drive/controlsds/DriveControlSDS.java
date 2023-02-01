@@ -7,7 +7,6 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import org.bitbuckets.drive.DriveConstants;
-import org.bitbuckets.drive.DriveSDSConstants;
 import org.bitbuckets.drive.IDriveControl;
 import org.bitbuckets.drive.controlsds.sds.SwerveModule;
 import org.bitbuckets.lib.log.ILoggable;
@@ -85,7 +84,7 @@ public class DriveControlSDS implements IDriveControl {
     public void drive(ChassisSpeeds chassisSpeeds) {
         this.chassisSpeeds = chassisSpeeds;
 
-        doDriveWithStates(RobotConstants.KINEMATICS.toSwerveModuleStates(chassisSpeeds));
+        doDriveWithStates(DriveConstants.KINEMATICS.toSwerveModuleStates(chassisSpeeds));
     }
 
     public void stopSticky() {
@@ -129,7 +128,7 @@ public class DriveControlSDS implements IDriveControl {
 
     private double velocityToDriveVolts(double speedMetersPerSecond) {
         int maxVoltage = 12;
-        double ff = DriveSDSConstants.feedForward.calculate(speedMetersPerSecond);
+        double ff = DriveConstants.FF.calculate(speedMetersPerSecond);
         return MathUtil.clamp(ff, -maxVoltage, maxVoltage);
     }
 

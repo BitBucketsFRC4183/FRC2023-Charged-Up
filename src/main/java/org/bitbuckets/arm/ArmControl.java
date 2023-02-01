@@ -60,11 +60,11 @@ public class ArmControl {
     }
 
     public double convertMechanismRotationtoRawRotation_lowerJoint(double mechanismRotation) {
-        return mechanismRotation * ArmConstants.lowerArmGearRatio;
+        return mechanismRotation * ArmConstants.LOWER_ARM_GEAR_RATIO;
     }
 
     public double convertMechanismRotationtoRawRotation_upperJoint(double mechanismRotation) {
-        return mechanismRotation * ArmConstants.upperArmGearRatio;
+        return mechanismRotation * ArmConstants.UPPER_ARM_GEAR_RATIO;
     }
 
     // Make sure to change/tune lowerAngle and upperAngle for each position
