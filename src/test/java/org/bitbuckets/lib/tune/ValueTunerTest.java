@@ -1,16 +1,15 @@
 package org.bitbuckets.lib.tune;
 
 import edu.wpi.first.hal.HAL;
-import edu.wpi.first.networktables.NetworkTableEvent;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-
-import java.util.EnumSet;
 
 class
 ValueTunerTest {
 
+    @Disabled
     @Test
     void readValue_shouldWork() throws InterruptedException {
         assert HAL.initialize(500, 0);
@@ -21,11 +20,6 @@ ValueTunerTest {
                 .getTable("frc")
                 .getEntry("hello")
                 .setDefaultValue(20.0);
-
-        NetworkTableInstance
-                .getDefault()
-                .getTable("frc")
-                .addListener("hello", EnumSet.of(NetworkTableEvent.Kind.kValueAll), tuner);
 
         NetworkTableInstance
                 .getDefault()

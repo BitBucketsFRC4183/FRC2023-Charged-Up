@@ -2,13 +2,17 @@ package org.bitbuckets.gyro;
 
 import com.ctre.phoenix.sensors.WPI_PigeonIMU;
 import edu.wpi.first.math.geometry.Rotation2d;
+import org.bitbuckets.lib.log.ILoggable;
 
-public class GyroControl {
+public class GyroControl implements Runnable{
 
     final WPI_PigeonIMU pigeonIMU;
 
-    GyroControl(WPI_PigeonIMU pigeonIMU) {
+    final ILoggable<double[]> loggable;
+
+    GyroControl(WPI_PigeonIMU pigeonIMU, ILoggable<double[]> loggable) {
         this.pigeonIMU = pigeonIMU;
+        this.loggable = loggable;
     }
 
 
@@ -35,5 +39,11 @@ public class GyroControl {
 
     public double getYaw_deg() {
         return pigeonIMU.getYaw();
+    }
+
+    @Override
+    public void run() {
+        loggable.log(new double[] {pigeonIMU.getAngle()});
+
     }
 }
