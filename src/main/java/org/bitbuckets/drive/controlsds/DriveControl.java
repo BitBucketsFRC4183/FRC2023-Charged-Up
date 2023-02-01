@@ -141,9 +141,4 @@ public class DriveControl implements IDriveControl {
     }
 
 
-    //TODO implement this
-    @Override
-    public SwerveModulePosition[] currentPositions() {
-        return new SwerveModulePosition[0];
-    }
 }
