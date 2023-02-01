@@ -131,6 +131,15 @@ public class DriveControl implements IDriveControl {
         return MathUtil.clamp(ff, -maxVoltage, maxVoltage);
     }
 
+    public SwerveModulePosition[] currentPositions() {
+        return new SwerveModulePosition[]{
+                new SwerveModulePosition(),
+                new SwerveModulePosition(),
+                new SwerveModulePosition(),
+                new SwerveModulePosition()
+        };
+    }
+
 
     //TODO implement this
     @Override
