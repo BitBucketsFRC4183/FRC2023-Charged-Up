@@ -1,7 +1,7 @@
 {
   "NetworkTables": {
-    "Persistent Values": {
-      "open": false
+    "types": {
+      "/FMSInfo": "FMSInfo"
     }
   },
   "NetworkTables Info": {

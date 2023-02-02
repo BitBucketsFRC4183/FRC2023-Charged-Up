@@ -63,6 +63,7 @@ public class RobotSetup implements ISetup<RobotContainer> {
         IValueTuner<AutoPath> pathTuneable = path.generateValueTuner("path", AutoPath.AUTO_TEST_PATH_ONE);
 
 
+
         ArmInput armInput = new ArmInput(
                 new Joystick(1)
         );

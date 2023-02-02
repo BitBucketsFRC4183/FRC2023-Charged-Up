@@ -15,6 +15,9 @@ public interface ArmConstants {
     MotorConfig lowerConfig = new MotorConfig(ArmConstants.lowerArmGearRatio, 1, 1, false, true, 20.0, false, false, Optional.empty());
     MotorConfig upperConfig = new MotorConfig(ArmConstants.upperArmGearRatio, 1, 1, false, true, 20.0, false, false, Optional.empty());
 
+    //change these
+    double lowerJointLength = 2.;
+    double upperJointLength = 2.;
 
     // Feel free to change to make arms faster/slower for input
     final double CONTROL_JOINT_OUTPUT = 0.3;
