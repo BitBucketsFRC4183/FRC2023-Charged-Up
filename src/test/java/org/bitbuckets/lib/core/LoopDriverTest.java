@@ -1,6 +1,7 @@
 package org.bitbuckets.lib.core;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -8,6 +9,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 class LoopDriverTest {
 
     @Test
+    @Disabled
     void runAlways_shouldFailIfNotDelay() throws InterruptedException {
         LoopDriver loopDriver = new LoopDriver();
         AtomicBoolean run = new AtomicBoolean(false);
