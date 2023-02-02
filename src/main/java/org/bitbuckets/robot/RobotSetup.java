@@ -24,6 +24,9 @@ import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.lib.hardware.MotorConfig;
 import org.bitbuckets.lib.tune.IValueTuner;
 import org.bitbuckets.lib.util.MockingUtil;
+import org.bitbuckets.lib.control.PIDConfig;
+import org.bitbuckets.lib.hardware.MotorConfig;
+import org.bitbuckets.lib.tune.IValueTuner;
 import org.bitbuckets.lib.vendor.ctre.CANCoderAbsoluteEncoderSetup;
 import org.bitbuckets.lib.vendor.ctre.TalonDriveMotorSetup;
 import org.bitbuckets.lib.vendor.ctre.TalonSteerMotorSetup;
@@ -96,10 +99,9 @@ public class RobotSetup implements ISetup<RobotContainer> {
         }
 
         //labels: high priority
-        //TODO use neos here
         ArmControlSetup armControlSetup = new ArmControlSetup(
-                new SparkSetup(9, ArmConstants.lowerConfig),
-                new SparkSetup(10, ArmConstants.upperConfig)
+                new SparkSetup(9, ArmConstants.LOWER_CONFIG, ArmConstants.LOWER_PID),
+                new SparkSetup(10, ArmConstants.UPPER_CONFIG, ArmConstants.UPPER_PID)
         );
 
         ArmControl armControl = armControlSetup.build(path.addChild("arm-control"));
@@ -137,7 +139,6 @@ public class RobotSetup implements ISetup<RobotContainer> {
                 Optional.empty()
         );
 
-        // we know the PID constants from swervelib, so set them here
         MotorConfig steerMotorConfig = new MotorConfig(
                 DriveConstants.MK4I_L2.getSteerReduction(),
                 1,
@@ -147,35 +148,35 @@ public class RobotSetup implements ISetup<RobotContainer> {
                 20,
                 false,
                 false,
-                1,
-                0,
-                .1
+                Optional.empty()
         );
+
+        PIDConfig steerPidConfig = new PIDConfig(1, 0, 0.1, 0);
 
         DriveControl driveControl = new DriveControlSetup(
                 new SwerveModuleSetup(
-                        new DriveControllerSetup(new SparkDriveMotorSetup(DriveConstants.frontLeftModuleDriveMotor_ID, driveMotorConfig, DriveConstants.MK4I_L2)),
+                        new DriveControllerSetup(new SparkDriveMotorSetup(DriveConstants.FRONT_LEFT_DRIVE_ID, driveMotorConfig, DriveConstants.MK4I_L2)),
                         new SteerControllerSetup(
-                                new SparkSteerMotorSetup(DriveConstants.frontLeftModuleSteerMotor_ID, steerMotorConfig, DriveConstants.MK4I_L2),
-                                new ThriftyEncoderSetup(DriveConstants.frontLeftModuleSteerEncoder_CHANNEL, DriveConstants.frontLeftModuleSteerOffset))
+                                new SparkSteerMotorSetup(DriveConstants.FRONT_LEFT_STEER_ID, steerMotorConfig, steerPidConfig, DriveConstants.MK4I_L2),
+                                new ThriftyEncoderSetup(DriveConstants.FRONT_LEFT_ENCODER_CHANNEL, DriveConstants.FRONT_LEFT_OFFSET))
                 ),
                 new SwerveModuleSetup(
-                        new DriveControllerSetup(new SparkDriveMotorSetup(DriveConstants.frontRightModuleDriveMotor_ID, driveMotorConfig, DriveConstants.MK4I_L2)),
+                        new DriveControllerSetup(new SparkDriveMotorSetup(DriveConstants.FRONT_RIGHT_DRIVE_ID, driveMotorConfig, DriveConstants.MK4I_L2)),
                         new SteerControllerSetup(
-                                new SparkSteerMotorSetup(DriveConstants.frontRightModuleSteerMotor_ID, steerMotorConfig, DriveConstants.MK4I_L2),
-                                new ThriftyEncoderSetup(DriveConstants.frontRightModuleSteerEncoder_CHANNEL, DriveConstants.frontRightModuleSteerOffset))
+                                new SparkSteerMotorSetup(DriveConstants.FRONT_RIGHT_STEER_ID, steerMotorConfig, steerPidConfig, DriveConstants.MK4I_L2),
+                                new ThriftyEncoderSetup(DriveConstants.FRONT_RIGHT_ENCODER_CHANNEL, DriveConstants.FRONT_RIGHT_OFFSET))
                 ),
                 new SwerveModuleSetup(
-                        new DriveControllerSetup(new SparkDriveMotorSetup(DriveConstants.backLeftModuleDriveMotor_ID, driveMotorConfig, DriveConstants.MK4I_L2)),
+                        new DriveControllerSetup(new SparkDriveMotorSetup(DriveConstants.BACK_LEFT_DRIVE_ID, driveMotorConfig, DriveConstants.MK4I_L2)),
                         new SteerControllerSetup(
-                                new SparkSteerMotorSetup(DriveConstants.backLeftModuleSteerMotor_ID, steerMotorConfig, DriveConstants.MK4I_L2),
-                                new ThriftyEncoderSetup(DriveConstants.backLeftModuleSteerEncoder_CHANNEL, DriveConstants.backLeftModuleSteerOffset))
+                                new SparkSteerMotorSetup(DriveConstants.BACK_LEFT_STEER_ID, steerMotorConfig, steerPidConfig, DriveConstants.MK4I_L2),
+                                new ThriftyEncoderSetup(DriveConstants.BACK_LEFT_ENCODER_CHANNEL, DriveConstants.BACK_LEFT_OFFSET))
                 ),
                 new SwerveModuleSetup(
-                        new DriveControllerSetup(new SparkDriveMotorSetup(DriveConstants.backRightModuleDriveMotor_ID, driveMotorConfig, DriveConstants.MK4I_L2)),
+                        new DriveControllerSetup(new SparkDriveMotorSetup(DriveConstants.BACK_RIGHT_DRIVE_ID, driveMotorConfig, DriveConstants.MK4I_L2)),
                         new SteerControllerSetup(
-                                new SparkSteerMotorSetup(DriveConstants.backRightModuleSteerMotor_ID, steerMotorConfig, DriveConstants.MK4I_L2),
-                                new ThriftyEncoderSetup(DriveConstants.backRightModuleSteerEncoder_CHANNEL, DriveConstants.backRightModuleSteerOffset))
+                                new SparkSteerMotorSetup(DriveConstants.BACK_RIGHT_STEER_ID, steerMotorConfig, steerPidConfig, DriveConstants.MK4I_L2),
+                                new ThriftyEncoderSetup(DriveConstants.BACK_RIGHT_ENCODER_CHANNEL, DriveConstants.BACK_RIGHT_OFFSET))
                 ),
                 new WPI_PigeonIMU(5)
         ).build(path.addChild("drive-control"));

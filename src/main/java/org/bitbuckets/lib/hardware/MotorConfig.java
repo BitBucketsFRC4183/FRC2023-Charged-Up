@@ -14,10 +14,6 @@ public class MotorConfig {
     public final boolean isForwardLimitEnabled;
     public final boolean isBackwardLimitEnabled;
 
-    public final double defaultKp;
-    public final double defaultKi;
-    public final double defaultKd;
-
     @Deprecated
     public final Optional<Integer> following;
 
@@ -42,40 +38,6 @@ public class MotorConfig {
         this.isForwardLimitEnabled = isForwardLimitEnabled;
         this.isBackwardLimitEnabled = isBackwardLimitEnabled;
         this.following = following;
-        this.defaultKp = 0;
-        this.defaultKi = 0;
-        this.defaultKd = 0;
     }
 
-    /**
-     * Constructor with default pid. Used for steer motors only because PID is known
-     *
-     * @param mechanismCoefficient
-     * @param timeCoefficient
-     * @param rotationToMeterCoefficient
-     * @param isInverted
-     * @param shouldBreakOnNoCommand
-     * @param currentLimit
-     * @param isForwardLimitEnabled
-     * @param isBackwardLimitEnabled
-     * @param defaultKp
-     * @param defaultKi
-     * @param defaultKd
-     */
-    public MotorConfig(double mechanismCoefficient, double timeCoefficient, double rotationToMeterCoefficient, boolean isInverted, boolean shouldBreakOnNoCommand, double currentLimit, boolean isForwardLimitEnabled, boolean isBackwardLimitEnabled, double defaultKp, double defaultKi, double defaultKd) {
-        this.mechanismCoefficient = mechanismCoefficient;
-        this.timeCoefficient = timeCoefficient;
-        this.rotationToMeterCoefficient = rotationToMeterCoefficient;
-        this.isInverted = isInverted;
-        this.shouldBreakOnNoCommand = shouldBreakOnNoCommand;
-        this.currentLimit = currentLimit;
-        this.isForwardLimitEnabled = isForwardLimitEnabled;
-        this.isBackwardLimitEnabled = isBackwardLimitEnabled;
-        this.following = Optional.empty();
-        this.defaultKp = defaultKp;
-        this.defaultKi = defaultKi;
-        this.defaultKd = defaultKd;
-    }
-
-    public static MotorConfig Empty = new MotorConfig(0, 1, 0, false, false, 0, false, false, Optional.empty());
 }
