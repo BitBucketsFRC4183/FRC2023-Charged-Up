@@ -62,7 +62,7 @@ public class ElevatorSimController implements IMotorController, Runnable {
 
     @Override
     public void moveToPosition(double position_encoderRotations) {
-        double output = positionPid.calculate(getPositionRaw(),position_encoderRotations);
+        double output = positionPid.calculate(getPositionRaw(), position_encoderRotations);
         lastSetpoint = output;
         elevatorSim.setInputVoltage(output);
     }
@@ -83,7 +83,9 @@ public class ElevatorSimController implements IMotorController, Runnable {
     }
 
     @Override
+
     public void run() {
         elevatorSim.update(0.02);
+        System.out.println(elevatorSim.getCurrentDrawAmps());
     }
 }

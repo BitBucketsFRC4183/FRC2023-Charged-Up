@@ -39,7 +39,7 @@ public class ElevatorControl {
     }
 
 
-    public ElevatorControl(IMotorController leftExtend, IMotorController rightExtend, IMotorController leftTilt, IMotorController rightTilt, MechanismLigament2d elevator, MechanismLigament2d elevatorWrist) {
+    public ElevatorControl(IMotorController leftExtend, IMotorController leftTilt, MechanismLigament2d elevator, MechanismLigament2d elevatorWrist) {
         this.leftExtend = leftExtend;
         this.rightExtend = rightExtend;
         this.leftTilt = leftTilt;
@@ -113,7 +113,7 @@ public class ElevatorControl {
 
     public void extendUp() {
         //rightExtend.moveAtPercent(0.2);
-        leftExtend.moveAtPercent(-0.05);
+        leftExtend.moveAtPercent(0.2);
 
 
     }
@@ -121,19 +121,19 @@ public class ElevatorControl {
     public void extendDown() {
 
         // rightExtend.moveAtPercent(-0.2);
-        leftExtend.moveAtPercent(0.05);
+        leftExtend.moveAtPercent(-0.2);
     }
 
     public void tiltForward() {
 
-        //  rightTilt.moveAtPercent(0.2);
-        //  leftTilt.moveAtPercent(0.2);
+        //   rightTilt.moveAtPercent(0.2);
+        leftTilt.moveAtPercent(0.2);
     }
 
     public void tiltBack() {
 
         //  rightTilt.moveAtPercent(-0.2);
-        //   leftTilt.moveAtPercent(-0.2);
+        leftTilt.moveAtPercent(-0.2);
     }
 
     public void stopTilt() {
@@ -144,8 +144,8 @@ public class ElevatorControl {
 
     public void stopExtend() {
 
-        leftExtend.moveAtPercent(0.0);
-        rightExtend.moveAtPercent(-0.0);
+        //  leftExtend.moveAtPercent(0.0);
+        //rightExtend.moveAtPercent(-0.0);
     }
 
 

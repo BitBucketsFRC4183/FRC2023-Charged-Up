@@ -85,7 +85,7 @@ public class SparkSetup implements ISetup<IMotorController> {
             IValueTuner<Double> p = path.generateValueTuner("p", pidConfig.kP);
             IValueTuner<Double> i = path.generateValueTuner("i", pidConfig.kI);
             IValueTuner<Double> d = path.generateValueTuner("d", pidConfig.kD);
-            var pidController= spark.getPIDController();
+            var pidController = spark.getPIDController();
             SparkTuningAspect sparkTuningAspect = new SparkTuningAspect(p, i, d, pidController);
             pidController.setP(p.consumeValue());
             pidController.setI(i.consumeValue());
@@ -100,7 +100,6 @@ public class SparkSetup implements ISetup<IMotorController> {
         SparkRelativeMotorController ctrl = new SparkRelativeMotorController(motorConfig, spark, data);
 
         path.registerLoop(ctrl, LoggingConstants.LOGGING_PERIOD, "logging-loop");
-        path.registerLoop(sparkTuningAspect, LoggingConstants.TUNING_PERIOD, "tuning-loop");
         if (forwardSwitch != null) {
             ILoggable<Boolean> loggable = path.generateBooleanLogger("forwardSwitchPressed");
             SparkLimitLoggingAspect loggingAspect = new SparkLimitLoggingAspect(loggable, forwardSwitch);

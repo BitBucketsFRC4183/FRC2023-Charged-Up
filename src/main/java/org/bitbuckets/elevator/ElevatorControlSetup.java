@@ -13,10 +13,10 @@ import org.bitbuckets.lib.hardware.IMotorController;
 public class ElevatorControlSetup implements ISetup<ElevatorControl> {
 
     final ISetup<IMotorController> leftExtend;
-    final ISetup<IMotorController> rightExtend;
+    // final ISetup<IMotorController> rightExtend;
     final ISetup<IMotorController> leftTilt;
 
-    final ISetup<IMotorController> rightTilt;
+    //  final ISetup<IMotorController> rightTilt;
 
 
     private MechanismLigament2d elevator;
@@ -24,12 +24,12 @@ public class ElevatorControlSetup implements ISetup<ElevatorControl> {
     private MechanismLigament2d elevatorWrist;
 
 
-    public ElevatorControlSetup(ISetup<IMotorController> leftExtend, ISetup<IMotorController> rightExtend, ISetup<IMotorController> leftTilt, ISetup<IMotorController> rightTilt) {
+    public ElevatorControlSetup(ISetup<IMotorController> leftExtend, ISetup<IMotorController> leftTilt) {
         this.leftExtend = leftExtend;
-        this.rightExtend = rightExtend;
+        //    this.rightExtend = rightExtend;
 
         this.leftTilt = leftTilt;
-        this.rightTilt = rightTilt;
+        //  this.rightTilt = rightTilt;
 
 
     }
@@ -55,9 +55,9 @@ public class ElevatorControlSetup implements ISetup<ElevatorControl> {
 
         ElevatorControl control = new ElevatorControl(
                 leftExtend.build(path.addChild("elevator-left-extension")),
-                rightExtend.build(path.addChild("elevator-right-extension")),
+                // rightExtend.build(path.addChild("elevator-right-extension")),
                 leftTilt.build(path.addChild("elevator-left-tilt")),
-                rightTilt.build(path.addChild("elevator-right-tilt")),
+                //  rightTilt.build(path.addChild("elevator-right-tilt")),
                 elevator,
                 elevatorWrist
 
