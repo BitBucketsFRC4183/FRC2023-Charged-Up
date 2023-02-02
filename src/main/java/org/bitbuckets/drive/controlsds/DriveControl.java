@@ -28,8 +28,6 @@ public class DriveControl implements IDriveControl {
     final ISwerveModule moduleBackLeft;
     final ISwerveModule moduleBackRight;
 
-    final Gyro gyro;
-
 
     //Speed factor that edits the max velocity and max angular velocity
     double speedModifier = .75;
@@ -45,12 +43,11 @@ public class DriveControl implements IDriveControl {
             new SwerveModuleState()
     };
 
-    public DriveControl(ISwerveModule moduleFrontLeft, ISwerveModule moduleFrontRight, ISwerveModule moduleBackLeft, ISwerveModule moduleBackRight, Gyro gyro, ILoggable<SwerveModuleState[]> desiredStates, ILoggable<SwerveModuleState[]> actualStates) {
+    public DriveControl(ISwerveModule moduleFrontLeft, ISwerveModule moduleFrontRight, ISwerveModule moduleBackLeft, ISwerveModule moduleBackRight, ILoggable<SwerveModuleState[]> desiredStates, ILoggable<SwerveModuleState[]> actualStates) {
         this.moduleFrontLeft = moduleFrontLeft;
         this.moduleFrontRight = moduleFrontRight;
         this.moduleBackLeft = moduleBackLeft;
         this.moduleBackRight = moduleBackRight;
-        this.gyro = gyro;
         this.desiredStates = desiredStates;
         this.actualStates = actualStates;
 
