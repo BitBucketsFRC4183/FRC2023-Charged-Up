@@ -2,8 +2,6 @@ package org.bitbuckets.robot;
 
 import com.ctre.phoenix.sensors.WPI_PigeonIMU;
 import com.revrobotics.REVPhysicsSim;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Joystick;
 import org.bitbuckets.arm.*;
 import org.bitbuckets.auto.AutoControl;
@@ -24,14 +22,9 @@ import org.bitbuckets.gyro.GyroControl;
 import org.bitbuckets.gyro.GyroControlSetup;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
-import org.bitbuckets.lib.hardware.IMotorController;
-import org.bitbuckets.lib.hardware.MotorConfig;
 import org.bitbuckets.lib.control.PIDConfig;
 import org.bitbuckets.lib.hardware.MotorConfig;
 import org.bitbuckets.lib.tune.IValueTuner;
-import org.bitbuckets.lib.util.MockingUtil;
-import org.bitbuckets.lib.vendor.sim.SimMotorSetup;
-import org.bitbuckets.lib.vendor.sim.SimulationConfig;
 import org.bitbuckets.lib.vendor.ctre.CANCoderAbsoluteEncoderSetup;
 import org.bitbuckets.lib.vendor.ctre.TalonDriveMotorSetup;
 import org.bitbuckets.lib.vendor.ctre.TalonSteerMotorSetup;
@@ -39,7 +32,6 @@ import org.bitbuckets.lib.vendor.spark.SparkDriveMotorSetup;
 import org.bitbuckets.lib.vendor.spark.SparkSetup;
 import org.bitbuckets.lib.vendor.spark.SparkSteerMotorSetup;
 import org.bitbuckets.lib.vendor.thrifty.ThriftyEncoderSetup;
-import org.bitbuckets.odometry.OdometryControl;
 import org.bitbuckets.odometry.OdometryControlSetup;
 import org.bitbuckets.vision.VisionControl;
 import org.bitbuckets.vision.VisionControlSetup;
@@ -60,21 +52,24 @@ public class RobotSetup implements ISetup<RobotContainer> {
 //        DriveControl driveControl = buildTalonDriveControl(path);
 
         //TODO use neo controller here
-        //      DriveControlSDS driveControl = MockingUtil.buddy(DriveControlSDS.class);
-//        ElevatorControlSetup elevatorControlSetup = new ElevatorControlSetup(
-//                new SparkSetup(10,new MotorConfig(ElevatorConstants.getGearRatioExtend,1,ElevatorConstants.rotToMeterExtend,false,false,20,false,false, Optional.empty())),
-//                new SparkSetup(2,new MotorConfig(ElevatorConstants.getGearRatioExtend,1,ElevatorConstants.rotToMeterExtend,false,false,20,false,false,Optional.empty())),
-//                new SparkSetup(3,new MotorConfig(ElevatorConstants.gearRatioTilt,1,ElevatorConstants.rotToMeterTilt,false,false,20,false,false,Optional.empty())),
-//                new SparkSetup(4,new MotorConfig(ElevatorConstants.gearRatioTilt,1,ElevatorConstants.rotToMeterTilt,false,false,20,false,false,Optional.empty()))
-//
-//        );
+        // DriveControl driveControl = MockingUtil.buddy(DriveControl.class);
         ElevatorControlSetup elevatorControlSetup = new ElevatorControlSetup(
-                new SimMotorSetup(new MotorConfig(ElevatorConstants.getGearRatioExtend, 1, ElevatorConstants.rotToMeterExtend, false, false, 20, false, false, Optional.empty()), new SimulationConfig(1d / 52, 1, 0, 0)),
-                new SimMotorSetup(new MotorConfig(ElevatorConstants.getGearRatioExtend, 1, ElevatorConstants.rotToMeterExtend, false, false, 20, false, false, Optional.empty()), new SimulationConfig(1d / 52, 1, 0, 0)),
-                new SimMotorSetup(new MotorConfig(ElevatorConstants.gearRatioTilt, 1, ElevatorConstants.rotToMeterTilt, false, false, 20, false, false, Optional.empty()), new SimulationConfig(1d / 52, 1, 0, 0)),
-                new SimMotorSetup(new MotorConfig(ElevatorConstants.gearRatioTilt, 1, ElevatorConstants.rotToMeterTilt, false, false, 20, false, false, Optional.empty()), new SimulationConfig(1d / 52, 1, 0, 0))
+                new SparkSetup(9, new MotorConfig(ElevatorConstants.getGearRatioExtend, 1, ElevatorConstants.rotToMeterExtend, false, false, 20, false, false, Optional.empty()), new PIDConfig(0, 0, 0, 0)),
+                //         new SparkSetup(1, new MotorConfig(ElevatorConstants.getGearRatioExtend, 1, ElevatorConstants.rotToMeterExtend, false, false, 20, false, false, Optional.empty()), new PIDConfig(0, 0, 0, 0)),
+                new SparkSetup(10, new MotorConfig(ElevatorConstants.getGearRatioExtend, 1, ElevatorConstants.rotToMeterExtend, false, false, 20, false, false, Optional.empty()), new PIDConfig(0, 0, 0, 0))
+                //      new SparkSetup(3, new MotorConfig(ElevatorConstants.getGearRatioExtend, 1, ElevatorConstants.rotToMeterExtend, false, false, 20, false, false, Optional.empty()), new PIDConfig(0, 0, 0, 0))
+
 
         );
+//        Matrix<N1, N1> std = Matrix.mat(Nat.N1(), Nat.N1()).fill(0);
+//        ElevatorControlSetup elevatorControlSetup = new ElevatorControlSetup(
+//                new ElevatorMotorSetup(new MotorConfig(ElevatorConstants.getGearRatioExtend, 1, ElevatorConstants.rotToMeterExtend, false, false, 20, false, false, Optional.empty()), new PIDConfig(.3, 0, 0, 0), new ElevatorConfig(1, 10, 1, 10, std)),
+//                new ElevatorMotorSetup(new MotorConfig(ElevatorConstants.getGearRatioExtend, 1, ElevatorConstants.rotToMeterExtend, false, false, 20, false, false, Optional.empty()), new PIDConfig(.3, 0, 0, 0), new ElevatorConfig(1, 10, 1, 10, std)),
+//                new ElevatorMotorSetup(new MotorConfig(ElevatorConstants.finalGearTilt, 1, ElevatorConstants.rotToMeterTilt, false, false, 20, false, false, Optional.empty()), new PIDConfig(.3, 0, 0, 0), new ElevatorConfig(1, 10, 0, 10, std)),
+//                new ElevatorMotorSetup(new MotorConfig(ElevatorConstants.finalGearTilt, 1, ElevatorConstants.rotToMeterTilt, false, false, 20, false, false, Optional.empty()), new PIDConfig(.3, 0, 0, 0), new ElevatorConfig(1, 10, 0, 10, std))
+//
+//
+//        );
 
 
         VisionControl visionControl = new VisionControlSetup().build(path.addChild("vision-control"));
@@ -93,8 +88,8 @@ public class RobotSetup implements ISetup<RobotContainer> {
         DriveSubsystem driveSubsystem = new DriveSubsystem(input, robotStateControl, gyroControl, autoAxisControl, driveControl, autoControl, pathTuneable);
         //labels: high priority
         ArmControlSetup armControlSetup = new ArmControlSetup(
-                new SparkSetup(9, ArmConstants.LOWER_CONFIG, ArmConstants.LOWER_PID),
-                new SparkSetup(10, ArmConstants.UPPER_CONFIG, ArmConstants.UPPER_PID)
+                new SparkSetup(11, ArmConstants.LOWER_CONFIG, ArmConstants.LOWER_PID),
+                new SparkSetup(12, ArmConstants.UPPER_CONFIG, ArmConstants.UPPER_PID)
         );
 
         ArmControl armControl = armControlSetup.build(path.addChild("arm-control"));
@@ -106,10 +101,9 @@ public class RobotSetup implements ISetup<RobotContainer> {
         //SYSTEMS_GREEN.setOn(); //LET'S WIN SOME DAMN REGIONALS!!S
 
         OdometryControlSetup odometryControlSetup = new OdometryControlSetup(driveControl, visionControl, gyroControl);
-        OdometryControl odometryControl = odometryControlSetup.build(path.addChild("odometry-control"));
+        //      OdometryControl odometryControl = odometryControlSetup.build(path.addChild("odometry-control"));
 
-        return new RobotContainer(driveSubsystem, armSubsystem, visionControl);
-        return new RobotContainer(MockingUtil.buddy(DriveSDSSubsystem.class), armSubsystem, elevatorSubsystem);
+        return new RobotContainer(driveSubsystem, armSubsystem, visionControl, elevatorSubsystem);
     }
 
     /**
