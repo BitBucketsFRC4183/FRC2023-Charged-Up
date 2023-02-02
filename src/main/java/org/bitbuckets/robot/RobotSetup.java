@@ -2,8 +2,6 @@ package org.bitbuckets.robot;
 
 import com.ctre.phoenix.sensors.WPI_PigeonIMU;
 import com.revrobotics.REVPhysicsSim;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Joystick;
 import org.bitbuckets.arm.*;
 import org.bitbuckets.auto.AutoControl;
@@ -43,6 +41,11 @@ import java.util.Optional;
 
 public class RobotSetup implements ISetup<RobotContainer> {
 
+    final static boolean driveEnabled = true;
+    final static boolean armEnabled = true;
+    final static boolean elevatorEnabled = true;
+    final static boolean odometryEnabled = true;
+
     final RobotStateControl robotStateControl;
 
     public RobotSetup(RobotStateControl robotStateControl) {
@@ -63,6 +66,8 @@ public class RobotSetup implements ISetup<RobotContainer> {
         IValueTuner<AutoPath> pathTuneable = path.generateValueTuner("path", AutoPath.AUTO_TEST_PATH_ONE);
 
 
+        AutoControl autoControl = null;
+        DriveSubsystem driveSubsystem = new DriveSubsystem(input, robotStateControl, gyroControl, autoAxisControl, driveControl, autoControl, pathTuneable);
 
 
         ArmInput armInput = new ArmInput(
@@ -72,13 +77,14 @@ public class RobotSetup implements ISetup<RobotContainer> {
         DriveSubsystem driveSubsystem = new DriveSubsystem(input, robotStateControl, gyroControl, autoAxisControl, driveControl, autoControl, pathTuneable, path.generateValueTuner("Orientation", DriveSubsystem.OrientationChooser.FIELD_ORIENTED));
         //labels: high priority
         //TODO use neos here
-        ArmControlSetup armControlSetup = new ArmControlSetup(
-                new SparkSetup(9, ArmConstants.lowerConfig),
-                new SparkSetup(10, ArmConstants.upperConfig)
-        );
+
 
         ArmControl armControl = armControlSetup.build(path.addChild("arm-control"));
 
+        ArmControl armControl = buildArmControl(path);
+        ArmInput armInput = new ArmInput(
+                new Joystick(1)
+        );
         ArmSubsystem armSubsystem = new ArmSubsystem(armInput, armControl, path.generateStringLogger("arm-subsystem"));
 
         autoControl = new AutoControlSetup(
@@ -88,10 +94,35 @@ public class RobotSetup implements ISetup<RobotContainer> {
 
         //SYSTEMS_GREEN.setOn(); //LET'S WIN SOME DAMN REGIONALS!!
 
-        OdometryControlSetup odometryControlSetup = new OdometryControlSetup(driveControl, visionControl, gyroControl, new Pose2d(0, 0, Rotation2d.fromDegrees(0)));
-        OdometryControl odometryControl = odometryControlSetup.build(path.addChild("odometry-control"));
+        // this is crashing
+//        OdometryControlSetup odometryControlSetup = new OdometryControlSetup(driveControl, visionControl, gyroControl, new Pose2d(0, 0, Rotation2d.fromDegrees(0)));
+//        buildOdometryControl(path, odometryControlSetup);
 
         return new RobotContainer(driveSubsystem, armSubsystem, visionControl);
+    }
+
+    static ArmControl buildArmControl(ProcessPath path) {
+        if (!armEnabled) {
+            return MockingUtil.buddy(ArmControl.class);
+        }
+
+        //labels: high priority
+        //TODO use neos here
+        ArmControlSetup armControlSetup = new ArmControlSetup(
+                new SparkSetup(9, ArmConstants.lowerConfig),
+                new SparkSetup(10, ArmConstants.upperConfig)
+        );
+
+        ArmControl armControl = armControlSetup.build(path.addChild("arm-control"));
+        return armControl;
+    }
+
+    static OdometryControl buildOdometryControl(ProcessPath path, OdometryControlSetup odometryControlSetup) {
+        if (!odometryEnabled) {
+            return MockingUtil.buddy(OdometryControl.class);
+        }
+
+        return odometryControlSetup.build(path.addChild("odometry-control"));
     }
 
     /**
@@ -101,6 +132,9 @@ public class RobotSetup implements ISetup<RobotContainer> {
      * @return
      */
     private static DriveControl buildNeoDriveControl(ProcessPath path) {
+        if (!driveEnabled) {
+            return MockingUtil.buddy(DriveControl.class);
+        }
         // used to configure the spark motor in SparkSetup
         MotorConfig driveMotorConfig = new MotorConfig(
                 DriveConstants.MK4I_L2.getDriveReduction(),
