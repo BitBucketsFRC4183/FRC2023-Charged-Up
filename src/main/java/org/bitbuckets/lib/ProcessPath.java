@@ -1,9 +1,10 @@
 package org.bitbuckets.lib;
 
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.util.datalog.StringLogEntry;
 import org.bitbuckets.SimLevel;
-import org.bitbuckets.lib.core.*;
+import org.bitbuckets.lib.core.IdentityDriver;
+import org.bitbuckets.lib.core.LogDriver;
+import org.bitbuckets.lib.core.LoopDriver;
 import org.bitbuckets.lib.log.ILoggable;
 import org.bitbuckets.lib.log.type.DataLoggable;
 import org.bitbuckets.lib.log.type.DoubleLoggable;
@@ -11,6 +12,7 @@ import org.bitbuckets.lib.log.type.StateLoggable;
 import org.bitbuckets.lib.log.type.StringLoggable;
 import org.bitbuckets.lib.startup.SetupDriver;
 import org.bitbuckets.lib.tune.IValueTuner;
+import org.bitbuckets.lib.tune.TuneableDriver;
 
 //TODO documet
 public class ProcessPath {
@@ -22,18 +24,16 @@ public class ProcessPath {
     final LogDriver logDriver;
     final LoopDriver loopDriver;
     final TuneableDriver tuneableDriver;
+    final boolean isReal;
 
-    public ProcessPath(int currentId, SetupDriver setupDriver, IdentityDriver identityDriver, LogDriver logDriver, LoopDriver loopDriver, TuneableDriver tuneableDriver) {
+    public ProcessPath(int currentId, SetupDriver setupDriver, IdentityDriver identityDriver, LogDriver logDriver, LoopDriver loopDriver, TuneableDriver tuneableDriver, boolean isReal) {
         this.currentId = currentId;
         this.setupDriver = setupDriver;
         this.identityDriver = identityDriver;
         this.logDriver = logDriver;
         this.loopDriver = loopDriver;
         this.tuneableDriver = tuneableDriver;
-    }
-
-    public SimLevel getSimLevel() {
-        return SimLevel.SIM_CLASSES;
+        this.isReal = isReal;
     }
 
     /**
@@ -46,7 +46,7 @@ public class ProcessPath {
     public ProcessPath addChild(String name) {
         int childId = identityDriver.childProcess(currentId, name);
 
-        return new ProcessPath(childId, setupDriver, identityDriver, logDriver, loopDriver, tuneableDriver);
+        return new ProcessPath(childId, setupDriver, identityDriver, logDriver, loopDriver, tuneableDriver, isReal);
     }
 
 
@@ -107,20 +107,50 @@ public class ProcessPath {
         return tuneableDriver.tuneable(currentId, key, defaultData);
     }
 
+    /**
+     * Generates a tuneable that represents multiplie pieces of data that can be independently tuned,
+     * same semantics as generating a bunch of double tuneables and checking them individually
+     * @param keys list of the dashboard names of your data in order
+     * @param defaultDatas the default data in the same order as the keys
+     * @return a value tuner returning a double with same order as the keys
+     */
+    public IValueTuner<double[]> generateMultiTuner(String[] keys, double[] defaultDatas) {
+        return tuneableDriver.multiTuneable(currentId, keys, defaultDatas);
+    }
 
+
+    /**
+     * Generates a loggable that logs doubles. You will have to call log on it to send data
+     * @param name the name it should show up as in logs
+     * @return loggable
+     */
     public ILoggable<Double> generateDoubleLogger(String name) {
         return new DoubleLoggable(logDriver, currentId, name);
     }
 
+    /**
+     * Generates a loggable that logs bools. You will have to call log on it to send data
+     * @param name the name it should show up as in logs
+     * @return loggable
+     */
     public ILoggable<Boolean> generateBooleanLogger(String name) {
         return data -> logDriver.report(currentId, name, data);
     }
 
+    /**
+     * Generates a loggable that logs double arrays. You will have to call log on it to send data
+     * @param namesInOrder the names of the data in order, your .log method should add data in the same order as this array
+     * @return loggable
+     */
     public ILoggable<double[]> generateDoubleLoggers(String... namesInOrder) {
         return new DataLoggable(namesInOrder, logDriver, currentId);
     }
 
-
+    /**
+     * swerving on mattlib
+     * @param name
+     * @return
+     */
     public ILoggable<SwerveModuleState[]> generateStateLogger(String name) {
 
         return new StateLoggable(logDriver, currentId, name);
@@ -128,6 +158,15 @@ public class ProcessPath {
     }
 
 
+    public boolean isReal() {
+        return isReal;
+    }
+
+    /**
+     * read the other ones please
+     * @param name
+     * @return
+     */
     public ILoggable<String> generateStringLogger(String name) {
         return new StringLoggable(logDriver, currentId, name);
 

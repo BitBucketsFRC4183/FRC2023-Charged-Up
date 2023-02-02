@@ -1,8 +1,11 @@
 package org.bitbuckets.lib;
 
 import edu.wpi.first.networktables.NetworkTableInstance;
-import org.bitbuckets.lib.core.*;
+import org.bitbuckets.lib.core.IdentityDriver;
+import org.bitbuckets.lib.core.LogDriver;
+import org.bitbuckets.lib.core.LoopDriver;
 import org.bitbuckets.lib.startup.SetupDriver;
+import org.bitbuckets.lib.tune.TuneableDriver;
 import org.littletonrobotics.junction.Logger;
 
 public class ProcessPathUtil {
@@ -14,7 +17,7 @@ public class ProcessPathUtil {
         TuneableDriver tuneableDriver = new TuneableDriver(NetworkTableInstance.getDefault().getTable("RealOutputs/MattTuneables"), identityDriver);
         SetupDriver setupDriver = new SetupDriver(identityDriver, logDriver, 0);
 
-        return new ProcessPath(0, setupDriver, identityDriver, logDriver, loopDriver, tuneableDriver);
+        return new ProcessPath(0, setupDriver, identityDriver, logDriver, loopDriver, tuneableDriver, false);
     }
 
 }

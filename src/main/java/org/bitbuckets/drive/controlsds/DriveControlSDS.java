@@ -6,66 +6,46 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.interfaces.Gyro;
 import org.bitbuckets.drive.DriveConstants;
 import org.bitbuckets.drive.IDriveControl;
-import org.bitbuckets.drive.controlsds.sds.ISwerveModule;
+import org.bitbuckets.drive.controlsds.sds.SwerveModule;
 import org.bitbuckets.lib.log.ILoggable;
 
-import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Represents a real drive controller that implements control of the drivetrain using a list of SwerveModule interfaces
  */
-public class DriveControl implements IDriveControl {
+public class DriveControlSDS implements IDriveControl {
 
     final ILoggable<SwerveModuleState[]> desiredStates;
     final ILoggable<SwerveModuleState[]> actualStates;
 
     // Swerve Modules
-    final ISwerveModule moduleFrontLeft;
-    final ISwerveModule moduleFrontRight;
-    final ISwerveModule moduleBackLeft;
-    final ISwerveModule moduleBackRight;
-
-    final Gyro gyro;
+    final SwerveModule moduleFrontLeft;
+    final SwerveModule moduleFrontRight;
+    final SwerveModule moduleBackLeft;
+    final SwerveModule moduleBackRight;
 
 
     //Speed factor that edits the max velocity and max angular velocity
     double speedModifier = .75;
 
 
-    List<ISwerveModule> modules;
+    ArrayList<SwerveModule> modules;
     ChassisSpeeds chassisSpeeds;
 
-    SwerveModuleState[] cachedSetpoint = new SwerveModuleState[]{
-            new SwerveModuleState(),
-            new SwerveModuleState(),
-            new SwerveModuleState(),
-            new SwerveModuleState()
-    };
+    SwerveModuleState[] cachedSetpoint = new SwerveModuleState[4];
 
-    public DriveControl(ISwerveModule moduleFrontLeft, ISwerveModule moduleFrontRight, ISwerveModule moduleBackLeft, ISwerveModule moduleBackRight, Gyro gyro, ILoggable<SwerveModuleState[]> desiredStates, ILoggable<SwerveModuleState[]> actualStates) {
+    public DriveControlSDS(ILoggable<SwerveModuleState[]> desiredStates, ILoggable<SwerveModuleState[]> actualStates, SwerveModule moduleFrontLeft, SwerveModule moduleFrontRight, SwerveModule moduleBackLeft, SwerveModule moduleBackRight) {
+        this.desiredStates = desiredStates;
+        this.actualStates = actualStates;
         this.moduleFrontLeft = moduleFrontLeft;
         this.moduleFrontRight = moduleFrontRight;
         this.moduleBackLeft = moduleBackLeft;
         this.moduleBackRight = moduleBackRight;
-        this.gyro = gyro;
-        this.desiredStates = desiredStates;
-        this.actualStates = actualStates;
-
-        // if disabled, we don't create a list of modules at all
-        if (moduleFrontLeft != null) {
-            modules = List.of(
-                    moduleFrontLeft,
-                    moduleFrontRight,
-                    moduleBackLeft,
-                    moduleBackRight
-            );
-        } else {
-            modules = List.of();
-        }
     }
+
 
     public void guaranteedLoggingLoop() {
         desiredStates.log(reportSetpointStates());
@@ -73,7 +53,12 @@ public class DriveControl implements IDriveControl {
     }
 
     public SwerveModuleState[] reportSetpointStates() {
-        return cachedSetpoint;
+        return new SwerveModuleState[]{
+                new SwerveModuleState(),
+                new SwerveModuleState(),
+                new SwerveModuleState(),
+                new SwerveModuleState()
+        };
     }
 
     public SwerveModuleState[] reportActualStates() {
@@ -85,6 +70,15 @@ public class DriveControl implements IDriveControl {
         };
     }
 
+
+    public SwerveModulePosition[] reportActualPositions() {
+        return new SwerveModulePosition[] {
+                new SwerveModulePosition(),
+                new SwerveModulePosition(),
+                new SwerveModulePosition(),
+                new SwerveModulePosition()
+        };
+    }
 
     public void drive(ChassisSpeeds chassisSpeeds) {
         this.chassisSpeeds = chassisSpeeds;
@@ -128,6 +122,7 @@ public class DriveControl implements IDriveControl {
                 modules.get(i).set(velocityToDriveVolts(states[i].speedMetersPerSecond), states[i].angle.getRadians());
             }
         }
+        cachedSetpoint = states;
     }
 
     private double velocityToDriveVolts(double speedMetersPerSecond) {
@@ -136,14 +131,9 @@ public class DriveControl implements IDriveControl {
         return MathUtil.clamp(ff, -maxVoltage, maxVoltage);
     }
 
+
+    @Override
     public SwerveModulePosition[] currentPositions() {
-        return new SwerveModulePosition[]{
-                new SwerveModulePosition(),
-                new SwerveModulePosition(),
-                new SwerveModulePosition(),
-                new SwerveModulePosition()
-        };
+        return reportActualPositions();
     }
-
-
 }

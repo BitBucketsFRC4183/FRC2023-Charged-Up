@@ -1,10 +1,6 @@
 package org.bitbuckets.drive.controlsds.sds;
 
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import org.bitbuckets.drive.DriveConstants;
 import org.bitbuckets.drive.controlsds.DriveControl;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
@@ -32,17 +28,6 @@ public class DriveControlSetup implements ISetup<DriveControl> {
 
     @Override
     public DriveControl build(ProcessPath path) {
-
-        double wheelWearFactor = 1;
-
-        double maxVelocity_metersPerSecond = 60.0 *
-                DriveConstants.MK4I_L2.getDriveReduction() *
-                (DriveConstants.MK4I_L2.getWheelDiameter() * wheelWearFactor) *
-                Math.PI;
-
-        double maxAngularVelocity_radiansPerSecond =
-                maxVelocity_metersPerSecond /
-                        Math.hypot(DriveConstants.drivetrainTrackWidth_meters / 2.0, DriveConstants.drivetrainWheelBase_meters / 2.0);
 
         //Calibrate the gyro only once when the drive subsystem is first initialized
         gyro.calibrate();

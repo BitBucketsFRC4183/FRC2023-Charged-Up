@@ -1,26 +1,24 @@
-package org.bitbuckets.lib.vendor.sim;
+package org.bitbuckets.lib.vendor.sim.dc;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
-import edu.wpi.first.wpilibj.simulation.FlywheelSim;
+import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import org.bitbuckets.lib.hardware.IMotorController;
 import org.bitbuckets.lib.hardware.MotorConfig;
 
 //TODO this needs to be run at 500 hz
-public class SimMotorController implements IMotorController, Runnable{
+public class DCSimController implements IMotorController, Runnable{
 
 
     final MotorConfig config;
-    final FlywheelSim simulatedMotor;
+    final DCMotorSim simulatedMotor;
     final PIDController simulatedPIDController;
 
-    public SimMotorController(MotorConfig config, FlywheelSim simulatedMotor, PIDController simulatedPIDController) {
+    public DCSimController(MotorConfig config, DCMotorSim simulatedMotor, PIDController simulatedPIDController) {
         this.config = config;
         this.simulatedMotor = simulatedMotor;
         this.simulatedPIDController = simulatedPIDController;
     }
 
-    double seconds = 0;
 
     @Override
     public double getMechanismFactor() {
@@ -44,7 +42,8 @@ public class SimMotorController implements IMotorController, Runnable{
 
     @Override
     public double getPositionRaw() {
-        return simulatedMotor.getAngularVelocityRPM() / seconds ;
+
+        return simulatedMotor.getAngularPositionRotations() ;
     }
 
     @Override
@@ -90,8 +89,6 @@ public class SimMotorController implements IMotorController, Runnable{
 
     @Override
     public void run() {
-        seconds += 0.02;
-
         simulatedMotor.update(0.02); //TODO this needs to be accurate
     }
 

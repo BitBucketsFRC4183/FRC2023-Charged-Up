@@ -1,7 +1,6 @@
 package org.bitbuckets.lib.log.type;
 
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import org.bitbuckets.lib.DontUseIncubating;
 import org.bitbuckets.lib.core.LogDriver;
 import org.bitbuckets.lib.log.ILoggable;
 
