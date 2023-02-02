@@ -63,22 +63,21 @@ public interface IEncoder extends IRaw {
     //utility methods
 
 
-    default double getEncoderPositionAccumulated_radians() {
-        return getPositionRaw() * getRawToRotationsFactor() * Math.PI * 2.0;
+    default double getEncoderPositionAccumulated_rot() {
+        return getPositionRaw() * getRawToRotationsFactor();
     }
 
-    default double getEncoderPositionBounded_radians() {
-        return AngleUtil.wrap(getEncoderPositionAccumulated_radians());
+    default double getEncoderPositionBound_rot() {
+        return AngleUtil.wrap(getEncoderPositionAccumulated_rot());
     }
 
-    default double getMechanismPositionAccumulated_radians() {
-        return getEncoderPositionAccumulated_radians() * getMechanismFactor();
+    default double getMechanismPositionAccum_rot() {
+        return getEncoderPositionAccumulated_rot() * getMechanismFactor();
     }
 
-    default double getMechanismPositionBounded_radians() {
-        return AngleUtil.wrap(getMechanismPositionAccumulated_radians());
+    default double getMechanismPositionBound_rot() {
+        return AngleUtil.wrap(getMechanismPositionAccum_rot());
     }
-
 
     default double getPositionMechanism_meters() {
         return getPositionEncoder_meters() * getMechanismFactor();

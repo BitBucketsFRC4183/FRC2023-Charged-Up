@@ -3,7 +3,7 @@ package org.bitbuckets.gyro;
 import com.ctre.phoenix.sensors.WPI_PigeonIMU;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
-import org.bitbuckets.lib.log.DataLogger;
+import org.bitbuckets.lib.log.ILoggable;
 
 public class GyroControlSetup implements ISetup<GyroControl> {
 
@@ -19,6 +19,7 @@ public class GyroControlSetup implements ISetup<GyroControl> {
 
         pigeonIMU.calibrate(); //calibrate on spawn
 
-        return new GyroControl(pigeonIMU);
+        ILoggable<double[]> loggable = path.generateDoubleLoggers("gyro-angle");
+        return new GyroControl(pigeonIMU, loggable);
     }
 }
