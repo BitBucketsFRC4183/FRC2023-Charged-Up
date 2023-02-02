@@ -1,5 +1,6 @@
 package org.bitbuckets.arm;
 
+
 public class ForwardKinematics {
     final double theta1;
     final double theta2;
