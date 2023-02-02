@@ -14,7 +14,6 @@ import org.bitbuckets.drive.DriveInput;
 import org.bitbuckets.drive.DriveSubsystem;
 import org.bitbuckets.drive.balance.AutoAxisControl;
 import org.bitbuckets.drive.balance.AutoAxisSetup;
-import org.bitbuckets.drive.controlsds.DriveControlSDS;
 import org.bitbuckets.drive.controlsds.DriveControl;
 import org.bitbuckets.drive.controlsds.sds.DriveControlSetup;
 import org.bitbuckets.drive.controlsds.sds.DriveControllerSetup;
@@ -24,9 +23,6 @@ import org.bitbuckets.gyro.GyroControl;
 import org.bitbuckets.gyro.GyroControlSetup;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
-import org.bitbuckets.lib.hardware.IMotorController;
-import org.bitbuckets.lib.tune.IValueTuner;
-import org.bitbuckets.lib.util.MockingUtil;
 import org.bitbuckets.lib.hardware.MotorConfig;
 import org.bitbuckets.lib.tune.IValueTuner;
 import org.bitbuckets.lib.vendor.ctre.CANCoderAbsoluteEncoderSetup;
@@ -66,11 +62,11 @@ public class RobotSetup implements ISetup<RobotContainer> {
         //also throwing errors since I'm no longer using TestPath, but rather the array
         IValueTuner<AutoPath> pathTuneable = path.generateValueTuner("path", AutoPath.AUTO_TEST_PATH_ONE);
 
-        DriveSDSSubsystem driveSubsystem = new DriveSDSSubsystem(input, robotStateControl, gyroControl, autoAxisControl, driveControl, autoControl, pathTuneable);
 
         ArmInput armInput = new ArmInput(
                 new Joystick(1)
         );
+        AutoControl autoControl = null;
         DriveSubsystem driveSubsystem = new DriveSubsystem(input, robotStateControl, gyroControl, autoAxisControl, driveControl, autoControl, pathTuneable);
         //labels: high priority
         //TODO use neos here
@@ -81,15 +77,13 @@ public class RobotSetup implements ISetup<RobotContainer> {
 
         ArmControl armControl = armControlSetup.build(path.addChild("arm-control"));
 
-        ArmInput armInput = new ArmInput(new Joystick(1));
 
         ArmSubsystem armSubsystem = new ArmSubsystem(armInput, armControl, path.generateStringLogger("arm-subsystem"));
 
-        AutoControl autoControl = new AutoControlSetup(
+        autoControl = new AutoControlSetup(
                 armControl
         ).build(path.addChild("AutoControlSetup"));
 
-        DriveSDSSubsystem driveSubsystem = new DriveSDSSubsystem(input, robotStateControl, gyroControl, autoAxisControl, driveControl, autoControl, pathTuneable);
 
         //SYSTEMS_GREEN.setOn(); //LET'S WIN SOME DAMN REGIONALS!!
 

@@ -1,9 +1,6 @@
 package org.bitbuckets.robot;
 
 import org.bitbuckets.arm.ArmSubsystem;
-import org.bitbuckets.auto.AutoPath;
-import org.bitbuckets.drive.DriveSDSSubsystem;
-import org.bitbuckets.lib.tune.IValueTuner;
 import org.bitbuckets.drive.DriveSubsystem;
 import org.bitbuckets.vision.VisionControl;
 
@@ -16,7 +13,7 @@ public class RobotContainer {
     final ArmSubsystem armSubsystem;
     final VisionControl visionControl;
 
-    public RobotContainer(DriveSubsystem driveSubsystem, ArmSubsystem armSubsystem,  VisionControl visionControl) {
+    public RobotContainer(DriveSubsystem driveSubsystem, ArmSubsystem armSubsystem, VisionControl visionControl) {
         this.driveSubsystem = driveSubsystem;
         this.armSubsystem = armSubsystem;
         this.visionControl = visionControl;

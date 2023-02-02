@@ -40,7 +40,7 @@ public class AutoControl {
     public void setMarkers() {
 
         if (eventTimer.get() > trajectory[2].getMarkers().get(2).timeSeconds) {
-            armControl.moveUpperArm(0.1);
+            //armControl.moveUpperArm(0.1);
         }
     }
 
