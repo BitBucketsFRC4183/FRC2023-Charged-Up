@@ -22,12 +22,10 @@ public class ArmControl {
 
     public void calibrateLowerArm() {
         lowerJoint.forceOffset(convertMechanismRotationtoRawRotation_lowerJoint(convertDegreesToRotation(0)));
-
     }
 
     public void calibrateUpperArm() {
         upperJoint.forceOffset(convertMechanismRotationtoRawRotation_upperJoint(convertDegreesToRotation(0)));
-
     }
 
     public void manuallyMoveLowerArm(double percentOutput) {
@@ -72,7 +70,7 @@ public class ArmControl {
     // Press X
     public void intakeHumanPlayer() {
         //Need inverse kinematics
-        double lowerAngle = 0;
+        double lowerAngle = new InverseKinematics(2. * Math.sqrt(2.), 2. * Math.sqrt(2.)).getLowerJointAngle();
         double upperAngle = 0;
         moveLowerArmToPosition_DEGREES(lowerAngle);
         moveUpperArmToPosition_DEGREES(upperAngle);
@@ -86,10 +84,8 @@ public class ArmControl {
         double upperAngle = 0;
         moveLowerArmToPosition_DEGREES(lowerAngle);
         moveUpperArmToPosition_DEGREES(upperAngle);
-
     }
 
-    // Press A
     public void scoreMid() {
         //Need inverse kinematics
         double lowerAngle = 0;
@@ -97,6 +93,35 @@ public class ArmControl {
         moveLowerArmToPosition_DEGREES(lowerAngle);
         moveUpperArmToPosition_DEGREES(upperAngle);
 
+    }
+
+    // Press B
+    public void scoreHigh() {
+
+        // Press A
+        //Need inverse kinematics
+        double lowerAngle = 0;
+        double upperAngle = 0;
+        moveLowerArmToPosition_DEGREES(lowerAngle);
+        moveUpperArmToPosition_DEGREES(upperAngle);
+
+    }
+}
+
+//public void moveToLowPos() {
+
+//moveUpperArmToPosition_DEGREES(5);
+
+//}
+
+// Press X
+    /*public void moveToMidPos() {
+        moveUpperArmToPosition_DEGREES(42.0);
+    }
+
+    // Press B
+    public void movetoHighPos() {
+        moveUpperArmToPosition_DEGREES(69);
     }
 
     // Press B

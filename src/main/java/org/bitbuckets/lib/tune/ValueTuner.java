@@ -7,6 +7,7 @@ import java.util.function.Consumer;
 
 /**
  * A tuneable value.
+ *
  * @param <T>
  */
 public class ValueTuner<T> implements Consumer<NetworkTableEvent>, IValueTuner<T> {
@@ -49,7 +50,7 @@ public class ValueTuner<T> implements Consumer<NetworkTableEvent>, IValueTuner<T
 
 
             Enum aaaa = (Enum) defaultValue;
-            Enum coerced = Enum.valueOf(aaaa.getClass(), (String)newObject);
+            Enum coerced = Enum.valueOf(aaaa.getClass(), (String) newObject);
 
             cachedValue.set(new AtomicRecord((T) coerced, true));
         } else {
@@ -68,13 +69,9 @@ public class ValueTuner<T> implements Consumer<NetworkTableEvent>, IValueTuner<T
     }
 
 
-
     public boolean hasUpdated() {
         return cachedValue.get().hasUpdated; //
     }
-
-
-
 
 
 }

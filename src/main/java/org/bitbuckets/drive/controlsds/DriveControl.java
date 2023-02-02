@@ -54,12 +54,17 @@ public class DriveControl implements IDriveControl {
         this.desiredStates = desiredStates;
         this.actualStates = actualStates;
 
-        modules = List.of(
-                moduleFrontLeft,
-                moduleFrontRight,
-                moduleBackLeft,
-                moduleBackRight
-        );
+        // if disabled, we don't create a list of modules at all
+        if (moduleFrontLeft != null) {
+            modules = List.of(
+                    moduleFrontLeft,
+                    moduleFrontRight,
+                    moduleBackLeft,
+                    moduleBackRight
+            );
+        } else {
+            modules = List.of();
+        }
     }
 
     public void guaranteedLoggingLoop() {
