@@ -4,6 +4,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 import org.bitbuckets.drive.DriveConstants;
@@ -129,6 +130,15 @@ public class DriveControl {
         int maxVoltage = 12;
         double ff = DriveConstants.feedForward.calculate(speedMetersPerSecond);
         return MathUtil.clamp(ff, -maxVoltage, maxVoltage);
+    }
+
+    public SwerveModulePosition[] currentPositions() {
+        return new SwerveModulePosition[]{
+                new SwerveModulePosition(),
+                new SwerveModulePosition(),
+                new SwerveModulePosition(),
+                new SwerveModulePosition()
+        };
     }
 
 
