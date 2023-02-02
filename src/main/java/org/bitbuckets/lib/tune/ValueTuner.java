@@ -1,14 +1,13 @@
 package org.bitbuckets.lib.tune;
 
-import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEvent;
-import edu.wpi.first.wpilibj.DriverStation;
 
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
 /**
  * A tuneable value.
+ *
  * @param <T>
  */
 public class ValueTuner<T> implements Consumer<NetworkTableEvent>, IValueTuner<T> {
@@ -31,9 +30,7 @@ public class ValueTuner<T> implements Consumer<NetworkTableEvent>, IValueTuner<T
 
     @Override
     public T consumeValue() {
-        throw new IllegalStateException("SUCK MY BALLS");
-
-        /*tomicRecord nowStale = cachedValue.getAndUpdate(record -> {
+        AtomicRecord nowStale = cachedValue.getAndUpdate(record -> {
             if (record.hasUpdated) {
                 return new AtomicRecord(record.cachedPointer, false);
             }
@@ -41,7 +38,7 @@ public class ValueTuner<T> implements Consumer<NetworkTableEvent>, IValueTuner<T
             return record; //avoid CAS operation to save loops
         });
 
-        return nowStale.cachedPointer;*/
+        return nowStale.cachedPointer;
     }
 
 
@@ -53,7 +50,7 @@ public class ValueTuner<T> implements Consumer<NetworkTableEvent>, IValueTuner<T
 
 
             Enum aaaa = (Enum) defaultValue;
-            Enum coerced = Enum.valueOf(aaaa.getClass(), (String)newObject);
+            Enum coerced = Enum.valueOf(aaaa.getClass(), (String) newObject);
 
             cachedValue.set(new AtomicRecord((T) coerced, true));
         } else {
@@ -72,13 +69,9 @@ public class ValueTuner<T> implements Consumer<NetworkTableEvent>, IValueTuner<T
     }
 
 
-
     public boolean hasUpdated() {
         return cachedValue.get().hasUpdated; //
     }
-
-
-
 
 
 }
