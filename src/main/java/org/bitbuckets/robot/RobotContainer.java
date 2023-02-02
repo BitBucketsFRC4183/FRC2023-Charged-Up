@@ -13,7 +13,7 @@ public class RobotContainer {
     final ArmSubsystem armSubsystem;
     final VisionControl visionControl;
 
-    public RobotContainer(DriveSubsystem driveSubsystem, ArmSubsystem armSubsystem,  VisionControl visionControl) {
+    public RobotContainer(DriveSubsystem driveSubsystem, ArmSubsystem armSubsystem, VisionControl visionControl) {
         this.driveSubsystem = driveSubsystem;
         this.armSubsystem = armSubsystem;
         this.visionControl = visionControl;
