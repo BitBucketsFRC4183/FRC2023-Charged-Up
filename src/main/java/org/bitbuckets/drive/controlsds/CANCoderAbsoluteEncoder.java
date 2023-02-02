@@ -4,7 +4,7 @@ import com.ctre.phoenix.sensors.CANCoder;
 import org.bitbuckets.lib.hardware.IAbsoluteEncoder;
 
 public class CANCoderAbsoluteEncoder implements IAbsoluteEncoder {
-    private final CANCoder encoder;
+    final CANCoder encoder;
 
     public CANCoderAbsoluteEncoder(CANCoder encoder) {
         this.encoder = encoder;

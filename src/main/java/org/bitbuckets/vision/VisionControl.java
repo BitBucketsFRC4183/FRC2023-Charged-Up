@@ -82,9 +82,7 @@ public class VisionControl {
         loggable.log(new double[] {yaw, pitch, area, skew, range});
         loggable2.log(new Translation2d[] {translationToTag});
 
-        Pose3d robotPose = PhotonUtils.estimateFieldToRobotAprilTag(tagPose, VisionConstants.aprilTags.compute(aprilTagTarget.getFiducialId(),(a,b) -> {
-            return b;
-        }), robotToCamera);
+        Pose3d robotPose = PhotonUtils.estimateFieldToRobotAprilTag(tagPose, VisionConstants.aprilTags.compute(aprilTagTarget.getFiducialId(),(a,b) -> b), robotToCamera);
 
         Optional<EstimatedRobotPose> robotPose2 = photonPoseEstimator.update();
 

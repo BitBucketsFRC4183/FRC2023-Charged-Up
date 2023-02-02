@@ -177,8 +177,7 @@ public class RobotSetup implements ISetup<RobotContainer> {
                         new SteerControllerSetup(
                                 new SparkSteerMotorSetup(DriveConstants.BACK_RIGHT_STEER_ID, steerMotorConfig, steerPidConfig, DriveConstants.MK4I_L2),
                                 new ThriftyEncoderSetup(DriveConstants.BACK_RIGHT_ENCODER_CHANNEL, DriveConstants.BACK_RIGHT_OFFSET))
-                ),
-                new WPI_PigeonIMU(5)
+                )
         ).build(path.addChild("drive-control"));
 
         REVPhysicsSim.getInstance().run();
@@ -251,8 +250,7 @@ public class RobotSetup implements ISetup<RobotContainer> {
                                 new CANCoderAbsoluteEncoderSetup(backRightModuleSteerEncoder_ID, backRightModuleSteerOffset),
                                 sensorPositionCoefficient
                         )
-                ),
-                new WPI_PigeonIMU(5)
+                )
         ).build(path.addChild("drive-control"));
     }
 
