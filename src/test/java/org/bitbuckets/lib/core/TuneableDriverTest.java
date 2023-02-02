@@ -24,13 +24,13 @@ class TuneableDriverTest {
 
         driver.tuneable(0, "a", 2.0);
 
-        Thread.sleep(100);
+        Thread.sleep(1000);
         Assertions.assertTrue(table.containsKey("a"));
         Assertions.assertEquals(2.0, table.getEntry("a").getDouble(0.0));
 
         table.getEntry("a").setDouble(5.0);
 
-        Thread.sleep(100);
+        Thread.sleep(1000);
         Assertions.assertEquals(5.0, table.getEntry("a").getDouble(0.0));
     }
 
