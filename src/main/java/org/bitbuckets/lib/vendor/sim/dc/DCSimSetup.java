@@ -30,7 +30,7 @@ public class DCSimSetup implements ISetup<IMotorController> {
         PIDController pidController = new PIDController(pidConfig.kP, pidConfig.kI, pidConfig.kD);
         DCSimController DCSimController = new DCSimController(config, motorSim, pidController);
 
-        path.registerLoop(DCSimController, 20, "ass");
+        path.registerSimLoop(DCSimController, "dc-motor-sim");
 
         return DCSimController;
     }
