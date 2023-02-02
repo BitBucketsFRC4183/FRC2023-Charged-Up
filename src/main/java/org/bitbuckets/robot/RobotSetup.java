@@ -66,7 +66,7 @@ public class RobotSetup implements ISetup<RobotContainer> {
         //also throwing errors since I'm no longer using TestPath, but rather the array
         IValueTuner<AutoPath> pathTuneable = path.generateValueTuner("path", AutoPath.AUTO_TEST_PATH_ONE);
 
-        DriveSDSSubsystem driveSubsystem = new DriveSDSSubsystem(input, robotStateControl, gyroControl, autoAxisControl, driveControl, autoControl, pathTuneable)
+        DriveSDSSubsystem driveSubsystem = new DriveSDSSubsystem(input, robotStateControl, gyroControl, autoAxisControl, driveControl, autoControl, pathTuneable);
 
         ArmInput armInput = new ArmInput(
                 new Joystick(1)
