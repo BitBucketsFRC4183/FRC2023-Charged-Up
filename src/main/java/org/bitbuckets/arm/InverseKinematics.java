@@ -12,6 +12,7 @@ public class InverseKinematics {
 
 
     //joint 1
+    // Result is in radians
     public double getLowerJointAngle() {
         double c = Math.sqrt(x * x + y * y);
         double alpha = Math.atan(y / x);
@@ -23,6 +24,7 @@ public class InverseKinematics {
         return lowerJointAngle;
     }
 
+    // Result is in radians
     public double getUpperJointAngle() {
         double c = Math.sqrt(x * x + y * y);
         double beta = Math.acos((Math.pow(ArmConstants.lowerJointLength, 2) + Math.pow(ArmConstants.upperJointLength, 2) - Math.pow(c, 2)) / (2 * ArmConstants.upperJointLength * ArmConstants.lowerJointLength));
