@@ -1,14 +1,27 @@
 package org.bitbuckets.lib;
 
+import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import org.bitbuckets.lib.core.IdentityDriver;
 import org.bitbuckets.lib.core.LogDriver;
 import org.bitbuckets.lib.core.LoopDriver;
 import org.bitbuckets.lib.startup.SetupDriver;
 import org.bitbuckets.lib.tune.TuneableDriver;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.littletonrobotics.junction.Logger;
 
 public class ProcessPathUtil {
+
+    @Test
+    public void testProcessPathShouldWork() {
+
+        ProcessPath path = testingProcessPath();
+
+        NetworkTableInstance.getDefault().getTable("RealOutputs/MattTuneables");
+
+
+    }
 
     public static ProcessPath testingProcessPath() {
         IdentityDriver identityDriver = new IdentityDriver();
