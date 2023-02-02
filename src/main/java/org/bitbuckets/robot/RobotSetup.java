@@ -87,7 +87,7 @@ public class RobotSetup implements ISetup<RobotContainer> {
 //        OdometryControlSetup odometryControlSetup = new OdometryControlSetup(driveControl, visionControl, gyroControl, new Pose2d(0, 0, Rotation2d.fromDegrees(0)));
 //        buildOdometryControl(path, odometryControlSetup);
 
-        return new RobotContainer(driveSubsystem, armSubsystem, visionControl);
+        return new RobotContainer(driveSubsystem, armSubsystem, visionControl, autoControl);
     }
 
     static ArmControl buildArmControl(ProcessPath path) {

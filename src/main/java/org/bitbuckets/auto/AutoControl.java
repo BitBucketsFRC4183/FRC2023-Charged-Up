@@ -41,6 +41,7 @@ public class AutoControl {
 
         if (eventTimer.get() > trajectory[2].getMarkers().get(2).timeSeconds) {
             //armControl.moveUpperArm(0.1);
+            //get arm system to work
         }
     }
 
