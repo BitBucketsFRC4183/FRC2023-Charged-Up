@@ -45,7 +45,6 @@ public class ArmSubsystem {
                 if (armInput.isIntakeHumanPressed()) {
                     state = ArmFSM.POSITION_CONTROL;
                     positionMode = "IntakeHuman";
-
                 } else if (armInput.isIntakeGroundPressed()) {
                     state = ArmFSM.POSITION_CONTROL;
                     positionMode = "IntakeGround";

@@ -70,7 +70,7 @@ public class ArmControl {
     // Press X
     public void intakeHumanPlayer() {
         //Need inverse kinematics
-        double lowerAngle = 0;
+        double lowerAngle = new InverseKinematics(2. * Math.sqrt(2.), 2. * Math.sqrt(2.)).getLowerJointAngle();
         double upperAngle = 0;
         moveLowerArmToPosition_DEGREES(lowerAngle);
         moveUpperArmToPosition_DEGREES(upperAngle);
