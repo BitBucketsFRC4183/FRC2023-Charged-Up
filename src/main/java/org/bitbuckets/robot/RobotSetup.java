@@ -57,7 +57,7 @@ public class RobotSetup implements ISetup<RobotContainer> {
         IValueTuner<AutoPath> pathTuneable = path.generateValueTuner("path", AutoPath.TEST_PATH);
 
 
-        DriveSubsystem driveSubsystem = new DriveSubsystem(input, robotStateControl, gyroControl, autoAxisControl, driveControl, autoControl, pathTuneable);
+        DriveSubsystem driveSubsystem = new DriveSubsystem(input, robotStateControl, gyroControl, autoAxisControl, driveControl, autoControl, pathTuneable, path.generateValueTuner("Orientation", DriveSubsystem.OrientationChooser.FIELD_ORIENTED));
 
         //labels: high priority
         //TODO use neos here

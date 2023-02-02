@@ -95,6 +95,9 @@ public class DriveControl {
         });
     }
 
+    public Rotation2d getGyroAngle(){
+        return gyro.getRotation2d();
+    }
 
     public double getMaxVelocity() {
         return DriveConstants.MAX_DRIVE_VELOCITY * speedModifier;
