@@ -12,7 +12,6 @@ import org.junit.jupiter.api.Test;
 
 class PIDCalculatorSetupTest {
 
-    @Disabled
     @Test
     void pidCalculator_shouldWork() throws InterruptedException {
         assert HAL.initialize(500, 0);
@@ -26,13 +25,15 @@ class PIDCalculatorSetupTest {
 
         NetworkTableEntry e = NetworkTableInstance.getDefault().getTable("RealOutputs/MattTuneables").getEntry("calculator");
 
-        //Assertions.assertTrue(e.exists());
-        //Assertions.assertTrue(e.isValid());
+        Assertions.assertTrue(e.exists(), "nettable entry should exist");
+        Assertions.assertTrue(e.isValid(), "nettable entry should be valid");
+
+        Assertions.assertEquals(1.0, calculator.rawAccess(PIDController.class).getP(), "initial P value should be 1");
 
         NetworkTableInstance.getDefault().getTable("RealOutputs/MattTuneables").getEntry("calculator/p").setDouble(2.0);
 
         Thread.sleep(1000);
-        Assertions.assertEquals(2.0, calculator.rawAccess(PIDController.class).getP());
+        Assertions.assertEquals(2.0, calculator.rawAccess(PIDController.class).getP(), "pid calculator should read 2");
 
     }
 }

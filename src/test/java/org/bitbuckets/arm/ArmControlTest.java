@@ -11,6 +11,7 @@ class ArmControlTest {
 
     IMotorController lowerJoint;
     IMotorController upperJoint;
+
     @BeforeEach
     public void beforeEach() {
         lowerJoint = mock();
