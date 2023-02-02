@@ -7,8 +7,6 @@ import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.lib.log.LoggingConstants;
 import org.bitbuckets.lib.tune.IValueTuner;
 
-@DontUseIncubating
-@Deprecated
 public class PIDCalculatorSetup implements ISetup<IPIDCalculator> {
 
     final PIDConfig pidConfig;
