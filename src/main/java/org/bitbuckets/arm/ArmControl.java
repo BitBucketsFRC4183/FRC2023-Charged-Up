@@ -70,7 +70,7 @@ public class ArmControl {
     // Press X
     public void intakeHumanPlayer() {
         //Need inverse kinematics
-        double lowerAngle = new InverseKinematics(2. * Math.sqrt(2.), 2. * Math.sqrt(2.)).getLowerJointAngle();
+        double lowerAngle = 0;
         double upperAngle = 0;
         moveLowerArmToPosition_DEGREES(lowerAngle);
         moveUpperArmToPosition_DEGREES(upperAngle);
@@ -88,6 +88,8 @@ public class ArmControl {
 
     public void scoreMid() {
         //Need inverse kinematics
+
+        // pass x position and y position as parameters to the inverse kinematics constructor
         double lowerAngle = 0;
         double upperAngle = 0;
         moveLowerArmToPosition_DEGREES(lowerAngle);

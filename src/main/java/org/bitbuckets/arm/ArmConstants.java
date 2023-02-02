@@ -19,8 +19,8 @@ public interface ArmConstants {
     PIDConfig LOWER_PID = new PIDConfig(0,0,0,0);
     PIDConfig UPPER_PID = new PIDConfig(0,0,0,0);
     //change these
-    double lowerJointLength = 2.;
-    double upperJointLength = 2.;
+    double lowerJointLength = 0.695;
+    double upperJointLength = 0.84;
 
     // Feel free to change to make arms faster/slower for input
     double CONTROL_JOINT_OUTPUT = 0.3;
