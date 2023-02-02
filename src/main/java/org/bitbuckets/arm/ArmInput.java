@@ -31,51 +31,43 @@ public class ArmInput {
     }
 
     public double getLowerArm_PercentOutput() {
-        if (getReverseLowerArmHeld()) {
-            return -1 * armDeadband(operatorControl.getRawAxis(XboxController.Axis.kLeftTrigger.value));
-        }
-        return armDeadband(operatorControl.getRawAxis(XboxController.Axis.kLeftTrigger.value));
-    }
 
-    //Checks if the user wants to move the lower arm back (if the left bumper is held)
-    public boolean getReverseLowerArmHeld() {
-        return (operatorControl.getRawButton(XboxController.Button.kLeftBumper.value));
+        return armDeadband(operatorControl.getRawAxis(XboxController.Axis.kLeftY.value));
     }
 
 
     //how fast the user wants to move the upper arm (controlled by right trigger)
     public double getUpperArm_PercentOutput() {
-        if (getReverseUpperArmHeld()) {
-            return -1 * armDeadband(operatorControl.getRawAxis(XboxController.Axis.kRightTrigger.value));
-        }
-        return armDeadband(operatorControl.getRawAxis(XboxController.Axis.kRightTrigger.value));
+
+        return armDeadband(operatorControl.getRawAxis(XboxController.Axis.kRightY.value));
     }
 
     //checks if the user wants to move the upper arm back (if the right bumper is held)
-    public boolean getReverseUpperArmHeld() {
-        return operatorControl.getRawButton(XboxController.Button.kRightBumper.value);
-    }
-
-    public boolean isIntakePressed() {
-        return operatorControl.getRawButtonPressed(XboxController.Button.kA.value);
-    }
 
 
-    //checks if the user wants to move the arms to the lower position (if y is pressed)
-    public boolean isLowPosPressed() {
-        return operatorControl.getRawButtonPressed(XboxController.Button.kY.value);
-    }
-
-    //checks if the user wants to move the arms to the upper position (if b is pressed)
-    public boolean isHighPosPressed() {
-        return operatorControl.getRawButtonPressed(XboxController.Button.kB.value);
-    }
-
-    //checks if the user wants to move the arms to the middle position (if x is pressed)
-    public boolean isMidPosPressed() {
+    // checks if operator wants to move arms to intake for human player station (by pressing X)
+    public boolean isIntakeHumanPressed() {
         return operatorControl.getRawButtonPressed(XboxController.Button.kX.value);
     }
 
+    // checks if operator wants to move arms to intake for game piece on the floor (by pressing Y)
+    public boolean isIntakeGroundPressed() {
+        return operatorControl.getRawButtonPressed(XboxController.Button.kY.value);
+    }
+
+
+    // checks if operator wants to move arms to score in medium grid position (by pressing A)
+    public boolean isScoreMidPressed() {
+        return operatorControl.getRawButtonPressed(XboxController.Button.kA.value);
+    }
+
+    // checks if operator wants to move arms to score in high grid position (by pressing B)
+    public boolean isScoreHighPressed() {
+        return operatorControl.getRawButtonPressed(XboxController.Button.kB.value);
+    }
+
+
+    // sets current lowerArm and upperArm position to 0 when left joystick button is pressed
     public boolean isCalibratedPressed() {
         return operatorControl.getRawButtonPressed(XboxController.Button.kLeftStick.value);
     }

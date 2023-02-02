@@ -11,6 +11,7 @@ import org.bitbuckets.drive.controlsds.DriveControl;
 import org.bitbuckets.gyro.GyroControl;
 import org.bitbuckets.lib.tune.IValueTuner;
 import org.bitbuckets.robot.RobotStateControl;
+import org.bitbuckets.lib.util.MathUtil;
 
 
 /**
@@ -29,6 +30,7 @@ public class DriveSubsystem {
 
     final IValueTuner<AutoPath> path;
 
+
     public enum OrientationChooser {
         FIELD_ORIENTED,
         ROBOT_ORIENTED,
@@ -37,6 +39,8 @@ public class DriveSubsystem {
     final IValueTuner<OrientationChooser> orientation;
 
     public DriveSubsystem(DriveInput input, RobotStateControl robotStateControl, GyroControl gyroControl, AutoAxisControl autoAxisControl, DriveControl driveControl, AutoControl autoControl, IValueTuner<AutoPath> path, IValueTuner<OrientationChooser> orientation) {
+
+    public DriveSubsystem(DriveInput input, RobotStateControl robotStateControl, GyroControl gyroControl, AutoAxisControl autoAxisControl, DriveControl driveControl, AutoControl autoControl, IValueTuner<AutoPath> path) {
         this.input = input;
         this.robotStateControl = robotStateControl;
         this.gyroControl = gyroControl;
