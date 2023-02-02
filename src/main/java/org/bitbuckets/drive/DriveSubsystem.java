@@ -39,7 +39,6 @@ public class DriveSubsystem {
     final IValueTuner<OrientationChooser> orientation;
 
     public DriveSubsystem(DriveInput input, RobotStateControl robotStateControl, GyroControl gyroControl, AutoAxisControl autoAxisControl, DriveControl driveControl, AutoControl autoControl, IValueTuner<AutoPath> path, IValueTuner<OrientationChooser> orientation) {
-
         this.input = input;
         this.robotStateControl = robotStateControl;
         this.gyroControl = gyroControl;

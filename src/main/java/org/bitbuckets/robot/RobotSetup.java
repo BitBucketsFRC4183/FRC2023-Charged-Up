@@ -69,7 +69,7 @@ public class RobotSetup implements ISetup<RobotContainer> {
                 new Joystick(1)
         );
         AutoControl autoControl = null;
-        DriveSubsystem driveSubsystem = new DriveSubsystem(input, robotStateControl, gyroControl, autoAxisControl, driveControl, autoControl, pathTuneable);
+        DriveSubsystem driveSubsystem = new DriveSubsystem(input, robotStateControl, gyroControl, autoAxisControl, driveControl, autoControl, pathTuneable, path.generateValueTuner("Orientation", DriveSubsystem.OrientationChooser.FIELD_ORIENTED));
         //labels: high priority
         //TODO use neos here
         ArmControlSetup armControlSetup = new ArmControlSetup(
