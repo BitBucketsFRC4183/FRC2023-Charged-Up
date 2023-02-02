@@ -122,7 +122,7 @@ public class RobotSetup implements ISetup<RobotContainer> {
      * @param path
      * @return
      */
-    private static DriveControl buildNeoDriveControl(ProcessPath path) {
+    static DriveControl buildNeoDriveControl(ProcessPath path) {
         if (!driveEnabled) {
             return MockingUtil.buddy(DriveControl.class);
         }
@@ -190,7 +190,7 @@ public class RobotSetup implements ISetup<RobotContainer> {
      * @param path
      * @return
      */
-    private static DriveControl buildTalonDriveControl(ProcessPath path) {
+    static DriveControl buildTalonDriveControl(ProcessPath path) {
 
         int frontLeftModuleDriveMotor_ID = 1;
         int frontLeftModuleSteerMotor_ID = 2;
