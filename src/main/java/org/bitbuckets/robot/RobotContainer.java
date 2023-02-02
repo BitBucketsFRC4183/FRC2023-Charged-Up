@@ -14,6 +14,7 @@ public class RobotContainer {
     final ArmSubsystem armSubsystem;
     final VisionControl visionControl;
 
+    public RobotContainer(DriveSubsystem driveSubsystem, ArmSubsystem armSubsystem, VisionControl visionControl) {
     final ElevatorSubsystem elevatorSubsystem;
 
     public RobotContainer(DriveSubsystem driveSubsystem, ArmSubsystem armSubsystem, VisionControl visionControl, ElevatorSubsystem elevatorSubsystem) {
