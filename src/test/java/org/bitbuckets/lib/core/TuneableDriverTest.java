@@ -3,6 +3,7 @@ package org.bitbuckets.lib.core;
 import edu.wpi.first.hal.HAL;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import org.bitbuckets.drive.DriveSubsystem;
 import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.lib.tune.IValueTuner;
 import org.bitbuckets.lib.tune.TuneableDriver;
@@ -66,6 +67,38 @@ class TuneableDriverTest {
 
         Assertions.assertEquals("test", table.getEntry(key).getString("bad"));
         Assertions.assertEquals("test", tuner.readValue());
+
+    }
+
+    @Test
+    void tuneable_shouldWorkWithEnum() throws InterruptedException {
+        assert HAL.initialize(500, 0);
+
+        NetworkTable table = NetworkTableInstance.getDefault().getTable("RealOutputs/MattTuneables");
+        IdentityDriver id = new IdentityDriver();
+        TuneableDriver driver = new TuneableDriver(table, id);
+        ProcessPath path = new ProcessPath(
+                0,
+                Mockito.mock(),
+                id,
+                Mockito.mock(),
+                Mockito.mock(),
+                driver,
+                false
+        );
+
+        // each test needs a unique key in the table
+        String key = "c";
+        IValueTuner<DriveSubsystem.OrientationChooser> tuner = path.generateValueTuner(key, DriveSubsystem.OrientationChooser.FIELD_ORIENTED);
+        Thread.sleep(100);
+
+        Assertions.assertTrue(table.getEntry(key).exists());
+        Assertions.assertEquals(DriveSubsystem.OrientationChooser.FIELD_ORIENTED, tuner.readValue());
+
+        table.getEntry(key).setString(DriveSubsystem.OrientationChooser.ROBOT_ORIENTED.toString());
+        Thread.sleep(100);
+
+        Assertions.assertEquals(DriveSubsystem.OrientationChooser.ROBOT_ORIENTED, tuner.readValue());
 
     }
 }
