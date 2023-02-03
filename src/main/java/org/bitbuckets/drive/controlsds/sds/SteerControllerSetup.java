@@ -29,7 +29,8 @@ public class SteerControllerSetup implements ISetup<ISteerController> {
         var controller = new SteerController(
                 motor.build(path.addChild("motor")),
                 encoder.build(path.addChild("encoder")),
-                sensorPositionCoefficient);
+                sensorPositionCoefficient
+        );
 
         // this used to be: checkNeoError(integratedEncoder.setPosition(absoluteEncoder.getAbsoluteAngle()), "Failed to set NEO encoder position");
         // in the motor setup

@@ -17,8 +17,6 @@ public class GyroControlSetup implements ISetup<GyroControl> {
     public GyroControl build(ProcessPath path) {
         WPI_PigeonIMU pigeonIMU = new WPI_PigeonIMU(canId);
 
-        pigeonIMU.calibrate(); //calibrate on spawn
-
         ILoggable<double[]> loggable = path.generateDoubleLoggers("gyro-angle");
         return new GyroControl(pigeonIMU, loggable);
     }

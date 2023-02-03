@@ -6,6 +6,7 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import org.bitbuckets.drive.controlsds.sds.SwerveModuleConfiguration;
 import org.bitbuckets.lib.ProcessPath;
+import org.bitbuckets.lib.control.PIDConfig;
 import org.bitbuckets.lib.hardware.IMotorController;
 import org.bitbuckets.lib.hardware.MotorConfig;
 
@@ -24,8 +25,8 @@ public class SparkSteerMotorSetup extends SparkSetup {
 //    double pidIntegral = 0;
 //    double pidDerivative = .1;
 
-    public SparkSteerMotorSetup(int canId, MotorConfig motorConfig, SwerveModuleConfiguration swerveModuleConfiguration) {
-        super(canId, motorConfig);
+    public SparkSteerMotorSetup(int canId, MotorConfig motorConfig, PIDConfig pidConfig, SwerveModuleConfiguration swerveModuleConfiguration) {
+        super(canId, motorConfig, pidConfig);
         this.swerveModuleConfiguration = swerveModuleConfiguration;
     }
 
@@ -41,8 +42,6 @@ public class SparkSteerMotorSetup extends SparkSetup {
         checkNeoError(motor.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus2, 20), "Failed to set periodic status frame 2 rate");
         checkNeoError(motor.setIdleMode(CANSparkMax.IdleMode.kBrake), "Failed to set NEO idle mode");
         motor.setInverted(!swerveModuleConfiguration.isSteerInverted());
-        checkNeoError(motor.enableVoltageCompensation(nominalVoltage), "Failed to enable voltage compensation");
-        checkNeoError(motor.setSmartCurrentLimit((int) Math.round(swerveModuleConfiguration.getSteerCurrentLimit())), "Failed to set NEO current limits");
 
         RelativeEncoder integratedEncoder = motor.getEncoder();
         checkNeoError(integratedEncoder.setPositionConversionFactor(2.0 * Math.PI * swerveModuleConfiguration.getSteerReduction()), "Failed to set NEO encoder conversion factor");

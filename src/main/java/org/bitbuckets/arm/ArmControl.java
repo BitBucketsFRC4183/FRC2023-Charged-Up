@@ -58,11 +58,11 @@ public class ArmControl {
     }
 
     public double convertMechanismRotationtoRawRotation_lowerJoint(double mechanismRotation) {
-        return mechanismRotation * ArmConstants.lowerArmGearRatio;
+        return mechanismRotation * ArmConstants.LOWER_ARM_GEAR_RATIO;
     }
 
     public double convertMechanismRotationtoRawRotation_upperJoint(double mechanismRotation) {
-        return mechanismRotation * ArmConstants.upperArmGearRatio;
+        return mechanismRotation * ArmConstants.UPPER_ARM_GEAR_RATIO;
     }
 
     // Make sure to change/tune lowerAngle and upperAngle for each position
@@ -107,58 +107,3 @@ public class ArmControl {
 
     }
 }
-
-//public void moveToLowPos() {
-
-//moveUpperArmToPosition_DEGREES(5);
-
-//}
-
-// Press X
-    /*public void moveToMidPos() {
-        moveUpperArmToPosition_DEGREES(42.0);
-    }
-
-    // Press B
-    public void movetoHighPos() {
-        moveUpperArmToPosition_DEGREES(69);
-    }
-
-    // Press B
-    public void scoreHigh() {
-        //Need inverse kinematics
-        double lowerAngle = 0;
-        double upperAngle = 0;
-        moveLowerArmToPosition_DEGREES(lowerAngle);
-        moveUpperArmToPosition_DEGREES(upperAngle);
-
-    }
-}
-
-//public void moveToLowPos() {
-
-//moveUpperArmToPosition_DEGREES(5);
-
-//}
-
-// Press X
-    /*public void moveToMidPos() {
-        moveUpperArmToPosition_DEGREES(42.0);
-    }
-
-    // Press B
-    public void movetoHighPos() {
-        moveUpperArmToPosition_DEGREES(69);
-    }
-
-
-    public void stopLower() {
-        lowerJoint.moveAtPercent(0);
-    }
-
-    public void stopUpper() {
-        upperJoint.moveAtPercent(0);
-    }
-
-
-} */
