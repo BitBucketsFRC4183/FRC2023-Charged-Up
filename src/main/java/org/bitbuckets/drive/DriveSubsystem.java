@@ -1,6 +1,5 @@
 package org.bitbuckets.drive;
 
-import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Preferences;
@@ -12,7 +11,6 @@ import org.bitbuckets.drive.controlsds.DriveControl;
 import org.bitbuckets.gyro.GyroControl;
 import org.bitbuckets.lib.tune.IValueTuner;
 import org.bitbuckets.robot.RobotStateControl;
-import org.bitbuckets.lib.util.MathUtil;
 
 
 /**
@@ -84,6 +82,10 @@ public class DriveSubsystem {
 
                 break;
             case TELEOP_NORMAL:
+                if (robotStateControl.isRobotAutonomous()) {
+                    state = DriveFSM.AUTO_PATHFINDING;
+                    break;
+                }
 
                 if (input.isAutoBalancePressed()) {
                     state = DriveFSM.TELEOP_BALANCING; //do balancing next iteration
@@ -120,25 +122,25 @@ public class DriveSubsystem {
         double yOutput = -input.getInputY() * driveControl.getMaxVelocity();
         double rotationOutput = input.getInputRot() * driveControl.getMaxAngularVelocity();
 
-        switch (orientation.consumeValue()) {
-            case FIELD_ORIENTED:
-                if (xOutput == 0 && yOutput == 0 && rotationOutput == 0) {
-                    driveControl.stopSticky();
-                } else {
-                    driveControl.drive(
-                            ChassisSpeeds.fromFieldRelativeSpeeds(xOutput, yOutput, rotationOutput, driveControl.getGyroAngle())
-                    );
-                }
-                break;
-            case ROBOT_ORIENTED:
-                if (xOutput == 0 && yOutput == 0 && rotationOutput == 0) {
-                    driveControl.stopSticky();
-                } else {
-                    ChassisSpeeds robotOrient = new ChassisSpeeds(xOutput, yOutput, rotationOutput);
-                    driveControl.drive(robotOrient);
-                }
-                break;
-        }
+//        switch (orientation.readValue()) {
+//            case FIELD_ORIENTED:
+//                if (xOutput == 0 && yOutput == 0 && rotationOutput == 0) {
+//                    driveControl.stopSticky();
+//                } else {
+//                    driveControl.drive(
+//                            ChassisSpeeds.fromFieldRelativeSpeeds(xOutput, yOutput, rotationOutput, gyroControl.getGyroAngle())
+//                    );
+//                }
+//                break;
+//            case ROBOT_ORIENTED:
+//                if (xOutput == 0 && yOutput == 0 && rotationOutput == 0) {
+//                    driveControl.stopSticky();
+//                } else {
+//                    ChassisSpeeds robotOrient = new ChassisSpeeds(xOutput, yOutput, rotationOutput);
+//                    driveControl.drive(robotOrient);
+//                }
+//                break;
+//        }
     }
 
     void teleopBalancing() {

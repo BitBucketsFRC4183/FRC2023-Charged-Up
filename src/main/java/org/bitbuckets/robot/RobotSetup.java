@@ -1,6 +1,5 @@
 package org.bitbuckets.robot;
 
-import com.ctre.phoenix.sensors.WPI_PigeonIMU;
 import com.revrobotics.REVPhysicsSim;
 import edu.wpi.first.wpilibj.Joystick;
 import org.bitbuckets.arm.*;
@@ -21,13 +20,10 @@ import org.bitbuckets.gyro.GyroControl;
 import org.bitbuckets.gyro.GyroControlSetup;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
-import org.bitbuckets.lib.hardware.IMotorController;
-import org.bitbuckets.lib.hardware.MotorConfig;
-import org.bitbuckets.lib.tune.IValueTuner;
-import org.bitbuckets.lib.util.MockingUtil;
 import org.bitbuckets.lib.control.PIDConfig;
 import org.bitbuckets.lib.hardware.MotorConfig;
 import org.bitbuckets.lib.tune.IValueTuner;
+import org.bitbuckets.lib.util.MockingUtil;
 import org.bitbuckets.lib.vendor.ctre.CANCoderAbsoluteEncoderSetup;
 import org.bitbuckets.lib.vendor.ctre.TalonDriveMotorSetup;
 import org.bitbuckets.lib.vendor.ctre.TalonSteerMotorSetup;
@@ -70,19 +66,10 @@ public class RobotSetup implements ISetup<RobotContainer> {
 
 
         AutoControl autoControl = null;
-        DriveSubsystem driveSubsystem = new DriveSubsystem(input, robotStateControl, gyroControl, autoAxisControl, driveControl, autoControl, pathTuneable);
 
-
-        ArmInput armInput = new ArmInput(
-                new Joystick(1)
-        );
-        AutoControl autoControl = null;
         DriveSubsystem driveSubsystem = new DriveSubsystem(input, robotStateControl, gyroControl, autoAxisControl, driveControl, autoControl, pathTuneable, path.generateValueTuner("Orientation", DriveSubsystem.OrientationChooser.FIELD_ORIENTED));
         //labels: high priority
         //TODO use neos here
-
-
-        ArmControl armControl = armControlSetup.build(path.addChild("arm-control"));
 
         ArmControl armControl = buildArmControl(path);
         ArmInput armInput = new ArmInput(

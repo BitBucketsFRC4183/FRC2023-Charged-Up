@@ -6,7 +6,6 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.interfaces.Gyro;
 import org.bitbuckets.drive.DriveConstants;
 import org.bitbuckets.drive.IDriveControl;
 import org.bitbuckets.drive.controlsds.sds.ISwerveModule;
@@ -96,10 +95,6 @@ public class DriveControl implements IDriveControl {
                 new SwerveModuleState(0, Rotation2d.fromDegrees(-45)), //Back Left
                 new SwerveModuleState(0, Rotation2d.fromDegrees(45)) //Back Right
         });
-    }
-
-    public Rotation2d getGyroAngle(){
-        return gyro.getRotation2d();
     }
 
     public double getMaxVelocity() {
