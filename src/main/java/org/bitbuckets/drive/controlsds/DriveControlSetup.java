@@ -1,7 +1,8 @@
-package org.bitbuckets.drive.controlsds.sds;
+package org.bitbuckets.drive.controlsds;
 
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 import org.bitbuckets.drive.controlsds.DriveControl;
+import org.bitbuckets.drive.controlsds.sds.ISwerveModule;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
 

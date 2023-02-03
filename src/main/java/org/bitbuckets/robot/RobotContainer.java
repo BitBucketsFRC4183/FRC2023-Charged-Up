@@ -25,7 +25,6 @@ public class RobotContainer {
     }
 
     public void robotPeriodic() {
-        armSubsystem.robotPeriodic();
         driveSubsystem.robotPeriodic();
     }
 

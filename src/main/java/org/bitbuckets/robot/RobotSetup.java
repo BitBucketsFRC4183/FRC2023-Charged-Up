@@ -1,6 +1,5 @@
 package org.bitbuckets.robot;
 
-import com.ctre.phoenix.sensors.WPI_PigeonIMU;
 import com.revrobotics.REVPhysicsSim;
 import edu.wpi.first.wpilibj.Joystick;
 import org.bitbuckets.arm.*;
@@ -13,7 +12,7 @@ import org.bitbuckets.drive.DriveSubsystem;
 import org.bitbuckets.drive.balance.AutoAxisControl;
 import org.bitbuckets.drive.balance.AutoAxisSetup;
 import org.bitbuckets.drive.controlsds.DriveControl;
-import org.bitbuckets.drive.controlsds.sds.DriveControlSetup;
+import org.bitbuckets.drive.controlsds.DriveControlSetup;
 import org.bitbuckets.drive.controlsds.sds.DriveControllerSetup;
 import org.bitbuckets.drive.controlsds.sds.SteerControllerSetup;
 import org.bitbuckets.drive.controlsds.sds.SwerveModuleSetup;
@@ -25,8 +24,6 @@ import org.bitbuckets.lib.hardware.MotorConfig;
 import org.bitbuckets.lib.tune.IValueTuner;
 import org.bitbuckets.lib.util.MockingUtil;
 import org.bitbuckets.lib.control.PIDConfig;
-import org.bitbuckets.lib.hardware.MotorConfig;
-import org.bitbuckets.lib.tune.IValueTuner;
 import org.bitbuckets.lib.vendor.ctre.CANCoderAbsoluteEncoderSetup;
 import org.bitbuckets.lib.vendor.ctre.TalonDriveMotorSetup;
 import org.bitbuckets.lib.vendor.ctre.TalonSteerMotorSetup;
