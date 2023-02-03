@@ -20,18 +20,19 @@ class TuneableDriverTest {
         IdentityDriver id = new IdentityDriver();
         TuneableDriver driver = new TuneableDriver(table, id);
 
-
-
-        driver.tuneable(0, "a", 2.0);
-
-        Thread.sleep(1000);
-        Assertions.assertTrue(table.containsKey("a"));
-        Assertions.assertEquals(2.0, table.getEntry("a").getDouble(0.0));
-
-        table.getEntry("a").setDouble(5.0);
+        // each test needs a unique key in the table
+        String key = "a";
+        driver.tuneable(0, key, 2.0);
 
         Thread.sleep(1000);
-        Assertions.assertEquals(5.0, table.getEntry("a").getDouble(0.0));
+        Assertions.assertTrue(table.containsKey(key));
+        var entry = table.getEntry(key).getDouble(0.0);
+        Assertions.assertEquals(2.0, entry);
+
+        table.getEntry(key).setDouble(5.0);
+
+        Thread.sleep(1000);
+        Assertions.assertEquals(5.0, table.getEntry(key).getDouble(0.0));
     }
 
     @Test
@@ -51,18 +52,19 @@ class TuneableDriverTest {
                 false
         );
 
-
-        IValueTuner<String> tuner = path.generateValueTuner("a", "hello");
+        // each test needs a unique key in the table
+        String key = "b";
+        IValueTuner<String> tuner = path.generateValueTuner(key, "hello");
         Thread.sleep(100);
 
-        Assertions.assertTrue(table.getEntry("a").exists());
-        Assertions.assertEquals("hello", table.getEntry("a").getString("bad"));
-        Assertions.assertEquals("hello",tuner.readValue());
+        Assertions.assertTrue(table.getEntry(key).exists());
+        Assertions.assertEquals("hello", table.getEntry(key).getString("bad"));
+        Assertions.assertEquals("hello", tuner.readValue());
 
-        table.getEntry("a").setString("test");
+        table.getEntry(key).setString("test");
         Thread.sleep(100);
 
-        Assertions.assertEquals("test", table.getEntry("a").getString("bad"));
+        Assertions.assertEquals("test", table.getEntry(key).getString("bad"));
         Assertions.assertEquals("test", tuner.readValue());
 
     }
