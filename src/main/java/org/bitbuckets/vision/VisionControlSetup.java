@@ -36,7 +36,7 @@ public class VisionControlSetup implements ISetup<VisionControl> {
 
 
         ILoggable<Translation2d[]> loggable2 = null;
-        return new VisionControl(robotToCamera, robotPose2d, aprilTagFieldLayout, photonPoseEstimator, photonCamera, loggable, loggable2);
+        return new VisionControl(robotToCamera, aprilTagFieldLayout, photonPoseEstimator, photonCamera, loggable, loggable2);
     }
 
 }

@@ -54,6 +54,10 @@ public class DriveSubsystem {
 
     DriveFSM state = DriveFSM.UNINITIALIZED;
 
+    public void makeVisionMode() {
+        state = DriveFSM.TELEOP_VISION;
+    }
+
     public void robotPeriodic() {
 
 
@@ -111,6 +115,9 @@ public class DriveSubsystem {
                 }
 
                 teleopBalancing();
+                break;
+            case TELEOP_VISION:
+                //TODO fix this make it change states
                 break;
             case TELEOP_AUTOHEADING:
                 if (input.isDefaultPressed()) {
@@ -194,4 +201,7 @@ public class DriveSubsystem {
 
 
     }
+
+
+
 }
