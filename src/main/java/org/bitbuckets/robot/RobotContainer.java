@@ -1,7 +1,9 @@
 package org.bitbuckets.robot;
 
 import org.bitbuckets.arm.ArmSubsystem;
-import org.bitbuckets.drive.DriveSubsystem;
+import org.bitbuckets.drive.DriveSDSSubsystem;
+import org.bitbuckets.drive.controlsds.DriveControlSDS;
+import org.bitbuckets.drive.module.ChaseTagCommand;
 import org.bitbuckets.vision.VisionControl;
 
 /**
@@ -13,11 +15,17 @@ public class RobotContainer {
     final ArmSubsystem armSubsystem;
     final VisionControl visionControl;
 
-    public RobotContainer(DriveSubsystem driveSubsystem, ArmSubsystem armSubsystem, VisionControl visionControl) {
+    final DriveControlSDS driveControlSDS;
+
+
+
+
+    public RobotContainer(DriveSDSSubsystem driveSubsystem, ArmSubsystem armSubsystem, VisionControl visionControl, DriveControlSDS driveControlSDS) {
         this.driveSubsystem = driveSubsystem;
         this.armSubsystem = armSubsystem;
         this.visionControl = visionControl;
 
+        this.driveControlSDS = driveControlSDS;
     }
 
     public void autoPeriodic() {

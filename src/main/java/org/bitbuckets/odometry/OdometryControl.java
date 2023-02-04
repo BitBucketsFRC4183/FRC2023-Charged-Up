@@ -26,6 +26,24 @@ public class OdometryControl implements Runnable {
         return swerveDrivePoseEstimator.getEstimatedPosition();
     }
 
+   public void estimatedCombinedPose() {
+      // swerveDrivePoseEstimator.addVisionMeasurement();
+   }
+
+
+
+    Field2d field = new Field2d();
+
+   // public void swervePoseStateStdDevs() {
+   //     final Vector<N7> stateStdDevs = VecBuilder.fill();
+    //}
+
+ //   @Override
+    public void teleopPeriodic() {
+
+
+    }
+
     @Override
     public void run() {
         Rotation2d gyroangle = gyroControl.getGyroAngle();

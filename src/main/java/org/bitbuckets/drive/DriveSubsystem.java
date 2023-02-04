@@ -165,4 +165,11 @@ public class DriveSubsystem {
 
 
     }
+
+    public void drive(ChassisSpeeds fromFieldRelativeSpeeds) {
+        driveControl.drive(
+                new ChassisSpeeds(0, 0.5, 0)
+        );
+    }
+
 }

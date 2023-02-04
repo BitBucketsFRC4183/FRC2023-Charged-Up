@@ -18,10 +18,10 @@ import java.util.Optional;
 public class VisionControl {
 
 
-
-    final Transform3d robotToCamera;
+    public static Transform3d robotToCamera;
+  //  final Transform3d robotToCamera;
     final Pose2d pose2d;
-    final PhotonCamera photonCamera;
+    public static PhotonCamera photonCamera;
     final AprilTagFieldLayout aprilTagFieldLayout;
     final PhotonPoseEstimator photonPoseEstimator;
     final ILoggable<double[]> loggable;
