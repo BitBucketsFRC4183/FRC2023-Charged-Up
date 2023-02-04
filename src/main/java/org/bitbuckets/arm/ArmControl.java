@@ -1,6 +1,9 @@
 package org.bitbuckets.arm;
 
 import org.bitbuckets.lib.hardware.IMotorController;
+import org.bitbuckets.arm.InverseKinematics;
+
+import javax.management.relation.InvalidRelationIdException;
 
 
 public class ArmControl {
@@ -58,11 +61,11 @@ public class ArmControl {
     }
 
     public double convertMechanismRotationtoRawRotation_lowerJoint(double mechanismRotation) {
-        return mechanismRotation * ArmConstants.LOWER_ARM_GEAR_RATIO;
+        return mechanismRotation / ArmConstants.LOWER_ARM_GEAR_RATIO;
     }
 
     public double convertMechanismRotationtoRawRotation_upperJoint(double mechanismRotation) {
-        return mechanismRotation * ArmConstants.UPPER_ARM_GEAR_RATIO;
+        return mechanismRotation / ArmConstants.UPPER_ARM_GEAR_RATIO;
     }
 
     // Make sure to change/tune lowerAngle and upperAngle for each position
@@ -70,9 +73,9 @@ public class ArmControl {
     // Press X
     public void intakeHumanPlayer() {
         //Need inverse kinematics
-        double lowerAngle = new InverseKinematics(2. * Math.sqrt(2.), 2. * Math.sqrt(2.)).getLowerJointAngle();
+        double lowerAngle = 0;
         double upperAngle = 0;
-        moveLowerArmToPosition_DEGREES(lowerAngle);
+        //moveLowerArmToPosition_DEGREES(lowerAngle);
         moveUpperArmToPosition_DEGREES(upperAngle);
 
     }
@@ -80,17 +83,21 @@ public class ArmControl {
     // Press Y
     public void intakeGround() {
         //Need inverse kinematics
-        double lowerAngle = 0;
-        double upperAngle = 0;
-        moveLowerArmToPosition_DEGREES(lowerAngle);
+        double lowerAngle = 45;
+        double upperAngle = 45;
+        //moveLowerArmToPosition_DEGREES(lowerAngle);
         moveUpperArmToPosition_DEGREES(upperAngle);
     }
 
+    // Press A
     public void scoreMid() {
         //Need inverse kinematics
-        double lowerAngle = 0;
-        double upperAngle = 0;
-        moveLowerArmToPosition_DEGREES(lowerAngle);
+
+        // pass x position and y position as parameters to the inverse kinematics constructor
+        InverseKinematics midNode = new InverseKinematics(1.085,1.085);
+        double lowerAngle = Math.toDegrees(midNode.getLowerJointAngle());
+        double upperAngle = Math.toDegrees(midNode.getUpperJointAngle());
+        //moveLowerArmToPosition_DEGREES(lowerAngle);
         moveUpperArmToPosition_DEGREES(upperAngle);
 
     }

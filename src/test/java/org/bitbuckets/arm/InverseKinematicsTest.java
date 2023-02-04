@@ -7,15 +7,15 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class InverseKinematicsTest {
 
-    @Disabled
+    //@Disabled
     @Test
     void getLowerJointAngle() {
-        assertEquals(0, new InverseKinematics(2. * Math.sqrt(2.), 2. * Math.sqrt(2.)).getLowerJointAngle());
+        assertEquals(0.785, new InverseKinematics(1.535 * Math.sin(Math.PI/4), 1.535 * Math.sin(Math.PI/4)).getLowerJointAngle());
     }
 
-    @Disabled
+    //@Disabled
     @Test
     void getUpperJointAngle() {
-        assertEquals(0, new InverseKinematics(2. * Math.sqrt(2.), 2. * Math.sqrt(2.)).getUpperJointAngle());
+        assertEquals(0, new InverseKinematics(1.535 * Math.sin(Math.PI/4), 1.535 * Math.sin(Math.PI/4)).getUpperJointAngle());
     }
 }

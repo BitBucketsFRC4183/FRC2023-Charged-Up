@@ -11,15 +11,17 @@ public class ArmSubsystem {
     final ArmControl armControl;
     final ILoggable<String> mode;
 
+    final DoubleJointedArmSim armSim;
 
     ArmFSM state = ArmFSM.MANUAL;
 
     private String positionMode;
 
-    public ArmSubsystem(ArmInput armInput, ArmControl armControl, ILoggable<String> mode) {
+    public ArmSubsystem(ArmInput armInput, ArmControl armControl, ILoggable<String> mode, DoubleJointedArmSim armSim) {
         this.armInput = armInput;
         this.armControl = armControl;
         this.mode = mode;
+        this.armSim = armSim;
     }
 
 
@@ -38,6 +40,7 @@ public class ArmSubsystem {
         if (armInput.isCalibratedPressed()) {
             armControl.calibrateLowerArm();
             armControl.calibrateUpperArm();
+            System.out.println("Arms calibrated!");
         }
 
         switch (state) {

@@ -16,15 +16,15 @@ public interface ArmConstants {
     MotorConfig LOWER_CONFIG = new MotorConfig(ArmConstants.LOWER_ARM_GEAR_RATIO, 1, 1, false, true, 20.0, false, false, Optional.empty());
     MotorConfig UPPER_CONFIG = new MotorConfig(ArmConstants.UPPER_ARM_GEAR_RATIO, 1, 1, false, true, 20.0, false, false, Optional.empty());
 
+    PIDConfig LOWER_PID = new PIDConfig(0,0,0,0);
+    PIDConfig UPPER_PID = new PIDConfig(0,0,0,0);
     //change these
-    double lowerJointLength = 2.;
-    double upperJointLength = 2.;
+    double LOWER_JOINT_LENGTH = 0.695;
+    double UPPER_JOINT_LENGTH = 0.84;
 
 
     // Feel free to change to make arms faster/slower for input
-    double CONTROL_JOINT_OUTPUT = 0.3;
-    PIDConfig LOWER_PID = new PIDConfig(0, 0, 0, 0);
-    PIDConfig UPPER_PID = new PIDConfig(0, 0, 0, 0);
+    double CONTROL_JOINT_OUTPUT = 0.2;
 
     /*
     Starting Configuration

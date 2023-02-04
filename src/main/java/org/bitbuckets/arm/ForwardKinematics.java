@@ -15,8 +15,8 @@ public class ForwardKinematics {
 
     public double getX() {
 
-        double z = Math.sqrt(Math.pow(ArmConstants.lowerJointLength, 2) + Math.pow(ArmConstants.upperJointLength, 2) + (2 * ArmConstants.lowerJointLength * ArmConstants.upperJointLength * Math.cos(theta2)));
-        double beta = Math.acos((Math.pow(z, 2) + Math.pow(ArmConstants.lowerJointLength, 2) - Math.pow(ArmConstants.upperJointLength, 2)) / (2 * ArmConstants.lowerJointLength * z));
+        double z = Math.sqrt(Math.pow(ArmConstants.LOWER_JOINT_LENGTH, 2) + Math.pow(ArmConstants.UPPER_JOINT_LENGTH, 2) + (2 * ArmConstants.LOWER_JOINT_LENGTH * ArmConstants.UPPER_JOINT_LENGTH * Math.cos(theta2)));
+        double beta = Math.acos((Math.pow(z, 2) + Math.pow(ArmConstants.LOWER_JOINT_LENGTH, 2) - Math.pow(ArmConstants.UPPER_JOINT_LENGTH, 2)) / (2 * ArmConstants.LOWER_JOINT_LENGTH * z));
         double x = z * Math.cos(theta1 - beta);
 
         return x;
@@ -25,8 +25,8 @@ public class ForwardKinematics {
 
     public double getY() {
 
-        double z = Math.sqrt(Math.pow(ArmConstants.lowerJointLength, 2) + Math.pow(ArmConstants.upperJointLength, 2) + (2 * ArmConstants.lowerJointLength * ArmConstants.upperJointLength * Math.cos(theta2)));
-        double beta = Math.acos((Math.pow(z, 2) + Math.pow(ArmConstants.lowerJointLength, 2) - Math.pow(ArmConstants.upperJointLength, 2)) / (2 * ArmConstants.lowerJointLength * z));
+        double z = Math.sqrt(Math.pow(ArmConstants.LOWER_JOINT_LENGTH, 2) + Math.pow(ArmConstants.UPPER_JOINT_LENGTH, 2) + (2 * ArmConstants.LOWER_JOINT_LENGTH * ArmConstants.UPPER_JOINT_LENGTH * Math.cos(theta2)));
+        double beta = Math.acos((Math.pow(z, 2) + Math.pow(ArmConstants.LOWER_JOINT_LENGTH, 2) - Math.pow(ArmConstants.UPPER_JOINT_LENGTH, 2)) / (2 * ArmConstants.LOWER_JOINT_LENGTH * z));
         double y = z * Math.sin(theta1 - beta);
 
         return y;
