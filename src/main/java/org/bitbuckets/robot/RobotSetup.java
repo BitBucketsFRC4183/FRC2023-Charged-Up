@@ -16,6 +16,7 @@ import org.bitbuckets.drive.controlsds.sds.DriveControlSetup;
 import org.bitbuckets.drive.controlsds.sds.DriveControllerSetup;
 import org.bitbuckets.drive.controlsds.sds.SteerControllerSetup;
 import org.bitbuckets.drive.controlsds.sds.SwerveModuleSetup;
+import org.bitbuckets.elevator.*;
 import org.bitbuckets.gyro.GyroControl;
 import org.bitbuckets.gyro.GyroControlSetup;
 import org.bitbuckets.lib.ISetup;
@@ -40,10 +41,10 @@ import java.util.Optional;
 
 public class RobotSetup implements ISetup<RobotContainer> {
 
-    final static boolean driveEnabled = true;
-    final static boolean armEnabled = true;
+    final static boolean driveEnabled = false;
+    final static boolean armEnabled = false;
     final static boolean elevatorEnabled = true;
-    final static boolean odometryEnabled = true;
+    final static boolean odometryEnabled = false;
 
     final RobotStateControl robotStateControl;
 
@@ -55,14 +56,24 @@ public class RobotSetup implements ISetup<RobotContainer> {
     public RobotContainer build(ProcessPath path) {
         DriveControl driveControl = buildNeoDriveControl(path);
 //        DriveControl driveControl = buildTalonDriveControl(path);
+
+        //TODO use neo controller here
+        // DriveControl driveControl = MockingUtil.buddy(DriveControl.class);
+        ElevatorControl elevatorControl = buildElevatorControl(path);
+
+
         VisionControl visionControl = new VisionControlSetup().build(path.addChild("vision-control"));
 
         DriveInput input = new DriveInput(new Joystick(0));
+        ElevatorInput elevatorInput = new ElevatorInput(new Joystick(1));
+        ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem(elevatorControl, elevatorInput);
+
 
         GyroControl gyroControl = new GyroControlSetup(5).build(path.addChild("gyro-control"));
         AutoAxisControl autoAxisControl = new AutoAxisSetup().build(path.addChild("axis-control"));
         //also throwing errors since I'm no longer using TestPath, but rather the array
         IValueTuner<AutoPath> pathTuneable = path.generateEnumTuner("path", AutoPath.class, AutoPath.AUTO_TEST_PATH_ONE);
+
 
         AutoControl autoControl = null;
 
@@ -86,8 +97,41 @@ public class RobotSetup implements ISetup<RobotContainer> {
         // this is crashing
 //        OdometryControlSetup odometryControlSetup = new OdometryControlSetup(driveControl, visionControl, gyroControl, new Pose2d(0, 0, Rotation2d.fromDegrees(0)));
 //        buildOdometryControl(path, odometryControlSetup);
+        return new RobotContainer(driveSubsystem, armSubsystem, visionControl, elevatorSubsystem);
+    }
 
-        return new RobotContainer(driveSubsystem, armSubsystem, visionControl);
+    private static ElevatorControl buildElevatorControl(ProcessPath path) {
+        if (!elevatorEnabled) {
+            return MockingUtil.buddy(ElevatorControl.class);
+        }
+
+//        ElevatorControlSetup elevatorControlSetup = new ElevatorControlSetup(
+//                new SparkSetup(9, new MotorConfig(ElevatorConstants.getGearRatioExtend, 1, ElevatorConstants.rotToMeterExtend, false, false, 20, false, false, Optional.empty()), new PIDConfig(0, 0, 0, 0)),
+//                //         new SparkSetup(1, new MotorConfig(ElevatorConstants.getGearRatioExtend, 1, ElevatorConstants.rotToMeterExtend, false, false, 20, false, false, Optional.empty()), new PIDConfig(0, 0, 0, 0)),
+//                new SparkSetup(10, new MotorConfig(ElevatorConstants.getGearRatioExtend, 1, ElevatorConstants.rotToMeterExtend, false, false, 20, false, false, Optional.empty()), new PIDConfig(0, 0, 0, 0))
+//                //      new SparkSetup(3, new MotorConfig(ElevatorConstants.getGearRatioExtend, 1, ElevatorConstants.rotToMeterExtend, false, false, 20, false, false, Optional.empty()), new PIDConfig(0, 0, 0, 0))
+//
+//        );
+        ElevatorControlSetup elevatorControlSetup = new ElevatorControlSetup(
+                new SparkSetup(9, new MotorConfig(ElevatorConstants.getGearRatioExtend, 1, ElevatorConstants.rotToMeterExtend, false, false, 20, false, false, Optional.empty()), new PIDConfig(0, 0, 0, 0)),
+                //         new SparkSetup(1, new MotorConfig(ElevatorConstants.getGearRatioExtend, 1, ElevatorConstants.rotToMeterExtend, false, false, 20, false, false, Optional.empty()), new PIDConfig(0, 0, 0, 0)),
+                new SparkSetup(10, new MotorConfig(ElevatorConstants.gearRatioTilt, 1, ElevatorConstants.rotToMeterTilt, false, false, 20, false, false, Optional.empty()), new PIDConfig(0, 0, 0, 0))
+                //      new SparkSetup(3, new MotorConfig(ElevatorConstants.getGearRatioExtend, 1, ElevatorConstants.rotToMeterExtend, false, false, 20, false, false, Optional.empty()), new PIDConfig(0, 0, 0, 0))
+
+        );
+        ElevatorControl elevatorControl = elevatorControlSetup.build(path.addChild("elevator-control"));
+
+
+//        Matrix<N1, N1> std = Matrix.mat(Nat.N1(), Nat.N1()).fill(0);
+        return elevatorControl;
+    }
+
+    static OdometryControl buildOdometryControl(ProcessPath path, OdometryControlSetup odometryControlSetup) {
+        if (!odometryEnabled) {
+            return MockingUtil.buddy(OdometryControl.class);
+        }
+
+        return odometryControlSetup.build(path.addChild("odometry-control"));
     }
 
     static ArmControl buildArmControl(ProcessPath path) {
@@ -97,20 +141,12 @@ public class RobotSetup implements ISetup<RobotContainer> {
 
         //labels: high priority
         ArmControlSetup armControlSetup = new ArmControlSetup(
-                new SparkSetup(9, ArmConstants.LOWER_CONFIG, ArmConstants.LOWER_PID),
-                new SparkSetup(10, ArmConstants.UPPER_CONFIG, ArmConstants.UPPER_PID)
+                new SparkSetup(11, ArmConstants.LOWER_CONFIG, ArmConstants.LOWER_PID),
+                new SparkSetup(12, ArmConstants.UPPER_CONFIG, ArmConstants.UPPER_PID)
         );
 
         ArmControl armControl = armControlSetup.build(path.addChild("arm-control"));
         return armControl;
-    }
-
-    static OdometryControl buildOdometryControl(ProcessPath path, OdometryControlSetup odometryControlSetup) {
-        if (!odometryEnabled) {
-            return MockingUtil.buddy(OdometryControl.class);
-        }
-
-        return odometryControlSetup.build(path.addChild("odometry-control"));
     }
 
     /**
