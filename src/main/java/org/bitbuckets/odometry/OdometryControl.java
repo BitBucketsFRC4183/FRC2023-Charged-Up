@@ -32,7 +32,7 @@ public class OdometryControl implements Runnable {
 
 
 
-    Field2d field = new Field2d();
+
 
    // public void swervePoseStateStdDevs() {
    //     final Vector<N7> stateStdDevs = VecBuilder.fill();
