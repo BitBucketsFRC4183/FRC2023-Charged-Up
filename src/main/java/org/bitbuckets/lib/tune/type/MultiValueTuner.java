@@ -1,4 +1,6 @@
-package org.bitbuckets.lib.tune;
+package org.bitbuckets.lib.tune.type;
+
+import org.bitbuckets.lib.tune.IValueTuner;
 
 public class MultiValueTuner implements IValueTuner<double[]> {
 
