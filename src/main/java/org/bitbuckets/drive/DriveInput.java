@@ -77,6 +77,13 @@ public class DriveInput {
         return joystick.getRawButtonPressed(XboxConstants.SQUARE);
     }
 
+    public boolean isVisionGoPressed() {
+        return joystick.getRawButtonPressed(XboxConstants.TRIANGLE);
+    }
+
+    public boolean isVisionGoReleased() {
+        return joystick.getRawButtonReleased(XboxConstants.TRIANGLE);
+    }
 
 
     public boolean isAutoBalancePressed() {
