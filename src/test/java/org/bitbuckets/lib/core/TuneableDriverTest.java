@@ -89,7 +89,7 @@ class TuneableDriverTest {
 
         // each test needs a unique key in the table
         String key = "c";
-        IValueTuner<DriveSubsystem.OrientationChooser> tuner = path.generateValueTuner(key, DriveSubsystem.OrientationChooser.FIELD_ORIENTED);
+        IValueTuner<DriveSubsystem.OrientationChooser> tuner = path.generateEnumTuner(key, DriveSubsystem.OrientationChooser.class, DriveSubsystem.OrientationChooser.FIELD_ORIENTED);
         Thread.sleep(100);
 
         Assertions.assertTrue(table.getEntry(key).exists());
