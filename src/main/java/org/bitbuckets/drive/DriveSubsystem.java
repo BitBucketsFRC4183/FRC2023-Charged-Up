@@ -122,25 +122,25 @@ public class DriveSubsystem {
         double yOutput = -input.getInputY() * driveControl.getMaxVelocity();
         double rotationOutput = input.getInputRot() * driveControl.getMaxAngularVelocity();
 
-//        switch (orientation.readValue()) {
-//            case FIELD_ORIENTED:
-//                if (xOutput == 0 && yOutput == 0 && rotationOutput == 0) {
-//                    driveControl.stopSticky();
-//                } else {
-//                    driveControl.drive(
-//                            ChassisSpeeds.fromFieldRelativeSpeeds(xOutput, yOutput, rotationOutput, gyroControl.getGyroAngle())
-//                    );
-//                }
-//                break;
-//            case ROBOT_ORIENTED:
-//                if (xOutput == 0 && yOutput == 0 && rotationOutput == 0) {
-//                    driveControl.stopSticky();
-//                } else {
-//                    ChassisSpeeds robotOrient = new ChassisSpeeds(xOutput, yOutput, rotationOutput);
-//                    driveControl.drive(robotOrient);
-//                }
-//                break;
-//        }
+        switch (orientation.readValue()) {
+            case FIELD_ORIENTED:
+                if (xOutput == 0 && yOutput == 0 && rotationOutput == 0) {
+                    driveControl.stopSticky();
+                } else {
+                    driveControl.drive(
+                            ChassisSpeeds.fromFieldRelativeSpeeds(xOutput, yOutput, rotationOutput, gyroControl.getGyroAngle())
+                    );
+                }
+                break;
+            case ROBOT_ORIENTED:
+                if (xOutput == 0 && yOutput == 0 && rotationOutput == 0) {
+                    driveControl.stopSticky();
+                } else {
+                    ChassisSpeeds robotOrient = new ChassisSpeeds(xOutput, yOutput, rotationOutput);
+                    driveControl.drive(robotOrient);
+                }
+                break;
+        }
     }
 
     void teleopBalancing() {
