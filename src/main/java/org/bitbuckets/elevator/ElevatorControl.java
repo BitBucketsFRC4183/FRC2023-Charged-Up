@@ -27,12 +27,13 @@ public class ElevatorControl {
 
     public void smartDashboard() {
         SmartDashboard.putNumber("extendEncoderLeft", leftExtend.getPositionRaw());
-        SmartDashboard.putNumber("extendEncoderRight", rightExtend.getPositionMechanism_meters());
+        //SmartDashboard.putNumber("extendEncoderRight", rightExtend.getPositionMechanism_meters());
         SmartDashboard.putNumber("tiltEncoderLeft", Math.toDegrees(leftTilt.getMechanismPositionAccum_rot() * 2.0 * Math.PI));
-        SmartDashboard.putNumber("tiltEncoderRight", Math.toDegrees(rightTilt.getMechanismPositionAccum_rot() * 2.0 * Math.PI));
+        //     SmartDashboard.putNumber("tiltEncoderRight", Math.toDegrees(rightTilt.getMechanismPositionAccum_rot() * 2.0 * Math.PI));
         SmartDashboard.putNumber("x1", x1);
         SmartDashboard.putNumber("extenROt", unitToRotExtend(x1));
 
+        //   degrees = Math.toDegrees(leftTilt.getMechanismPositionAccum_rot() * 2.0 * Math.PI)
 
         //SmartDashboard.putNumber("output", leftExtend.rawAccess(CANSparkMax.class).getAppliedOutput());
         //SmartDashboard.putNumber("angleTheta1",theta1);
@@ -53,12 +54,13 @@ public class ElevatorControl {
 
     public void zeroExtend() {
         leftExtend.forceOffset(0);
-        rightExtend.forceOffset(0);
+        //    rightExtend.forceOffset(0);
     }
 
     public void zeroTilt() {
         leftTilt.forceOffset(0);
-        rightTilt.forceOffset(0);
+
+        //   rightTilt.forceOffset(0);
     }
 
     public void setElevatorMech2d() {
@@ -78,6 +80,8 @@ public class ElevatorControl {
         double rot = unitToRotExtend(x1);
         SmartDashboard.putNumber("rotsw", rot);
         leftExtend.moveToPosition(rot);       // leftTilt.moveToPosition(theta1*elevatorConstants.gearRatioTilt  );
+        leftTilt.moveToPosition(theta1 / 360.0 / ElevatorConstants.gearRatioTilt
+        );
 
 
     }
@@ -144,8 +148,10 @@ public class ElevatorControl {
 
     public void stopExtend() {
 
-        //  leftExtend.moveAtPercent(0.0);
-        //rightExtend.moveAtPercent(-0.0);
+        leftExtend.moveAtPercent(0.0);
+        //   rightExtend.moveAtPercent(-0.0);
+        leftTilt.moveAtPercent(0.0);
+        //  rightTilt.moveAtPercent(0.0);
     }
 
 

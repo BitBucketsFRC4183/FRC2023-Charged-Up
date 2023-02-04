@@ -3,7 +3,7 @@ package org.bitbuckets.elevator;
 public class ElevatorConstants {
     public static final double chainRatioTilt = 64.0 / 10.0;
 
-    public static final double gearRatioTilt = 15;
+    public static final double gearRatioTilt = 1 / 15.1147;
 
     public static final double finalGearTilt = chainRatioTilt * gearRatioTilt;
     public static final double rotToMeterExtend = 1.0;

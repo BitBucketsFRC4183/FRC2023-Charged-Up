@@ -42,10 +42,10 @@ import java.util.Optional;
 
 public class RobotSetup implements ISetup<RobotContainer> {
 
-    final static boolean driveEnabled = true;
-    final static boolean armEnabled = true;
+    final static boolean driveEnabled = false;
+    final static boolean armEnabled = false;
     final static boolean elevatorEnabled = true;
-    final static boolean odometryEnabled = true;
+    final static boolean odometryEnabled = false;
 
     final RobotStateControl robotStateControl;
 
@@ -61,14 +61,6 @@ public class RobotSetup implements ISetup<RobotContainer> {
         //TODO use neo controller here
         // DriveControl driveControl = MockingUtil.buddy(DriveControl.class);
         ElevatorControl elevatorControl = buildElevatorControl(path);
-//        ElevatorControlSetup elevatorControlSetup = new ElevatorControlSetup(
-//                new ElevatorMotorSetup(new MotorConfig(ElevatorConstants.getGearRatioExtend, 1, ElevatorConstants.rotToMeterExtend, false, false, 20, false, false, Optional.empty()), new PIDConfig(.3, 0, 0, 0), new ElevatorConfig(1, 10, 1, 10, std)),
-//                new ElevatorMotorSetup(new MotorConfig(ElevatorConstants.getGearRatioExtend, 1, ElevatorConstants.rotToMeterExtend, false, false, 20, false, false, Optional.empty()), new PIDConfig(.3, 0, 0, 0), new ElevatorConfig(1, 10, 1, 10, std)),
-//                new ElevatorMotorSetup(new MotorConfig(ElevatorConstants.finalGearTilt, 1, ElevatorConstants.rotToMeterTilt, false, false, 20, false, false, Optional.empty()), new PIDConfig(.3, 0, 0, 0), new ElevatorConfig(1, 10, 0, 10, std)),
-//                new ElevatorMotorSetup(new MotorConfig(ElevatorConstants.finalGearTilt, 1, ElevatorConstants.rotToMeterTilt, false, false, 20, false, false, Optional.empty()), new PIDConfig(.3, 0, 0, 0), new ElevatorConfig(1, 10, 0, 10, std))
-//
-//
-//        );
 
 
         VisionControl visionControl = new VisionControlSetup().build(path.addChild("vision-control"));
@@ -111,10 +103,17 @@ public class RobotSetup implements ISetup<RobotContainer> {
             return MockingUtil.buddy(ElevatorControl.class);
         }
 
+//        ElevatorControlSetup elevatorControlSetup = new ElevatorControlSetup(
+//                new SparkSetup(9, new MotorConfig(ElevatorConstants.getGearRatioExtend, 1, ElevatorConstants.rotToMeterExtend, false, false, 20, false, false, Optional.empty()), new PIDConfig(0, 0, 0, 0)),
+//                //         new SparkSetup(1, new MotorConfig(ElevatorConstants.getGearRatioExtend, 1, ElevatorConstants.rotToMeterExtend, false, false, 20, false, false, Optional.empty()), new PIDConfig(0, 0, 0, 0)),
+//                new SparkSetup(10, new MotorConfig(ElevatorConstants.getGearRatioExtend, 1, ElevatorConstants.rotToMeterExtend, false, false, 20, false, false, Optional.empty()), new PIDConfig(0, 0, 0, 0))
+//                //      new SparkSetup(3, new MotorConfig(ElevatorConstants.getGearRatioExtend, 1, ElevatorConstants.rotToMeterExtend, false, false, 20, false, false, Optional.empty()), new PIDConfig(0, 0, 0, 0))
+//
+//        );
         ElevatorControlSetup elevatorControlSetup = new ElevatorControlSetup(
                 new SparkSetup(9, new MotorConfig(ElevatorConstants.getGearRatioExtend, 1, ElevatorConstants.rotToMeterExtend, false, false, 20, false, false, Optional.empty()), new PIDConfig(0, 0, 0, 0)),
                 //         new SparkSetup(1, new MotorConfig(ElevatorConstants.getGearRatioExtend, 1, ElevatorConstants.rotToMeterExtend, false, false, 20, false, false, Optional.empty()), new PIDConfig(0, 0, 0, 0)),
-                new SparkSetup(10, new MotorConfig(ElevatorConstants.getGearRatioExtend, 1, ElevatorConstants.rotToMeterExtend, false, false, 20, false, false, Optional.empty()), new PIDConfig(0, 0, 0, 0))
+                new SparkSetup(10, new MotorConfig(ElevatorConstants.gearRatioTilt, 1, ElevatorConstants.rotToMeterTilt, false, false, 20, false, false, Optional.empty()), new PIDConfig(0, 0, 0, 0))
                 //      new SparkSetup(3, new MotorConfig(ElevatorConstants.getGearRatioExtend, 1, ElevatorConstants.rotToMeterExtend, false, false, 20, false, false, Optional.empty()), new PIDConfig(0, 0, 0, 0))
 
         );
