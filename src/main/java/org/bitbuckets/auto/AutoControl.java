@@ -31,7 +31,7 @@ public class AutoControl {
     }
 
     public double getTrajectoryTime(AutoPath path) {
-        return trajectory[0].getTotalTimeSeconds();
+        return trajectory[path.index].getTotalTimeSeconds();
 
     }
 

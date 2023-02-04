@@ -1,7 +1,5 @@
 package org.bitbuckets.robot;
 
-import com.ctre.phoenix.sensors.WPI_PigeonIMU;
-import com.revrobotics.REVPhysicsSim;
 import edu.wpi.first.wpilibj.Joystick;
 import org.bitbuckets.arm.*;
 import org.bitbuckets.auto.AutoControl;
@@ -17,11 +15,14 @@ import org.bitbuckets.drive.controlsds.sds.DriveControlSetup;
 import org.bitbuckets.drive.controlsds.sds.DriveControllerSetup;
 import org.bitbuckets.drive.controlsds.sds.SteerControllerSetup;
 import org.bitbuckets.drive.controlsds.sds.SwerveModuleSetup;
+import org.bitbuckets.elevator.*;
 import org.bitbuckets.gyro.GyroControl;
 import org.bitbuckets.gyro.GyroControlSetup;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
+import org.bitbuckets.lib.control.PIDConfig;
 import org.bitbuckets.lib.hardware.MotorConfig;
+import org.bitbuckets.lib.log.ILoggable;
 import org.bitbuckets.lib.tune.IValueTuner;
 import org.bitbuckets.lib.util.MockingUtil;
 import org.bitbuckets.lib.vendor.ctre.CANCoderAbsoluteEncoderSetup;
@@ -41,9 +42,9 @@ import java.util.Optional;
 public class RobotSetup implements ISetup<RobotContainer> {
 
     final static boolean driveEnabled = true;
-    final static boolean armEnabled = true;
-    final static boolean elevatorEnabled = true;
-    final static boolean odometryEnabled = true;
+    final static boolean armEnabled = false;
+    final static boolean elevatorEnabled = false;
+    final static boolean odometryEnabled = false;
 
     final RobotStateControl robotStateControl;
 
@@ -56,54 +57,69 @@ public class RobotSetup implements ISetup<RobotContainer> {
         DriveControl driveControl = buildNeoDriveControl(path);
 //        DriveControl driveControl = buildTalonDriveControl(path);
 
+        //TODO use neo controller here
+        // DriveControl driveControl = MockingUtil.buddy(DriveControl.class);
+        ElevatorControl elevatorControl = buildElevatorControl(path);
+
 
         VisionControl visionControl = new VisionControlSetup().build(path.addChild("vision-control"));
 
         DriveInput input = new DriveInput(new Joystick(0));
+        ElevatorInput elevatorInput = new ElevatorInput(new Joystick(1));
+        ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem(elevatorControl, elevatorInput);
+
 
         GyroControl gyroControl = new GyroControlSetup(5).build(path.addChild("gyro-control"));
         AutoAxisControl autoAxisControl = new AutoAxisSetup().build(path.addChild("axis-control"));
         //also throwing errors since I'm no longer using TestPath, but rather the array
-        IValueTuner<AutoPath> pathTuneable = path.generateValueTuner("path", AutoPath.AUTO_TEST_PATH_ONE);
+        IValueTuner<AutoPath> pathTuneable = path.generateEnumTuner("path", AutoPath.class, AutoPath.AUTO_TEST_PATH_ONE);
+        ILoggable<Double> autoTime = path.generateDoubleLogger("auto-time");
 
 
-        AutoControl autoControl = null;
-        DriveSubsystem driveSubsystem = new DriveSubsystem(input, robotStateControl, gyroControl, autoAxisControl, driveControl, autoControl, pathTuneable);
+        //labels: high priority
+        //TODO use neos here
 
         ArmControl armControl = buildArmControl(path);
         ArmInput armInput = new ArmInput(
                 new Joystick(1)
         );
         ArmSubsystem armSubsystem = new ArmSubsystem(armInput, armControl, path.generateStringLogger("arm-subsystem"));
+        AutoControl autoControl = new AutoControlSetup(armControl).build(path.addChild("auto-control"));
 
-        autoControl = new AutoControlSetup(
-                armControl
-        ).build(path.addChild("AutoControlSetup"));
-
+        DriveSubsystem driveSubsystem = new DriveSubsystem(input, robotStateControl, gyroControl, autoAxisControl, driveControl, autoControl, pathTuneable, autoTime, path.generateEnumTuner("Orientation", DriveSubsystem.OrientationChooser.class, DriveSubsystem.OrientationChooser.FIELD_ORIENTED));
 
         //SYSTEMS_GREEN.setOn(); //LET'S WIN SOME DAMN REGIONALS!!
 
         // this is crashing
 //        OdometryControlSetup odometryControlSetup = new OdometryControlSetup(driveControl, visionControl, gyroControl, new Pose2d(0, 0, Rotation2d.fromDegrees(0)));
 //        buildOdometryControl(path, odometryControlSetup);
-
-        return new RobotContainer(driveSubsystem, armSubsystem, visionControl, autoControl);
+        return new RobotContainer(driveSubsystem, armSubsystem, visionControl, elevatorSubsystem, autoControl);
     }
 
-    static ArmControl buildArmControl(ProcessPath path) {
-        if (!armEnabled) {
-            return MockingUtil.buddy(ArmControl.class);
+    private static ElevatorControl buildElevatorControl(ProcessPath path) {
+        if (!elevatorEnabled) {
+            return MockingUtil.buddy(ElevatorControl.class);
         }
 
-        //labels: high priority
-        //TODO use neos here
-        ArmControlSetup armControlSetup = new ArmControlSetup(
-                new SparkSetup(9, ArmConstants.lowerConfig),
-                new SparkSetup(10, ArmConstants.upperConfig)
-        );
+//        ElevatorControlSetup elevatorControlSetup = new ElevatorControlSetup(
+//                new SparkSetup(9, new MotorConfig(ElevatorConstants.getGearRatioExtend, 1, ElevatorConstants.rotToMeterExtend, false, false, 20, false, false, Optional.empty()), new PIDConfig(0, 0, 0, 0)),
+//                //         new SparkSetup(1, new MotorConfig(ElevatorConstants.getGearRatioExtend, 1, ElevatorConstants.rotToMeterExtend, false, false, 20, false, false, Optional.empty()), new PIDConfig(0, 0, 0, 0)),
+//                new SparkSetup(10, new MotorConfig(ElevatorConstants.getGearRatioExtend, 1, ElevatorConstants.rotToMeterExtend, false, false, 20, false, false, Optional.empty()), new PIDConfig(0, 0, 0, 0))
+//                //      new SparkSetup(3, new MotorConfig(ElevatorConstants.getGearRatioExtend, 1, ElevatorConstants.rotToMeterExtend, false, false, 20, false, false, Optional.empty()), new PIDConfig(0, 0, 0, 0))
+//
+//        );
+        ElevatorControlSetup elevatorControlSetup = new ElevatorControlSetup(
+                new SparkSetup(9, new MotorConfig(ElevatorConstants.getGearRatioExtend, 1, ElevatorConstants.rotToMeterExtend, false, false, 20, false, false, Optional.empty()), new PIDConfig(0, 0, 0, 0)),
+                //         new SparkSetup(1, new MotorConfig(ElevatorConstants.getGearRatioExtend, 1, ElevatorConstants.rotToMeterExtend, false, false, 20, false, false, Optional.empty()), new PIDConfig(0, 0, 0, 0)),
+                new SparkSetup(10, new MotorConfig(ElevatorConstants.gearRatioTilt, 1, ElevatorConstants.rotToMeterTilt, false, false, 20, false, false, Optional.empty()), new PIDConfig(0, 0, 0, 0))
+                //      new SparkSetup(3, new MotorConfig(ElevatorConstants.getGearRatioExtend, 1, ElevatorConstants.rotToMeterExtend, false, false, 20, false, false, Optional.empty()), new PIDConfig(0, 0, 0, 0))
 
-        ArmControl armControl = armControlSetup.build(path.addChild("arm-control"));
-        return armControl;
+        );
+        ElevatorControl elevatorControl = elevatorControlSetup.build(path.addChild("elevator-control"));
+
+
+//        Matrix<N1, N1> std = Matrix.mat(Nat.N1(), Nat.N1()).fill(0);
+        return elevatorControl;
     }
 
     static OdometryControl buildOdometryControl(ProcessPath path, OdometryControlSetup odometryControlSetup) {
@@ -114,13 +130,28 @@ public class RobotSetup implements ISetup<RobotContainer> {
         return odometryControlSetup.build(path.addChild("odometry-control"));
     }
 
+    static ArmControl buildArmControl(ProcessPath path) {
+        if (!armEnabled) {
+            return MockingUtil.buddy(ArmControl.class);
+        }
+
+        //labels: high priority
+        ArmControlSetup armControlSetup = new ArmControlSetup(
+                new SparkSetup(11, ArmConstants.LOWER_CONFIG, ArmConstants.LOWER_PID),
+                new SparkSetup(12, ArmConstants.UPPER_CONFIG, ArmConstants.UPPER_PID)
+        );
+
+        ArmControl armControl = armControlSetup.build(path.addChild("arm-control"));
+        return armControl;
+    }
+
     /**
      * Build a new neo/mk4I based drive control
      *
      * @param path
      * @return
      */
-    private static DriveControl buildNeoDriveControl(ProcessPath path) {
+    static DriveControl buildNeoDriveControl(ProcessPath path) {
         if (!driveEnabled) {
             return MockingUtil.buddy(DriveControl.class);
         }
@@ -137,7 +168,6 @@ public class RobotSetup implements ISetup<RobotContainer> {
                 Optional.empty()
         );
 
-        // we know the PID constants from swervelib, so set them here
         MotorConfig steerMotorConfig = new MotorConfig(
                 DriveConstants.MK4I_L2.getSteerReduction(),
                 1,
@@ -147,40 +177,38 @@ public class RobotSetup implements ISetup<RobotContainer> {
                 20,
                 false,
                 false,
-                1,
-                0,
-                .1
+                Optional.empty()
         );
+
+        PIDConfig steerPidConfig = new PIDConfig(1, 0, 0.1, 0);
 
         DriveControl driveControl = new DriveControlSetup(
                 new SwerveModuleSetup(
-                        new DriveControllerSetup(new SparkDriveMotorSetup(DriveConstants.frontLeftModuleDriveMotor_ID, driveMotorConfig, DriveConstants.MK4I_L2)),
+                        new DriveControllerSetup(new SparkDriveMotorSetup(DriveConstants.FRONT_LEFT_DRIVE_ID, driveMotorConfig, DriveConstants.MK4I_L2)),
                         new SteerControllerSetup(
-                                new SparkSteerMotorSetup(DriveConstants.frontLeftModuleSteerMotor_ID, steerMotorConfig, DriveConstants.MK4I_L2),
-                                new ThriftyEncoderSetup(DriveConstants.frontLeftModuleSteerEncoder_CHANNEL, DriveConstants.frontLeftModuleSteerOffset))
+                                new SparkSteerMotorSetup(DriveConstants.FRONT_LEFT_STEER_ID, steerMotorConfig, steerPidConfig, DriveConstants.MK4I_L2),
+                                new ThriftyEncoderSetup(DriveConstants.FRONT_LEFT_ENCODER_CHANNEL, DriveConstants.FRONT_LEFT_OFFSET))
                 ),
                 new SwerveModuleSetup(
-                        new DriveControllerSetup(new SparkDriveMotorSetup(DriveConstants.frontRightModuleDriveMotor_ID, driveMotorConfig, DriveConstants.MK4I_L2)),
+                        new DriveControllerSetup(new SparkDriveMotorSetup(DriveConstants.FRONT_RIGHT_DRIVE_ID, driveMotorConfig, DriveConstants.MK4I_L2)),
                         new SteerControllerSetup(
-                                new SparkSteerMotorSetup(DriveConstants.frontRightModuleSteerMotor_ID, steerMotorConfig, DriveConstants.MK4I_L2),
-                                new ThriftyEncoderSetup(DriveConstants.frontRightModuleSteerEncoder_CHANNEL, DriveConstants.frontRightModuleSteerOffset))
+                                new SparkSteerMotorSetup(DriveConstants.FRONT_RIGHT_STEER_ID, steerMotorConfig, steerPidConfig, DriveConstants.MK4I_L2),
+                                new ThriftyEncoderSetup(DriveConstants.FRONT_RIGHT_ENCODER_CHANNEL, DriveConstants.FRONT_RIGHT_OFFSET))
                 ),
                 new SwerveModuleSetup(
-                        new DriveControllerSetup(new SparkDriveMotorSetup(DriveConstants.backLeftModuleDriveMotor_ID, driveMotorConfig, DriveConstants.MK4I_L2)),
+                        new DriveControllerSetup(new SparkDriveMotorSetup(DriveConstants.BACK_LEFT_DRIVE_ID, driveMotorConfig, DriveConstants.MK4I_L2)),
                         new SteerControllerSetup(
-                                new SparkSteerMotorSetup(DriveConstants.backLeftModuleSteerMotor_ID, steerMotorConfig, DriveConstants.MK4I_L2),
-                                new ThriftyEncoderSetup(DriveConstants.backLeftModuleSteerEncoder_CHANNEL, DriveConstants.backLeftModuleSteerOffset))
+                                new SparkSteerMotorSetup(DriveConstants.BACK_LEFT_STEER_ID, steerMotorConfig, steerPidConfig, DriveConstants.MK4I_L2),
+                                new ThriftyEncoderSetup(DriveConstants.BACK_LEFT_ENCODER_CHANNEL, DriveConstants.BACK_LEFT_OFFSET))
                 ),
                 new SwerveModuleSetup(
-                        new DriveControllerSetup(new SparkDriveMotorSetup(DriveConstants.backRightModuleDriveMotor_ID, driveMotorConfig, DriveConstants.MK4I_L2)),
+                        new DriveControllerSetup(new SparkDriveMotorSetup(DriveConstants.BACK_RIGHT_DRIVE_ID, driveMotorConfig, DriveConstants.MK4I_L2)),
                         new SteerControllerSetup(
-                                new SparkSteerMotorSetup(DriveConstants.backRightModuleSteerMotor_ID, steerMotorConfig, DriveConstants.MK4I_L2),
-                                new ThriftyEncoderSetup(DriveConstants.backRightModuleSteerEncoder_CHANNEL, DriveConstants.backRightModuleSteerOffset))
-                ),
-                new WPI_PigeonIMU(5)
+                                new SparkSteerMotorSetup(DriveConstants.BACK_RIGHT_STEER_ID, steerMotorConfig, steerPidConfig, DriveConstants.MK4I_L2),
+                                new ThriftyEncoderSetup(DriveConstants.BACK_RIGHT_ENCODER_CHANNEL, DriveConstants.BACK_RIGHT_OFFSET))
+                )
         ).build(path.addChild("drive-control"));
 
-        REVPhysicsSim.getInstance().run();
         return driveControl;
     }
 
@@ -190,7 +218,7 @@ public class RobotSetup implements ISetup<RobotContainer> {
      * @param path
      * @return
      */
-    private static DriveControl buildTalonDriveControl(ProcessPath path) {
+    static DriveControl buildTalonDriveControl(ProcessPath path) {
 
         int frontLeftModuleDriveMotor_ID = 1;
         int frontLeftModuleSteerMotor_ID = 2;
@@ -250,9 +278,9 @@ public class RobotSetup implements ISetup<RobotContainer> {
                                 new CANCoderAbsoluteEncoderSetup(backRightModuleSteerEncoder_ID, backRightModuleSteerOffset),
                                 sensorPositionCoefficient
                         )
-                ),
-                new WPI_PigeonIMU(5)
+                )
         ).build(path.addChild("drive-control"));
     }
+
 
 }

@@ -1,30 +1,14 @@
 package org.bitbuckets.vision;
+
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.util.Units;
+
 import java.io.IOException;
 import java.util.Map;
 
 public class VisionConstants {
-
-
-
-    AprilTagFieldLayout aprilTagFieldLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2023ChargedUp.m_resourceFile);;
-
-    double range;
-
-    double yaw;
-
-    Pose3d robotPose;
-
-    Translation2d translationToTag;
-
-    Rotation2d targetYaw;
-
-
-
-
 
     public static final double fieldLength = Units.inchesToMeters(651.25);
         public static final double fieldWidth = Units.inchesToMeters(315.5);

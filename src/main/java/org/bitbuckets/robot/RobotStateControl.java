@@ -23,7 +23,7 @@ public class RobotStateControl implements Runnable {
     }
 
     public boolean isRobotTeleop() {
-        return robot.isEnabled();
+        return robot.isEnabled() && robot.isTeleop();
     }
 
     final Timer timer = new Timer();
