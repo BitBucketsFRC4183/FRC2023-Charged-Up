@@ -38,6 +38,7 @@ public class RobotContainer {
         SmartDashboard.putNumber("debugIncrement", ++i);
         elevatorSubsystem.teleopPeriodic();
         armSubsystem.teleopPeriodic();
+
     }
 
 
