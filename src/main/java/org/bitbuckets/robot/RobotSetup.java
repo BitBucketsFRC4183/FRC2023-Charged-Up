@@ -1,17 +1,21 @@
 package org.bitbuckets.robot;
 
-import com.ctre.phoenix.sensors.WPI_PigeonIMU;
-import com.revrobotics.REVPhysicsSim;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Joystick;
-import org.bitbuckets.arm.*;
+import org.bitbuckets.arm.ArmControl;
+import org.bitbuckets.arm.ArmControlSetup;
+import org.bitbuckets.arm.ArmInput;
+import org.bitbuckets.arm.ArmSubsystem;
 import org.bitbuckets.auto.AutoControl;
 import org.bitbuckets.auto.AutoControlSetup;
 import org.bitbuckets.auto.AutoPath;
 import org.bitbuckets.drive.DriveConstants;
 import org.bitbuckets.drive.DriveInput;
-import org.bitbuckets.drive.DriveSubsystem;
+import org.bitbuckets.drive.DriveSDSSubsystem;
 import org.bitbuckets.drive.balance.AutoAxisControl;
 import org.bitbuckets.drive.balance.AutoAxisSetup;
+import org.bitbuckets.drive.controlsds.DriveControlSDS;
 import org.bitbuckets.drive.controlsds.DriveControl;
 import org.bitbuckets.drive.controlsds.sds.DriveControlSetup;
 import org.bitbuckets.drive.controlsds.sds.DriveControllerSetup;
@@ -21,7 +25,7 @@ import org.bitbuckets.gyro.GyroControl;
 import org.bitbuckets.gyro.GyroControlSetup;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
-import org.bitbuckets.lib.hardware.MotorConfig;
+import org.bitbuckets.lib.hardware.IMotorController;
 import org.bitbuckets.lib.tune.IValueTuner;
 import org.bitbuckets.lib.util.MockingUtil;
 import org.bitbuckets.lib.control.PIDConfig;
@@ -151,6 +155,7 @@ public class RobotSetup implements ISetup<RobotContainer> {
                 Optional.empty()
         );
 
+        return new RobotContainer(driveSubsystem, armSubsystem,visionControl, driveControlSDS);
         PIDConfig steerPidConfig = new PIDConfig(1, 0, 0.1, 0);
 
         DriveControl driveControl = new DriveControlSetup(
