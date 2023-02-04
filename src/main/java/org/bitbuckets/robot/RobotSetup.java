@@ -37,6 +37,8 @@ public class RobotSetup implements ISetup<RobotContainer> {
         ArmSubsystem armSubsystem = new ArmSubsystemSetup().build(path.addChild("arm-subsystem"));
         DriveSubsystem driveSubsystem = new DriveSubsystemSetup(robotStateControl, autoControl).build(path.addChild("drive-subsystem"));
 
+
+
         DriveInput input = new DriveInput(new Joystick(0));
 
         GyroControl gyroControl = new GyroControlSetup(5).build(path.addChild("gyro-control"));
@@ -60,6 +62,9 @@ public class RobotSetup implements ISetup<RobotContainer> {
         autoControl = new AutoControlSetup(
                 armControl
         ).build(path.addChild("AutoControlSetup"));
+
+        ChaseTagCommand chaseTagCommand = new ChaseTagCommand(driveControl, visionControl);
+
 
 
         //SYSTEMS_GREEN.setOn(); //LET'S WIN SOME DAMN REGIONALS!!
