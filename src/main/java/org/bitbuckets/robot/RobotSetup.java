@@ -1,36 +1,29 @@
 package org.bitbuckets.robot;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Joystick;
-import org.bitbuckets.arm.ArmControl;
-import org.bitbuckets.arm.ArmControlSetup;
-import org.bitbuckets.arm.ArmInput;
-import org.bitbuckets.arm.ArmSubsystem;
+import org.bitbuckets.arm.*;
 import org.bitbuckets.auto.AutoControl;
 import org.bitbuckets.auto.AutoControlSetup;
 import org.bitbuckets.auto.AutoPath;
 import org.bitbuckets.drive.DriveConstants;
 import org.bitbuckets.drive.DriveInput;
-import org.bitbuckets.drive.DriveSDSSubsystem;
+import org.bitbuckets.drive.DriveSubsystem;
 import org.bitbuckets.drive.balance.AutoAxisControl;
 import org.bitbuckets.drive.balance.AutoAxisSetup;
-import org.bitbuckets.drive.controlsds.DriveControlSDS;
 import org.bitbuckets.drive.controlsds.DriveControl;
 import org.bitbuckets.drive.controlsds.sds.DriveControlSetup;
 import org.bitbuckets.drive.controlsds.sds.DriveControllerSetup;
 import org.bitbuckets.drive.controlsds.sds.SteerControllerSetup;
 import org.bitbuckets.drive.controlsds.sds.SwerveModuleSetup;
+import org.bitbuckets.drive.module.ChaseTagCommand;
 import org.bitbuckets.gyro.GyroControl;
 import org.bitbuckets.gyro.GyroControlSetup;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
-import org.bitbuckets.lib.hardware.IMotorController;
 import org.bitbuckets.lib.tune.IValueTuner;
 import org.bitbuckets.lib.util.MockingUtil;
 import org.bitbuckets.lib.control.PIDConfig;
 import org.bitbuckets.lib.hardware.MotorConfig;
-import org.bitbuckets.lib.tune.IValueTuner;
 import org.bitbuckets.lib.vendor.ctre.CANCoderAbsoluteEncoderSetup;
 import org.bitbuckets.lib.vendor.ctre.TalonDriveMotorSetup;
 import org.bitbuckets.lib.vendor.ctre.TalonSteerMotorSetup;
@@ -48,9 +41,9 @@ import java.util.Optional;
 public class RobotSetup implements ISetup<RobotContainer> {
 
     final static boolean driveEnabled = true;
-    final static boolean armEnabled = true;
-    final static boolean elevatorEnabled = true;
-    final static boolean odometryEnabled = true;
+    final static boolean armEnabled = false;
+    final static boolean elevatorEnabled = false;
+    final static boolean odometryEnabled = false;
 
     final RobotStateControl robotStateControl;
 
@@ -65,6 +58,8 @@ public class RobotSetup implements ISetup<RobotContainer> {
 
 
         VisionControl visionControl = new VisionControlSetup().build(path.addChild("vision-control"));
+
+
 
         DriveInput input = new DriveInput(new Joystick(0));
 
@@ -87,6 +82,9 @@ public class RobotSetup implements ISetup<RobotContainer> {
                 armControl
         ).build(path.addChild("AutoControlSetup"));
 
+        ChaseTagCommand chaseTagCommand = new ChaseTagCommand(driveControl, visionControl);
+
+
 
         //SYSTEMS_GREEN.setOn(); //LET'S WIN SOME DAMN REGIONALS!!
 
@@ -94,7 +92,7 @@ public class RobotSetup implements ISetup<RobotContainer> {
 //        OdometryControlSetup odometryControlSetup = new OdometryControlSetup(driveControl, visionControl, gyroControl, new Pose2d(0, 0, Rotation2d.fromDegrees(0)));
 //        buildOdometryControl(path, odometryControlSetup);
 
-        return new RobotContainer(driveSubsystem, armSubsystem, visionControl);
+        return new RobotContainer(driveSubsystem, armSubsystem, visionControl, chaseTagCommand);
     }
 
     static ArmControl buildArmControl(ProcessPath path) {
@@ -155,7 +153,7 @@ public class RobotSetup implements ISetup<RobotContainer> {
                 Optional.empty()
         );
 
-        return new RobotContainer(driveSubsystem, armSubsystem,visionControl, driveControlSDS);
+
         PIDConfig steerPidConfig = new PIDConfig(1, 0, 0.1, 0);
 
         DriveControl driveControl = new DriveControlSetup(
@@ -185,8 +183,9 @@ public class RobotSetup implements ISetup<RobotContainer> {
                 )
         ).build(path.addChild("drive-control"));
 
-        REVPhysicsSim.getInstance().run();
         return driveControl;
+
+        //REVPhysicsSim.getInstance().run();
     }
 
     /**
