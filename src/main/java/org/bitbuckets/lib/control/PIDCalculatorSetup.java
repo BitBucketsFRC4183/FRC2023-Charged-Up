@@ -7,27 +7,38 @@ import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.lib.log.LoggingConstants;
 import org.bitbuckets.lib.tune.IValueTuner;
 
-@DontUseIncubating
-@Deprecated
 public class PIDCalculatorSetup implements ISetup<IPIDCalculator> {
 
-    final double firstP;
-    final double firstI;
-    final double firstD;
+    final PIDConfig pidConfig;
 
-    public PIDCalculatorSetup(double firstP, double firstI, double firstD) {
-        this.firstP = firstP;
-        this.firstI = firstI;
-        this.firstD = firstD;
+    /**
+     * WARNING: currently ignores kF
+     * @param pidConfig
+     */
+    public PIDCalculatorSetup(PIDConfig pidConfig) {
+        this.pidConfig = pidConfig;
     }
 
     @Override
     public IPIDCalculator build(ProcessPath path) {
-        IValueTuner<Double> p = path.generateValueTuner("p", firstP);
-        IValueTuner<Double> i = path.generateValueTuner("i", firstI);
-        IValueTuner<Double> d = path.generateValueTuner("d", firstD);
+        IValueTuner<double[]> pidf = path.generateMultiTuner(
+                new String[] {"p", "i", "d", "f"},
+                new double[] {pidConfig.kP, pidConfig.kI, pidConfig.kD, pidConfig.kF}
+        );
 
-        PIDCalculator pid = new PIDCalculator(new PIDController(0,0,0), p,i,d);
+        double[] pidfNow = pidf.readValue();
+
+        PIDController use = new PIDController(
+                pidfNow[PIDConfig.P],
+                pidfNow[PIDConfig.I],
+                pidfNow[PIDConfig.D]
+        );
+
+        PIDCalculator pid = new PIDCalculator(
+                use,
+                pidf
+        );
+
         path.registerLoop(pid, LoggingConstants.TUNING_PERIOD, "tuning-loop");
 
         return pid;
