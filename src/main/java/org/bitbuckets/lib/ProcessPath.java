@@ -1,7 +1,6 @@
 package org.bitbuckets.lib;
 
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import org.bitbuckets.SimLevel;
 import org.bitbuckets.lib.core.IdentityDriver;
 import org.bitbuckets.lib.core.LogDriver;
 import org.bitbuckets.lib.core.LoopDriver;
@@ -86,9 +85,8 @@ public class ProcessPath {
     }
 
 
-
-
-    @Deprecated @DontUseIncubating
+    @Deprecated
+    @DontUseIncubating
     public SetupProfiler generateSetupProfiler(String taskName) {
         int taskId = setupDriver.generateStartup(currentId, taskName);
 
@@ -98,19 +96,25 @@ public class ProcessPath {
 
     /**
      * default value basically doesnt matter. Dont depend on it.
+     *
      * @param key
      * @param defaultData
-     * @return
      * @param <T>
+     * @return
      */
     public <T> IValueTuner<T> generateValueTuner(String key, T defaultData) {
         return tuneableDriver.tuneable(currentId, key, defaultData);
     }
 
+    public <T extends Enum<T>> IValueTuner<T> generateEnumTuner(String key, Class<T> clazz, T defaultData) {
+        return tuneableDriver.enumTuneable(currentId, clazz, key, defaultData);
+    }
+
     /**
      * Generates a tuneable that represents multiplie pieces of data that can be independently tuned,
      * same semantics as generating a bunch of double tuneables and checking them individually
-     * @param keys list of the dashboard names of your data in order
+     *
+     * @param keys         list of the dashboard names of your data in order
      * @param defaultDatas the default data in the same order as the keys
      * @return a value tuner returning a double with same order as the keys
      */
@@ -121,6 +125,7 @@ public class ProcessPath {
 
     /**
      * Generates a loggable that logs doubles. You will have to call log on it to send data
+     *
      * @param name the name it should show up as in logs
      * @return loggable
      */
@@ -130,6 +135,7 @@ public class ProcessPath {
 
     /**
      * Generates a loggable that logs bools. You will have to call log on it to send data
+     *
      * @param name the name it should show up as in logs
      * @return loggable
      */
@@ -139,6 +145,7 @@ public class ProcessPath {
 
     /**
      * Generates a loggable that logs double arrays. You will have to call log on it to send data
+     *
      * @param namesInOrder the names of the data in order, your .log method should add data in the same order as this array
      * @return loggable
      */
@@ -148,6 +155,7 @@ public class ProcessPath {
 
     /**
      * swerving on mattlib
+     *
      * @param name
      * @return
      */
@@ -164,6 +172,7 @@ public class ProcessPath {
 
     /**
      * read the other ones please
+     *
      * @param name
      * @return
      */
