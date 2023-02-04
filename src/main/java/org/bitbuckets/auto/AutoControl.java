@@ -33,11 +33,5 @@ public class AutoControl {
 
     }
 
-    Timer eventTimer = new Timer();
-
-    public void setMarkers() {
-
-
-    }
 
 }

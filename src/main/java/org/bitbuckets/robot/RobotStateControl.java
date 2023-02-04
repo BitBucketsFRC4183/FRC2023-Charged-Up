@@ -34,8 +34,6 @@ public class RobotStateControl implements Runnable {
 
     boolean resetYetThisGamePhase = false;
 
-    //tags: medium priority
-    //TODO make this code more robust
     @Override
     public void run() {
         if (isRobotAutonomous()) {
