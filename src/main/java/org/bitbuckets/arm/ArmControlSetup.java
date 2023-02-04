@@ -25,7 +25,6 @@ public class ArmControlSetup implements ISetup<ArmControl> {
         ArmControl armControl = new ArmControl(
                 lowerJoint.build(path.addChild("lower-joint")),
                 upperJoint.build(path.addChild("upper-joint"))
-
         );
 
 
