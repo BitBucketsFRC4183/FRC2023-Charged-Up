@@ -5,6 +5,8 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableEvent;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import org.bitbuckets.lib.core.IdentityDriver;
+import org.bitbuckets.lib.tune.type.MultiValueTuner;
+import org.bitbuckets.lib.tune.type.ValueTuner;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
@@ -23,6 +25,7 @@ public class TuneableDriver {
         this.driver = driver;
     }
 
+    @Deprecated
     public <T> IValueTuner<T> tuneable(int id, String key, T defaultData) {
         String trueKey = driver.fullPath(id) + key;
 
