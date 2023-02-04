@@ -11,7 +11,6 @@ import org.bitbuckets.drive.holo.HoloControl;
 import org.bitbuckets.lib.log.ILoggable;
 import org.bitbuckets.lib.tune.IValueTuner;
 import org.bitbuckets.odometry.IOdometryControl;
-import org.bitbuckets.odometry.OdometryControl;
 import org.bitbuckets.robot.RobotStateControl;
 import org.bitbuckets.vision.VisionControl;
 
@@ -82,11 +81,10 @@ public class DriveSubsystem {
                     break;
                 }
 
-                //TODO AutoControl should read from drive odometry
                 ChassisSpeeds targetChassisSpeeds = autoControl.getAutoChassisSpeeds(
                         path.readValue(),
                         robotStateControl.robotAutonomousTime_seconds(),
-                        new Pose2d()
+                        odometryControl.estimatePose2d()
                 );
 
                 autoTime.log(robotStateControl.robotAutonomousTime_seconds());
