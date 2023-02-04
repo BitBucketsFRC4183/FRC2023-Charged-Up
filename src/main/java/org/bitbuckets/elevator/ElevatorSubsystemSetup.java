@@ -12,23 +12,26 @@ import java.util.Optional;
 
 public class ElevatorSubsystemSetup implements ISetup<ElevatorSubsystem> {
 
-    final static boolean elevatorEnabled = false;
 
-    private static ElevatorControl buildElevatorControl(ProcessPath path) {
-        if (!elevatorEnabled) {
-            return MockingUtil.buddy(ElevatorControl.class);
+    final boolean isElevatorEnabled;
+
+    public ElevatorSubsystemSetup(boolean isElevatorEnabled) {
+        this.isElevatorEnabled = isElevatorEnabled;
+    }
+
+
+    @Override
+    public ElevatorSubsystem build(ProcessPath path) {
+        if (!isElevatorEnabled) {
+            return MockingUtil.buddy(ElevatorSubsystem.class);
         }
+
+        ElevatorInput elevatorInput = new ElevatorInput(new Joystick(1));
         ElevatorControlSetup elevatorControlSetup = new ElevatorControlSetup(
                 new SparkSetup(9, new MotorConfig(ElevatorConstants.getGearRatioExtend, 1, ElevatorConstants.rotToMeterExtend, false, false, 20, false, false, Optional.empty()), new PIDConfig(0, 0, 0, 0)),
                 new SparkSetup(10, new MotorConfig(ElevatorConstants.gearRatioTilt, 1, ElevatorConstants.rotToMeterTilt, false, false, 20, false, false, Optional.empty()), new PIDConfig(0, 0, 0, 0))
         );
         ElevatorControl elevatorControl = elevatorControlSetup.build(path.addChild("elevator-control"));
-        return elevatorControl;
-    }
-    @Override
-    public ElevatorSubsystem build(ProcessPath path) {
-        ElevatorInput elevatorInput = new ElevatorInput(new Joystick(1));
-        ElevatorControl elevatorControl = buildElevatorControl(path);
 
         return new ElevatorSubsystem(elevatorControl, elevatorInput);
     }

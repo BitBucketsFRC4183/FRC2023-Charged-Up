@@ -4,6 +4,7 @@ import com.pathplanner.lib.PathPlannerTrajectory;
 import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.Timer;
 import org.bitbuckets.arm.ArmControl;
 
@@ -36,10 +37,7 @@ public class AutoControl {
 
     public void setMarkers() {
 
-        if (eventTimer.get() > trajectory[2].getMarkers().get(2).timeSeconds) {
-            //armControl.moveUpperArm(0.1);
-            //get arm system to work
-        }
+
     }
 
 }

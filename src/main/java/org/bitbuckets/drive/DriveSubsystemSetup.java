@@ -2,16 +2,17 @@ package org.bitbuckets.drive;
 
 import edu.wpi.first.wpilibj.Joystick;
 import org.bitbuckets.auto.AutoControl;
+import org.bitbuckets.auto.AutoControlSetup;
 import org.bitbuckets.auto.AutoPath;
-import org.bitbuckets.drive.balance.AutoAxisControl;
-import org.bitbuckets.drive.balance.AutoAxisSetup;
+import org.bitbuckets.drive.balance.ClosedLoopsControl;
+import org.bitbuckets.drive.balance.ClosedLoopsSetup;
 import org.bitbuckets.drive.controlsds.DriveControl;
-import org.bitbuckets.drive.controlsds.sds.DriveControlSetup;
+import org.bitbuckets.drive.controlsds.DriveControlSetup;
 import org.bitbuckets.drive.controlsds.sds.DriveControllerSetup;
 import org.bitbuckets.drive.controlsds.sds.SteerControllerSetup;
 import org.bitbuckets.drive.controlsds.sds.SwerveModuleSetup;
-import org.bitbuckets.gyro.GyroControl;
-import org.bitbuckets.gyro.GyroControlSetup;
+import org.bitbuckets.drive.holo.HoloControl;
+import org.bitbuckets.drive.holo.HoloControlSetup;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.lib.control.PIDConfig;
@@ -25,24 +26,65 @@ import org.bitbuckets.lib.vendor.ctre.TalonSteerMotorSetup;
 import org.bitbuckets.lib.vendor.spark.SparkDriveMotorSetup;
 import org.bitbuckets.lib.vendor.spark.SparkSteerMotorSetup;
 import org.bitbuckets.lib.vendor.thrifty.ThriftyEncoderSetup;
+import org.bitbuckets.odometry.IOdometryControl;
+import org.bitbuckets.odometry.OdometryControlSetup;
 import org.bitbuckets.robot.RobotStateControl;
+import org.bitbuckets.vision.VisionControl;
 
 import java.util.Optional;
 
 public class DriveSubsystemSetup implements ISetup<DriveSubsystem> {
-    final RobotStateControl robotStateControl;
-    final AutoControl autoControl;
-    final static boolean driveEnabled = true;
 
-    public DriveSubsystemSetup(RobotStateControl robotStateControl, AutoControl autoControl) {
+    final boolean driveEnabled;
+
+    final RobotStateControl robotStateControl;
+    final VisionControl visionControl;
+
+    public DriveSubsystemSetup(boolean driveEnabled, RobotStateControl robotStateControl, VisionControl visionControl) {
+        this.driveEnabled = driveEnabled;
         this.robotStateControl = robotStateControl;
-        this.autoControl = autoControl;
+        this.visionControl = visionControl;
     }
 
-    static DriveControl buildNeoDriveControl(ProcessPath path) {
+    @Override
+    public DriveSubsystem build(ProcessPath path) {
         if (!driveEnabled) {
-            return MockingUtil.buddy(DriveControl.class);
+            return MockingUtil.buddy(DriveSubsystem.class);
         }
+
+        DriveInput input = new DriveInput(new Joystick(0));
+        ClosedLoopsControl closedLoopsControl = new ClosedLoopsSetup()
+                .build(path.addChild("axis-control"));
+
+        DriveControl driveControl = buildNeoDriveControl(path); //or use talons, when they work
+
+        IOdometryControl odometryControl = new OdometryControlSetup(driveControl, visionControl, 5)
+                .build(path.addChild("odo-control"));
+        HoloControl holoControl = new HoloControlSetup(driveControl, odometryControl)
+                .build(path.addChild("holo-control"));
+        AutoControl autoControl = new AutoControlSetup()
+                .build(path.addChild("auto-control"));
+
+        IValueTuner<AutoPath> pathTuneable = path.generateEnumTuner("path", AutoPath.class, AutoPath.AUTO_TEST_PATH_ONE);
+        ILoggable<Double> autoTime = path.generateDoubleLogger("auto-time");
+
+        return new DriveSubsystem(
+                input,
+                robotStateControl,
+                odometryControl,
+                closedLoopsControl,
+                driveControl,
+                autoControl,
+                holoControl,
+                visionControl,
+                pathTuneable,
+                autoTime,
+                path.generateEnumTuner("Orientation", DriveSubsystem.OrientationChooser.class, DriveSubsystem.OrientationChooser.FIELD_ORIENTED));
+    }
+
+
+
+    DriveControl buildNeoDriveControl(ProcessPath path) {
         // used to configure the spark motor in SparkSetup
         MotorConfig driveMotorConfig = new MotorConfig(
                 DriveConstants.MK4I_L2.getDriveReduction(),
@@ -100,7 +142,7 @@ public class DriveSubsystemSetup implements ISetup<DriveSubsystem> {
         return driveControl;
     }
 
-    static DriveControl buildTalonDriveControl(ProcessPath path) {
+    DriveControl buildTalonDriveControl(ProcessPath path) {
 
         int frontLeftModuleDriveMotor_ID = 1;
         int frontLeftModuleSteerMotor_ID = 2;
@@ -162,27 +204,5 @@ public class DriveSubsystemSetup implements ISetup<DriveSubsystem> {
                         )
                 )
         ).build(path.addChild("drive-control"));
-    }
-
-    @Override
-    public DriveSubsystem build(ProcessPath path) {
-        GyroControl gyroControl = new GyroControlSetup(5).build(path.addChild("gyro-control"));
-        DriveInput input = new DriveInput(new Joystick(0));
-        AutoAxisControl autoAxisControl = new AutoAxisSetup().build(path.addChild("axis-control"));
-        DriveControl driveControl = buildNeoDriveControl(path);
-//        DriveControl driveControl = buildTalonDriveControl(path);
-        IValueTuner<AutoPath> pathTuneable = path.generateEnumTuner("path", AutoPath.class, AutoPath.AUTO_TEST_PATH_ONE);
-        ILoggable<Double> autoTime = path.generateDoubleLogger("auto-time");
-
-        return new DriveSubsystem(
-                input,
-                robotStateControl,
-                gyroControl,
-                autoAxisControl,
-                driveControl,
-                autoControl,
-                pathTuneable,
-                autoTime,
-                path.generateEnumTuner("Orientation", DriveSubsystem.OrientationChooser.class, DriveSubsystem.OrientationChooser.FIELD_ORIENTED));
     }
 }

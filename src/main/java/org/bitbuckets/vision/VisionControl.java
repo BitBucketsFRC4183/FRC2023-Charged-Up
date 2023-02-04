@@ -17,38 +17,19 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 
 import java.util.Optional;
 
+import static org.bitbuckets.vision.VisionConstants2.TAG_TO_CHASE;
 
 
 public class VisionControl implements Runnable{
 
 
-    public Transform3d robotToCamera;
-    //  final Transform3d robotToCamera;
+    final Transform3d robotToCamera;
     final PhotonCamera photonCamera;
     final AprilTagFieldLayout aprilTagFieldLayout;
-    PhotonPoseEstimator photonPoseEstimator;
+    final PhotonPoseEstimator photonPoseEstimator;
+
     final ILoggable<double[]> loggable;
-
     final ILoggable<Translation2d[]> loggable2;
-
-    private PhotonTrackedTarget lastTarget;
-
-    private static final TrapezoidProfile.Constraints X_CONSTRAINTS = new TrapezoidProfile.Constraints(1, .75);
-    private static final TrapezoidProfile.Constraints Y_CONSTRAINTS = new TrapezoidProfile.Constraints(1, .75);
-    private static final TrapezoidProfile.Constraints OMEGA_CONSTRAINTS =   new TrapezoidProfile.Constraints(4, 4);
-
-    private static final int TAG_TO_CHASE = 2;
-    private static final Transform3d TAG_TO_GOAL =
-            new Transform3d(
-                    new Translation3d(1.5, 0.0, 0.0),
-                    new Rotation3d(0.0, 0.0, Math.PI));
-
-
-    private final ProfiledPIDController xController = new ProfiledPIDController(.5, 0, 0, X_CONSTRAINTS);
-    private final ProfiledPIDController yController = new ProfiledPIDController(.5, 0, 0, Y_CONSTRAINTS);
-    private final ProfiledPIDController omegaController = new ProfiledPIDController(.5, 0, 0, OMEGA_CONSTRAINTS);
-
-
 
     VisionControl(Transform3d robotToCamera, AprilTagFieldLayout aprilTagFieldLayout, PhotonPoseEstimator photonPoseEstimator, PhotonCamera photonCamera, ILoggable<double[]> loggable, ILoggable<Translation2d[]> loggable2) {
         this.robotToCamera = robotToCamera;
@@ -61,34 +42,33 @@ public class VisionControl implements Runnable{
 
     @Override
     public void run() {
-        PhotonCalculationResult visionPoseEstimator = visionPoseEstimator().orElseThrow();
-        double yaw = visionPoseEstimator.yaw;
-
-         loggable.log(new double[]{yaw, pitch, area, skew, range});
-        loggable2.log(new Translation2d[]{translationToTag});
+       //TODO log
     }
 
     public class PhotonCalculationResult {
         public final Pose3d robotPose;
-
-        public Pose3d goalPose;
-
+        public final Pose3d goalPose;
         public final Translation2d translationToTag;
         public final Rotation2d targetYaw;
-        public double yaw;
+        public final double yaw;
 
-        public PhotonCalculationResult(Pose3d robotPose, Translation2d translationToTag, Rotation2d targetYaw) {
+        public PhotonCalculationResult(Pose3d robotPose, Pose3d goalPose, Translation2d translationToTag, Rotation2d targetYaw, double yaw) {
             this.robotPose = robotPose;
+            this.goalPose = goalPose;
             this.translationToTag = translationToTag;
             this.targetYaw = targetYaw;
+            this.yaw = yaw;
         }
-
     }
+
 
     public Optional<PhotonCalculationResult> visionPoseEstimator() {
 
         PhotonPipelineResult result = photonCamera.getLatestResult();
+        if (!result.hasTargets()) return Optional.empty();
+
         PhotonTrackedTarget aprilTagTarget = result.getBestTarget();
+
         int count = result.targets.size();
         if (count == 0) return Optional.empty();
 
@@ -106,14 +86,11 @@ public class VisionControl implements Runnable{
                     .filter(t -> t.getFiducialId() == TAG_TO_CHASE)
                     .filter(t -> !t.equals(aprilTagTarget) && t.getPoseAmbiguity() <= .2 && t.getPoseAmbiguity() != -1)
                     .findFirst();
+
             if (targetOpt.isPresent()) {
                 var target = targetOpt.get();
 
                 Pose3d robotPose = PhotonUtils.estimateFieldToRobotAprilTag(tagPose, VisionConstants.aprilTags.get(  tagID), robotToCamera);
-
-
-
-
 
                 // Transform the robot's pose to find the camera's pose
                 var cameraPose = robotPose.transformBy(robotToCamera);
@@ -123,7 +100,7 @@ public class VisionControl implements Runnable{
                 var targetPose = cameraPose.transformBy(camToTarget);
 
                 // Transform the tag's pose to set our goal
-                var goalPose = targetPose.transformBy(TAG_TO_GOAL).toPose2d();
+                var goalPose = targetPose.transformBy(VisionConstants2.TAG_TO_GOAL).toPose2d();
 
 
                 // This is new target data, so recalculate the goal
@@ -156,7 +133,7 @@ public class VisionControl implements Runnable{
                 Rotation2d targetYaw = PhotonUtils.getYawToPose(currentEstimatedPose2d, tagPossiblePose2d);
 
 
-                return Optional.of(new PhotonCalculationResult(robotPose, translationToTag, targetYaw));
+                return Optional.of(new PhotonCalculationResult(robotPose, tagPossiblePose3d, translationToTag, targetYaw, targetYaw.getRadians()));
 
 
             }

@@ -10,18 +10,14 @@ public class ArmSubsystem {
     final ArmInput armInput;
     final ArmControl armControl;
     final ILoggable<String> mode;
-
-    final DoubleJointedArmSim armSim;
+    private String positionMode;
 
     ArmFSM state = ArmFSM.MANUAL;
 
-    private String positionMode;
-
-    public ArmSubsystem(ArmInput armInput, ArmControl armControl, ILoggable<String> mode, DoubleJointedArmSim armSim) {
+    public ArmSubsystem(ArmInput armInput, ArmControl armControl, ILoggable<String> mode) {
         this.armInput = armInput;
         this.armControl = armControl;
         this.mode = mode;
-        this.armSim = armSim;
     }
 
 
@@ -29,10 +25,6 @@ public class ArmSubsystem {
 
     //calculated gearRatio
     //private double gearRatio = (5 * 4 * 3) / (12. / 30.);
-
-    public void robotPeriodic() {
-
-    }
 
     public void teleopPeriodic() {
 
