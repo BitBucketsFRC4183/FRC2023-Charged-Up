@@ -1,6 +1,5 @@
 package org.bitbuckets.robot;
 
-import com.ctre.phoenix.sensors.WPI_PigeonIMU;
 import com.revrobotics.REVPhysicsSim;
 import edu.wpi.first.wpilibj.Joystick;
 import org.bitbuckets.arm.*;
@@ -21,12 +20,10 @@ import org.bitbuckets.gyro.GyroControl;
 import org.bitbuckets.gyro.GyroControlSetup;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
-import org.bitbuckets.lib.hardware.MotorConfig;
-import org.bitbuckets.lib.tune.IValueTuner;
-import org.bitbuckets.lib.util.MockingUtil;
 import org.bitbuckets.lib.control.PIDConfig;
 import org.bitbuckets.lib.hardware.MotorConfig;
 import org.bitbuckets.lib.tune.IValueTuner;
+import org.bitbuckets.lib.util.MockingUtil;
 import org.bitbuckets.lib.vendor.ctre.CANCoderAbsoluteEncoderSetup;
 import org.bitbuckets.lib.vendor.ctre.TalonDriveMotorSetup;
 import org.bitbuckets.lib.vendor.ctre.TalonSteerMotorSetup;
@@ -58,8 +55,6 @@ public class RobotSetup implements ISetup<RobotContainer> {
     public RobotContainer build(ProcessPath path) {
         DriveControl driveControl = buildNeoDriveControl(path);
 //        DriveControl driveControl = buildTalonDriveControl(path);
-
-
         VisionControl visionControl = new VisionControlSetup().build(path.addChild("vision-control"));
 
         DriveInput input = new DriveInput(new Joystick(0));
@@ -67,11 +62,13 @@ public class RobotSetup implements ISetup<RobotContainer> {
         GyroControl gyroControl = new GyroControlSetup(5).build(path.addChild("gyro-control"));
         AutoAxisControl autoAxisControl = new AutoAxisSetup().build(path.addChild("axis-control"));
         //also throwing errors since I'm no longer using TestPath, but rather the array
-        IValueTuner<AutoPath> pathTuneable = path.generateValueTuner("path", AutoPath.AUTO_TEST_PATH_ONE);
-
+        IValueTuner<AutoPath> pathTuneable = path.generateEnumTuner("path", AutoPath.class, AutoPath.AUTO_TEST_PATH_ONE);
 
         AutoControl autoControl = null;
-        DriveSubsystem driveSubsystem = new DriveSubsystem(input, robotStateControl, gyroControl, autoAxisControl, driveControl, autoControl, pathTuneable);
+
+        DriveSubsystem driveSubsystem = new DriveSubsystem(input, robotStateControl, gyroControl, autoAxisControl, driveControl, autoControl, pathTuneable, path.generateEnumTuner("Orientation", DriveSubsystem.OrientationChooser.class, DriveSubsystem.OrientationChooser.FIELD_ORIENTED));
+        //labels: high priority
+        //TODO use neos here
 
         ArmControl armControl = buildArmControl(path);
         ArmInput armInput = new ArmInput(
@@ -253,5 +250,6 @@ public class RobotSetup implements ISetup<RobotContainer> {
                 )
         ).build(path.addChild("drive-control"));
     }
+
 
 }
