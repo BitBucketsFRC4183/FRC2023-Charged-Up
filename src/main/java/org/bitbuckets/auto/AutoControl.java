@@ -14,13 +14,10 @@ public class AutoControl {
     private final PathPlannerTrajectory[] trajectory;
     private final HolonomicDriveController controller;
 
-    final ArmControl armControl;
-
     //creates paths and Holonomic Controller (used in PathPlanner and to get the code to run the path)
-    public AutoControl(PathPlannerTrajectory[] trajectory, HolonomicDriveController controller, ArmControl armControl) {
+    public AutoControl(PathPlannerTrajectory[] trajectory, HolonomicDriveController controller) {
         this.trajectory = trajectory;
         this.controller = controller;
-        this.armControl = armControl;
     }
 
     public ChassisSpeeds getAutoChassisSpeeds(AutoPath path, double time, Pose2d pose) {
