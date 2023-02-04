@@ -17,6 +17,7 @@ public class LogDriver {
         this.identityDriver = identityDriver;
     }
 
+
     public void report(int id, String keyName, double data) {
         logger.recordOutput(identityDriver.fullPath(id) + keyName, data);
     }

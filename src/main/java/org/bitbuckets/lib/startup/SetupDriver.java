@@ -3,10 +3,12 @@ package org.bitbuckets.lib.startup;
 import org.bitbuckets.lib.core.IdentityDriver;
 import org.bitbuckets.lib.core.LogDriver;
 
+import java.util.ArrayDeque;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Queue;
 
-public class SetupDriver implements ISetupDriver {
+public class SetupDriver implements ISetupDriver, Runnable {
 
     final IdentityDriver identityDriver;
     final LogDriver logDriver;
@@ -24,6 +26,15 @@ public class SetupDriver implements ISetupDriver {
         this.identityDriver = identityDriver;
         this.logDriver = logDriver;
         this.startupConsoleId = startupConsoleId;
+    }
+
+    final Queue<String> postedStrings = new ArrayDeque<>();
+
+    @Override
+    public void run() {
+
+
+
     }
 
 
@@ -91,7 +102,7 @@ public class SetupDriver implements ISetupDriver {
         rec.state = StartupState.COMPLETED;
         long time = System.currentTimeMillis() - rec.initTime;
 
-        consoleReport(id, String.format("Completed in (%s)", time));
+        consoleReport(id, String.format("Completed in (%s ms)", time));
     }
 
     @Override

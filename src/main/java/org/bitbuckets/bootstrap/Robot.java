@@ -52,7 +52,7 @@ public class Robot extends LoggedRobot {
             logger.addDataReceiver(new NetworkPublisher());
         }
 
-        Logger.getInstance().start(); // Start logging! No more data receivers, replay sources, or metadata values may be added.
+        logger.start(); // Start logging! No more data receivers, replay sources, or metadata values may be added.
 
         loopDriver = new LoopDriver();
         IdentityDriver identityDriver = new IdentityDriver();

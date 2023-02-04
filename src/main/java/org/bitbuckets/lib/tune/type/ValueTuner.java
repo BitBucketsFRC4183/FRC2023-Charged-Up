@@ -1,6 +1,8 @@
-package org.bitbuckets.lib.tune;
+package org.bitbuckets.lib.tune.type;
 
 import edu.wpi.first.networktables.NetworkTableEvent;
+import org.bitbuckets.lib.tune.IValueTuner;
+import org.bitbuckets.lib.tune.type.AtomicRecord;
 
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
@@ -10,16 +12,17 @@ import java.util.function.Consumer;
  *
  * @param <T>
  */
+@Deprecated
 public class ValueTuner<T> implements Consumer<NetworkTableEvent>, IValueTuner<T> {
 
     final T defaultValue;
 
 
-    final AtomicReference<AtomicRecord> cachedValue;
+    final AtomicReference<AtomicRecord<T>> cachedValue;
 
     public ValueTuner(T firstValue) {
         this.defaultValue = firstValue;
-        this.cachedValue = new AtomicReference<>(new AtomicRecord(firstValue, false));
+        this.cachedValue = new AtomicReference<>(new AtomicRecord<>(firstValue, false));
     }
 
 
@@ -30,9 +33,9 @@ public class ValueTuner<T> implements Consumer<NetworkTableEvent>, IValueTuner<T
 
     @Override
     public T consumeValue() {
-        AtomicRecord nowStale = cachedValue.getAndUpdate(record -> {
+        AtomicRecord<T> nowStale = cachedValue.getAndUpdate(record -> {
             if (record.hasUpdated) {
-                return new AtomicRecord(record.cachedPointer, false);
+                return new AtomicRecord<>(record.cachedPointer, false);
             }
 
             return record; //avoid CAS operation to save loops
@@ -46,27 +49,9 @@ public class ValueTuner<T> implements Consumer<NetworkTableEvent>, IValueTuner<T
     public void accept(NetworkTableEvent networkTableEvent) {
         Object newObject = networkTableEvent.valueData.value.getValue();
 
-        if (defaultValue.getClass().isEnum()) {
-
-
-            Enum aaaa = (Enum) defaultValue;
-            Enum coerced = Enum.valueOf(aaaa.getClass(), (String) newObject);
-
-            cachedValue.set(new AtomicRecord((T) coerced, true));
-        } else {
-            cachedValue.set(new AtomicRecord((T) newObject, true));
-        }
+        cachedValue.set(new AtomicRecord<>((T) newObject, true));
     }
 
-    class AtomicRecord {
-        final T cachedPointer;
-        final boolean hasUpdated;
-
-        public AtomicRecord(T cachedPointer, boolean hasUpdated) {
-            this.cachedPointer = cachedPointer;
-            this.hasUpdated = hasUpdated;
-        }
-    }
 
 
     public boolean hasUpdated() {
