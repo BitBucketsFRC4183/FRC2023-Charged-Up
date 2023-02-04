@@ -43,10 +43,10 @@ import java.util.Optional;
 
 public class RobotSetup implements ISetup<RobotContainer> {
 
-    final static boolean driveEnabled = true;
+    final static boolean driveEnabled = false;
     final static boolean armEnabled = true;
     final static boolean elevatorEnabled = true;
-    final static boolean odometryEnabled = true;
+    final static boolean odometryEnabled = false;
 
     final RobotStateControl robotStateControl;
 
@@ -77,7 +77,10 @@ public class RobotSetup implements ISetup<RobotContainer> {
         ArmInput armInput = new ArmInput(
                 new Joystick(1)
         );
-        ArmSubsystem armSubsystem = new ArmSubsystem(armInput, armControl, path.generateStringLogger("arm-subsystem"));
+
+        DoubleJointedArmSim armSim = new DoubleJointedArmSim();
+
+        ArmSubsystem armSubsystem = new ArmSubsystem(armInput, armControl, path.generateStringLogger("arm-subsystem"), armSim);
 
         autoControl = new AutoControlSetup(
                 armControl
