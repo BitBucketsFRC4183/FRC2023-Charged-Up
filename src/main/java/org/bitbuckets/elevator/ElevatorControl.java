@@ -26,7 +26,8 @@ public class ElevatorControl {
     ElevatorConstants elevatorConstants = new ElevatorConstants();
 
     public void smartDashboard() {
-        SmartDashboard.putNumber("extendEncoderLeft", leftExtend.getPositionRaw());
+        SmartDashboard.putNumber("extendEncoderLeftRaw", leftExtend.getPositionRaw());
+        SmartDashboard.putNumber("extendEncoderLeftMeters", leftExtend.getPositionMechanism_meters());
         //SmartDashboard.putNumber("extendEncoderRight", rightExtend.getPositionMechanism_meters());
         SmartDashboard.putNumber("tiltEncoderLeft", Math.toDegrees(leftTilt.getMechanismPositionAccum_rot() * 2.0 * Math.PI));
         //     SmartDashboard.putNumber("tiltEncoderRight", Math.toDegrees(rightTilt.getMechanismPositionAccum_rot() * 2.0 * Math.PI));
@@ -77,7 +78,11 @@ public class ElevatorControl {
         // SmartDashboard.putNumber("pPPP", leftExtend.rawAccess(CANSparkMax.class).getPIDController().getP());
         // leftExtend.rawAccess(CANSparkMax.class).getPIDController().setP(0.05);
         SmartDashboard.putNumber("angleTheta1", theta1);
+
         double rot = unitToRotExtend(x1);
+        SmartDashboard.putNumber("extendEncoderLeftSetpoint", rot);
+        SmartDashboard.putNumber("extendEncoderLeftSetpointMeters", x1);
+
         SmartDashboard.putNumber("rotsw", rot);
         leftExtend.moveToPosition(rot);       // leftTilt.moveToPosition(theta1*elevatorConstants.gearRatioTilt  );
         leftTilt.moveToPosition(theta1 / 360.0 / ElevatorConstants.gearRatioTilt
@@ -87,7 +92,7 @@ public class ElevatorControl {
     }
 
     public double unitToRotExtend(double unit) {
-        return unit / ElevatorConstants.rotToMeterExtend / ElevatorConstants.getGearRatioExtend;
+        return unit / ElevatorConstants.rotToMeterExtend * ElevatorConstants.getGearRatioExtend;
 
     }
 
@@ -107,7 +112,7 @@ public class ElevatorControl {
     }
 
     public void gotoPositionButton() {
-        goToPosition(60.0, 3.0);
+        goToPosition(60.0, 1.3);
         // setElevatorMech2dIK();
         setElevatorActualIK();
 
@@ -131,13 +136,13 @@ public class ElevatorControl {
     public void tiltForward() {
 
         //   rightTilt.moveAtPercent(0.2);
-        leftTilt.moveAtPercent(0.2);
+        leftTilt.moveAtPercent(0.05);
     }
 
     public void tiltBack() {
 
         //  rightTilt.moveAtPercent(-0.2);
-        leftTilt.moveAtPercent(-0.2);
+        leftTilt.moveAtPercent(-0.05);
     }
 
     public void stopTilt() {
