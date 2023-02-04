@@ -18,12 +18,6 @@ import org.bitbuckets.lib.SetupProfiler;
  */
 public class AutoControlSetup implements ISetup<AutoControl> {
 
-    final ArmControl armControl;
-
-    public AutoControlSetup(ArmControl armControl) {
-        this.armControl = armControl;
-    }
-
     @Override
     public AutoControl build(ProcessPath path) {
         SetupProfiler load = path.generateSetupProfiler("load-auto-paths");
@@ -67,7 +61,7 @@ public class AutoControlSetup implements ISetup<AutoControl> {
         );
         gen.markCompleted();
 
-        return new AutoControl(traj, controller, armControl);
+        return new AutoControl(traj, controller);
     }
 
 
