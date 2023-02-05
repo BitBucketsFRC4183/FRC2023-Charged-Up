@@ -46,6 +46,7 @@ public class DriveSubsystemSetup implements ISetup<DriveSubsystem> {
     public DriveSubsystemSetup(boolean driveEnabled, RobotStateControl robotStateControl, IVisionControl visionControl) {
         this.driveEnabled = driveEnabled;
         this.robotStateControl = robotStateControl;
+        this.visionControl = visionControl;
     }
 
     @Override
@@ -84,6 +85,7 @@ public class DriveSubsystemSetup implements ISetup<DriveSubsystem> {
                 driveControl,
                 autoControl,
                 holoControl,
+                visionControl,
                 pathTuneable,
                 fsmLoggable,
                 xyrotLoggers,
