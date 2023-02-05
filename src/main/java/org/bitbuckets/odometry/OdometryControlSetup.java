@@ -52,7 +52,7 @@ public class OdometryControlSetup implements ISetup<OdometryControl> {
         pigeonIMU.configFactoryDefault();
         pigeonIMU.configMountPose(Pigeon2.AxisDirection.PositiveY, Pigeon2.AxisDirection.PositiveZ);
 
-        OdometryControl odometryControl = new OdometryControl (control, estimator, pigeonIMU);;
+        OdometryControl odometryControl = new OdometryControl (control, estimator, pigeonIMU, visionControl);;
         addChild.registerLoop(odometryControl, "odometry-loop");
         ILoggable<double[]> loggable = addChild
                 .generateDoubleLoggers("yaw", "pitch", "roll", "last-error-code");
