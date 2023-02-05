@@ -10,8 +10,8 @@ import org.bitbuckets.drive.controlsds.sds.SwerveModuleConfiguration;
 
 public interface DriveConstants {
 
-    double HALF_WIDTH = 0.6096 / 2; //width of bot ?
-    double HALF_BASE = 0.7712 / 2; //base of bot ?
+    double HALF_WIDTH = 0.3797;
+    double HALF_BASE = 0.3797;
     double WHEEL_DIAMETER_METERS = 0.10033;
     double WHEEL_CIRCUMFERENCE_METERS = WHEEL_DIAMETER_METERS * Math.PI;
 
