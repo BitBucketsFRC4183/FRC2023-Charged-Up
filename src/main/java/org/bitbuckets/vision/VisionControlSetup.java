@@ -12,9 +12,9 @@ import org.photonvision.PhotonPoseEstimator;
 
 import java.io.IOException;
 
-public class VisionControlSetup implements ISetup<VisionControl> {
+public class VisionControlSetup implements ISetup<IVisionControl> {
     @Override
-    public VisionControl build(ProcessPath path) {
+    public IVisionControl build(ProcessPath path) {
 
         AprilTagFieldLayout aprilTagFieldLayout;
         try {

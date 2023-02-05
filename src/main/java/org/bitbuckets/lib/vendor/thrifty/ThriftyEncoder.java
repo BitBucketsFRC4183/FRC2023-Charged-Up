@@ -5,6 +5,9 @@ import org.bitbuckets.lib.hardware.IAbsoluteEncoder;
 import org.bitbuckets.lib.log.ILoggable;
 
 
+/**
+ * It works now don't touch it
+ */
 public class ThriftyEncoder implements IAbsoluteEncoder, Runnable {
 
     private static final double READ_VOLTAGE_MAX = 4.8;

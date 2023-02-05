@@ -1,6 +1,7 @@
 package org.bitbuckets.drive;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Preferences;
 import org.bitbuckets.auto.AutoControl;
@@ -12,6 +13,7 @@ import org.bitbuckets.lib.log.ILoggable;
 import org.bitbuckets.lib.tune.IValueTuner;
 import org.bitbuckets.odometry.IOdometryControl;
 import org.bitbuckets.robot.RobotStateControl;
+import org.bitbuckets.vision.IVisionControl;
 import org.bitbuckets.vision.VisionControl;
 
 import java.util.Optional;
@@ -31,7 +33,7 @@ public class DriveSubsystem {
     final DriveControl driveControl;
     final AutoControl autoControl;
     final HoloControl holoControl;
-    final VisionControl visionControl;
+    final IVisionControl visionControl;
 
     final IValueTuner<AutoPath> path;
     final ILoggable<DriveFSM> stateLogger;
@@ -45,7 +47,7 @@ public class DriveSubsystem {
 
     final IValueTuner<OrientationChooser> orientation;
 
-    public DriveSubsystem(DriveInput input, RobotStateControl robotStateControl, IOdometryControl odometryControl, ClosedLoopsControl closedLoopsControl, DriveControl driveControl, AutoControl autoControl, HoloControl holoControl, VisionControl visionControl, IValueTuner<AutoPath> path, ILoggable<DriveFSM> stateLogger, ILoggable<double[]> driveLog, IValueTuner<OrientationChooser> orientation) {
+    DriveSubsystem(DriveInput input, RobotStateControl robotStateControl, IOdometryControl odometryControl, ClosedLoopsControl closedLoopsControl, DriveControl driveControl, AutoControl autoControl, HoloControl holoControl, IVisionControl visionControl, IValueTuner<AutoPath> path, ILoggable<DriveFSM> stateLogger, ILoggable<double[]> driveLog, IValueTuner<OrientationChooser> orientation) {
         this.input = input;
         this.robotStateControl = robotStateControl;
         this.odometryControl = odometryControl;
@@ -145,12 +147,10 @@ public class DriveSubsystem {
     }
 
     void teleopVision() {
-        Optional<VisionControl.PhotonCalculationResult> res = visionControl.visionPoseEstimator();
+        Optional<Pose3d> res = visionControl.estimateTargetPose();
         if (res.isEmpty()) return;
-        Pose2d target = res.get().goalPose.toPose2d();
+        ChassisSpeeds speeds = holoControl.calculatePose2D(res.get().toPose2d(), 3);
 
-
-        ChassisSpeeds speeds = holoControl.calculatePose2D(target, 0);
         driveControl.drive(speeds);
     }
 

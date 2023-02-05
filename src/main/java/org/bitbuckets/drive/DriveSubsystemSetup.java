@@ -29,6 +29,7 @@ import org.bitbuckets.lib.vendor.thrifty.ThriftyEncoderSetup;
 import org.bitbuckets.odometry.IOdometryControl;
 import org.bitbuckets.odometry.OdometryControlSetup;
 import org.bitbuckets.robot.RobotStateControl;
+import org.bitbuckets.vision.IVisionControl;
 import org.bitbuckets.vision.VisionControl;
 
 import java.util.Optional;
@@ -38,9 +39,9 @@ public class DriveSubsystemSetup implements ISetup<DriveSubsystem> {
     final boolean driveEnabled;
 
     final RobotStateControl robotStateControl;
-    final VisionControl visionControl;
+    final IVisionControl visionControl;
 
-    public DriveSubsystemSetup(boolean driveEnabled, RobotStateControl robotStateControl, VisionControl visionControl) {
+    public DriveSubsystemSetup(boolean driveEnabled, RobotStateControl robotStateControl, IVisionControl visionControl) {
         this.driveEnabled = driveEnabled;
         this.robotStateControl = robotStateControl;
         this.visionControl = visionControl;
