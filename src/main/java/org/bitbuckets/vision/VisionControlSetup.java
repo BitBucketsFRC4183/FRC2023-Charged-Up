@@ -34,11 +34,11 @@ public class VisionControlSetup implements ISetup<IVisionControl> {
         ILoggable<double[]> loggable = path.generateDoubleLoggers("yaw", "pitch", "area", "skew", "range");
         PhotonPoseEstimator photonPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PhotonPoseEstimator.PoseStrategy.CLOSEST_TO_REFERENCE_POSE, photonCamera, robotToCamera);
         ILoggable<Translation2d[]> loggable2 = null;
+        var targetLog = path.generatePose3dLogger("target");
 
-        VisionControl control = new VisionControl(robotToCamera, aprilTagFieldLayout, photonPoseEstimator, photonCamera, loggable, loggable2);
+        VisionControl control = new VisionControl(robotToCamera, aprilTagFieldLayout, photonPoseEstimator, photonCamera, loggable, loggable2, targetLog);
 
         path.registerLoop(control, LoggingConstants.LOGGING_PERIOD, "vision-log");
-
         return control;
     }
 
