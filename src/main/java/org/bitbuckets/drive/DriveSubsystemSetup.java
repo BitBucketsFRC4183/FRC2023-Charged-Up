@@ -66,7 +66,11 @@ public class DriveSubsystemSetup implements ISetup<DriveSubsystem> {
                 .build(path.addChild("auto-control"));
 
         IValueTuner<AutoPath> pathTuneable = path.generateEnumTuner("path", AutoPath.class, AutoPath.AUTO_TEST_PATH_ONE);
-        ILoggable<Double> autoTime = path.generateDoubleLogger("auto-time");
+        ILoggable<double[]> configs = path.generateDoubleLoggers(
+                "x",
+                "y",
+                "rot"
+        );
 
         return new DriveSubsystem(
                 input,
@@ -78,7 +82,8 @@ public class DriveSubsystemSetup implements ISetup<DriveSubsystem> {
                 holoControl,
                 visionControl,
                 pathTuneable,
-                autoTime,
+                path.generateEnumLogger("State"),
+                configs,
                 path.generateEnumTuner("Orientation", DriveSubsystem.OrientationChooser.class, DriveSubsystem.OrientationChooser.FIELD_ORIENTED));
     }
 
