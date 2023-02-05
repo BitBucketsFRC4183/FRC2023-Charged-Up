@@ -17,7 +17,7 @@ public class OdometryControl implements IOdometryControl, Runnable {
     final WPI_PigeonIMU pigeonIMU;
     final SwerveDrivePoseEstimator swerveDrivePoseEstimator;
 
-    public OdometryControl(IDriveControl driveControl, VisionControl visionControl, WPI_PigeonIMU pigeonIMU, SwerveDrivePoseEstimator swerveDrivePoseEstimator) {
+    OdometryControl(IDriveControl driveControl, VisionControl visionControl, WPI_PigeonIMU pigeonIMU, SwerveDrivePoseEstimator swerveDrivePoseEstimator) {
         this.driveControl = driveControl;
         this.visionControl = visionControl;
         this.pigeonIMU = pigeonIMU;
@@ -40,7 +40,6 @@ public class OdometryControl implements IOdometryControl, Runnable {
         }
 
     }
-
 
     @Override
     public Pose2d estimatePose2d() {
