@@ -11,6 +11,8 @@ import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.lib.StartupProfiler;
 import org.bitbuckets.vision.IVisionControl;
+import org.bitbuckets.lib.log.ILoggable;
+import org.bitbuckets.lib.log.LoggingConstants;
 import org.bitbuckets.vision.VisionControl;
 
 public class OdometryControlSetup implements ISetup<OdometryControl> {
@@ -48,7 +50,18 @@ public class OdometryControlSetup implements ISetup<OdometryControl> {
 
         OdometryControl odometryControl = new OdometryControl (control, visionControl, pigeonIMU, estimator);;
         addChild.registerLoop(odometryControl, "odometry-loop");
+        ILoggable<double[]> loggable = addChild
+                .generateDoubleLoggers("yaw", "pitch", "roll", "last-error-code");
 
+        addChild.registerLoop(
+                new OdometryLogAspect(pigeonIMU, loggable),
+                LoggingConstants.LOGGING_PERIOD,
+                "gyro-log"
+        );
+        addChild.registerLoop(
+                odometryControl,
+                "odometry-update-loop"
+        );
 
         return odometryControl;
     }
