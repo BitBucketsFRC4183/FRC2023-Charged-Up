@@ -32,7 +32,6 @@ public class DriveControl implements IDriveControl {
     //Speed factor that edits the max velocity and max angular velocity
     double speedModifier = .75;
 
-
     List<ISwerveModule> modules;
 
     SwerveModuleState[] cachedSetpoint = new SwerveModuleState[]{
@@ -66,8 +65,8 @@ public class DriveControl implements IDriveControl {
     public void guaranteedLoggingLoop() {
         Logger.getInstance().recordOutput("a", reportSetpointStates());
 
-        //desiredStates.log(reportSetpointStates());
-        //actualStates.log(reportActualStates());
+        desiredStates.log(reportSetpointStates());
+        actualStates.log(reportActualStates());
     }
 
     public SwerveModuleState[] reportSetpointStates() {
