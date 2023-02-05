@@ -26,18 +26,26 @@ public class VisionControl implements Runnable {
     final ILoggable<double[]> loggable;
     final ILoggable<Translation2d[]> loggable2;
 
-    VisionControl(Transform3d robotToCamera, AprilTagFieldLayout aprilTagFieldLayout, PhotonPoseEstimator photonPoseEstimator, PhotonCamera photonCamera, ILoggable<double[]> loggable, ILoggable<Translation2d[]> loggable2) {
+    final ILoggable<Pose3d> targetLog;
+    private Pose3d targetPose;
+    private Pose3d goalPose;
+
+    VisionControl(Transform3d robotToCamera, AprilTagFieldLayout aprilTagFieldLayout, PhotonPoseEstimator photonPoseEstimator, PhotonCamera photonCamera, ILoggable<double[]> loggable, ILoggable<Translation2d[]> loggable2, ILoggable<Pose3d> targetLog) {
         this.robotToCamera = robotToCamera;
         this.aprilTagFieldLayout = aprilTagFieldLayout;
         this.photonPoseEstimator = photonPoseEstimator;
         this.photonCamera = photonCamera;
         this.loggable = loggable;
         this.loggable2 = loggable2;
+        this.targetLog = targetLog;
     }
 
     @Override
     public void run() {
-        //TODO log
+        if (targetPose != null) {
+            targetLog.log(goalPose);
+        }
+
     }
 
     public class PhotonCalculationResult {
@@ -75,25 +83,25 @@ public class VisionControl implements Runnable {
         double pitch = aprilTagTarget.getPitch();
         double area = aprilTagTarget.getArea();
         double skew = aprilTagTarget.getSkew();
-        Transform3d tagPose = aprilTagTarget.getBestCameraToTarget();
-        double poseX = tagPose.getX();
+        Transform3d transformToTag = aprilTagTarget.getBestCameraToTarget();
+        double poseX = transformToTag.getX();
         int tagID = aprilTagTarget.getFiducialId();
 
         if (result.hasTargets()) {
             //Pose3d robotPose = PhotonUtils.estimateFieldToRobotAprilTag(tagPose, VisionConstants.aprilTags.get(tagID), robotToCamera);
             Optional<EstimatedRobotPose> robotPose3d = photonPoseEstimator.update();
 
-            Pose3d robotPose = PhotonUtils.estimateFieldToRobotAprilTag(tagPose, VisionConstants.aprilTags.get(tagID), robotToCamera);
+            Pose3d robotPose = PhotonUtils.estimateFieldToRobotAprilTag(transformToTag, VisionConstants.aprilTags.get(tagID), robotToCamera);
             SmartDashboard.putString("robotPOSE", robotPose.toString());
             // Transform the robot's pose to find the camera's pose
             var cameraPose = robotPose.transformBy(robotToCamera);
 
-            SmartDashboard.putString("tagpose", tagPose.toString());
+            SmartDashboard.putString("tagpose", transformToTag.toString());
             // Trasnform the camera's pose to the target's pose
-            var targetPose = cameraPose.transformBy(tagPose);
+            targetPose = cameraPose.transformBy(transformToTag);
 
             // Transform the tag's pose to set our goal
-            var goalPose = targetPose.transformBy(VisionConstants2.TAG_TO_GOAL);
+            goalPose = targetPose.transformBy(VisionConstants2.TAG_TO_GOAL);
             // This is new target data, so recalculate the goal
             double range = PhotonUtils.calculateDistanceToTargetMeters(
                     VisionConstants2.CAMERA_HEIGHT,
@@ -122,7 +130,7 @@ public class VisionControl implements Runnable {
 
 
         } else {
-            SmartDashboard.putString("tagpose", tagPose.toString());
+            SmartDashboard.putString("tagpose", transformToTag.toString());
 
         }
 
