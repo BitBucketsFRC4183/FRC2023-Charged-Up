@@ -17,7 +17,7 @@ public class FieldLoggingAspect implements Runnable {
     @Override
     public void run() {
         field2d.setRobotPose(
-                control.estimatedSwervePose()
+                control.estimatePose2d()
         );
     }
 }
