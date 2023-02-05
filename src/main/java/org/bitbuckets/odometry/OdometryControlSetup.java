@@ -27,11 +27,11 @@ public class OdometryControlSetup implements ISetup<OdometryControl> {
     }
 
     @Override
-    public OdometryControl build(ProcessPath addChild) {
+    public OdometryControl build(ProcessPath path) {
         SwerveDrivePoseEstimator estimator = new SwerveDrivePoseEstimator(
                 DriveConstants.KINEMATICS,
                 Rotation2d.fromDegrees(0),
-                new SwerveModulePosition[] {
+                new SwerveModulePosition[]{
                         new SwerveModulePosition(),
                         new SwerveModulePosition(),
                         new SwerveModulePosition(),
@@ -42,10 +42,13 @@ public class OdometryControlSetup implements ISetup<OdometryControl> {
 
         WPI_PigeonIMU pigeonIMU = new WPI_PigeonIMU(id);
 
+        var robotPoseLog = path.generatePose3dLogger("robot-pose");
+        var gyroAngleLog = path.generateDoubleLogger("gyro-ange-degrees");
+        var estimatedPose2dLog = path.generatePose2dLogger("estimated-pose");
+        OdometryControl odometryControl = new OdometryControl(control, estimator, pigeonIMU, visionControl, robotPoseLog, gyroAngleLog, estimatedPose2dLog);
+        ;
 
-        OdometryControl odometryControl = new OdometryControl (control, estimator, pigeonIMU, visionControl);;
-
-        addChild.registerLoop(odometryControl, "odometry-loop");
+        path.registerLoop(odometryControl, "odometry-loop");
 
         return odometryControl;
     }

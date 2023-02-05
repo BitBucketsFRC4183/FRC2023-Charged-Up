@@ -1,14 +1,13 @@
 package org.bitbuckets.lib;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import org.bitbuckets.lib.core.IdentityDriver;
 import org.bitbuckets.lib.core.LogDriver;
 import org.bitbuckets.lib.core.LoopDriver;
 import org.bitbuckets.lib.log.ILoggable;
-import org.bitbuckets.lib.log.type.DataLoggable;
-import org.bitbuckets.lib.log.type.DoubleLoggable;
-import org.bitbuckets.lib.log.type.StateLoggable;
-import org.bitbuckets.lib.log.type.StringLoggable;
+import org.bitbuckets.lib.log.type.*;
 import org.bitbuckets.lib.startup.SetupDriver;
 import org.bitbuckets.lib.tune.IValueTuner;
 import org.bitbuckets.lib.tune.TuneableDriver;
@@ -141,6 +140,22 @@ public class ProcessPath {
         return data -> logDriver.report(currentId, key, data.name());
     }
 
+    public ILoggable<Pose3d> generatePose3dLogger(String name) {
+        var log = new Pose3dLoggable(logDriver, currentId, name);
+
+        log.log(new Pose3d());
+
+        return log;
+    }
+
+    public ILoggable<Pose2d> generatePose2dLogger(String name) {
+        var log = new Pose2dLoggable(logDriver, currentId, name);
+
+        log.log(new Pose2d());
+
+        return log;
+    }
+
     /**
      * Generates a loggable that logs bools. You will have to call log on it to send data
      *
@@ -181,7 +196,7 @@ public class ProcessPath {
      */
     public ILoggable<SwerveModuleState[]> generateStateLogger(String name) {
 
-        SwerveModuleState[] states = new SwerveModuleState[] {
+        SwerveModuleState[] states = new SwerveModuleState[]{
                 new SwerveModuleState(),
                 new SwerveModuleState(),
                 new SwerveModuleState(),

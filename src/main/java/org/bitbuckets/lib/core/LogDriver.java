@@ -1,5 +1,7 @@
 package org.bitbuckets.lib.core;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import org.bitbuckets.lib.log.ILoggable;
 import org.bitbuckets.lib.log.type.DoubleLoggable;
@@ -39,6 +41,12 @@ public class LogDriver {
         logger.recordOutput(identityDriver.fullPath(id) + keyName, str);
     }
 
+    public void report(int id, String keyName, Pose2d pose) {
+        logger.recordOutput(identityDriver.fullPath(id) + keyName, pose);
+    }
 
+    public void report(int id, String keyName, Pose3d pose) {
+        logger.recordOutput(identityDriver.fullPath(id) + keyName, pose);
+    }
 
 }
