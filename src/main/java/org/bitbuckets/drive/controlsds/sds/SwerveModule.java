@@ -31,10 +31,6 @@ public class SwerveModule implements ISwerveModule, Runnable {
         return new SwerveModuleState();
     }
 
-    @Override
-    public double getDrivePosition_meters() {
-        return driveController.getStatePosition_meters();
-    }
 
     @Override
     public double getDriveVelocity() {
