@@ -21,7 +21,6 @@ public class RobotSetup implements ISetup<RobotContainer> {
 
     @Override
     public RobotContainer build(ProcessPath path) {
-
         VisionControl visionControl = new VisionControlSetup()
                 .build( path.addChild("vision-control") );
 
@@ -36,6 +35,13 @@ public class RobotSetup implements ISetup<RobotContainer> {
                 robotStateControl,
                 visionControl
         ).build(path.addChild("drive-subsystem"));
+
+        /**
+         * Register the crasher runnable if
+         */
+        if (System.getenv().containsKey("CI")) {
+            path.registerLoop(new SimulatorKillAspect(), "simulator-kill-loop");
+        }
 
 
         return new RobotContainer(driveSubsystem, armSubsystem, elevatorSubsystem);
