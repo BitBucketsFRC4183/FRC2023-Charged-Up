@@ -3,6 +3,7 @@ package org.bitbuckets.vision;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.bitbuckets.lib.log.ILoggable;
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
@@ -13,10 +14,8 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 
 import java.util.Optional;
 
-import static org.bitbuckets.vision.VisionConstants2.TAG_TO_CHASE;
 
-
-public class VisionControl implements Runnable{
+public class VisionControl implements Runnable {
 
 
     final Transform3d robotToCamera;
@@ -38,7 +37,7 @@ public class VisionControl implements Runnable{
 
     @Override
     public void run() {
-       //TODO log
+        //TODO log
     }
 
     public class PhotonCalculationResult {
@@ -83,17 +82,18 @@ public class VisionControl implements Runnable{
         if (result.hasTargets()) {
             //Pose3d robotPose = PhotonUtils.estimateFieldToRobotAprilTag(tagPose, VisionConstants.aprilTags.get(tagID), robotToCamera);
             Optional<EstimatedRobotPose> robotPose3d = photonPoseEstimator.update();
-            Pose3d robotPose = PhotonUtils.estimateFieldToRobotAprilTag(tagPose, VisionConstants.aprilTags.get(  tagID), robotToCamera);
 
+            Pose3d robotPose = PhotonUtils.estimateFieldToRobotAprilTag(tagPose, VisionConstants.aprilTags.get(tagID), robotToCamera);
+            SmartDashboard.putString("robotPOSE", robotPose.toString());
             // Transform the robot's pose to find the camera's pose
             var cameraPose = robotPose.transformBy(robotToCamera);
 
+            SmartDashboard.putString("tagpose", tagPose.toString());
             // Trasnform the camera's pose to the target's pose
             var targetPose = cameraPose.transformBy(tagPose);
 
             // Transform the tag's pose to set our goal
-            var goalPose = targetPose.transformBy(VisionConstants2.TAG_TO_GOAL).toPose2d();
-
+            var goalPose = targetPose.transformBy(VisionConstants2.TAG_TO_GOAL);
             // This is new target data, so recalculate the goal
             double range = PhotonUtils.calculateDistanceToTargetMeters(
                     VisionConstants2.CAMERA_HEIGHT,
@@ -107,20 +107,22 @@ public class VisionControl implements Runnable{
             );
 
             if (robotPose3d.isEmpty()) return Optional.empty();
-                Pose3d currentEstimatedPose3d = robotPose3d.get().estimatedPose;
-                Pose2d currentEstimatedPose2d = currentEstimatedPose3d.toPose2d();
+            Pose3d currentEstimatedPose3d = robotPose3d.get().estimatedPose;
+            Pose2d currentEstimatedPose2d = currentEstimatedPose3d.toPose2d();
 
-                Pose3d tagPossiblePose3d = aprilTagFieldLayout.getTagPose(aprilTagTarget.getFiducialId()).orElseThrow();
-                Pose2d tagPossiblePose2d = tagPossiblePose3d.toPose2d();
+            Pose3d tagPossiblePose3d = aprilTagFieldLayout.getTagPose(aprilTagTarget.getFiducialId()).orElseThrow();
+            Pose2d tagPossiblePose2d = tagPossiblePose3d.toPose2d();
 
-                Rotation2d targetYaw = PhotonUtils.getYawToPose(currentEstimatedPose2d, tagPossiblePose2d);
-
-
-                return Optional.of(new PhotonCalculationResult(robotPose, tagPossiblePose3d, translationToTag, targetYaw, targetYaw.getRadians()));
+            Rotation2d targetYaw = PhotonUtils.getYawToPose(currentEstimatedPose2d, goalPose.toPose2d());
+            SmartDashboard.putString("targetYaw", targetYaw.toString());
+            return Optional.of(new PhotonCalculationResult(robotPose, goalPose, translationToTag, targetYaw, targetYaw.getRadians()));
 
 
             //  )
 
+
+        } else {
+            SmartDashboard.putString("tagpose", tagPose.toString());
 
         }
 

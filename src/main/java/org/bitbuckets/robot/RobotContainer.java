@@ -1,10 +1,10 @@
 package org.bitbuckets.robot;
 
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.bitbuckets.arm.ArmSubsystem;
 import org.bitbuckets.drive.DriveSubsystem;
 import org.bitbuckets.elevator.ElevatorSubsystem;
+import org.bitbuckets.vision.VisionControl;
 
 /**
  * This class represents your robot's periodic behavior
@@ -15,10 +15,13 @@ public class RobotContainer {
     final ArmSubsystem armSubsystem;
     final ElevatorSubsystem elevatorSubsystem;
 
-    public RobotContainer(DriveSubsystem driveSubsystem, ArmSubsystem armSubsystem, ElevatorSubsystem elevatorSubsystem) {
+    final VisionControl visionControl;
+
+    public RobotContainer(DriveSubsystem driveSubsystem, ArmSubsystem armSubsystem, ElevatorSubsystem elevatorSubsystem, VisionControl visionControl) {
         this.driveSubsystem = driveSubsystem;
         this.armSubsystem = armSubsystem;
         this.elevatorSubsystem = elevatorSubsystem;
+        this.visionControl = visionControl;
     }
 
     public void autoPeriodic() {
@@ -30,7 +33,6 @@ public class RobotContainer {
     }
 
 
-
     int i = 0;
 
     //Shouldn't need to do anything here
@@ -39,9 +41,8 @@ public class RobotContainer {
         elevatorSubsystem.teleopPeriodic();
         armSubsystem.teleopPeriodic();
 
+
     }
-
-
 
 
 }
