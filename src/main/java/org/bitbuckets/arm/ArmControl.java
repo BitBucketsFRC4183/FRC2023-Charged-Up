@@ -129,7 +129,7 @@ public class ArmControl {
          * InverseKinematics midNode = new InverseKinematics(1.169, 0.35); works
          */
 
-        InverseKinematics midNode = new InverseKinematics(2, 2);
+        InverseKinematics midNode = new InverseKinematics(1.169, 0.35);
         double lowerAngle = midNode.getLowerJointAngle();
         double upperAngle = midNode.getUpperJointAngle();
 
