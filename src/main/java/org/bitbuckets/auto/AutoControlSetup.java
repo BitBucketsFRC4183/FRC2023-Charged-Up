@@ -7,10 +7,9 @@ import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import org.bitbuckets.arm.ArmControl;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
-import org.bitbuckets.lib.SetupProfiler;
+import org.bitbuckets.lib.StartupProfiler;
 
 /**
  * labels: low priority, easy
@@ -20,8 +19,8 @@ public class AutoControlSetup implements ISetup<AutoControl> {
 
     @Override
     public AutoControl build(ProcessPath path) {
-        SetupProfiler load = path.generateSetupProfiler("load-auto-paths");
-        SetupProfiler gen = path.generateSetupProfiler("generate-objects");
+        StartupProfiler load = path.generateSetupProfiler("load-auto-paths");
+        StartupProfiler gen = path.generateSetupProfiler("generate-objects");
 
         load.markProcessing();
         //load paths

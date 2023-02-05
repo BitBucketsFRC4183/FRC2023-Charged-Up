@@ -65,12 +65,14 @@ public class DriveSubsystemSetup implements ISetup<DriveSubsystem> {
         AutoControl autoControl = new AutoControlSetup()
                 .build(path.addChild("auto-control"));
 
-        IValueTuner<AutoPath> pathTuneable = path.generateEnumTuner("path", AutoPath.class, AutoPath.AUTO_TEST_PATH_ONE);
-        ILoggable<double[]> configs = path.generateDoubleLoggers(
-                "x",
-                "y",
-                "rot"
-        );
+        IValueTuner<AutoPath> pathTuneable = path
+                .generateEnumTuner("set-path", AutoPath.class, AutoPath.AUTO_TEST_PATH_ONE);
+        ILoggable<double[]> xyrotLoggers = path
+                .generateDoubleLoggers("x", "y", "rot");
+        ILoggable<DriveFSM> fsmLoggable = path
+                .generateEnumLogger("fsm-state", DriveFSM.class);
+        IValueTuner<DriveSubsystem.OrientationChooser> orientationTuner = path
+                .generateEnumTuner("set-orientation", DriveSubsystem.OrientationChooser.class, DriveSubsystem.OrientationChooser.FIELD_ORIENTED);
 
         return new DriveSubsystem(
                 input,
@@ -82,9 +84,10 @@ public class DriveSubsystemSetup implements ISetup<DriveSubsystem> {
                 holoControl,
                 visionControl,
                 pathTuneable,
-                path.generateEnumLogger("State"),
-                configs,
-                path.generateEnumTuner("Orientation", DriveSubsystem.OrientationChooser.class, DriveSubsystem.OrientationChooser.FIELD_ORIENTED));
+                fsmLoggable,
+                xyrotLoggers,
+                orientationTuner
+        );
     }
 
 
