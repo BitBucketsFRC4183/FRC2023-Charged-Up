@@ -76,6 +76,8 @@ public class ArmSubsystem {
                 }
                 break;
         }
+
+
         mode.log(positionMode);
 
     }

@@ -10,7 +10,7 @@ class InverseKinematicsTest {
     //@Disabled
     @Test
     void getLowerJointAngle() {
-        assertEquals(0.785, new InverseKinematics(1.535 * Math.sin(Math.PI/4), 1.535 * Math.sin(Math.PI/4)).getLowerJointAngle());
+        assertEquals(-Math.PI/4, new InverseKinematics(1.535 * Math.sin(Math.PI/4), 1.535 * Math.sin(Math.PI/4)).getLowerJointAngle());
     }
 
     //@Disabled

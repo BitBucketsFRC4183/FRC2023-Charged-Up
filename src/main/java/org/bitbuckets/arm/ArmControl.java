@@ -1,9 +1,7 @@
 package org.bitbuckets.arm;
 
 import org.bitbuckets.lib.hardware.IMotorController;
-import org.bitbuckets.arm.InverseKinematics;
-
-import javax.management.relation.InvalidRelationIdException;
+import org.bitbuckets.lib.log.ILoggable;
 
 
 public class ArmControl {
@@ -11,16 +9,27 @@ public class ArmControl {
 
     final IMotorController lowerJoint;
     final IMotorController upperJoint;
+    final ILoggable<Boolean> isArmOutOfReach;
+
+    // convertLowerRawToMechanism and convertUpperRawToMechanism are 0 by default
+    final ILoggable<Double> convertLowerRawToMechanism;
+    final ILoggable<Double> convertUpperRawToMechanism;
 
 
     // How do set up IMotorController and IEncoder so that lowerJoint == lowerEncoder
 
 
-    public ArmControl(IMotorController lowerJoint, IMotorController upperJoint) {
+    public ArmControl(IMotorController lowerJoint, IMotorController upperJoint, ILoggable<Boolean> isArmOutOfReach, ILoggable<Double> convertRawToMechanism, ILoggable<Double> convertLowerRawToMechanism) {
         this.lowerJoint = lowerJoint;
         this.upperJoint = upperJoint;
 
 
+
+        this.isArmOutOfReach = isArmOutOfReach;
+        this.convertLowerRawToMechanism = convertLowerRawToMechanism;
+        this.convertUpperRawToMechanism = convertRawToMechanism;
+        convertLowerRawToMechanism.log(0.);
+        convertUpperRawToMechanism.log(0.);
     }
 
     public void calibrateLowerArm() {
@@ -48,11 +57,16 @@ public class ArmControl {
     }
 
     public void moveLowerArmToPosition_DEGREES(double angle) {
-        lowerJoint.moveToPosition(convertMechanismRotationtoRawRotation_lowerJoint(angle / 360));
+        double lowerConverted = convertMechanismRotationtoRawRotation_upperJoint(angle / 360.);
+        convertLowerRawToMechanism.log(lowerConverted);
+        lowerJoint.moveToPosition(lowerConverted);
     }
 
     public void moveUpperArmToPosition_DEGREES(double angle) {
-        upperJoint.moveToPosition(convertMechanismRotationtoRawRotation_upperJoint(angle / 360));
+
+        double upperConverted = convertMechanismRotationtoRawRotation_upperJoint(angle / 360.);
+        convertUpperRawToMechanism.log(upperConverted);
+        upperJoint.moveToPosition(upperConverted);
     }
 
 
@@ -73,9 +87,9 @@ public class ArmControl {
     // Press X
     public void intakeHumanPlayer() {
         //Need inverse kinematics
-        double lowerAngle = 0;
-        double upperAngle = 0;
-        //moveLowerArmToPosition_DEGREES(lowerAngle);
+        double lowerAngle = 29.69;
+        double upperAngle = -29.69;
+        moveLowerArmToPosition_DEGREES(lowerAngle);
         moveUpperArmToPosition_DEGREES(upperAngle);
 
     }
@@ -83,10 +97,11 @@ public class ArmControl {
     // Press Y
     public void intakeGround() {
         //Need inverse kinematics
-        double lowerAngle = 45;
-        double upperAngle = 45;
-        //moveLowerArmToPosition_DEGREES(lowerAngle);
+        double lowerAngle = -29.69;
+        double upperAngle = 29.69;
+        moveLowerArmToPosition_DEGREES(lowerAngle);
         moveUpperArmToPosition_DEGREES(upperAngle);
+
     }
 
     // Press A
@@ -95,17 +110,26 @@ public class ArmControl {
 
         // pass x position and y position as parameters to the inverse kinematics constructor
         InverseKinematics midNode = new InverseKinematics(1.085,1.085);
-        double lowerAngle = Math.toDegrees(midNode.getLowerJointAngle());
-        double upperAngle = Math.toDegrees(midNode.getUpperJointAngle());
-        //moveLowerArmToPosition_DEGREES(lowerAngle);
-        moveUpperArmToPosition_DEGREES(upperAngle);
+        double lowerAngle = midNode.getLowerJointAngle();
+        double upperAngle = midNode.getUpperJointAngle();
+
+        //finding NaN errors
+        if (lowerAngle != Double.NaN && upperAngle != Double.NaN)
+        {
+            isArmOutOfReach.log(true);
+            moveLowerArmToPosition_DEGREES(Math.toDegrees(lowerAngle));
+            moveUpperArmToPosition_DEGREES(Math.toDegrees(upperAngle));
+        }
+        else{
+            isArmOutOfReach.log(false);
+        }
+
 
     }
 
     // Press B
     public void scoreHigh() {
 
-        // Press A
         //Need inverse kinematics
         double lowerAngle = 0;
         double upperAngle = 0;

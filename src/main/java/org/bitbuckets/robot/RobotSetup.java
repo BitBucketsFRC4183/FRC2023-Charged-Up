@@ -22,17 +22,17 @@ public class RobotSetup implements ISetup<RobotContainer> {
     @Override
     public RobotContainer build(ProcessPath path) {
 
-        VisionControl visionControl = new VisionControlSetup()
-                .build( path.addChild("vision-control") );
+        VisionControl visionControl = new VisionControlSetup(true)
+                .build(path.addChild("vision-control") );
 
         ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystemSetup(false)
-                .build( path.addChild("elevator-subsystem") );
+                .build(path.addChild("elevator-subsystem") );
 
-        ArmSubsystem armSubsystem = new ArmSubsystemSetup(false)
+        ArmSubsystem armSubsystem = new ArmSubsystemSetup(true)
                 .build(path.addChild("arm-subsystem"));
 
         DriveSubsystem driveSubsystem = new DriveSubsystemSetup(
-                true,
+                false,
                 robotStateControl,
                 visionControl
         ).build(path.addChild("drive-subsystem"));
