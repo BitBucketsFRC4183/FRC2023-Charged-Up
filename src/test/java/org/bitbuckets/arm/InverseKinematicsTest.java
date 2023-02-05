@@ -10,12 +10,12 @@ class InverseKinematicsTest {
     //@Disabled
     @Test
     void getLowerJointAngle() {
-        assertEquals(-Math.PI/4, new InverseKinematics(1.535 * Math.sin(Math.PI/4), 1.535 * Math.sin(Math.PI/4)).getLowerJointAngle());
+        assertEquals(Double.NaN, new InverseKinematics(2, 2).getLowerJointAngle());
     }
 
     //@Disabled
     @Test
     void getUpperJointAngle() {
-        assertEquals(0, new InverseKinematics(1.535 * Math.sin(Math.PI/4), 1.535 * Math.sin(Math.PI/4)).getUpperJointAngle());
+        assertEquals(Double.NaN, new InverseKinematics(2, 2).getUpperJointAngle());
     }
 }

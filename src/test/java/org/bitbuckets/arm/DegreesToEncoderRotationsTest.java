@@ -16,6 +16,6 @@ public class DegreesToEncoderRotationsTest {
 
     @Test
     public void name() {
-        assertEquals(0, new ArmControl(lowerJoint, upperJoint, null, null, null).convertMechanismRotationtoRawRotation_lowerJoint(180));
+        assertEquals(0, new ArmControl(lowerJoint, upperJoint, null, null, null, null, null).convertMechanismRotationtoRawRotation_lowerJoint(180));
     }
 }

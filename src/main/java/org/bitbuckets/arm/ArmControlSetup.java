@@ -27,7 +27,9 @@ public class ArmControlSetup implements ISetup<ArmControl> {
                 upperJoint.build(path.addChild("upper-joint")),
                 path.generateBooleanLogger("isArmOutOfReach"),
                 path.generateDoubleLogger("convertUpperRawToMechanism"),
-                path.generateDoubleLogger("convertLowerRawToMechanism"));
+                path.generateDoubleLogger("convertLowerRawToMechanism"),
+                path.generateDoubleLogger("findLowerAngleKinematics"),
+                path.generateDoubleLogger("findUpperAngleKinematics"));
     }
 }
 
