@@ -1,5 +1,6 @@
 package org.bitbuckets.drive;
 
+import com.ctre.phoenix.sensors.WPI_PigeonIMU;
 import edu.wpi.first.wpilibj.Joystick;
 import org.bitbuckets.auto.AutoControl;
 import org.bitbuckets.auto.AutoControlSetup;
@@ -29,7 +30,6 @@ import org.bitbuckets.lib.vendor.thrifty.ThriftyEncoderSetup;
 import org.bitbuckets.odometry.IOdometryControl;
 import org.bitbuckets.odometry.OdometryControlSetup;
 import org.bitbuckets.robot.RobotStateControl;
-import org.bitbuckets.vision.VisionControl;
 
 import java.util.Optional;
 
@@ -38,12 +38,14 @@ public class DriveSubsystemSetup implements ISetup<DriveSubsystem> {
     final boolean driveEnabled;
 
     final RobotStateControl robotStateControl;
-    final VisionControl visionControl;
 
-    public DriveSubsystemSetup(boolean driveEnabled, RobotStateControl robotStateControl, VisionControl visionControl) {
+    WPI_PigeonIMU pigeonIMU;
+
+
+    public DriveSubsystemSetup(boolean driveEnabled, RobotStateControl robotStateControl, WPI_PigeonIMU pigeonIMU) {
         this.driveEnabled = driveEnabled;
         this.robotStateControl = robotStateControl;
-        this.visionControl = visionControl;
+        this.pigeonIMU = pigeonIMU;
     }
 
     @Override
@@ -58,7 +60,7 @@ public class DriveSubsystemSetup implements ISetup<DriveSubsystem> {
 
         DriveControl driveControl = buildNeoDriveControl(path); //or use talons, when they work
 
-        IOdometryControl odometryControl = new OdometryControlSetup(driveControl, visionControl, 5)
+        IOdometryControl odometryControl = new OdometryControlSetup(driveControl, pigeonIMU)
                 .build(path.addChild("odo-control"));
         HoloControl holoControl = new HoloControlSetup(driveControl, odometryControl)
                 .build(path.addChild("holo-control"));
@@ -80,7 +82,6 @@ public class DriveSubsystemSetup implements ISetup<DriveSubsystem> {
                 driveControl,
                 autoControl,
                 holoControl,
-                visionControl,
                 pathTuneable,
                 path.generateEnumLogger("State"),
                 configs,
