@@ -21,8 +21,8 @@ public class ArmSubsystemSetup implements ISetup<ArmSubsystem> {
         }
 
         ArmControlSetup armControlSetup = new ArmControlSetup(
-                new SparkSetup(10, ArmConstants.LOWER_CONFIG, ArmConstants.LOWER_PID),
-                new SparkSetup(9, ArmConstants.UPPER_CONFIG, ArmConstants.UPPER_PID)
+                new SparkSetup(9, ArmConstants.LOWER_CONFIG, ArmConstants.LOWER_PID),
+                new SparkSetup(10, ArmConstants.UPPER_CONFIG, ArmConstants.UPPER_PID)
         );
 
         ArmControl armControl = armControlSetup.build(path.addChild("arm-control"));

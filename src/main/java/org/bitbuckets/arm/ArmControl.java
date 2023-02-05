@@ -15,17 +15,30 @@ public class ArmControl {
     final ILoggable<Double> convertLowerRawToMechanism;
     final ILoggable<Double> convertUpperRawToMechanism;
 
+    final ILoggable<Double> findLowerAngleKinematics;
+    final ILoggable<Double> findUpperAngleKinematics;
+
+
 
     // How do set up IMotorController and IEncoder so that lowerJoint == lowerEncoder
 
 
-    public ArmControl(IMotorController lowerJoint, IMotorController upperJoint, ILoggable<Boolean> isArmOutOfReach, ILoggable<Double> convertRawToMechanism, ILoggable<Double> convertLowerRawToMechanism) {
+    public ArmControl(IMotorController lowerJoint, IMotorController upperJoint, ILoggable<Boolean> isArmOutOfReach, ILoggable<Double> convertRawToMechanism, ILoggable<Double> convertLowerRawToMechanism, ILoggable<Double> findLowerAngle, ILoggable<Double> findUpperAngle) {
         this.lowerJoint = lowerJoint;
         this.upperJoint = upperJoint;
 
 
 
         this.isArmOutOfReach = isArmOutOfReach;
+
+        this.findLowerAngleKinematics = findLowerAngle;
+        this.findUpperAngleKinematics = findUpperAngle;
+
+        findLowerAngle.log(0.);
+        findUpperAngle.log(0.);
+
+        isArmOutOfReach.log(false);
+
         this.convertLowerRawToMechanism = convertLowerRawToMechanism;
         this.convertUpperRawToMechanism = convertRawToMechanism;
         convertLowerRawToMechanism.log(0.);
@@ -87,8 +100,8 @@ public class ArmControl {
     // Press X
     public void intakeHumanPlayer() {
         //Need inverse kinematics
-        double lowerAngle = 29.69;
-        double upperAngle = -29.69;
+        double lowerAngle = 0;
+        double upperAngle = 0;
         moveLowerArmToPosition_DEGREES(lowerAngle);
         moveUpperArmToPosition_DEGREES(upperAngle);
 
@@ -109,19 +122,29 @@ public class ArmControl {
         //Need inverse kinematics
 
         // pass x position and y position as parameters to the inverse kinematics constructor
-        InverseKinematics midNode = new InverseKinematics(1.085,1.085);
+
+        /* DIFFERENT INVERSEKINEMATICS TESTS
+         * InverseKinematics midNode = new InverseKinematics(-1.535 * Math.sin(Math.PI/4),1.535 * Math.sin(Math.PI/4)); works
+         * InverseKinematics midNode = new InverseKinematics(0.85, 0.95); works
+         * InverseKinematics midNode = new InverseKinematics(1.169, 0.35); works
+         */
+
+        InverseKinematics midNode = new InverseKinematics(2, 2);
         double lowerAngle = midNode.getLowerJointAngle();
         double upperAngle = midNode.getUpperJointAngle();
 
+        findLowerAngleKinematics.log(Math.toDegrees(lowerAngle));
+        findUpperAngleKinematics.log(Math.toDegrees(upperAngle));
+
         //finding NaN errors
-        if (lowerAngle != Double.NaN && upperAngle != Double.NaN)
+        if (Double.isNaN(lowerAngle) || Double.isNaN(upperAngle))
         {
+            isArmOutOfReach.log(false);
+        }
+        else{
             isArmOutOfReach.log(true);
             moveLowerArmToPosition_DEGREES(Math.toDegrees(lowerAngle));
             moveUpperArmToPosition_DEGREES(Math.toDegrees(upperAngle));
-        }
-        else{
-            isArmOutOfReach.log(false);
         }
 
 
@@ -131,10 +154,10 @@ public class ArmControl {
     public void scoreHigh() {
 
         //Need inverse kinematics
-        double lowerAngle = 0;
-        double upperAngle = 0;
-        moveLowerArmToPosition_DEGREES(lowerAngle);
-        moveUpperArmToPosition_DEGREES(upperAngle);
+        double lowerAngle = Math.PI/4;
+        double upperAngle = Math.PI/4;
+        moveLowerArmToPosition_DEGREES(Math.toDegrees(lowerAngle));
+        moveUpperArmToPosition_DEGREES(Math.toDegrees(upperAngle));
 
     }
 }
