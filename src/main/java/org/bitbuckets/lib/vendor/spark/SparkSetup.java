@@ -7,7 +7,7 @@ import com.revrobotics.SparkMaxLimitSwitch;
 import edu.wpi.first.math.system.plant.DCMotor;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
-import org.bitbuckets.lib.SetupProfiler;
+import org.bitbuckets.lib.StartupProfiler;
 import org.bitbuckets.lib.control.PIDConfig;
 import org.bitbuckets.lib.hardware.IMotorController;
 import org.bitbuckets.lib.hardware.MotorConfig;
@@ -42,12 +42,16 @@ public class SparkSetup implements ISetup<IMotorController> {
     @Override
     public IMotorController build(ProcessPath path) {
 
-        SetupProfiler configError = path.generateSetupProfiler("config-error");
+        StartupProfiler configError = path.generateSetupProfiler("config-error");
         configError.markProcessing();
 
         //check id for duplicate usage
         if (seen.contains(canId)) {
-            configError.markErrored(format("duplicate sparkmax usage of id %s", canId));
+            configError.markErrored(
+                    new IllegalStateException(
+                            format("duplicate sparkmax usage of id %s", canId)
+                    )
+            );
         }
         seen.add(canId);
 

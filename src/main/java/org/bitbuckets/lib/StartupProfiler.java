@@ -1,14 +1,14 @@
 package org.bitbuckets.lib;
 
-import org.bitbuckets.lib.startup.SetupDriver;
+import org.bitbuckets.lib.startup.IStartupDriver;
 
 @Deprecated @DontUseIncubating
-public class SetupProfiler {
+public class StartupProfiler {
 
-    final SetupDriver startupDriver;
+    final IStartupDriver startupDriver;
     final int taskId;
 
-    SetupProfiler(SetupDriver startupDriver, int taskId) {
+    StartupProfiler(IStartupDriver startupDriver, int taskId) {
         this.startupDriver = startupDriver;
         this.taskId = taskId;
     }
@@ -21,20 +21,13 @@ public class SetupProfiler {
         startupDriver.reportCompleted(taskId);
     }
 
-    /**
-     * Automatically kills a signal
-     *
-     * @param error
-     */
-    public void markErrored(String error) {
-        startupDriver.reportStartupError(taskId, error);
-
+    public void markErrored(Throwable throwable) {
+        startupDriver.reportStartupError(taskId, throwable);
     }
 
     public void sendInfo(String info) {
         startupDriver.reportStartupInfo(taskId, info);
     }
 
-    //matt is planning things...
 
 }
