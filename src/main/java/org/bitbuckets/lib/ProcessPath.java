@@ -137,6 +137,10 @@ public class ProcessPath {
         return log;
     }
 
+    public <T extends Enum<T>> ILoggable<T> generateEnumLogger(String key) {
+        return data -> logDriver.report(currentId, key, data.name());
+    }
+
     /**
      * Generates a loggable that logs bools. You will have to call log on it to send data
      *

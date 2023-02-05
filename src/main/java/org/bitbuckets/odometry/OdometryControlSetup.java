@@ -38,6 +38,7 @@ public class OdometryControlSetup implements ISetup<OdometryControl> {
                 new Pose2d()
         );
         WPI_PigeonIMU pigeonIMU = new WPI_PigeonIMU(pidgeonId);
+
         OdometryControl odometryControl = new OdometryControl (control, visionControl, pigeonIMU, estimator);;
 
         addChild.registerLoop(odometryControl, "odometry-loop");

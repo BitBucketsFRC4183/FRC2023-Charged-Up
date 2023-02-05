@@ -27,7 +27,7 @@ public class OdometryControl implements IOdometryControl, Runnable {
 
     @Override
     public void run() {
-        Rotation2d gyroangle = pigeonIMU.getRotation2d();
+        Rotation2d gyroangle = Rotation2d.fromDegrees(pigeonIMU.getAbsoluteCompassHeading());
         double epoch = WPIUtilJNI.now();
         swerveDrivePoseEstimator.updateWithTime(epoch, gyroangle, driveControl.currentPositions());
 
@@ -39,9 +39,6 @@ public class OdometryControl implements IOdometryControl, Runnable {
             swerveDrivePoseEstimator.addVisionMeasurement(realPose, epoch);
         }
 
-
-
-
     }
 
 
@@ -52,7 +49,7 @@ public class OdometryControl implements IOdometryControl, Runnable {
 
     @Override
     public Rotation2d getRotation2d() {
-        return pigeonIMU.getRotation2d();
+        return Rotation2d.fromDegrees(pigeonIMU.getAbsoluteCompassHeading());
     }
 
     @Override
