@@ -1,5 +1,7 @@
 package org.bitbuckets.lib;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import org.bitbuckets.lib.core.IdentityDriver;
 import org.bitbuckets.lib.core.LoopDriver;
@@ -128,6 +130,22 @@ public class ProcessPath {
 
     public <T extends Enum<T>> ILoggable<T> generateEnumLogger(String key, Class<T> clazz) {
         return logDriver.generateEnumLoggable(currentId, clazz, key);
+    }
+
+    public ILoggable<Pose3d> generatePose3dLogger(String name) {
+        var log = new Pose3dLoggable(logDriver, currentId, name);
+
+        log.log(new Pose3d());
+
+        return log;
+    }
+
+    public ILoggable<Pose2d> generatePose2dLogger(String name) {
+        var log = new Pose2dLoggable(logDriver, currentId, name);
+
+        log.log(new Pose2d());
+
+        return log;
     }
 
     /**

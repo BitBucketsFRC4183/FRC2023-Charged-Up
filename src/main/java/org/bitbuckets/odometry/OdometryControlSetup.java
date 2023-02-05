@@ -31,13 +31,12 @@ public class OdometryControlSetup implements ISetup<OdometryControl> {
     }
 
     @Override
-    public OdometryControl build(ProcessPath addChild) {
+    public OdometryControl build(ProcessPath path) {
         StartupProfiler initializePidgeon = addChild.generateSetupProfiler("init-pidgeon");
-
         SwerveDrivePoseEstimator estimator = new SwerveDrivePoseEstimator(
                 DriveConstants.KINEMATICS,
                 Rotation2d.fromDegrees(0),
-                new SwerveModulePosition[] {
+                new SwerveModulePosition[]{
                         new SwerveModulePosition(),
                         new SwerveModulePosition(),
                         new SwerveModulePosition(),
