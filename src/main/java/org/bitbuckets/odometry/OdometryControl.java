@@ -3,9 +3,11 @@ package org.bitbuckets.odometry;
 import com.ctre.phoenix.sensors.WPI_PigeonIMU;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.util.WPIUtilJNI;
 import org.bitbuckets.drive.IDriveControl;
+import org.bitbuckets.vision.IVisionControl;
 import org.bitbuckets.vision.VisionControl;
 
 import java.util.Optional;
@@ -13,11 +15,11 @@ import java.util.Optional;
 public class OdometryControl implements IOdometryControl, Runnable {
 
     final IDriveControl driveControl;
-    final VisionControl visionControl;
+    final IVisionControl visionControl;
     final WPI_PigeonIMU pigeonIMU;
     final SwerveDrivePoseEstimator swerveDrivePoseEstimator;
 
-    public OdometryControl(IDriveControl driveControl, VisionControl visionControl, WPI_PigeonIMU pigeonIMU, SwerveDrivePoseEstimator swerveDrivePoseEstimator) {
+    public OdometryControl(IDriveControl driveControl, IVisionControl visionControl, WPI_PigeonIMU pigeonIMU, SwerveDrivePoseEstimator swerveDrivePoseEstimator) {
         this.driveControl = driveControl;
         this.visionControl = visionControl;
         this.pigeonIMU = pigeonIMU;
@@ -31,10 +33,10 @@ public class OdometryControl implements IOdometryControl, Runnable {
         double epoch = WPIUtilJNI.now();
         swerveDrivePoseEstimator.updateWithTime(epoch, gyroangle, driveControl.currentPositions());
 
-        Optional<VisionControl.PhotonCalculationResult> res = visionControl.visionPoseEstimator();
+        Optional<Pose3d> res = visionControl.estimateRobotPose();
 
         if (res.isPresent()) {
-            Pose2d realPose = res.get().robotPose.toPose2d();
+            Pose2d realPose = res.get().toPose2d();
 
             swerveDrivePoseEstimator.addVisionMeasurement(realPose, epoch);
         }

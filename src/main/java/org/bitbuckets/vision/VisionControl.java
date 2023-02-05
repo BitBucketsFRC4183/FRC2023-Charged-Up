@@ -16,7 +16,7 @@ import java.util.Optional;
 import static org.bitbuckets.vision.VisionConstants2.TAG_TO_CHASE;
 
 
-public class VisionControl implements Runnable{
+public class VisionControl implements Runnable, IVisionControl {
 
 
     final Transform3d robotToCamera;
@@ -39,6 +39,16 @@ public class VisionControl implements Runnable{
     @Override
     public void run() {
        //TODO log
+    }
+
+    @Override
+    public Optional<Pose3d> estimateTargetPose() {
+        return visionPoseEstimator().map(pr -> pr.goalPose);
+    }
+
+    @Override
+    public Optional<Pose3d> estimateRobotPose() {
+        return visionPoseEstimator().map(pr -> pr.robotPose);
     }
 
     public class PhotonCalculationResult {
