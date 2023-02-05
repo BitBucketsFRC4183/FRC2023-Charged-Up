@@ -3,7 +3,6 @@ package org.bitbuckets.drive;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.XboxController;
 import org.bitbuckets.robot.XboxConstants;
 
 public class DriveInput {
@@ -79,11 +78,7 @@ public class DriveInput {
     }
 
     public boolean isVisionGoPressed() {
-        return joystick.getRawButtonPressed(XboxConstants.TRIANGLE);
-    }
-
-    public boolean isVisionGoReleased() {
-        return joystick.getRawButtonReleased(XboxController.Button.kY.value);
+        return joystick.getRawButton(XboxConstants.TRIANGLE);
     }
 
 
