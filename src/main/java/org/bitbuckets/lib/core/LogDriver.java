@@ -1,6 +1,8 @@
 package org.bitbuckets.lib.core;
 
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import org.bitbuckets.lib.log.ILoggable;
+import org.bitbuckets.lib.log.type.DoubleLoggable;
 import org.littletonrobotics.junction.Logger;
 
 /**
@@ -17,6 +19,9 @@ public class LogDriver {
         this.identityDriver = identityDriver;
     }
 
+    public ILoggable<Double> generateDoubleLoggable(int id, String key) {
+        return new DoubleLoggable(this, id, key);
+    }
 
     public void report(int id, String keyName, double data) {
         logger.recordOutput(identityDriver.fullPath(id) + keyName, data);

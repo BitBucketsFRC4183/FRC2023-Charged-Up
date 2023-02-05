@@ -32,6 +32,11 @@ public class SwerveModule implements ISwerveModule, Runnable {
     }
 
     @Override
+    public double getDrivePosition_meters() {
+        return driveController.getStatePosition_meters();
+    }
+
+    @Override
     public double getDriveVelocity() {
         return driveController.getStateVelocity();
     }
@@ -43,6 +48,7 @@ public class SwerveModule implements ISwerveModule, Runnable {
 
     @Override
     public void set(double driveVoltage, double steerAngle) {
+
         steerAngle %= (2.0 * Math.PI);
         if (steerAngle < 0.0) {
             steerAngle += 2.0 * Math.PI;
