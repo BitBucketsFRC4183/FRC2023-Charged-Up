@@ -15,7 +15,7 @@ public class SwerveModuleSetup implements ISetup<ISwerveModule> {
 
     @Override
     public ISwerveModule build(ProcessPath path) {
-        ILoggable<double[]> swerveAngleVoltage = path.generateDoubleLoggers("Command-Angle-Degrees", "Drive-Output");
+        ILoggable<double[]> swerveAngleVoltage = path.generateDoubleLoggers("command-degrees", "command-po");
         SwerveModule swerveModule = new SwerveModule(
                 driveController.build(path.addChild("drive-controller")),
                 steerController.build(path.addChild("steer-controller")),

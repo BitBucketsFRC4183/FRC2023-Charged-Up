@@ -130,7 +130,15 @@ public class ProcessPath {
      * @return loggable
      */
     public ILoggable<Double> generateDoubleLogger(String name) {
-        return new DoubleLoggable(logDriver, currentId, name);
+        var log = new DoubleLoggable(logDriver, currentId, name);
+
+        log.log(0.0);
+
+        return log;
+    }
+
+    public <T extends Enum<T>> ILoggable<T> generateEnumLogger(String key) {
+        return data -> logDriver.report(currentId, key, data.name());
     }
 
     /**
@@ -150,7 +158,19 @@ public class ProcessPath {
      * @return loggable
      */
     public ILoggable<double[]> generateDoubleLoggers(String... namesInOrder) {
-        return new DataLoggable(namesInOrder, logDriver, currentId);
+        var log = new DataLoggable(namesInOrder, logDriver, currentId);
+
+        int len = namesInOrder.length;
+        double[] initData = new double[len];
+
+
+        for (int i = 0; i < len; i++) {
+            initData[i] = 0.0;
+        }
+
+        log.log(initData);
+
+        return log;
     }
 
     /**
@@ -161,7 +181,17 @@ public class ProcessPath {
      */
     public ILoggable<SwerveModuleState[]> generateStateLogger(String name) {
 
-        return new StateLoggable(logDriver, currentId, name);
+        SwerveModuleState[] states = new SwerveModuleState[] {
+                new SwerveModuleState(),
+                new SwerveModuleState(),
+                new SwerveModuleState(),
+                new SwerveModuleState()
+        };
+
+        var log = new StateLoggable(logDriver, currentId, name);
+        log.log(states);
+
+        return log;
 
     }
 
