@@ -36,8 +36,7 @@ public class RobotSetup implements ISetup<RobotContainer> {
         DriveSubsystem driveSubsystem = new DriveSubsystemSetup(
                 true,
                 robotStateControl,
-                pigeonIMU
-        ).build(path.addChild("drive-subsystem"));
+                visionControl).build(path.addChild("drive-subsystem"));
 
         /**
          * Register the crasher runnable if

@@ -30,6 +30,7 @@ import org.bitbuckets.lib.vendor.thrifty.ThriftyEncoderSetup;
 import org.bitbuckets.odometry.IOdometryControl;
 import org.bitbuckets.odometry.OdometryControlSetup;
 import org.bitbuckets.robot.RobotStateControl;
+import org.bitbuckets.vision.VisionControl;
 
 import java.util.Optional;
 
@@ -38,14 +39,14 @@ public class DriveSubsystemSetup implements ISetup<DriveSubsystem> {
     final boolean driveEnabled;
 
     final RobotStateControl robotStateControl;
+    final VisionControl visionControl;
 
-    WPI_PigeonIMU pigeonIMU;
 
 
-    public DriveSubsystemSetup(boolean driveEnabled, RobotStateControl robotStateControl, WPI_PigeonIMU pigeonIMU) {
+    public DriveSubsystemSetup(boolean driveEnabled, RobotStateControl robotStateControl, VisionControl visionControl) {
         this.driveEnabled = driveEnabled;
         this.robotStateControl = robotStateControl;
-        this.pigeonIMU = pigeonIMU;
+        this.visionControl = visionControl;
     }
 
     @Override
@@ -60,7 +61,7 @@ public class DriveSubsystemSetup implements ISetup<DriveSubsystem> {
 
         DriveControl driveControl = buildNeoDriveControl(path); //or use talons, when they work
 
-        IOdometryControl odometryControl = new OdometryControlSetup(driveControl, pigeonIMU)
+        IOdometryControl odometryControl = new OdometryControlSetup(5, driveControl)
                 .build(path.addChild("odo-control"));
         HoloControl holoControl = new HoloControlSetup(driveControl, odometryControl)
                 .build(path.addChild("holo-control"));
@@ -82,6 +83,7 @@ public class DriveSubsystemSetup implements ISetup<DriveSubsystem> {
                 driveControl,
                 autoControl,
                 holoControl,
+                visionControl,
                 pathTuneable,
                 path.generateEnumLogger("State"),
                 configs,
