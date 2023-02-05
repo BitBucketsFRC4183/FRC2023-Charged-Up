@@ -9,6 +9,8 @@ import org.bitbuckets.drive.DriveConstants;
 import org.bitbuckets.drive.IDriveControl;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
+import org.bitbuckets.lib.log.ILoggable;
+import org.bitbuckets.lib.log.LoggingConstants;
 import org.bitbuckets.vision.VisionControl;
 
 public class OdometryControlSetup implements ISetup<OdometryControl> {
@@ -25,7 +27,7 @@ public class OdometryControlSetup implements ISetup<OdometryControl> {
     }
 
     @Override
-    public OdometryControl build(ProcessPath addChild) {
+    public OdometryControl build(ProcessPath path) {
         SwerveDrivePoseEstimator estimator = new SwerveDrivePoseEstimator(
                 DriveConstants.KINEMATICS,
                 Rotation2d.fromDegrees(0),
@@ -38,10 +40,20 @@ public class OdometryControlSetup implements ISetup<OdometryControl> {
                 new Pose2d()
         );
         WPI_PigeonIMU pigeonIMU = new WPI_PigeonIMU(pidgeonId);
+        OdometryControl odometryControl = new OdometryControl (control, visionControl, pigeonIMU, estimator);
 
-        OdometryControl odometryControl = new OdometryControl (control, visionControl, pigeonIMU, estimator);;
+        ILoggable<double[]> loggable = path
+                .generateDoubleLoggers("yaw", "pitch", "roll", "last-error-code");
 
-        addChild.registerLoop(odometryControl, "odometry-loop");
+        path.registerLoop(
+                new OdometryLogAspect(pigeonIMU, loggable),
+                LoggingConstants.LOGGING_PERIOD,
+                "gyro-log"
+        );
+        path.registerLoop(
+                odometryControl,
+                "odometry-update-loop"
+        );
 
         return odometryControl;
     }
