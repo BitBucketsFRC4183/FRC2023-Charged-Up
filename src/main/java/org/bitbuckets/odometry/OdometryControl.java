@@ -4,8 +4,11 @@ import com.ctre.phoenix.sensors.WPI_PigeonIMU;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.util.WPIUtilJNI;
 import org.bitbuckets.drive.IDriveControl;
 import org.bitbuckets.vision.VisionControl;
+
+import java.util.Optional;
 
 public class OdometryControl implements IOdometryControl, Runnable {
 
@@ -25,9 +28,20 @@ public class OdometryControl implements IOdometryControl, Runnable {
     @Override
     public void run() {
         Rotation2d gyroangle = pigeonIMU.getRotation2d();
-        swerveDrivePoseEstimator.update(gyroangle, driveControl.currentPositions());
+        double epoch = WPIUtilJNI.now();
+        swerveDrivePoseEstimator.updateWithTime(epoch, gyroangle, driveControl.currentPositions());
 
-        //TODO log gyro
+        Optional<VisionControl.PhotonCalculationResult> res = visionControl.visionPoseEstimator();
+
+        if (res.isPresent()) {
+            Pose2d realPose = res.get().robotPose.toPose2d();
+
+            swerveDrivePoseEstimator.addVisionMeasurement(realPose, epoch);
+        }
+
+
+
+
     }
 
 
