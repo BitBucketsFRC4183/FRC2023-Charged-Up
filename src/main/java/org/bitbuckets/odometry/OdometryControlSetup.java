@@ -9,6 +9,7 @@ import org.bitbuckets.drive.DriveConstants;
 import org.bitbuckets.drive.IDriveControl;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
+import org.bitbuckets.vision.VisionControl;
 
 
 public class OdometryControlSetup implements ISetup<OdometryControl> {
@@ -16,11 +17,13 @@ public class OdometryControlSetup implements ISetup<OdometryControl> {
 
     final int id;
     final IDriveControl control;
+    final VisionControl visionControl;
 
 
-    public OdometryControlSetup(int id, IDriveControl control) {
+    public OdometryControlSetup(int id, IDriveControl control, VisionControl visionControl) {
         this.id = id;
         this.control = control;
+        this.visionControl = visionControl;
     }
 
     @Override
@@ -40,7 +43,7 @@ public class OdometryControlSetup implements ISetup<OdometryControl> {
         WPI_PigeonIMU pigeonIMU = new WPI_PigeonIMU(id);
 
 
-        OdometryControl odometryControl = new OdometryControl (control, estimator, pigeonIMU);;
+        OdometryControl odometryControl = new OdometryControl (control, estimator, pigeonIMU, visionControl);;
 
         addChild.registerLoop(odometryControl, "odometry-loop");
 

@@ -1,6 +1,5 @@
 package org.bitbuckets.drive;
 
-import com.ctre.phoenix.sensors.WPI_PigeonIMU;
 import edu.wpi.first.wpilibj.Joystick;
 import org.bitbuckets.auto.AutoControl;
 import org.bitbuckets.auto.AutoControlSetup;
@@ -61,7 +60,7 @@ public class DriveSubsystemSetup implements ISetup<DriveSubsystem> {
 
         DriveControl driveControl = buildNeoDriveControl(path); //or use talons, when they work
 
-        IOdometryControl odometryControl = new OdometryControlSetup(5, driveControl)
+        IOdometryControl odometryControl = new OdometryControlSetup(5, driveControl, visionControl)
                 .build(path.addChild("odo-control"));
         HoloControl holoControl = new HoloControlSetup(driveControl, odometryControl)
                 .build(path.addChild("holo-control"));
