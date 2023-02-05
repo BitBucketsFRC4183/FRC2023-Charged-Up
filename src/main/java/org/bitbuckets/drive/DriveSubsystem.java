@@ -54,6 +54,7 @@ public class DriveSubsystem {
         this.closedLoopsControl = closedLoopsControl;
         this.driveControl = driveControl;
         this.autoControl = autoControl;
+        this.visionControl = visionControl;
         this.path = path;
         this.stateLogger = stateLogger;
         this.orientation = orientation;

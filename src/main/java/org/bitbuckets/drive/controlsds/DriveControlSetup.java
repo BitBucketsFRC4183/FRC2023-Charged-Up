@@ -36,7 +36,7 @@ public class DriveControlSetup implements ISetup<DriveControl> {
                 path.generateStateLogger("actual-states")
         );
 
-        path.registerLoop(control::guaranteedLoggingLoop, 30, "help me");
+        path.registerLoop(control::guaranteedLoggingLoop, 30, "logging-loop");
 
         return control;
     }
