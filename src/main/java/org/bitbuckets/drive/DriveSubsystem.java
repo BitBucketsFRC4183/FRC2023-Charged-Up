@@ -34,7 +34,8 @@ public class DriveSubsystem {
     final VisionControl visionControl;
 
     final IValueTuner<AutoPath> path;
-    final ILoggable<Double> autoTime;
+    final ILoggable<DriveFSM> stateLogger;
+    final ILoggable<double[]> driveLog;
 
 
     public enum OrientationChooser {
@@ -44,7 +45,7 @@ public class DriveSubsystem {
 
     final IValueTuner<OrientationChooser> orientation;
 
-    public DriveSubsystem(DriveInput input, RobotStateControl robotStateControl, IOdometryControl odometryControl, ClosedLoopsControl closedLoopsControl, DriveControl driveControl, AutoControl autoControl, HoloControl holoControl, VisionControl visionControl, IValueTuner<AutoPath> path, ILoggable<Double> autoTime, IValueTuner<OrientationChooser> orientation) {
+    public DriveSubsystem(DriveInput input, RobotStateControl robotStateControl, IOdometryControl odometryControl, ClosedLoopsControl closedLoopsControl, DriveControl driveControl, AutoControl autoControl, HoloControl holoControl, VisionControl visionControl, IValueTuner<AutoPath> path, ILoggable<DriveFSM> stateLogger, ILoggable<double[]> driveLog, IValueTuner<OrientationChooser> orientation) {
         this.input = input;
         this.robotStateControl = robotStateControl;
         this.odometryControl = odometryControl;
@@ -53,14 +54,16 @@ public class DriveSubsystem {
         this.autoControl = autoControl;
         this.visionControl = visionControl;
         this.path = path;
-        this.autoTime = autoTime;
+        this.stateLogger = stateLogger;
         this.orientation = orientation;
+        this.driveLog = driveLog;
         this.holoControl = holoControl;
     }
 
     DriveFSM state = DriveFSM.UNINITIALIZED;
 
     public void robotPeriodic() {
+
 
 
         switch (state) {
@@ -86,8 +89,6 @@ public class DriveSubsystem {
                         robotStateControl.robotAutonomousTime_seconds(),
                         odometryControl.estimatePose2d()
                 );
-
-                autoTime.log(robotStateControl.robotAutonomousTime_seconds());
 
                 driveControl.drive(targetChassisSpeeds);
 
@@ -139,6 +140,8 @@ public class DriveSubsystem {
                 teleopAutoheading();
                 break;
         }
+
+        stateLogger.log(state);
     }
 
     void teleopVision() {
@@ -156,25 +159,32 @@ public class DriveSubsystem {
         double yOutput = -input.getInputY() * driveControl.getMaxVelocity();
         double rotationOutput = input.getInputRot() * driveControl.getMaxAngularVelocity();
 
-        switch (orientation.readValue()) {
+
+        driveLog.log(new double[] {
+                xOutput,
+                yOutput,
+                rotationOutput
+        });
+
+        ChassisSpeeds robotOrient = new ChassisSpeeds(xOutput, yOutput, rotationOutput);
+        driveControl.drive(robotOrient);
+
+        /*switch (orientation.readValue()) {
             case FIELD_ORIENTED:
                 if (xOutput == 0 && yOutput == 0 && rotationOutput == 0) {
                     driveControl.stopSticky();
                 } else {
-                    driveControl.drive(
-                            ChassisSpeeds.fromFieldRelativeSpeeds(xOutput, yOutput, rotationOutput, odometryControl.estimatePose2d().getRotation())
-                    );
+
                 }
                 break;
             case ROBOT_ORIENTED:
                 if (xOutput == 0 && yOutput == 0 && rotationOutput == 0) {
                     driveControl.stopSticky();
                 } else {
-                    ChassisSpeeds robotOrient = new ChassisSpeeds(xOutput, yOutput, rotationOutput);
-                    driveControl.drive(robotOrient);
+
                 }
                 break;
-        }
+        }*/
     }
 
     void teleopBalancing() {
