@@ -16,6 +16,7 @@ import org.bitbuckets.robot.RobotSetup;
 import org.bitbuckets.robot.RobotStateControl;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
 /**
@@ -45,11 +46,11 @@ public class Robot extends LoggedRobot {
 
         if (isReal()) {
             logger.addDataReceiver(new WPILOGWriter("/media/sda1/")); // Log to a USB stick
-            logger.addDataReceiver(new NetworkPublisher()); // Publish data to NetworkTables
+            logger.addDataReceiver(new NT4Publisher()); // Publish data to NetworkTables
             new PowerDistribution(1, PowerDistribution.ModuleType.kRev); // Enables power distribution logging
         } else {
             logger.addDataReceiver(new WPILOGWriter("analysis/"));
-            logger.addDataReceiver(new NetworkPublisher());
+            logger.addDataReceiver(new NT4Publisher());
         }
 
         logger.start(); // Start logging! No more data receivers, replay sources, or metadata values may be added.

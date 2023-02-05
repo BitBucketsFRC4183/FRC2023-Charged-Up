@@ -1,5 +1,7 @@
 package org.bitbuckets.robot;
 
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.bitbuckets.arm.ArmSubsystem;
 import org.bitbuckets.drive.DriveSubsystem;
 import org.bitbuckets.elevator.ElevatorSubsystem;
@@ -27,8 +29,13 @@ public class RobotContainer {
         driveSubsystem.robotPeriodic();
     }
 
+
+
+    int i = 0;
+
     //Shouldn't need to do anything here
     public void teleopPeriodic() {
+        SmartDashboard.putNumber("debugIncrement", ++i);
         elevatorSubsystem.teleopPeriodic();
         armSubsystem.teleopPeriodic();
     }
