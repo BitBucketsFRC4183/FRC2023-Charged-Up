@@ -9,13 +9,13 @@ import org.bitbuckets.lib.control.ProfiledPIDFController;
  * labels: high priority
  * TODO use the IPidCalculator from mattlib
  */
-public class AutoAxisSetup implements ISetup<AutoAxisControl> {
+public class ClosedLoopsSetup implements ISetup<ClosedLoopsControl> {
     @Override
-    public AutoAxisControl build(ProcessPath path) {
+    public ClosedLoopsControl build(ProcessPath path) {
 
         PIDController balanceController = new PIDController(0,0,0);
         ProfiledPIDFController rotController = new ProfiledPIDFController(0,0,0,0, null);
 
-        return new AutoAxisControl(balanceController,rotController);
+        return new ClosedLoopsControl(balanceController,rotController);
     }
 }

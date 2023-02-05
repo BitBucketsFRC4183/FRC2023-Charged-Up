@@ -1,6 +1,5 @@
 package org.bitbuckets.drive.controlsds;
 
-import edu.wpi.first.wpilibj.interfaces.Gyro;
 import org.bitbuckets.drive.controlsds.DriveControl;
 import org.bitbuckets.drive.controlsds.sds.ISwerveModule;
 import org.bitbuckets.lib.ISetup;
@@ -37,7 +36,7 @@ public class DriveControlSetup implements ISetup<DriveControl> {
                 path.generateStateLogger("actual-states")
         );
 
-        path.registerLoop(control::guaranteedLoggingLoop, "logging");
+        path.registerLoop(control::guaranteedLoggingLoop, 30, "help me");
 
         return control;
     }

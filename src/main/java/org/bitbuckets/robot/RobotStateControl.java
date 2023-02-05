@@ -23,7 +23,7 @@ public class RobotStateControl implements Runnable {
     }
 
     public boolean isRobotTeleop() {
-        return robot.isEnabled();
+        return robot.isEnabled() && robot.isTeleop();
     }
 
     final Timer timer = new Timer();
@@ -34,8 +34,6 @@ public class RobotStateControl implements Runnable {
 
     boolean resetYetThisGamePhase = false;
 
-    //tags: medium priority
-    //TODO make this code more robust
     @Override
     public void run() {
         if (isRobotAutonomous()) {

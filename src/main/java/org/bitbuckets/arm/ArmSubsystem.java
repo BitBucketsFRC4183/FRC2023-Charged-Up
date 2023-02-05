@@ -10,11 +10,9 @@ public class ArmSubsystem {
     final ArmInput armInput;
     final ArmControl armControl;
     final ILoggable<String> mode;
-
+    private String positionMode;
 
     ArmFSM state = ArmFSM.MANUAL;
-
-    private String positionMode;
 
     public ArmSubsystem(ArmInput armInput, ArmControl armControl, ILoggable<String> mode) {
         this.armInput = armInput;
@@ -28,16 +26,13 @@ public class ArmSubsystem {
     //calculated gearRatio
     //private double gearRatio = (5 * 4 * 3) / (12. / 30.);
 
-    public void robotPeriodic() {
-
-    }
-
     public void teleopPeriodic() {
 
 
         if (armInput.isCalibratedPressed()) {
             armControl.calibrateLowerArm();
             armControl.calibrateUpperArm();
+            System.out.println("Arms calibrated!");
         }
 
         switch (state) {

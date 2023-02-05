@@ -78,6 +78,7 @@ public class SparkSetup implements ISetup<IMotorController> {
             reverseSwitch.enableLimitSwitch(true);
         }
 
+
         ILoggable<double[]> data = path.generateDoubleLoggers("appliedOutput", "busVoltage", "positionRotations", "velocityRotatations", "setpointRotations", "error");
 
         // setup tuneable pid
@@ -85,7 +86,7 @@ public class SparkSetup implements ISetup<IMotorController> {
             IValueTuner<Double> p = path.generateValueTuner("p", pidConfig.kP);
             IValueTuner<Double> i = path.generateValueTuner("i", pidConfig.kI);
             IValueTuner<Double> d = path.generateValueTuner("d", pidConfig.kD);
-            var pidController= spark.getPIDController();
+            var pidController = spark.getPIDController();
             SparkTuningAspect sparkTuningAspect = new SparkTuningAspect(p, i, d, pidController);
             pidController.setP(p.consumeValue());
             pidController.setI(i.consumeValue());

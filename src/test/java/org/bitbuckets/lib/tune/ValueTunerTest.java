@@ -2,6 +2,7 @@ package org.bitbuckets.lib.tune;
 
 import edu.wpi.first.hal.HAL;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import org.bitbuckets.lib.tune.type.ValueTuner;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
