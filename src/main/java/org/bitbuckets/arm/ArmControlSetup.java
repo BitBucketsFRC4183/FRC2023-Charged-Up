@@ -24,8 +24,10 @@ public class ArmControlSetup implements ISetup<ArmControl> {
     public ArmControl build(ProcessPath path) {
         return new ArmControl(
                 lowerJoint.build(path.addChild("lower-joint")),
-                upperJoint.build(path.addChild("upper-joint"))
-        );
+                upperJoint.build(path.addChild("upper-joint")),
+                path.generateBooleanLogger("isArmOutOfReach"),
+                path.generateDoubleLogger("convertUpperRawToMechanism"),
+                path.generateDoubleLogger("convertLowerRawToMechanism"));
     }
 }
 
