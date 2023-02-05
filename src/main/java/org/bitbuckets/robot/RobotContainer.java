@@ -2,7 +2,7 @@ package org.bitbuckets.robot;
 
 import org.bitbuckets.arm.ArmSubsystem;
 import org.bitbuckets.drive.DriveSubsystem;
-import org.bitbuckets.vision.VisionControl;
+import org.bitbuckets.elevator.ElevatorSubsystem;
 
 /**
  * This class represents your robot's periodic behavior
@@ -11,13 +11,12 @@ public class RobotContainer {
 
     final DriveSubsystem driveSubsystem;
     final ArmSubsystem armSubsystem;
-    final VisionControl visionControl;
+    final ElevatorSubsystem elevatorSubsystem;
 
-    public RobotContainer(DriveSubsystem driveSubsystem, ArmSubsystem armSubsystem, VisionControl visionControl) {
+    public RobotContainer(DriveSubsystem driveSubsystem, ArmSubsystem armSubsystem, ElevatorSubsystem elevatorSubsystem) {
         this.driveSubsystem = driveSubsystem;
         this.armSubsystem = armSubsystem;
-        this.visionControl = visionControl;
-
+        this.elevatorSubsystem = elevatorSubsystem;
     }
 
     public void autoPeriodic() {
@@ -30,8 +29,11 @@ public class RobotContainer {
 
     //Shouldn't need to do anything here
     public void teleopPeriodic() {
-        visionControl.teleopPeriodic();
+        elevatorSubsystem.teleopPeriodic();
         armSubsystem.teleopPeriodic();
     }
+
+
+
 
 }
