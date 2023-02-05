@@ -3,6 +3,7 @@ package org.bitbuckets.vision;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.bitbuckets.lib.log.ILoggable;
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
@@ -13,10 +14,8 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 
 import java.util.Optional;
 
-import static org.bitbuckets.vision.VisionConstants2.TAG_TO_CHASE;
 
-
-public class VisionControl implements Runnable, IVisionControl {
+public class VisionControl implements Runnable , IVisionControl {
 
 
     final Transform3d robotToCamera;
@@ -38,7 +37,7 @@ public class VisionControl implements Runnable, IVisionControl {
 
     @Override
     public void run() {
-       //TODO log
+        //TODO log
     }
 
     @Override
@@ -96,18 +95,19 @@ public class VisionControl implements Runnable, IVisionControl {
             if (targetOpt.isPresent()) {
                 var target = targetOpt.get();
 
-                Pose3d robotPose = PhotonUtils.estimateFieldToRobotAprilTag(tagPose, VisionConstants.aprilTags.get(  tagID), robotToCamera);
 
+            Pose3d robotPose = PhotonUtils.estimateFieldToRobotAprilTag(tagPose, VisionConstants.aprilTags.get(tagID), robotToCamera);
+            SmartDashboard.putString("robotPOSE", robotPose.toString());
                 // Transform the robot's pose to find the camera's pose
                 var cameraPose = robotPose.transformBy(robotToCamera);
 
-                // Trasnform the camera's pose to the target's pose
-                var camToTarget = target.getBestCameraToTarget();
+                SmartDashboard.putString("tagpose", tagPose.toString());
+            // Trasnform the camera's pose to the target's pose
+            var camToTarget = target.getBestCameraToTarget();
                 var targetPose = cameraPose.transformBy(camToTarget);
 
                 // Transform the tag's pose to set our goal
-                var goalPose = targetPose.transformBy(VisionConstants2.TAG_TO_GOAL).toPose2d();
-
+                var goalPose = targetPose.transformBy(VisionConstants2.TAG_TO_GOAL);
 
                 // This is new target data, so recalculate the goal
 
@@ -130,28 +130,22 @@ public class VisionControl implements Runnable, IVisionControl {
                 Optional<EstimatedRobotPose> robotPose3d = photonPoseEstimator.update();
 
                 if (robotPose3d.isEmpty()) return Optional.empty();
-                Pose3d currentEstimatedPose3d = robotPose3d.get().estimatedPose;
-                Pose2d currentEstimatedPose2d = currentEstimatedPose3d.toPose2d();
+            Pose3d currentEstimatedPose3d = robotPose3d.get().estimatedPose;
+            Pose2d currentEstimatedPose2d = currentEstimatedPose3d.toPose2d();
 
-                Pose3d tagPossiblePose3d = aprilTagFieldLayout.getTagPose(aprilTagTarget.getFiducialId()).orElseThrow();
-                Pose2d tagPossiblePose2d = tagPossiblePose3d.toPose2d();
+            Pose3d tagPossiblePose3d = aprilTagFieldLayout.getTagPose(aprilTagTarget.getFiducialId()).orElseThrow();
+            Pose2d tagPossiblePose2d = tagPossiblePose3d.toPose2d();
 
-                Rotation2d targetYaw = PhotonUtils.getYawToPose(currentEstimatedPose2d, tagPossiblePose2d);
+            Rotation2d targetYaw = PhotonUtils.getYawToPose(currentEstimatedPose2d, goalPose.toPose2d());
+            SmartDashboard.putString("targetYaw", targetYaw.toString());
+            return Optional.of(new PhotonCalculationResult(robotPose, goalPose, translationToTag, targetYaw, targetYaw.getRadians()));
 
-
-                return Optional.of(new PhotonCalculationResult(robotPose, tagPossiblePose3d, translationToTag, targetYaw, targetYaw.getRadians()));
-
-
-            }
-
-
-            return Optional.empty();
-
-            //public void driveToPosition (ChassisSpeeds chassisSpeeds){
-            //controller.calculate(
 
             //  )
 
+
+        } else {
+            SmartDashboard.putString("tagpose", tagPose.toString());
 
         }
 

@@ -2,8 +2,10 @@ package org.bitbuckets.drive;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Preferences;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.bitbuckets.auto.AutoControl;
 import org.bitbuckets.auto.AutoPath;
 import org.bitbuckets.drive.balance.ClosedLoopsControl;
@@ -67,7 +69,6 @@ public class DriveSubsystem {
     public void robotPeriodic() {
 
 
-
         switch (state) {
             case UNINITIALIZED:
                 if (robotStateControl.isRobotAutonomous()) {
@@ -124,11 +125,11 @@ public class DriveSubsystem {
                 break;
 
             case TELEOP_VISION:
-                if (input.isVisionGoReleased()) {
+                if (!input.isVisionGoPressed()) {
                     state = DriveFSM.TELEOP_NORMAL;
                     break;
                 }
-                    teleopVision();
+                teleopVision();
                 break;
 
             case TELEOP_AUTOHEADING:
@@ -142,13 +143,17 @@ public class DriveSubsystem {
         stateLogger.log(state);
     }
 
-    void teleopVision() {
+    public void teleopVision() {
         Optional<VisionControl.PhotonCalculationResult> res = visionControl.visionPoseEstimator();
-        if (res.isEmpty()) return;
+        if (res.isEmpty()) {
+            driveControl.drive(new ChassisSpeeds(0, 0, 0));
+            return;
+        }
         Pose2d target = res.get().goalPose.toPose2d();
+        SmartDashboard.putString("distancevisX", target.toString());
+        //Todo: determine heading
+        ChassisSpeeds speeds = holoControl.calculatePose2D(target, .01, new Rotation2d());
 
-
-        ChassisSpeeds speeds = holoControl.calculatePose2D(target, 0);
         driveControl.drive(speeds);
     }
 
@@ -162,7 +167,7 @@ public class DriveSubsystem {
         double yOutput = -input.getInputY() * driveControl.getMaxVelocity();
         double rotationOutput = input.getInputRot() * driveControl.getMaxAngularVelocity();
 
-        driveLog.log(new double[] {
+        driveLog.log(new double[]{
                 xOutput,
                 yOutput,
                 rotationOutput
