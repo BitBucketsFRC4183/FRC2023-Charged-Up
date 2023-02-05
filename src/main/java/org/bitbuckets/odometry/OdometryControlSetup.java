@@ -9,19 +9,18 @@ import org.bitbuckets.drive.DriveConstants;
 import org.bitbuckets.drive.IDriveControl;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
-import org.bitbuckets.vision.VisionControl;
+
 
 public class OdometryControlSetup implements ISetup<OdometryControl> {
 
 
     final IDriveControl control;
-    final VisionControl visionControl;
-    final int pidgeonId;
+    WPI_PigeonIMU pigeonIMU;
 
-    public OdometryControlSetup(IDriveControl control, VisionControl visionControl, int pidgeonId1) {
+
+    public OdometryControlSetup(IDriveControl control, WPI_PigeonIMU pigeonIMU) {
         this.control = control;
-        this.visionControl = visionControl;
-        this.pidgeonId = pidgeonId1;
+        this.pigeonIMU = pigeonIMU;
     }
 
     @Override
@@ -37,9 +36,8 @@ public class OdometryControlSetup implements ISetup<OdometryControl> {
                 },
                 new Pose2d()
         );
-        WPI_PigeonIMU pigeonIMU = new WPI_PigeonIMU(pidgeonId);
 
-        OdometryControl odometryControl = new OdometryControl (control, visionControl, pigeonIMU, estimator);;
+        OdometryControl odometryControl = new OdometryControl (control, estimator, pigeonIMU);;
 
         addChild.registerLoop(odometryControl, "odometry-loop");
 

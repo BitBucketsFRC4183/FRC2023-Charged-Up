@@ -12,7 +12,7 @@ import org.bitbuckets.lib.log.ILoggable;
 import org.bitbuckets.lib.tune.IValueTuner;
 import org.bitbuckets.odometry.IOdometryControl;
 import org.bitbuckets.robot.RobotStateControl;
-import org.bitbuckets.vision.VisionControl;
+
 
 import java.util.Optional;
 
@@ -31,7 +31,7 @@ public class DriveSubsystem {
     final DriveControl driveControl;
     final AutoControl autoControl;
     final HoloControl holoControl;
-    final VisionControl visionControl;
+
 
     final IValueTuner<AutoPath> path;
     final ILoggable<DriveFSM> stateLogger;
@@ -45,14 +45,13 @@ public class DriveSubsystem {
 
     final IValueTuner<OrientationChooser> orientation;
 
-    public DriveSubsystem(DriveInput input, RobotStateControl robotStateControl, IOdometryControl odometryControl, ClosedLoopsControl closedLoopsControl, DriveControl driveControl, AutoControl autoControl, HoloControl holoControl, VisionControl visionControl, IValueTuner<AutoPath> path, ILoggable<DriveFSM> stateLogger, ILoggable<double[]> driveLog, IValueTuner<OrientationChooser> orientation) {
+    public DriveSubsystem(DriveInput input, RobotStateControl robotStateControl, IOdometryControl odometryControl, ClosedLoopsControl closedLoopsControl, DriveControl driveControl, AutoControl autoControl, HoloControl holoControl, IValueTuner<AutoPath> path, ILoggable<DriveFSM> stateLogger, ILoggable<double[]> driveLog, IValueTuner<OrientationChooser> orientation) {
         this.input = input;
         this.robotStateControl = robotStateControl;
         this.odometryControl = odometryControl;
         this.closedLoopsControl = closedLoopsControl;
         this.driveControl = driveControl;
         this.autoControl = autoControl;
-        this.visionControl = visionControl;
         this.path = path;
         this.stateLogger = stateLogger;
         this.orientation = orientation;
@@ -123,14 +122,6 @@ public class DriveSubsystem {
 
                 teleopBalancing();
                 break;
-            case TELEOP_VISION:
-                if (input.isVisionGoReleased()) {
-                    state = DriveFSM.TELEOP_NORMAL;
-                    break;
-                }
-
-                    teleopVision();
-                break;
             case TELEOP_AUTOHEADING:
                 if (input.isDefaultPressed()) {
                     state = DriveFSM.TELEOP_NORMAL;
@@ -144,15 +135,7 @@ public class DriveSubsystem {
         stateLogger.log(state);
     }
 
-    void teleopVision() {
-        Optional<VisionControl.PhotonCalculationResult> res = visionControl.visionPoseEstimator();
-        if (res.isEmpty()) return;
-        Pose2d target = res.get().goalPose.toPose2d();
 
-
-        ChassisSpeeds speeds = holoControl.calculatePose2D(target, 0);
-        driveControl.drive(speeds);
-    }
 
     void teleopNormal() {
         double xOutput = input.getInputX() * driveControl.getMaxVelocity();

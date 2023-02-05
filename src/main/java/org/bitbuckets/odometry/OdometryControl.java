@@ -6,20 +6,16 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.util.WPIUtilJNI;
 import org.bitbuckets.drive.IDriveControl;
-import org.bitbuckets.vision.VisionControl;
-
-import java.util.Optional;
 
 public class OdometryControl implements IOdometryControl, Runnable {
 
     final IDriveControl driveControl;
-    final VisionControl visionControl;
+
     final WPI_PigeonIMU pigeonIMU;
     final SwerveDrivePoseEstimator swerveDrivePoseEstimator;
 
-    public OdometryControl(IDriveControl driveControl, VisionControl visionControl, WPI_PigeonIMU pigeonIMU, SwerveDrivePoseEstimator swerveDrivePoseEstimator) {
+    public OdometryControl(IDriveControl driveControl, SwerveDrivePoseEstimator swerveDrivePoseEstimator, WPI_PigeonIMU pigeonIMU) {
         this.driveControl = driveControl;
-        this.visionControl = visionControl;
         this.pigeonIMU = pigeonIMU;
         this.swerveDrivePoseEstimator = swerveDrivePoseEstimator;
     }
@@ -31,13 +27,9 @@ public class OdometryControl implements IOdometryControl, Runnable {
         double epoch = WPIUtilJNI.now();
         swerveDrivePoseEstimator.updateWithTime(epoch, gyroangle, driveControl.currentPositions());
 
-        Optional<VisionControl.PhotonCalculationResult> res = visionControl.visionPoseEstimator();
 
-        if (res.isPresent()) {
-            Pose2d realPose = res.get().robotPose.toPose2d();
 
-            swerveDrivePoseEstimator.addVisionMeasurement(realPose, epoch);
-        }
+
 
     }
 
