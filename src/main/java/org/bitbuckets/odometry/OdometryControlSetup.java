@@ -14,13 +14,13 @@ import org.bitbuckets.lib.ProcessPath;
 public class OdometryControlSetup implements ISetup<OdometryControl> {
 
 
+    final int id;
     final IDriveControl control;
-    WPI_PigeonIMU pigeonIMU;
 
 
-    public OdometryControlSetup(IDriveControl control, WPI_PigeonIMU pigeonIMU) {
+    public OdometryControlSetup(int id, IDriveControl control) {
+        this.id = id;
         this.control = control;
-        this.pigeonIMU = pigeonIMU;
     }
 
     @Override
@@ -36,6 +36,9 @@ public class OdometryControlSetup implements ISetup<OdometryControl> {
                 },
                 new Pose2d()
         );
+
+        WPI_PigeonIMU pigeonIMU = new WPI_PigeonIMU(id);
+
 
         OdometryControl odometryControl = new OdometryControl (control, estimator, pigeonIMU);;
 
