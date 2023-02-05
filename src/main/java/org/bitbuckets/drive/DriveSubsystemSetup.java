@@ -1,5 +1,7 @@
 package org.bitbuckets.drive;
 
+import com.ctre.phoenix.sensors.WPI_Pigeon2;
+import com.ctre.phoenix.sensors.WPI_PigeonIMU;
 import edu.wpi.first.wpilibj.Joystick;
 import org.bitbuckets.auto.AutoControl;
 import org.bitbuckets.auto.AutoControlSetup;
@@ -44,7 +46,6 @@ public class DriveSubsystemSetup implements ISetup<DriveSubsystem> {
     public DriveSubsystemSetup(boolean driveEnabled, RobotStateControl robotStateControl, IVisionControl visionControl) {
         this.driveEnabled = driveEnabled;
         this.robotStateControl = robotStateControl;
-        this.visionControl = visionControl;
     }
 
     @Override
@@ -59,7 +60,7 @@ public class DriveSubsystemSetup implements ISetup<DriveSubsystem> {
 
         DriveControl driveControl = buildNeoDriveControl(path); //or use talons, when they work
 
-        IOdometryControl odometryControl = new OdometryControlSetup(driveControl, visionControl, 5)
+        IOdometryControl odometryControl = new OdometryControlSetup(driveControl, new WPI_Pigeon2(5))
                 .build(path.addChild("odo-control"));
         HoloControl holoControl = new HoloControlSetup(driveControl, odometryControl)
                 .build(path.addChild("holo-control"));
@@ -83,7 +84,6 @@ public class DriveSubsystemSetup implements ISetup<DriveSubsystem> {
                 driveControl,
                 autoControl,
                 holoControl,
-                visionControl,
                 pathTuneable,
                 fsmLoggable,
                 xyrotLoggers,

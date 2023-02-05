@@ -22,7 +22,6 @@ public class OdometryControl implements IOdometryControl, Runnable {
 
     OdometryControl(IDriveControl driveControl, IVisionControl visionControl, WPI_Pigeon2 pigeonIMU, SwerveDrivePoseEstimator swerveDrivePoseEstimator) {
         this.driveControl = driveControl;
-        this.visionControl = visionControl;
         this.pigeonIMU = pigeonIMU;
         this.swerveDrivePoseEstimator = swerveDrivePoseEstimator;
     }
@@ -40,7 +39,6 @@ public class OdometryControl implements IOdometryControl, Runnable {
             Pose2d realPose = res.get().toPose2d();
 
             swerveDrivePoseEstimator.addVisionMeasurement(realPose, epoch);
-        }
 
     }
 

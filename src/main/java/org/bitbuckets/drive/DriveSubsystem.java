@@ -54,7 +54,6 @@ public class DriveSubsystem {
         this.closedLoopsControl = closedLoopsControl;
         this.driveControl = driveControl;
         this.autoControl = autoControl;
-        this.visionControl = visionControl;
         this.path = path;
         this.stateLogger = stateLogger;
         this.orientation = orientation;
@@ -65,6 +64,9 @@ public class DriveSubsystem {
     DriveFSM state = DriveFSM.UNINITIALIZED;
 
     public void robotPeriodic() {
+
+
+
         switch (state) {
             case UNINITIALIZED:
                 if (robotStateControl.isRobotAutonomous()) {
@@ -75,21 +77,23 @@ public class DriveSubsystem {
                     state = DriveFSM.TELEOP_NORMAL;
                     break;
                 }
-                break;
 
+                break;
             case AUTO_PATHFINDING:
                 if (robotStateControl.isRobotTeleop()) {
                     state = DriveFSM.TELEOP_NORMAL;
                     break;
                 }
+
                 ChassisSpeeds targetChassisSpeeds = autoControl.getAutoChassisSpeeds(
                         path.readValue(),
                         robotStateControl.robotAutonomousTime_seconds(),
                         odometryControl.estimatePose2d()
                 );
-                driveControl.drive(targetChassisSpeeds);
-                break;
 
+                driveControl.drive(targetChassisSpeeds);
+
+                break;
             case TELEOP_NORMAL:
                 if (robotStateControl.isRobotAutonomous()) {
                     state = DriveFSM.AUTO_PATHFINDING;
@@ -138,10 +142,12 @@ public class DriveSubsystem {
     }
 
     void teleopVision() {
-        Optional<Pose3d> res = visionControl.estimateTargetPose();
+        Optional<VisionControl.PhotonCalculationResult> res = visionControl.visionPoseEstimator();
         if (res.isEmpty()) return;
-        ChassisSpeeds speeds = holoControl.calculatePose2D(res.get().toPose2d(), 3);
+        Pose2d target = res.get().goalPose.toPose2d();
 
+
+        ChassisSpeeds speeds = holoControl.calculatePose2D(target, 0);
         driveControl.drive(speeds);
     }
 
