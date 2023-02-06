@@ -146,6 +146,11 @@ public class DriveSubsystem {
     }
 
     void teleopNormal() {
+        if(input.isResetGyroPressed()){
+            odometryControl.zero();
+            System.out.println("Zero Gyro");
+        }
+
         double xOutput = input.getInputX() * driveControl.getMaxVelocity();
         double yOutput = -input.getInputY() * driveControl.getMaxVelocity();
         double rotationOutput = input.getInputRot() * driveControl.getMaxAngularVelocity();
