@@ -95,10 +95,29 @@ public class ArmControl {
         return mechanismRotation / ArmConstants.UPPER_ARM_GEAR_RATIO;
     }
 
+
+    public boolean isReachable(double lowerAngle, double upperAngle)
+    {
+        if (Double.isNaN(lowerAngle) || Double.isNaN(upperAngle))
+        {
+            isArmOutOfReach.log(false);
+            return false;
+        }
+        else {
+            isArmOutOfReach.log(true);
+            return true;
+        }
+    }
+
+    public boolean isErrorSmallEnough(double delta){
+        //might change delta later
+        return lowerJoint.getError() < delta && upperJoint.getError() < delta;
+    }
+
     // Make sure to change/tune lowerAngle and upperAngle for each position
 
     // Press X
-    public void intakeHumanPlayer() {
+    public boolean humanIntake() {
         //Need inverse kinematics
         double lowerAngle = 0;
         double upperAngle = 0;
@@ -107,18 +126,46 @@ public class ArmControl {
 
     }
 
-    // Press Y
-    public void intakeGround() {
-        //Need inverse kinematics
-        double lowerAngle = -29.69;
-        double upperAngle = 29.69;
-        moveLowerArmToPosition_DEGREES(lowerAngle);
-        moveUpperArmToPosition_DEGREES(upperAngle);
+    public boolean storeArm() {
+        InverseKinematics store = new InverseKinematics(ArmConstants.STORAGE_X, ArmConstants.STORAGE_Y);
+        double lowerAngle = store.getLowerJointAngle();
+        double upperAngle = store.getUpperJointAngle();
+
+        findLowerAngleKinematics.log(Math.toDegrees(lowerAngle));
+        findUpperAngleKinematics.log(Math.toDegrees(upperAngle));
+
+        //finding NaN errors
+        if (isReachable(lowerAngle, upperAngle))
+        {
+            moveLowerArmToPosition_DEGREES(Math.toDegrees(lowerAngle));
+            moveUpperArmToPosition_DEGREES(Math.toDegrees(upperAngle));
+            return isErrorSmallEnough(3.69);
+        }
+        return false;
 
     }
 
+    public boolean prepareArm() {
+        InverseKinematics prepare = new InverseKinematics(ArmConstants.PREPARE_X, ArmConstants.PREPARE_Y);
+        double lowerAngle = prepare.getLowerJointAngle();
+        double upperAngle = prepare.getUpperJointAngle();
+
+        findLowerAngleKinematics.log(Math.toDegrees(lowerAngle));
+        findUpperAngleKinematics.log(Math.toDegrees(upperAngle));
+
+        //finding NaN errors
+        if (isReachable(lowerAngle, upperAngle))
+        {
+            moveLowerArmToPosition_DEGREES(Math.toDegrees(lowerAngle));
+            moveUpperArmToPosition_DEGREES(Math.toDegrees(upperAngle));
+        }
+        return isErrorSmallEnough(3.69);
+    }
+
+
+
     // Press A
-    public void scoreMid() {
+    public boolean scoreMid() {
         //Need inverse kinematics
 
         // pass x position and y position as parameters to the inverse kinematics constructor
@@ -129,7 +176,7 @@ public class ArmControl {
          * InverseKinematics midNode = new InverseKinematics(1.169, 0.35); works
          */
 
-        InverseKinematics midNode = new InverseKinematics(1.169, 0.35);
+        InverseKinematics midNode = new InverseKinematics(ArmConstants.MID_NODE_X, ArmConstants.MID_NODE_Y);
         double lowerAngle = midNode.getLowerJointAngle();
         double upperAngle = midNode.getUpperJointAngle();
 
@@ -137,27 +184,36 @@ public class ArmControl {
         findUpperAngleKinematics.log(Math.toDegrees(upperAngle));
 
         //finding NaN errors
-        if (Double.isNaN(lowerAngle) || Double.isNaN(upperAngle))
+        if (isReachable(lowerAngle, upperAngle))
         {
-            isArmOutOfReach.log(false);
-        }
-        else{
-            isArmOutOfReach.log(true);
             moveLowerArmToPosition_DEGREES(Math.toDegrees(lowerAngle));
             moveUpperArmToPosition_DEGREES(Math.toDegrees(upperAngle));
+            return isErrorSmallEnough(3.69);
         }
+
+        return false;
 
 
     }
 
     // Press B
-    public void scoreHigh() {
+    public boolean scoreHigh() {
+        InverseKinematics highNode = new InverseKinematics(ArmConstants.HIGH_NODE_X, ArmConstants.HIGH_NODE_Y);
+        double lowerAngle = highNode.getLowerJointAngle();
+        double upperAngle = highNode.getUpperJointAngle();
 
-        //Need inverse kinematics
-        double lowerAngle = Math.PI/4;
-        double upperAngle = Math.PI/4;
-        moveLowerArmToPosition_DEGREES(Math.toDegrees(lowerAngle));
-        moveUpperArmToPosition_DEGREES(Math.toDegrees(upperAngle));
+        findLowerAngleKinematics.log(Math.toDegrees(lowerAngle));
+        findUpperAngleKinematics.log(Math.toDegrees(upperAngle));
+
+        //finding NaN errors
+        if (isReachable(lowerAngle, upperAngle))
+        {
+            moveLowerArmToPosition_DEGREES(Math.toDegrees(lowerAngle));
+            moveUpperArmToPosition_DEGREES(Math.toDegrees(upperAngle));
+            return isErrorSmallEnough(3.69);
+        }
+
+        return false;
 
     }
 
