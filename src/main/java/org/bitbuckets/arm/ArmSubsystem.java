@@ -82,5 +82,9 @@ public class ArmSubsystem {
 
     }
 
+    public void setSoftLimits(){
+
+    }
+
 
 }
