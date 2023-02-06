@@ -68,7 +68,6 @@ public class SparkSetup implements ISetup<IMotorController> {
         // Uncomment this when doing something that may command motors to full throttle by accident
         //spark.getPIDController().setOutputRange(-0.3,0.3);
 
-
         SparkMaxLimitSwitch forwardSwitch = null;
         SparkMaxLimitSwitch reverseSwitch = null;
 
