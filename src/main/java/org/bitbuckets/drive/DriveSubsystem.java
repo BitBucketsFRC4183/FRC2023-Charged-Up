@@ -16,6 +16,7 @@ import org.bitbuckets.lib.tune.IValueTuner;
 import org.bitbuckets.odometry.IOdometryControl;
 import org.bitbuckets.robot.RobotStateControl;
 import org.bitbuckets.vision.IVisionControl;
+import org.bitbuckets.vision.PhotonCalculationResult;
 import org.bitbuckets.vision.VisionControl;
 
 import java.util.Optional;
@@ -144,7 +145,7 @@ public class DriveSubsystem {
     }
 
     public void teleopVision() {
-        Optional<VisionControl.PhotonCalculationResult> res = visionControl.visionPoseEstimator();
+        Optional<PhotonCalculationResult> res = visionControl.visionPoseEstimator();
         if (res.isEmpty()) {
             driveControl.drive(new ChassisSpeeds(0, 0, 0));
             return;

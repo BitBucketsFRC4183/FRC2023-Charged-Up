@@ -10,6 +10,7 @@ import edu.wpi.first.util.WPIUtilJNI;
 import org.bitbuckets.drive.IDriveControl;
 import org.bitbuckets.vision.IVisionControl;
 import org.bitbuckets.lib.log.ILoggable;
+import org.bitbuckets.vision.PhotonCalculationResult;
 import org.bitbuckets.vision.VisionControl;
 
 import java.util.Optional;
