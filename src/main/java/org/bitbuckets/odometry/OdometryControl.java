@@ -1,5 +1,6 @@
 package org.bitbuckets.odometry;
 
+import com.ctre.phoenix.sensors.WPI_Pigeon2;
 import com.ctre.phoenix.sensors.WPI_PigeonIMU;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -16,10 +17,10 @@ public class OdometryControl implements IOdometryControl, Runnable {
 
     final IDriveControl driveControl;
     final IVisionControl visionControl;
-    final WPI_PigeonIMU pigeonIMU;
+    final WPI_Pigeon2 pigeonIMU;
     final SwerveDrivePoseEstimator swerveDrivePoseEstimator;
 
-    OdometryControl(IDriveControl driveControl, IVisionControl visionControl, WPI_PigeonIMU pigeonIMU, SwerveDrivePoseEstimator swerveDrivePoseEstimator) {
+    OdometryControl(IDriveControl driveControl, IVisionControl visionControl, WPI_Pigeon2 pigeonIMU, SwerveDrivePoseEstimator swerveDrivePoseEstimator) {
         this.driveControl = driveControl;
         this.visionControl = visionControl;
         this.pigeonIMU = pigeonIMU;

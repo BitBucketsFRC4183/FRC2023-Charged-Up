@@ -66,7 +66,6 @@ public class DriveInput {
      * @return whether the aim drive is held or not
      */
     public boolean isAutoHeadingPressed() {
-
         return joystick.getRawButtonPressed(XboxConstants.CROSS);
     }
 
@@ -91,7 +90,7 @@ public class DriveInput {
     }
 
     public boolean isResetGyroPressed(){
-        return joystick.getRawButtonPressed(XboxController.Button.kA.value);
+        return joystick.getRawButtonPressed(XboxConstants.OPTIONS);
     }
 
 }
