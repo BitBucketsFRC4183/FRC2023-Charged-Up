@@ -1,5 +1,7 @@
 package org.bitbuckets.odometry;
 
+import com.ctre.phoenix.sensors.Pigeon2;
+import com.ctre.phoenix.sensors.WPI_Pigeon2;
 import com.ctre.phoenix.sensors.WPI_PigeonIMU;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -45,8 +47,10 @@ public class OdometryControlSetup implements ISetup<OdometryControl> {
         );
 
         initializePidgeon.markProcessing();
-        WPI_PigeonIMU pigeonIMU = new WPI_PigeonIMU(pidgeonId);
+        WPI_Pigeon2 pigeonIMU = new WPI_Pigeon2(pidgeonId);
         initializePidgeon.markCompleted();
+        pigeonIMU.configFactoryDefault();
+        pigeonIMU.configMountPose(Pigeon2.AxisDirection.PositiveY, Pigeon2.AxisDirection.PositiveZ);
 
         OdometryControl odometryControl = new OdometryControl (control, visionControl, pigeonIMU, estimator);;
         addChild.registerLoop(odometryControl, "odometry-loop");
