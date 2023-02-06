@@ -1,5 +1,7 @@
 package org.bitbuckets.lib.log;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 
@@ -30,5 +32,8 @@ public interface ILogDriver {
      */
     ILoggable<Translation2d[]> generateTranslationLogger(int id, String... key);
     ILoggable<SwerveModuleState[]> generateSwerveLogger(int id, String key);
+
+    ILoggable<Pose2d> generatePoseLogger();
+    ILoggable<Pose3d> generatePose3Logger();
 
 }

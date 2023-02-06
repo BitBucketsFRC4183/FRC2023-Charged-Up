@@ -1,5 +1,7 @@
 package org.bitbuckets.lib.log;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import org.bitbuckets.lib.core.IdentityDriver;
@@ -82,5 +84,15 @@ public class LogDriver implements ILogDriver {
         String computed = identityDriver.fullPath(id) + key;
 
         return a -> logger.recordOutput(key, a);
+    }
+
+    @Override
+    public ILoggable<Pose2d> generatePoseLogger() {
+        return a -> ;
+    }
+
+    @Override
+    public ILoggable<Pose3d> generatePose3Logger() {
+        return null;
     }
 }

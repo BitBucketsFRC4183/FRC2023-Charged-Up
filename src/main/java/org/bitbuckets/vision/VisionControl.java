@@ -94,13 +94,13 @@ public class VisionControl implements Runnable , IVisionControl {
         int tagID = aprilTagTarget.getFiducialId();
 
         //Find the tag we want to chase
-            var targetOpt = result.getTargets().stream()
+        var targetOpt = result.getTargets().stream()
                     .filter(t -> t.getFiducialId() == TAG_TO_CHASE)
                     .filter(t -> !t.equals(aprilTagTarget) && t.getPoseAmbiguity() <= .2 && t.getPoseAmbiguity() != -1)
                     .findFirst();
 
-            if (targetOpt.isPresent()) {
-                var target = targetOpt.get();
+        if (targetOpt.isPresent()) {
+            var target = targetOpt.get();
 
 
         // load the april tag pose for this tagId
@@ -133,7 +133,8 @@ public class VisionControl implements Runnable , IVisionControl {
 
 //Pose3d robotPose = PhotonUtils.estimateFieldToRobotAprilTag(tagPose, VisionConstants.aprilTags.get(tagID), robotToCamera);
 
-                Optional<EstimatedRobotPose> robotPose3d = photonPoseEstimator.update();        if (robotPose3d.isEmpty()) return Optional.empty();
+        Optional<EstimatedRobotPose> robotPose3d = photonPoseEstimator.update();
+        if (robotPose3d.isEmpty()) return Optional.empty();
         Pose3d currentEstimatedPose3d = robotPose3d.get().estimatedPose;
         Pose2d currentEstimatedPose2d = currentEstimatedPose3d.toPose2d();
 

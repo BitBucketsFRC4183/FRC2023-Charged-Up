@@ -1,12 +1,13 @@
 package org.bitbuckets.lib.log.type;
 
 import edu.wpi.first.math.geometry.Pose3d;
-import org.bitbuckets.lib.core.LogDriver;
+import org.bitbuckets.lib.log.ILogDriver;
 import org.bitbuckets.lib.log.ILoggable;
+import org.bitbuckets.lib.log.LogDriver;
 
 public class Pose3dLoggable implements ILoggable<Pose3d> {
 
-    final LogDriver driver;
+    final ILogDriver driver;
     final int id;
     final String keyName;
 

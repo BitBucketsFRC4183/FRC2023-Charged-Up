@@ -7,6 +7,8 @@ import org.bitbuckets.lib.core.IdentityDriver;
 import org.bitbuckets.lib.core.LoopDriver;
 import org.bitbuckets.lib.log.ILogDriver;
 import org.bitbuckets.lib.log.ILoggable;
+import org.bitbuckets.lib.log.type.Pose2dLoggable;
+import org.bitbuckets.lib.log.type.Pose3dLoggable;
 import org.bitbuckets.lib.startup.IStartupDriver;
 import org.bitbuckets.lib.tune.IValueTuner;
 import org.bitbuckets.lib.tune.TuneableDriver;
