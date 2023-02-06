@@ -48,22 +48,6 @@ public class VisionControl implements Runnable {
 
     }
 
-    public class PhotonCalculationResult {
-        public final Pose3d robotPose;
-        public final Pose3d goalPose;
-        public final Translation2d translationToTag;
-        public final Rotation2d targetYaw;
-        public final double yaw;
-
-        public PhotonCalculationResult(Pose3d robotPose, Pose3d goalPose, Translation2d translationToTag, Rotation2d targetYaw, double yaw) {
-            this.robotPose = robotPose;
-            this.goalPose = goalPose;
-            this.translationToTag = translationToTag;
-            this.targetYaw = targetYaw;
-            this.yaw = yaw;
-        }
-    }
-
 
     public Optional<Pose3d> estimateRobotPose() {
         Optional<EstimatedRobotPose> result = photonPoseEstimator.update();
@@ -76,8 +60,6 @@ public class VisionControl implements Runnable {
         if (!result.hasTargets()) return Optional.empty();
 
         PhotonTrackedTarget aprilTagTarget = result.getBestTarget();
-        int count = result.targets.size();
-        if (count == 0) return Optional.empty();
 
         double yaw = aprilTagTarget.getYaw();
         double pitch = aprilTagTarget.getPitch();
@@ -87,55 +69,46 @@ public class VisionControl implements Runnable {
         double poseX = transformToTag.getX();
         int tagID = aprilTagTarget.getFiducialId();
 
-        if (result.hasTargets()) {
-            //Pose3d robotPose = PhotonUtils.estimateFieldToRobotAprilTag(tagPose, VisionConstants.aprilTags.get(tagID), robotToCamera);
-            Optional<EstimatedRobotPose> robotPose3d = photonPoseEstimator.update();
+        //Pose3d robotPose = PhotonUtils.estimateFieldToRobotAprilTag(tagPose, VisionConstants.aprilTags.get(tagID), robotToCamera);
+        Optional<EstimatedRobotPose> robotPose3d = photonPoseEstimator.update();
 
-            Pose3d robotPose = PhotonUtils.estimateFieldToRobotAprilTag(transformToTag, VisionConstants.aprilTags.get(tagID), robotToCamera);
-            SmartDashboard.putString("robotPOSE", robotPose.toString());
-            // Transform the robot's pose to find the camera's pose
-            var cameraPose = robotPose.transformBy(robotToCamera);
+        // load the april tag pose for this tagId
+        var aprilTagPose = aprilTagFieldLayout.getTagPose(tagID);
+        if (aprilTagPose.isEmpty()) return Optional.empty();
 
-            SmartDashboard.putString("tagpose", transformToTag.toString());
-            // Trasnform the camera's pose to the target's pose
-            targetPose = cameraPose.transformBy(transformToTag);
+        Pose3d estimatedFieldRobotPose = PhotonUtils.estimateFieldToRobotAprilTag(transformToTag, aprilTagPose.get(), robotToCamera);
+        SmartDashboard.putString("robotPOSE", estimatedFieldRobotPose.toString());
+        // Transform the robot's pose to find the camera's pose
+        var cameraPose = estimatedFieldRobotPose.transformBy(robotToCamera);
 
-            // Transform the tag's pose to set our goal
-            goalPose = targetPose.transformBy(VisionConstants2.TAG_TO_GOAL);
-            // This is new target data, so recalculate the goal
-            double range = PhotonUtils.calculateDistanceToTargetMeters(
-                    VisionConstants2.CAMERA_HEIGHT,
-                    VisionConstants2.TAG_HEIGHT,
-                    VisionConstants2.CAMERA_PITCH,
-                    Units.degreesToRadians(aprilTagTarget.getPitch())
-            );
+        SmartDashboard.putString("tagpose", transformToTag.toString());
+        // Trasnform the camera's pose to the target's pose
+        targetPose = cameraPose.transformBy(transformToTag);
 
-            Translation2d translationToTag = PhotonUtils.estimateCameraToTargetTranslation(
-                    range, Rotation2d.fromDegrees(-aprilTagTarget.getYaw())
-            );
+        // Transform the tag's pose to set our goal
+        goalPose = targetPose.transformBy(VisionConstants2.TAG_TO_GOAL);
+        // This is new target data, so recalculate the goal
+        double range = PhotonUtils.calculateDistanceToTargetMeters(
+                VisionConstants2.CAMERA_HEIGHT,
+                VisionConstants2.TAG_HEIGHT,
+                VisionConstants2.CAMERA_PITCH,
+                Units.degreesToRadians(aprilTagTarget.getPitch())
+        );
 
-            if (robotPose3d.isEmpty()) return Optional.empty();
-            Pose3d currentEstimatedPose3d = robotPose3d.get().estimatedPose;
-            Pose2d currentEstimatedPose2d = currentEstimatedPose3d.toPose2d();
+        Translation2d translationToTag = PhotonUtils.estimateCameraToTargetTranslation(
+                range, Rotation2d.fromDegrees(-aprilTagTarget.getYaw())
+        );
 
-            Pose3d tagPossiblePose3d = aprilTagFieldLayout.getTagPose(aprilTagTarget.getFiducialId()).orElseThrow();
-            Pose2d tagPossiblePose2d = tagPossiblePose3d.toPose2d();
+        if (robotPose3d.isEmpty()) return Optional.empty();
+        Pose3d currentEstimatedPose3d = robotPose3d.get().estimatedPose;
+        Pose2d currentEstimatedPose2d = currentEstimatedPose3d.toPose2d();
 
-            Rotation2d targetYaw = PhotonUtils.getYawToPose(currentEstimatedPose2d, goalPose.toPose2d());
-            SmartDashboard.putString("targetYaw", targetYaw.toString());
-            return Optional.of(new PhotonCalculationResult(robotPose, goalPose, translationToTag, targetYaw, targetYaw.getRadians()));
+        Pose3d tagPossiblePose3d = aprilTagFieldLayout.getTagPose(aprilTagTarget.getFiducialId()).orElseThrow();
+        Pose2d tagPossiblePose2d = tagPossiblePose3d.toPose2d();
 
-
-            //  )
-
-
-        } else {
-            SmartDashboard.putString("tagpose", transformToTag.toString());
-
-        }
-
-        return Optional.empty();
-
+        Rotation2d targetYaw = PhotonUtils.getYawToPose(currentEstimatedPose2d, goalPose.toPose2d());
+        SmartDashboard.putString("targetYaw", targetYaw.toString());
+        return Optional.of(new PhotonCalculationResult(estimatedFieldRobotPose, goalPose, translationToTag, targetYaw, targetYaw.getRadians()));
 
     }
 }
