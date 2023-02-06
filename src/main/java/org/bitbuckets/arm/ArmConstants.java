@@ -35,5 +35,21 @@ public interface ArmConstants {
 
     // Neo Brushless Motor Relative Encoder: 42 counts per revolution
 
+    double STORAGE_X = 0.3;
+    double STORAGE_Y = 0.3;
+
+    double PREPARE_X = -0.2;
+    double PREPARE_Y = 0.6;
+
+    double HUMAN_INTAKE_X = 0.5;
+    double HUMAN_INTAKE_Y = 0.5;
+
+    double MID_NODE_X = 0.8;
+    double MID_NODE_Y = 0.8;
+
+    double HIGH_NODE_X = 1.2;
+    double HIGH_NODE_Y = 1.2;
+
+
 
 }
