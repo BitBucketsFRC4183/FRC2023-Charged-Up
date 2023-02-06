@@ -119,10 +119,22 @@ public class ArmControl {
     // Press X
     public boolean humanIntake() {
         //Need inverse kinematics
-        double lowerAngle = 0;
-        double upperAngle = 0;
-        moveLowerArmToPosition_DEGREES(lowerAngle);
-        moveUpperArmToPosition_DEGREES(upperAngle);
+
+        InverseKinematics humanPlayer = new InverseKinematics(ArmConstants.HUMAN_INTAKE_X, ArmConstants.HUMAN_INTAKE_Y);
+        double lowerAngle = humanPlayer.getLowerJointAngle();
+        double upperAngle = humanPlayer.getUpperJointAngle();
+
+        findLowerAngleKinematics.log(Math.toDegrees(lowerAngle));
+        findUpperAngleKinematics.log(Math.toDegrees(upperAngle));
+
+        //finding NaN errors
+        if (isReachable(lowerAngle, upperAngle))
+        {
+            moveLowerArmToPosition_DEGREES(Math.toDegrees(lowerAngle));
+            moveUpperArmToPosition_DEGREES(Math.toDegrees(upperAngle));
+            return isErrorSmallEnough(3.69);
+        }
+        return false;
 
     }
 
