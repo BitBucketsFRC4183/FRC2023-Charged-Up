@@ -65,9 +65,6 @@ public class DriveSubsystem {
     DriveFSM state = DriveFSM.UNINITIALIZED;
 
     public void robotPeriodic() {
-
-
-
         switch (state) {
             case UNINITIALIZED:
                 if (robotStateControl.isRobotAutonomous()) {
@@ -78,34 +75,30 @@ public class DriveSubsystem {
                     state = DriveFSM.TELEOP_NORMAL;
                     break;
                 }
-
                 break;
+
             case AUTO_PATHFINDING:
                 if (robotStateControl.isRobotTeleop()) {
                     state = DriveFSM.TELEOP_NORMAL;
                     break;
                 }
-
                 ChassisSpeeds targetChassisSpeeds = autoControl.getAutoChassisSpeeds(
                         path.readValue(),
                         robotStateControl.robotAutonomousTime_seconds(),
                         odometryControl.estimatePose2d()
                 );
-
                 driveControl.drive(targetChassisSpeeds);
-
                 break;
+
             case TELEOP_NORMAL:
                 if (robotStateControl.isRobotAutonomous()) {
                     state = DriveFSM.AUTO_PATHFINDING;
                     break;
                 }
-
                 if (input.isVisionGoPressed()) {
                     state = DriveFSM.TELEOP_VISION;
                     break;
                 }
-
                 if (input.isAutoBalancePressed()) {
                     state = DriveFSM.TELEOP_BALANCING; //do balancing next iteration
                     break;
@@ -114,35 +107,33 @@ public class DriveSubsystem {
                     state = DriveFSM.TELEOP_AUTOHEADING;
                     break;
                 }
-
                 teleopNormal();
                 break;
+
             case TELEOP_BALANCING:
                 if (input.isDefaultPressed()) {
                     state = DriveFSM.TELEOP_NORMAL;
                     break;
                 }
-
                 teleopBalancing();
                 break;
+
             case TELEOP_VISION:
                 if (input.isVisionGoReleased()) {
                     state = DriveFSM.TELEOP_NORMAL;
                     break;
                 }
-
                     teleopVision();
                 break;
+
             case TELEOP_AUTOHEADING:
                 if (input.isDefaultPressed()) {
                     state = DriveFSM.TELEOP_NORMAL;
                     break;
                 }
-
                 teleopAutoheading();
                 break;
         }
-
         stateLogger.log(state);
     }
 
@@ -155,10 +146,14 @@ public class DriveSubsystem {
     }
 
     void teleopNormal() {
+        if(input.isResetGyroPressed()){
+            odometryControl.zero();
+            System.out.println("Zero Gyro");
+        }
+
         double xOutput = input.getInputX() * driveControl.getMaxVelocity();
         double yOutput = -input.getInputY() * driveControl.getMaxVelocity();
         double rotationOutput = input.getInputRot() * driveControl.getMaxAngularVelocity();
-
 
         driveLog.log(new double[] {
                 xOutput,
@@ -166,25 +161,25 @@ public class DriveSubsystem {
                 rotationOutput
         });
 
-        ChassisSpeeds robotOrient = new ChassisSpeeds(xOutput, yOutput, rotationOutput);
-        driveControl.drive(robotOrient);
-
-        /*switch (orientation.readValue()) {
+        switch (orientation.readValue()) {
             case FIELD_ORIENTED:
                 if (xOutput == 0 && yOutput == 0 && rotationOutput == 0) {
                     driveControl.stopSticky();
                 } else {
-
+                    driveControl.drive(
+                            ChassisSpeeds.fromFieldRelativeSpeeds(xOutput, yOutput, rotationOutput, odometryControl.getRotation2d())
+                    );
                 }
                 break;
             case ROBOT_ORIENTED:
                 if (xOutput == 0 && yOutput == 0 && rotationOutput == 0) {
                     driveControl.stopSticky();
                 } else {
-
+                    ChassisSpeeds robotOrient = new ChassisSpeeds(xOutput, yOutput, rotationOutput);
+                    driveControl.drive(robotOrient);
                 }
                 break;
-        }*/
+        }
     }
 
     void teleopBalancing() {
@@ -203,13 +198,11 @@ public class DriveSubsystem {
     }
 
     void teleopAutoheading() {
-
         double IMU_Yaw = Math.toRadians(odometryControl.getYaw_deg());//Math.toRadians(-350);
 
         //will add logic later
         double setpoint = Math.toRadians(0);
         double error = setpoint - IMU_Yaw;
-
 
         double rotationOutputOrient = closedLoopsControl.calculateRotOutputRad(
                 IMU_Yaw,
@@ -226,10 +219,5 @@ public class DriveSubsystem {
         } else {
             driveControl.stop();
         }
-
-
     }
-
-
-
 }
