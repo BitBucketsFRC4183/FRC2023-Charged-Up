@@ -9,7 +9,6 @@ import org.bitbuckets.elevator.ElevatorSubsystemSetup;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.vision.IVisionControl;
-import org.bitbuckets.vision.VisionControl;
 import org.bitbuckets.vision.VisionControlSetup;
 
 public class RobotSetup implements ISetup<RobotContainer> {

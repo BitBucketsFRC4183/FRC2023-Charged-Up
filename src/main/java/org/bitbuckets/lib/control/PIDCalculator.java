@@ -1,7 +1,6 @@
 package org.bitbuckets.lib.control;
 
 import edu.wpi.first.math.controller.PIDController;
-import org.bitbuckets.lib.DontUseIncubating;
 import org.bitbuckets.lib.tune.IValueTuner;
 
 public class PIDCalculator implements IPIDCalculator, Runnable {

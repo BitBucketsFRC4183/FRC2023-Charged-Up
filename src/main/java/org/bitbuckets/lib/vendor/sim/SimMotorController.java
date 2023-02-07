@@ -1,7 +1,6 @@
 package org.bitbuckets.lib.vendor.sim;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import org.bitbuckets.lib.hardware.IMotorController;
 import org.bitbuckets.lib.hardware.MotorConfig;

@@ -6,7 +6,6 @@ import com.revrobotics.REVPhysicsSim;
 import com.revrobotics.SparkMaxLimitSwitch;
 import edu.wpi.first.math.system.plant.DCMotor;
 import org.bitbuckets.lib.ISetup;
-import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.lib.StartupProfiler;
 import org.bitbuckets.lib.control.PIDConfig;
 import org.bitbuckets.lib.hardware.IMotorController;
@@ -14,6 +13,7 @@ import org.bitbuckets.lib.hardware.MotorConfig;
 import org.bitbuckets.lib.log.ILoggable;
 import org.bitbuckets.lib.log.LoggingConstants;
 import org.bitbuckets.lib.tune.IValueTuner;
+import org.bitbuckets.lib.ProcessPath;
 
 import java.util.ArrayList;
 import java.util.List;

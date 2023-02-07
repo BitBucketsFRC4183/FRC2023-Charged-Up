@@ -6,8 +6,8 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import org.bitbuckets.drive.controlsds.DriveControl;
 import org.bitbuckets.lib.ISetup;
-import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.odometry.IOdometryControl;
+import org.bitbuckets.lib.ProcessPath;
 
 public class HoloControlSetup implements ISetup<HoloControl> {
 

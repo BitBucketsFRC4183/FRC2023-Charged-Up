@@ -1,7 +1,5 @@
 package org.bitbuckets.lib.startup;
 
-import org.bitbuckets.lib.DontUseIncubating;
-
 public interface IStartupDriver {
 
     int generateStartup(int processId, String name);

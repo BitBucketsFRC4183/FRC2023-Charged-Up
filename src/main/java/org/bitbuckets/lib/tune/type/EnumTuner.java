@@ -2,7 +2,6 @@ package org.bitbuckets.lib.tune.type;
 
 import edu.wpi.first.networktables.NetworkTableEvent;
 import org.bitbuckets.lib.tune.IValueTuner;
-import org.bitbuckets.lib.tune.type.AtomicRecord;
 
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;

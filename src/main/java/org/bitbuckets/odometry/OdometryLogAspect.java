@@ -1,7 +1,6 @@
 package org.bitbuckets.odometry;
 
 import com.ctre.phoenix.sensors.WPI_Pigeon2;
-import com.ctre.phoenix.sensors.WPI_PigeonIMU;
 import org.bitbuckets.lib.log.ILoggable;
 
 public class OdometryLogAspect implements Runnable {

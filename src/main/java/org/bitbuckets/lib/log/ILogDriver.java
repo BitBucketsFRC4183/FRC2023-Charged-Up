@@ -23,6 +23,7 @@ public interface ILogDriver {
     <T extends Enum<T>> ILoggable<T> generateEnumLoggable(int id, Class<T> clazz, String keyname );
     ILoggable<double[]> generateMultiLoggable(int id, String... keys);
     ILoggable<Boolean> generateBoolLoggable(int id, String key);
+    ILoggable<Double> generateDoubleLoggable(int id, String key);
 
     /**
      * Generates a translation logger with x y and vector normalized
@@ -33,7 +34,7 @@ public interface ILogDriver {
     ILoggable<Translation2d[]> generateTranslationLogger(int id, String... key);
     ILoggable<SwerveModuleState[]> generateSwerveLogger(int id, String key);
 
-    ILoggable<Pose2d> generatePoseLogger();
-    ILoggable<Pose3d> generatePose3Logger();
+    ILoggable<Pose2d> generatePoseLogger(int id, String key);
+    ILoggable<Pose3d> generatePose3Logger(int id, String key);
 
 }

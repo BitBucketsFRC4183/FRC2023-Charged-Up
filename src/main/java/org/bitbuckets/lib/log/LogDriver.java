@@ -65,6 +65,13 @@ public class LogDriver implements ILogDriver {
     }
 
     @Override
+    public ILoggable<Double> generateDoubleLoggable(int id, String key) {
+        String computed = identityDriver.fullPath(id) + key;
+
+        return a -> logger.recordOutput(computed, a);
+    }
+
+    @Override
     public ILoggable<Translation2d[]> generateTranslationLogger(int id, String... key) {
         String computed = identityDriver.fullPath(id) + key;
         String x = computed + "-x";
@@ -83,16 +90,20 @@ public class LogDriver implements ILogDriver {
     public ILoggable<SwerveModuleState[]> generateSwerveLogger(int id, String key) {
         String computed = identityDriver.fullPath(id) + key;
 
-        return a -> logger.recordOutput(key, a);
+        return a -> logger.recordOutput(computed, a);
     }
 
     @Override
-    public ILoggable<Pose2d> generatePoseLogger() {
-        return a -> ;
+    public ILoggable<Pose2d> generatePoseLogger(int id, String key) {
+        String computed = identityDriver.fullPath(id) + key;
+
+        return a -> logger.recordOutput(computed, id);
     }
 
     @Override
-    public ILoggable<Pose3d> generatePose3Logger() {
-        return null;
+    public ILoggable<Pose3d> generatePose3Logger(int id, String key) {
+        String computed = identityDriver.fullPath(id) + key;
+
+        return a -> logger.recordOutput(computed, id);
     }
 }

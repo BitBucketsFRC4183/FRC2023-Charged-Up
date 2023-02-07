@@ -16,8 +16,6 @@ import org.bitbuckets.lib.tune.IValueTuner;
 import org.bitbuckets.odometry.IOdometryControl;
 import org.bitbuckets.robot.RobotStateControl;
 import org.bitbuckets.vision.IVisionControl;
-import org.bitbuckets.vision.PhotonCalculationResult;
-import org.bitbuckets.vision.VisionControl;
 
 import java.util.Optional;
 
@@ -145,12 +143,12 @@ public class DriveSubsystem {
     }
 
     public void teleopVision() {
-        Optional<PhotonCalculationResult> res = visionControl.visionPoseEstimator();
+        Optional<Pose3d> res = visionControl.estimateTargetPose();
         if (res.isEmpty()) {
             driveControl.drive(new ChassisSpeeds(0, 0, 0));
             return;
         }
-        Pose2d target = res.get().goalPose.toPose2d();
+        Pose2d target = res.get().toPose2d();
         SmartDashboard.putString("distancevisX", target.toString());
         //Todo: determine heading
         ChassisSpeeds speeds = holoControl.calculatePose2D(target, .01, new Rotation2d());

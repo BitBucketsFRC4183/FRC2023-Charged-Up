@@ -1,9 +1,9 @@
 package org.bitbuckets.arm;
 
 import org.bitbuckets.lib.ISetup;
-import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.lib.hardware.IMotorController;
 import org.bitbuckets.lib.vendor.spark.SparkSetup;
+import org.bitbuckets.lib.ProcessPath;
 
 public class ArmControlSetup implements ISetup<ArmControl> {
 

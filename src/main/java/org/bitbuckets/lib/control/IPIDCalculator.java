@@ -1,6 +1,5 @@
 package org.bitbuckets.lib.control;
 
-import org.bitbuckets.lib.DontUseIncubating;
 import org.bitbuckets.lib.hardware.IRaw;
 
 /**

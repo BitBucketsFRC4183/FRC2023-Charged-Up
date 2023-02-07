@@ -1,5 +1,6 @@
 package org.bitbuckets.lib;
 
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -7,8 +8,6 @@ import org.bitbuckets.lib.core.IdentityDriver;
 import org.bitbuckets.lib.core.LoopDriver;
 import org.bitbuckets.lib.log.ILogDriver;
 import org.bitbuckets.lib.log.ILoggable;
-import org.bitbuckets.lib.log.type.Pose2dLoggable;
-import org.bitbuckets.lib.log.type.Pose3dLoggable;
 import org.bitbuckets.lib.startup.IStartupDriver;
 import org.bitbuckets.lib.tune.IValueTuner;
 import org.bitbuckets.lib.tune.TuneableDriver;
@@ -135,7 +134,7 @@ public class ProcessPath {
     }
 
     public ILoggable<Pose3d> generatePose3dLogger(String name) {
-        var log = new Pose3dLoggable(logDriver, currentId, name);
+        var log = logDriver.generatePose3Logger(currentId, name);
 
         log.log(new Pose3d());
 
@@ -143,7 +142,7 @@ public class ProcessPath {
     }
 
     public ILoggable<Pose2d> generatePose2dLogger(String name) {
-        var log = new Pose2dLoggable(logDriver, currentId, name);
+        var log = logDriver.generatePoseLogger(currentId, name);
 
         log.log(new Pose2d());
 
@@ -168,6 +167,10 @@ public class ProcessPath {
      */
     public ILoggable<double[]> generateDoubleLoggers(String... namesInOrder) {
         return logDriver.generateMultiLoggable(currentId, namesInOrder);
+    }
+
+    public ILoggable<Double> generateDoubleLogger(String key) {
+        return logDriver.generateDoubleLoggable(currentId, key);
     }
 
     public ILoggable<String> generateStringLogger(String key) {

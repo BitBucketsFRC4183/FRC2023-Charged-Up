@@ -1,7 +1,6 @@
 package org.bitbuckets.lib.control;
 
 import edu.wpi.first.math.controller.PIDController;
-import org.bitbuckets.lib.DontUseIncubating;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.lib.log.LoggingConstants;

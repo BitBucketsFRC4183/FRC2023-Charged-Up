@@ -1,9 +1,6 @@
 package org.bitbuckets.arm;
 
 import org.bitbuckets.lib.hardware.IMotorController;
-import org.bitbuckets.arm.InverseKinematics;
-
-import javax.management.relation.InvalidRelationIdException;
 
 
 public class ArmControl {

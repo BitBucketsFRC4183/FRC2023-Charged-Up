@@ -14,8 +14,7 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 
 import java.util.Optional;
 
-
-public class VisionControl implements Runnable , IVisionControl {
+public class VisionControl implements Runnable, IVisionControl {
 
 
     final Transform3d robotToCamera;
@@ -48,42 +47,22 @@ public class VisionControl implements Runnable , IVisionControl {
 
     }
 
+
     @Override
     public Optional<Pose3d> estimateTargetPose() {
-        return visionPoseEstimator().map(pr -> pr.goalPose);
+        return visionPoseEstimator().map(r -> r.goalPose);
     }
 
     @Override
     public Optional<Pose3d> estimateRobotPose() {
-        return visionPoseEstimator().map(pr -> pr.robotPose);
+        return visionPoseEstimator().map(r -> r.robotPose);
     }
-
-    public class PhotonCalculationResult {
-        public final Pose3d robotPose;
-        public final Pose3d goalPose;
-        public final Translation2d translationToTag;
-        public final Rotation2d targetYaw;
-        public final double yaw;
-
-        public PhotonCalculationResult(Pose3d robotPose, Pose3d goalPose, Translation2d translationToTag, Rotation2d targetYaw, double yaw) {
-            this.robotPose = robotPose;
-            this.goalPose = goalPose;
-            this.translationToTag = translationToTag;
-            this.targetYaw = targetYaw;
-            this.yaw = yaw;
-        }
-    }
-
 
     public Optional<PhotonCalculationResult> visionPoseEstimator() {
-
         PhotonPipelineResult result = photonCamera.getLatestResult();
         if (!result.hasTargets()) return Optional.empty();
 
         PhotonTrackedTarget aprilTagTarget = result.getBestTarget();
-
-        int count = result.targets.size();
-        if (count == 0) return Optional.empty();
 
         double yaw = aprilTagTarget.getYaw();
         double pitch = aprilTagTarget.getPitch();
@@ -93,15 +72,8 @@ public class VisionControl implements Runnable , IVisionControl {
         double poseX = transformToTag.getX();
         int tagID = aprilTagTarget.getFiducialId();
 
-        //Find the tag we want to chase
-        var targetOpt = result.getTargets().stream()
-                    .filter(t -> t.getFiducialId() == TAG_TO_CHASE)
-                    .filter(t -> !t.equals(aprilTagTarget) && t.getPoseAmbiguity() <= .2 && t.getPoseAmbiguity() != -1)
-                    .findFirst();
-
-        if (targetOpt.isPresent()) {
-            var target = targetOpt.get();
-
+        //Pose3d robotPose = PhotonUtils.estimateFieldToRobotAprilTag(tagPose, VisionConstants.aprilTags.get(tagID), robotToCamera);
+        Optional<EstimatedRobotPose> robotPose3d = photonPoseEstimator.update();
 
         // load the april tag pose for this tagId
         var aprilTagPose = aprilTagFieldLayout.getTagPose(tagID);
@@ -114,8 +86,7 @@ public class VisionControl implements Runnable , IVisionControl {
 
         SmartDashboard.putString("tagpose", transformToTag.toString());
         // Trasnform the camera's pose to the target's pose
-        var camToTarget = target.getBestCameraToTarget();
-                var targetPose = cameraPose.transformBy(camToTarget);
+        targetPose = cameraPose.transformBy(transformToTag);
 
         // Transform the tag's pose to set our goal
         goalPose = targetPose.transformBy(VisionConstants2.TAG_TO_GOAL);
@@ -131,9 +102,6 @@ public class VisionControl implements Runnable , IVisionControl {
                 range, Rotation2d.fromDegrees(-aprilTagTarget.getYaw())
         );
 
-//Pose3d robotPose = PhotonUtils.estimateFieldToRobotAprilTag(tagPose, VisionConstants.aprilTags.get(tagID), robotToCamera);
-
-        Optional<EstimatedRobotPose> robotPose3d = photonPoseEstimator.update();
         if (robotPose3d.isEmpty()) return Optional.empty();
         Pose3d currentEstimatedPose3d = robotPose3d.get().estimatedPose;
         Pose2d currentEstimatedPose2d = currentEstimatedPose3d.toPose2d();

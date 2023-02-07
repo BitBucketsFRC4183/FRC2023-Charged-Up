@@ -1,6 +1,5 @@
 package org.bitbuckets.drive.controlsds;
 
-import org.bitbuckets.drive.controlsds.DriveControl;
 import org.bitbuckets.drive.controlsds.sds.ISwerveModule;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
