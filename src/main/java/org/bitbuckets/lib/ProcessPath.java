@@ -3,6 +3,7 @@ package org.bitbuckets.lib;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import org.bitbuckets.lib.core.IdentityDriver;
 import org.bitbuckets.lib.core.LoopDriver;
+import org.bitbuckets.lib.log.Debugger;
 import org.bitbuckets.lib.log.ILogDriver;
 import org.bitbuckets.lib.log.ILoggable;
 import org.bitbuckets.lib.startup.IStartupDriver;
@@ -172,6 +173,10 @@ public class ProcessPath {
 
     public int exposeProcessId() {
         return currentId;
+    }
+
+    Debugger generateDebugger() {
+        return logDriver.generateDebugger(currentId);
     }
 
 }
