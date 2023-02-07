@@ -193,5 +193,8 @@ public class ProcessPath {
         return isReal;
     }
 
+    public int exposeProcessId() {
+        return currentId;
+    }
 
 }
