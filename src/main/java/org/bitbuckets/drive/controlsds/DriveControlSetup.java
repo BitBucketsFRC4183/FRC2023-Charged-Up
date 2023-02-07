@@ -28,15 +28,14 @@ public class DriveControlSetup implements ISetup<DriveControl> {
 
 
         DriveControl control = new DriveControl(
+                path.generateDebugger(),
                 frontLeft.build(path.addChild("front-left")),
                 frontRight.build(path.addChild("front-right")),
                 backLeft.build(path.addChild("back-left")),
-                backRight.build(path.addChild("back-right")),
-                path.generateStateLogger("desired-states"),
-                path.generateStateLogger("actual-states")
+                backRight.build(path.addChild("back-right"))
         );
 
-        path.registerLoop(control::guaranteedLoggingLoop, 30, "help me");
+        path.registerLoop(control::log, "logging-loop");
 
         return control;
     }
