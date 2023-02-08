@@ -3,8 +3,10 @@ package org.bitbuckets.lib;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import org.bitbuckets.lib.core.IdentityDriver;
 import org.bitbuckets.lib.core.LoopDriver;
+import org.bitbuckets.lib.log.Debuggable;
 import org.bitbuckets.lib.log.ILogDriver;
 import org.bitbuckets.lib.log.ILoggable;
+import org.bitbuckets.lib.log.LoggingConstants;
 import org.bitbuckets.lib.startup.IStartupDriver;
 import org.bitbuckets.lib.tune.IValueTuner;
 import org.bitbuckets.lib.tune.TuneableDriver;
@@ -59,6 +61,14 @@ public class ProcessPath {
      */
     public void registerLoop(Runnable executable, String friendlyName) {
         loopDriver.registerLoopPeriodic(currentId, executable, 100);
+    }
+
+    public void registerLogLoop(Runnable executable) {
+        loopDriver.registerLoopPeriodic(currentId, executable, LoggingConstants.LOGGING_PERIOD);
+    }
+
+    public void registerLogicLoop(Runnable executable) {
+        loopDriver.registerLoopPeriodic(currentId, executable, 20);
     }
 
 
@@ -172,6 +182,10 @@ public class ProcessPath {
 
     public int exposeProcessId() {
         return currentId;
+    }
+
+    public Debuggable generateDebugger() {
+        return logDriver.generateDebugger(currentId);
     }
 
 }

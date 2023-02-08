@@ -13,11 +13,11 @@ public class SplitterSetup<T> implements ISetup<T> {
     }
 
     @Override
-    public T build(ProcessPath path) {
-        if (path.isReal()) {
-            return real.build(path);
+    public T build(ProcessPath self) {
+        if (self.isReal()) {
+            return real.build(self);
         } else {
-            return simulated.build(path);
+            return simulated.build(self);
         }
     }
 }

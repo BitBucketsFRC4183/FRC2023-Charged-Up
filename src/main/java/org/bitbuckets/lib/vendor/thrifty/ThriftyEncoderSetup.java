@@ -19,15 +19,15 @@ public class ThriftyEncoderSetup implements ISetup<IAbsoluteEncoder> {
     }
 
     @Override
-    public IAbsoluteEncoder build(ProcessPath path) {
+    public IAbsoluteEncoder build(ProcessPath self) {
 
-        StartupProfiler libSetup = path.generateSetupProfiler("lib-setup");
+        StartupProfiler libSetup = self.generateSetupProfiler("lib-setup");
         AnalogInput input = new AnalogInput(channel);
         
-        ILoggable<double[]> thriftydata = path.generateDoubleLoggers("Raw-Angle-Degrees", "Angle-Degrees", "Voltage");
+        ILoggable<double[]> thriftydata = self.generateDoubleLoggers("Raw-Angle-Degrees", "Angle-Degrees", "Voltage");
         ThriftyEncoder thrifty = new ThriftyEncoder(input, thriftydata, offset_radians);
 
-        path.registerLoop(thrifty, 100, "thrifty-log-loop");
+        self.registerLoop(thrifty, 100, "thrifty-log-loop");
 
         return thrifty;
     }

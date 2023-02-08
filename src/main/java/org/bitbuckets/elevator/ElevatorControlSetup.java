@@ -36,7 +36,7 @@ public class ElevatorControlSetup implements ISetup<ElevatorControl> {
 
 
     @Override
-    public ElevatorControl build(ProcessPath path) {
+    public ElevatorControl build(ProcessPath self) {
 
 
         Mechanism2d mech = new Mechanism2d(3, 3);
@@ -54,9 +54,9 @@ public class ElevatorControlSetup implements ISetup<ElevatorControl> {
         SmartDashboard.putData("Mech2d", mech);
 
         ElevatorControl control = new ElevatorControl(
-                leftExtend.build(path.addChild("elevator-left-extension")),
+                leftExtend.build(self.addChild("elevator-left-extension")),
                 // rightExtend.build(path.addChild("elevator-right-extension")),
-                leftTilt.build(path.addChild("elevator-left-tilt")),
+                leftTilt.build(self.addChild("elevator-left-tilt")),
                 //  rightTilt.build(path.addChild("elevator-right-tilt")),
                 elevator,
                 elevatorWrist
