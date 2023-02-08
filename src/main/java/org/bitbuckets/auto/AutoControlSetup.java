@@ -18,9 +18,9 @@ import org.bitbuckets.lib.StartupProfiler;
 public class AutoControlSetup implements ISetup<AutoControl> {
 
     @Override
-    public AutoControl build(ProcessPath path) {
-        StartupProfiler load = path.generateSetupProfiler("load-auto-paths");
-        StartupProfiler gen = path.generateSetupProfiler("generate-objects");
+    public AutoControl build(ProcessPath self) {
+        StartupProfiler load = self.generateSetupProfiler("load-auto-paths");
+        StartupProfiler gen = self.generateSetupProfiler("generate-objects");
 
         load.markProcessing();
         //load paths

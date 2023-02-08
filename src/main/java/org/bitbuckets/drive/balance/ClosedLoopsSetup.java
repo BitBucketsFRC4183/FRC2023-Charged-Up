@@ -11,7 +11,7 @@ import org.bitbuckets.lib.control.ProfiledPIDFController;
  */
 public class ClosedLoopsSetup implements ISetup<ClosedLoopsControl> {
     @Override
-    public ClosedLoopsControl build(ProcessPath path) {
+    public ClosedLoopsControl build(ProcessPath self) {
 
         PIDController balanceController = new PIDController(0,0,0);
         ProfiledPIDFController rotController = new ProfiledPIDFController(0,0,0,0, null);

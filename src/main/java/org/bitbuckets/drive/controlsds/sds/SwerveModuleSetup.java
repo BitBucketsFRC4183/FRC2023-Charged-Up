@@ -14,15 +14,15 @@ public class SwerveModuleSetup implements ISetup<ISwerveModule> {
     }
 
     @Override
-    public ISwerveModule build(ProcessPath path) {
-        ILoggable<double[]> swerveAngleVoltage = path.generateDoubleLoggers("command-degrees", "command-po");
+    public ISwerveModule build(ProcessPath self) {
+        ILoggable<double[]> swerveAngleVoltage = self.generateDoubleLoggers("command-degrees", "command-po");
         SwerveModule swerveModule = new SwerveModule(
-                driveController.build(path.addChild("drive-controller")),
-                steerController.build(path.addChild("steer-controller")),
+                driveController.build(self.addChild("drive-controller")),
+                steerController.build(self.addChild("steer-controller")),
                 swerveAngleVoltage
         );
 
-        path.registerLoop(swerveModule, 20, "swerve-log-loop");
+        self.registerLoop(swerveModule, 20, "swerve-log-loop");
 
         return swerveModule;
     }

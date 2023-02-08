@@ -1,26 +1,27 @@
 package org.bitbuckets.odometry;
 
 import com.ctre.phoenix.sensors.WPI_Pigeon2;
-import com.ctre.phoenix.sensors.WPI_PigeonIMU;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.util.WPIUtilJNI;
 import org.bitbuckets.drive.IDriveControl;
+import org.bitbuckets.lib.log.Debuggable;
 import org.bitbuckets.vision.IVisionControl;
-import org.bitbuckets.vision.VisionControl;
 
 import java.util.Optional;
 
-public class OdometryControl implements IOdometryControl, Runnable {
+public class OdometryControl implements IOdometryControl {
 
+    final Debuggable debuggable;
     final IDriveControl driveControl;
     final IVisionControl visionControl;
     final WPI_Pigeon2 pigeonIMU;
     final SwerveDrivePoseEstimator swerveDrivePoseEstimator;
 
-    OdometryControl(IDriveControl driveControl, IVisionControl visionControl, WPI_Pigeon2 pigeonIMU, SwerveDrivePoseEstimator swerveDrivePoseEstimator) {
+    OdometryControl(Debuggable debuggable, IDriveControl driveControl, IVisionControl visionControl, WPI_Pigeon2 pigeonIMU, SwerveDrivePoseEstimator swerveDrivePoseEstimator) {
+        this.debuggable = debuggable;
         this.driveControl = driveControl;
         this.visionControl = visionControl;
         this.pigeonIMU = pigeonIMU;
@@ -28,8 +29,7 @@ public class OdometryControl implements IOdometryControl, Runnable {
     }
 
 
-    @Override
-    public void run() {
+    public void updateOdometryLoop() {
         Rotation2d gyroangle = Rotation2d.fromDegrees(pigeonIMU.getAbsoluteCompassHeading());
         double epoch = WPIUtilJNI.now();
         swerveDrivePoseEstimator.updateWithTime(epoch, gyroangle, driveControl.currentPositions());
@@ -42,6 +42,14 @@ public class OdometryControl implements IOdometryControl, Runnable {
             swerveDrivePoseEstimator.addVisionMeasurement(realPose, epoch);
         }
 
+    }
+
+    public void logLoop() {
+        debuggable.log("yaw", pigeonIMU.getYaw());
+        debuggable.log("pitch", pigeonIMU.getPitch());
+        debuggable.log("roll", pigeonIMU.getRoll());
+        debuggable.log("heading", pigeonIMU.getAbsoluteCompassHeading());
+        debuggable.log("rate", pigeonIMU.getRate());
     }
 
     @Override

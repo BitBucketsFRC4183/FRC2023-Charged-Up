@@ -21,15 +21,15 @@ public class CompressedSetup implements ISetup<ISwerveModule> {
     }
 
     @Override
-    public ISwerveModule build(ProcessPath path) {
+    public ISwerveModule build(ProcessPath self) {
         CompressedModule module = new CompressedModule(
-                driveSetup.build(path.addChild("drive")),
-                turnSetup.build(path.addChild("turn")),
-                encoder.build(path.addChild("absolute")),
+                driveSetup.build(self.addChild("drive")),
+                turnSetup.build(self.addChild("turn")),
+                encoder.build(self.addChild("absolute")),
                 encoderCoefficient
         );
 
-        path.registerLoop(module, "logging-loop");
+        self.registerLoop(module, "logging-loop");
 
         return module;
     }
