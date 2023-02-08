@@ -20,28 +20,29 @@ public class RobotSetup implements ISetup<RobotContainer> {
         this.robotStateControl = robotStateControl;
     }
 
+
     @Override
-    public RobotContainer build(ProcessPath path) {
+    public RobotContainer build(ProcessPath self) {
         IVisionControl visionControl = new VisionControlSetup()
-                .build( path.addChild("vision-control") );
+                .build( self.addChild("vision-control") );
 
         ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystemSetup(false)
-                .build( path.addChild("elevator-subsystem") );
+                .build( self.addChild("elevator-subsystem") );
 
         ArmSubsystem armSubsystem = new ArmSubsystemSetup(false)
-                .build(path.addChild("arm-subsystem"));
+                .build(self.addChild("arm-subsystem"));
 
         DriveSubsystem driveSubsystem = new DriveSubsystemSetup(
                 true,
                 robotStateControl,
                 visionControl
-        ).build(path.addChild("drive-subsystem"));
+        ).build(self.addChild("drive-subsystem"));
 
         /**
          * Register the crasher runnable if
          */
         if (System.getenv().containsKey("CI")) {
-            path.registerLoop(new SimulatorKillAspect(), "simulator-kill-loop");
+            self.registerLoop(new SimulatorKillAspect(), "simulator-kill-loop");
         }
 
 

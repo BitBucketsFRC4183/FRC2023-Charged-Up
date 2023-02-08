@@ -1,6 +1,10 @@
 package org.bitbuckets.lib.log;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import org.bitbuckets.lib.core.IdentityDriver;
 import org.littletonrobotics.junction.Logger;
@@ -29,9 +33,7 @@ public class LogDriver implements ILogDriver {
     public <T extends Enum<T>> ILoggable<T> generateEnumLoggable(int id, Class<T> clazz, String keyname) {
         String computed = identityDriver.fullPath(id) + keyname;
 
-        ILoggable<T> enumLog =  a -> logger.recordOutput(computed, a.name());
-
-        return enumLog;
+        return a -> logger.recordOutput(computed, a.name());
     }
 
     @Override
@@ -81,6 +83,74 @@ public class LogDriver implements ILogDriver {
     public ILoggable<SwerveModuleState[]> generateSwerveLogger(int id, String key) {
         String computed = identityDriver.fullPath(id) + key;
 
-        return a -> logger.recordOutput(key, a);
+        return a -> logger.recordOutput(computed, a);
+    }
+
+    @Override
+    public Debuggable generateDebugger(int id) {
+        String computed = identityDriver.fullPath(id);
+
+        return new Debuggable() {
+            @Override
+            public void out(String data) {
+                //TODO buffer
+                logger.recordOutput(computed + "logs", data);
+            }
+
+            @Override
+            public void log(String key, double number) {
+                logger.recordOutput(computed + key, number);
+            }
+
+            @Override
+            public void log(String key, String word) {
+                logger.recordOutput(computed + key, word);
+            }
+
+            @Override
+            public void log(String key, Enum<?> num) {
+                logger.recordOutput(computed + key, num.toString());
+            }
+
+            @Override
+            public void log(String key, boolean data) {
+                logger.recordOutput(computed + key, data);
+            }
+
+            @Override
+            public void log(String key, Pose3d pose3) {
+                logger.recordOutput(computed + key, pose3);
+            }
+
+            @Override
+            public void log(String key, Pose2d pose2) {
+                logger.recordOutput(computed + key, pose2);
+            }
+
+            @Override
+            public void log(String key, Translation3d trans3) {
+
+
+                logger.recordOutput("WARNING", "cannot log positions because i havent added them yet");
+            }
+
+            @Override
+            public void log(String key, Translation2d trans2) {
+
+                logger.recordOutput("WARNING", "cannot log translations because i havent added them yet");
+            }
+
+            @Override
+            public void log(String key, SwerveModulePosition[] positions) {
+                //Do nothing, not implemented yet
+
+                logger.recordOutput("WARNING", "cannot log positions because i havent added them yet");
+            }
+
+            @Override
+            public void log(String key, SwerveModuleState[] states) {
+                logger.recordOutput(key, states);
+            }
+        };
     }
 }

@@ -40,9 +40,9 @@ public class SparkSetup implements ISetup<IMotorController> {
     }
 
     @Override
-    public IMotorController build(ProcessPath path) {
+    public IMotorController build(ProcessPath self) {
 
-        StartupProfiler configError = path.generateSetupProfiler("config-error");
+        StartupProfiler configError = self.generateSetupProfiler("config-error");
         configError.markProcessing();
 
         //check id for duplicate usage
@@ -83,19 +83,19 @@ public class SparkSetup implements ISetup<IMotorController> {
         }
 
 
-        ILoggable<double[]> data = path.generateDoubleLoggers("appliedOutput", "busVoltage", "positionRotations", "velocityRotatations", "setpointRotations", "error");
+        ILoggable<double[]> data = self.generateDoubleLoggers("appliedOutput", "busVoltage", "positionRotations", "velocityRotatations", "setpointRotations", "error");
 
         // setup tuneable pid
         if (pidConfig.kP == 0 && pidConfig.kI == 0 && pidConfig.kD == 0) {
-            IValueTuner<Double> p = path.generateValueTuner("p", pidConfig.kP);
-            IValueTuner<Double> i = path.generateValueTuner("i", pidConfig.kI);
-            IValueTuner<Double> d = path.generateValueTuner("d", pidConfig.kD);
+            IValueTuner<Double> p = self.generateValueTuner("p", pidConfig.kP);
+            IValueTuner<Double> i = self.generateValueTuner("i", pidConfig.kI);
+            IValueTuner<Double> d = self.generateValueTuner("d", pidConfig.kD);
             var pidController = spark.getPIDController();
             SparkTuningAspect sparkTuningAspect = new SparkTuningAspect(p, i, d, pidController);
             pidController.setP(p.consumeValue());
             pidController.setI(i.consumeValue());
             pidController.setD(d.consumeValue());
-            path.registerLoop(sparkTuningAspect, LoggingConstants.TUNING_PERIOD, "tuning-loop");
+            self.registerLoop(sparkTuningAspect, LoggingConstants.TUNING_PERIOD, "tuning-loop");
         } else {
             checkNeoError(spark.getPIDController().setP(pidConfig.kP), "Failed to set NEO PID proportional constant");
             checkNeoError(spark.getPIDController().setI(pidConfig.kI), "Failed to set NEO PID integral constant");
@@ -104,16 +104,16 @@ public class SparkSetup implements ISetup<IMotorController> {
 
         SparkRelativeMotorController ctrl = new SparkRelativeMotorController(motorConfig, spark, data);
 
-        path.registerLoop(ctrl, LoggingConstants.LOGGING_PERIOD, "logging-loop");
+        self.registerLoop(ctrl, LoggingConstants.LOGGING_PERIOD, "logging-loop");
         if (forwardSwitch != null) {
-            ILoggable<Boolean> loggable = path.generateBooleanLogger("forwardSwitchPressed");
+            ILoggable<Boolean> loggable = self.generateBooleanLogger("forwardSwitchPressed");
             SparkLimitLoggingAspect loggingAspect = new SparkLimitLoggingAspect(loggable, forwardSwitch);
-            path.registerLoop(loggingAspect, LoggingConstants.LOGGING_PERIOD, "forw-log-loop");
+            self.registerLoop(loggingAspect, LoggingConstants.LOGGING_PERIOD, "forw-log-loop");
         }
         if (reverseSwitch != null) {
-            ILoggable<Boolean> loggable = path.generateBooleanLogger("reverseSwitchPressed");
+            ILoggable<Boolean> loggable = self.generateBooleanLogger("reverseSwitchPressed");
             SparkLimitLoggingAspect loggingAspect = new SparkLimitLoggingAspect(loggable, reverseSwitch);
-            path.registerLoop(loggingAspect, LoggingConstants.LOGGING_PERIOD, "revr-log-loop");
+            self.registerLoop(loggingAspect, LoggingConstants.LOGGING_PERIOD, "revr-log-loop");
         }
 
         REVPhysicsSim.getInstance().addSparkMax(spark, DCMotor.getNeo550(1));

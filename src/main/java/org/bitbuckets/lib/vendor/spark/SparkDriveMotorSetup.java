@@ -26,8 +26,8 @@ public class SparkDriveMotorSetup extends SparkSetup {
     }
 
     @Override
-    public IMotorController build(ProcessPath path) {
-        var motor = super.build(path);
+    public IMotorController build(ProcessPath self) {
+        var motor = super.build(self);
 
         // configure the raw motor with the same settings for SDS
         CANSparkMax neo = motor.rawAccess(CANSparkMax.class);

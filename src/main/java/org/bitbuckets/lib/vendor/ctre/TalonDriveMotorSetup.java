@@ -28,7 +28,7 @@ public class TalonDriveMotorSetup implements ISetup<IMotorController> {
     }
 
     @Override
-    public IMotorController build(ProcessPath path) {
+    public IMotorController build(ProcessPath self) {
 
         TalonFXConfiguration motorConfiguration = new TalonFXConfiguration();
 

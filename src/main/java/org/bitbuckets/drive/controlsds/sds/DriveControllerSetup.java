@@ -14,8 +14,8 @@ public class DriveControllerSetup implements ISetup<IDriveController> {
     }
 
     @Override
-    public IDriveController build(ProcessPath path) {
+    public IDriveController build(ProcessPath self) {
         // pass our configured motorController back to the DriveController
-        return new DriveController(this.motor.build(path.addChild("motor")), DriveConstants.nominalVoltage);
+        return new DriveController(this.motor.build(self.addChild("motor")), DriveConstants.nominalVoltage);
     }
 }

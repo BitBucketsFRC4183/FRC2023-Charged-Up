@@ -31,4 +31,6 @@ public interface ILogDriver {
     ILoggable<Translation2d[]> generateTranslationLogger(int id, String... key);
     ILoggable<SwerveModuleState[]> generateSwerveLogger(int id, String key);
 
+    Debuggable generateDebugger(int id);
+
 }

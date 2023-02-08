@@ -22,7 +22,7 @@ public class ElevatorMotorSetup implements ISetup<IMotorController> {
     }
 
     @Override
-    public IMotorController build(ProcessPath path) {
+    public IMotorController build(ProcessPath self) {
         ElevatorSim elevatorSim = new ElevatorSim(
                 DCMotor.getNeo550(1),
                 1.0 / motorConfig.mechanismCoefficient,
@@ -42,7 +42,7 @@ public class ElevatorMotorSetup implements ISetup<IMotorController> {
                 motorConfig
         );
 
-        path.registerLoop(simController, 20, "elevator-loop");
+        self.registerLoop(simController, 20, "elevator-loop");
 
 
         return simController;

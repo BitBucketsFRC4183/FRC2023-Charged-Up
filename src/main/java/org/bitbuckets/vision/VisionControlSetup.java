@@ -14,7 +14,7 @@ import java.io.IOException;
 
 public class VisionControlSetup implements ISetup<IVisionControl> {
     @Override
-    public IVisionControl build(ProcessPath path) {
+    public IVisionControl build(ProcessPath self) {
 
         AprilTagFieldLayout aprilTagFieldLayout;
         try {
@@ -27,13 +27,13 @@ public class VisionControlSetup implements ISetup<IVisionControl> {
         //TODO find the offset from robot to camera
         Transform3d robotToCamera = new Transform3d(new Translation3d(), new Rotation3d());
         PhotonCamera photonCamera = new PhotonCamera("Arducam_OV9281_USB_Camera");
-        ILoggable<double[]> loggable = path.generateDoubleLoggers("yaw", "pitch", "area","skew", "range");
+        ILoggable<double[]> loggable = self.generateDoubleLoggers("yaw", "pitch", "area","skew", "range");
         PhotonPoseEstimator photonPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PhotonPoseEstimator.PoseStrategy.CLOSEST_TO_REFERENCE_POSE, photonCamera, robotToCamera);
         ILoggable<Translation2d[]> loggable2 = null;
 
         VisionControl control = new VisionControl(robotToCamera, aprilTagFieldLayout, photonPoseEstimator, photonCamera, loggable, loggable2);
 
-        path.registerLoop(control, LoggingConstants.LOGGING_PERIOD, "vision-log");
+        self.registerLoop(control, LoggingConstants.LOGGING_PERIOD, "vision-log");
 
         return control;
     }
