@@ -21,10 +21,10 @@ public class ArmControlSetup implements ISetup<ArmControl> {
 
 
     @Override
-    public ArmControl build(ProcessPath path) {
+    public ArmControl build(ProcessPath self) {
         return new ArmControl(
-                lowerJoint.build(path.addChild("lower-joint")),
-                upperJoint.build(path.addChild("upper-joint"))
+                lowerJoint.build(self.addChild("lower-joint")),
+                upperJoint.build(self.addChild("upper-joint"))
         );
     }
 }

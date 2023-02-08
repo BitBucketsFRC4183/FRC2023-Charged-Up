@@ -2,7 +2,6 @@ package org.bitbuckets.odometry;
 
 import com.ctre.phoenix.sensors.Pigeon2;
 import com.ctre.phoenix.sensors.WPI_Pigeon2;
-import com.ctre.phoenix.sensors.WPI_PigeonIMU;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -12,10 +11,8 @@ import org.bitbuckets.drive.IDriveControl;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.lib.StartupProfiler;
+import org.bitbuckets.lib.log.Debuggable;
 import org.bitbuckets.vision.IVisionControl;
-import org.bitbuckets.lib.log.ILoggable;
-import org.bitbuckets.lib.log.LoggingConstants;
-import org.bitbuckets.vision.VisionControl;
 
 public class OdometryControlSetup implements ISetup<OdometryControl> {
 
@@ -31,8 +28,8 @@ public class OdometryControlSetup implements ISetup<OdometryControl> {
     }
 
     @Override
-    public OdometryControl build(ProcessPath addChild) {
-        StartupProfiler initializePidgeon = addChild.generateSetupProfiler("init-pidgeon");
+    public OdometryControl build(ProcessPath self) {
+        StartupProfiler initializePidgeon = self.generateSetupProfiler("init-pidgeon");
 
         SwerveDrivePoseEstimator estimator = new SwerveDrivePoseEstimator(
                 DriveConstants.KINEMATICS,
@@ -48,24 +45,21 @@ public class OdometryControlSetup implements ISetup<OdometryControl> {
 
         initializePidgeon.markProcessing();
         WPI_Pigeon2 pigeonIMU = new WPI_Pigeon2(pidgeonId);
-        initializePidgeon.markCompleted();
         pigeonIMU.configFactoryDefault();
         pigeonIMU.configMountPose(Pigeon2.AxisDirection.PositiveY, Pigeon2.AxisDirection.PositiveZ);
+        initializePidgeon.markCompleted();
 
-        OdometryControl odometryControl = new OdometryControl (control, visionControl, pigeonIMU, estimator);;
-        addChild.registerLoop(odometryControl, "odometry-loop");
-        ILoggable<double[]> loggable = addChild
-                .generateDoubleLoggers("yaw", "pitch", "roll", "last-error-code");
+        Debuggable debug = self.generateDebugger();
+        OdometryControl odometryControl = new OdometryControl (
+                debug,
+                control,
+                visionControl,
+                pigeonIMU,
+                estimator
+        );;
 
-        addChild.registerLoop(
-                new OdometryLogAspect(pigeonIMU, loggable),
-                LoggingConstants.LOGGING_PERIOD,
-                "gyro-log"
-        );
-        addChild.registerLoop(
-                odometryControl,
-                "odometry-update-loop"
-        );
+        self.registerLogLoop(odometryControl::logLoop);
+        self.registerLogicLoop(odometryControl::updateOdometryLoop);
 
         return odometryControl;
     }

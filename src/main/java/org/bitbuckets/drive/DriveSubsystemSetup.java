@@ -48,31 +48,31 @@ public class DriveSubsystemSetup implements ISetup<DriveSubsystem> {
     }
 
     @Override
-    public DriveSubsystem build(ProcessPath path) {
+    public DriveSubsystem build(ProcessPath self) {
         if (!driveEnabled) {
             return MockingUtil.buddy(DriveSubsystem.class);
         }
 
         DriveInput input = new DriveInput(new Joystick(0));
         ClosedLoopsControl closedLoopsControl = new ClosedLoopsSetup()
-                .build(path.addChild("axis-control"));
+                .build(self.addChild("axis-control"));
 
-        DriveControl driveControl = buildNeoDriveControl(path); //or use talons, when they work
+        DriveControl driveControl = buildNeoDriveControl(self); //or use talons, when they work
 
         IOdometryControl odometryControl = new OdometryControlSetup(driveControl, visionControl, 5)
-                .build(path.addChild("odo-control"));
+                .build(self.addChild("odo-control"));
         HoloControl holoControl = new HoloControlSetup(driveControl, odometryControl)
-                .build(path.addChild("holo-control"));
+                .build(self.addChild("holo-control"));
         AutoControl autoControl = new AutoControlSetup()
-                .build(path.addChild("auto-control"));
+                .build(self.addChild("auto-control"));
 
-        IValueTuner<AutoPath> pathTuneable = path
+        IValueTuner<AutoPath> pathTuneable = self
                 .generateEnumTuner("set-path", AutoPath.class, AutoPath.AUTO_TEST_PATH_ONE);
-        ILoggable<double[]> xyrotLoggers = path
+        ILoggable<double[]> xyrotLoggers = self
                 .generateDoubleLoggers("x", "y", "rot");
-        ILoggable<DriveFSM> fsmLoggable = path
+        ILoggable<DriveFSM> fsmLoggable = self
                 .generateEnumLogger("fsm-state", DriveFSM.class);
-        IValueTuner<DriveSubsystem.OrientationChooser> orientationTuner = path
+        IValueTuner<DriveSubsystem.OrientationChooser> orientationTuner = self
                 .generateEnumTuner("set-orientation", DriveSubsystem.OrientationChooser.class, DriveSubsystem.OrientationChooser.FIELD_ORIENTED);
 
         return new DriveSubsystem(

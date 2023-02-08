@@ -20,8 +20,8 @@ public class PIDCalculatorSetup implements ISetup<IPIDCalculator> {
     }
 
     @Override
-    public IPIDCalculator build(ProcessPath path) {
-        IValueTuner<double[]> pidf = path.generateMultiTuner(
+    public IPIDCalculator build(ProcessPath self) {
+        IValueTuner<double[]> pidf = self.generateMultiTuner(
                 new String[] {"p", "i", "d", "f"},
                 new double[] {pidConfig.kP, pidConfig.kI, pidConfig.kD, pidConfig.kF}
         );
@@ -39,7 +39,7 @@ public class PIDCalculatorSetup implements ISetup<IPIDCalculator> {
                 pidf
         );
 
-        path.registerLoop(pid, LoggingConstants.TUNING_PERIOD, "tuning-loop");
+        self.registerLoop(pid, LoggingConstants.TUNING_PERIOD, "tuning-loop");
 
         return pid;
     }
