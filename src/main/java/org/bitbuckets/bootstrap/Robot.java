@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.PowerDistribution;
 import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.lib.core.IdentityDriver;
 import org.bitbuckets.lib.core.LoopDriver;
+import org.bitbuckets.lib.core.NetworkPublisher;
 import org.bitbuckets.lib.log.ILogDriver;
 import org.bitbuckets.lib.log.LogDriver;
 import org.bitbuckets.lib.startup.IStartupDriver;
@@ -46,11 +47,11 @@ public class Robot extends LoggedRobot {
 
         if (isReal()) {
             logger.addDataReceiver(new WPILOGWriter("/media/sda1/")); // Log to a USB stick
-            logger.addDataReceiver(new NT4Publisher()); // Publish data to NetworkTables
+            logger.addDataReceiver(new NetworkPublisher()); // Publish data to NetworkTables
             new PowerDistribution(1, PowerDistribution.ModuleType.kRev); // Enables power distribution logging
         } else {
             logger.addDataReceiver(new WPILOGWriter("analysis/"));
-            logger.addDataReceiver(new NT4Publisher());
+            logger.addDataReceiver(new NetworkPublisher());
         }
 
         logger.start(); // Start logging! No more data receivers, replay sources, or metadata values may be added.

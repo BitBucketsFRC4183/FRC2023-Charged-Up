@@ -64,9 +64,6 @@ public class DriveControl implements IDriveControl {
 
     public void guaranteedLoggingLoop() {
         Logger.getInstance().recordOutput("a", reportSetpointStates());
-
-        //desiredStates.log(reportSetpointStates());
-        //actualStates.log(reportActualStates());
     }
 
     public SwerveModuleState[] reportSetpointStates() {
