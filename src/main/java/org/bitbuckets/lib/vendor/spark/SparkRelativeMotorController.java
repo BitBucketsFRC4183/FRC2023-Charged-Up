@@ -60,6 +60,11 @@ public class SparkRelativeMotorController implements IMotorController, Runnable 
     }
 
     @Override
+    public void moveAtVoltage(double voltage) {
+        sparkMax.setVoltage(voltage);
+    }
+
+    @Override
     public void moveAtPercent(double percent) {
         sparkMax.set(percent);
     }
