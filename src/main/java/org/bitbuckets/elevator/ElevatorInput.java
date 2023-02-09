@@ -2,6 +2,7 @@ package org.bitbuckets.elevator;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import org.bitbuckets.lib.util.MathUtil;
 
 public class ElevatorInput {
     final Joystick joystick;
@@ -33,10 +34,6 @@ public class ElevatorInput {
     }
 
 
-    public boolean getInputB() {
-        return joystick.getRawButtonPressed(XboxController.Button.kB.value);
-    }
-
     public boolean getInputA() {
         return joystick.getRawButton(XboxController.Button.kA.value);
     }
@@ -45,8 +42,12 @@ public class ElevatorInput {
         return joystick.getRawButton(XboxController.Button.kX.value);
     }
 
-    public boolean getInputY() {
-        return joystick.getRawButton(XboxController.Button.kY.value);
+    public double getLJoystickY() {
+        return MathUtil.deadband(joystick.getRawAxis(XboxController.Axis.kLeftY.value));
+    }
+
+    public double getRJoystickX() {
+        return MathUtil.deadband(joystick.getRawAxis(XboxController.Axis.kRightX.value));
     }
 
 
