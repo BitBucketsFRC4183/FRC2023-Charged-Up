@@ -17,17 +17,14 @@ public class ElevatorSubsystem {
         this.autoSubsystem = autoSubsystem;
     }
 
-    public void robotPeriodic() {
-        debug.log("we reached this NO AUTO", "HERE");
-
-        if (autoSubsystem.sampleHasEventStarted("testhehe")) {
-            debug.log("we reached this", "HERE");
-        }
-    }
-
 
     public void teleopPeriodic() {
 
+/*
+(X) Tap Face Button to switch to store position
+(Y) Tap Face Button to switch to high position
+(A) Tap face button to switch to middle position
+ */
 
         //  elevatorControl.setElevatorMech2d();
         if (elevatorInput.getInputB()) {
@@ -48,18 +45,26 @@ public class ElevatorSubsystem {
         } else if (elevatorInput.getInputDpadRight()) {
             elevatorControl.tiltForward();
 
-
-        } else if (elevatorInput.getInputA()) {
+        } else if (elevatorInput.getInputX()) {
+            // default
 
             elevatorControl.gotoPositionButton();
+        } else if (elevatorInput.getInputB()) {
+            //loading zone
 
+            elevatorControl.gotoPositionButton();
+        } else if (elevatorInput.getInputY()) {
+            //high node
 
+            elevatorControl.gotoPositionButton();
+        } else if (elevatorInput.getInputA()) {
+            // midle node
+
+            elevatorControl.gotoPositionButton();
         } else {
             elevatorControl.stopExtend();
 
         }
-
-        elevatorControl.smartDashboard();
 
 
     }
