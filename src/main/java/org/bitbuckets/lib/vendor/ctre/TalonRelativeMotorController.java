@@ -47,6 +47,11 @@ public class TalonRelativeMotorController implements IMotorController, Runnable 
     }
 
     @Override
+    public void moveAtVoltage(double voltage) {
+        motor.setVoltage(voltage);
+    }
+
+    @Override
     public void moveAtPercent(double percent) {
         motor.set(ControlMode.PercentOutput, percent);
     }
