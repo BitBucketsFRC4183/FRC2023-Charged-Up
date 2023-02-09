@@ -1,5 +1,6 @@
 package org.bitbuckets.arm;
 
+import org.bitbuckets.auto.AutoSubsystem;
 import org.bitbuckets.lib.log.ILoggable;
 
 public class ArmSubsystem {
@@ -21,13 +22,13 @@ public class ArmSubsystem {
     }
 
 
+
     //private double CONTROL_JOINT_OUTPUT = 0.1;
 
     //calculated gearRatio
     //private double gearRatio = (5 * 4 * 3) / (12. / 30.);
 
     public void teleopPeriodic() {
-
 
         if (armInput.isCalibratedPressed()) {
             armControl.calibrateLowerArm();
