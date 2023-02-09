@@ -13,6 +13,7 @@ import org.bitbuckets.lib.log.LogDriver;
 import org.bitbuckets.lib.startup.StartupDriver;
 import org.bitbuckets.lib.startup.IStartupDriver;
 import org.bitbuckets.lib.tune.TuneableDriver;
+import org.bitbuckets.robot.RobotConstants;
 import org.bitbuckets.robot.RobotContainer;
 import org.bitbuckets.robot.RobotSetup;
 import org.bitbuckets.robot.RobotStateControl;
@@ -46,11 +47,11 @@ public class Robot extends LoggedRobot {
 
         if (isReal()) {
             logger.addDataReceiver(new WPILOGWriter("/media/sda1/")); // Log to a USB stick
-            logger.addDataReceiver(new NetworkPublisher()); // Publish data to NetworkTables
+            logger.addDataReceiver(new NetworkPublisher(RobotConstants.LOGGING_ENABLED)); // Publish data to NetworkTables
             new PowerDistribution(1, PowerDistribution.ModuleType.kRev); // Enables power distribution logging
         } else {
             logger.addDataReceiver(new WPILOGWriter("analysis/"));
-            logger.addDataReceiver(new NetworkPublisher());
+            logger.addDataReceiver(new NetworkPublisher(true)); //always log during sim
         }
 
         logger.start(); // Start logging! No more data receivers, replay sources, or metadata values may be added.
@@ -82,6 +83,17 @@ public class Robot extends LoggedRobot {
 
     //periodics
 
+
+    @Override
+    public void autonomousInit() {
+        super.autonomousInit();
+    }
+
+    @Override
+    public void teleopInit() {
+        super.teleopInit();
+    }
+
     @Override
     public void robotPeriodic() {
         loopDriver.runPeriodic();
@@ -93,10 +105,6 @@ public class Robot extends LoggedRobot {
         robotHandle.teleopPeriodic();
     }
 
-    @Override
-    public void autonomousPeriodic() {
-        robotHandle.autoPeriodic();
-    }
 
     @Override
     public void simulationPeriodic() {
