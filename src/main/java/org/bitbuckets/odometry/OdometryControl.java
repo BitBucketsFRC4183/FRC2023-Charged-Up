@@ -30,7 +30,17 @@ public class OdometryControl implements IOdometryControl {
         Rotation2d gyroangle = Rotation2d.fromDegrees(pigeonIMU.getYaw());
         double epoch = WPIUtilJNI.now();
         swerveDrivePoseEstimator.updateWithTime(epoch, gyroangle, driveControl.currentPositions());
-
+        //Todo: re add when vision is fixed
+//        Optional<Pose3d> res = visionControl.estimateRobotPose();
+//
+//        if (res.isPresent()) {
+//            Pose2d realPose = res.get().toPose2d();
+//
+//            swerveDrivePoseEstimator.addVisionMeasurement(realPose, epoch);
+//
+//        } else {
+//
+//        }
 
     }
 
