@@ -18,7 +18,6 @@ import org.bitbuckets.vision.IVisionControl;
 public class OdometryControlSetup implements ISetup<OdometryControl> {
 
 
-    final int id;
     final IDriveControl control;
     final IVisionControl visionControl;
     final int pidgeonId;
@@ -26,6 +25,7 @@ public class OdometryControlSetup implements ISetup<OdometryControl> {
     public OdometryControlSetup(IDriveControl control, IVisionControl visionControl, int pidgeonId1) {
         this.control = control;
         this.visionControl = visionControl;
+        this.pidgeonId = pidgeonId1;
     }
 
     @Override

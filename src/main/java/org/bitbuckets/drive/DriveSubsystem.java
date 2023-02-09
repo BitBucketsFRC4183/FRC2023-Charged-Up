@@ -65,8 +65,6 @@ public class DriveSubsystem {
 
     DriveFSM state = DriveFSM.UNINITIALIZED;
 
-    public void robotPeriodic() {
-
     public void runLoop() {
         switch (state) {
             case UNINITIALIZED:
@@ -143,52 +141,45 @@ public class DriveSubsystem {
     void teleopVision() {
         Optional<Pose3d> res = visionControl.estimateTargetPose();
         if (res.isEmpty()) return;
-        ChassisSpeeds speeds = holoControl.calculatePose2D(res.get().toPose2d(), 3);
+        ChassisSpeeds speeds = holoControl.calculatePose2D(res.get().toPose2d(), 3, res.get().toPose2d().getRotation());
 
         driveControl.drive(speeds);
     }
 
     void teleopNormal() {
-        if(input.isResetGyroPressed()){
-            odometryControl.zero();
-        }
+            if (input.isResetGyroPressed()) {
+                odometryControl.zero();
+            }
 
-        double xOutput = input.getInputX() * driveControl.getMaxVelocity();
-        double yOutput = -input.getInputY() * driveControl.getMaxVelocity();
-        double rotationOutput = input.getInputRot() * driveControl.getMaxAngularVelocity();
+            double xOutput = input.getInputX() * driveControl.getMaxVelocity();
+            double yOutput = -input.getInputY() * driveControl.getMaxVelocity();
+            double rotationOutput = input.getInputRot() * driveControl.getMaxAngularVelocity();
 
-        debuggable.log("x-output", xOutput);
-        debuggable.log("y-output", yOutput);
-        debuggable.log("rot-output", rotationOutput);
+            debuggable.log("x-output", xOutput);
+            debuggable.log("y-output", yOutput);
+            debuggable.log("rot-output", rotationOutput);
 
-        driveLog.log(new double[]{
-                xOutput,
-                yOutput,
-                rotationOutput
-        });
+            switch (orientation.readValue()) {
+                case FIELD_ORIENTED:
+                    if (xOutput == 0 && yOutput == 0 && rotationOutput == 0) {
+                        driveControl.stopSticky();
+                    } else {
+                        driveControl.drive(
+                                ChassisSpeeds.fromFieldRelativeSpeeds(xOutput, yOutput, rotationOutput, odometryControl.getRotation2d())
+                        );
+                    }
+                    break;
+                case ROBOT_ORIENTED:
+                    if (xOutput == 0 && yOutput == 0 && rotationOutput == 0) {
+                        driveControl.stopSticky();
+                    } else {
+                        ChassisSpeeds robotOrient = new ChassisSpeeds(xOutput, yOutput, rotationOutput);
+                        driveControl.drive(robotOrient);
+                    }
+                    break;
+            }
 
-        ChassisSpeeds robotOrient = new ChassisSpeeds(xOutput, yOutput, rotationOutput);
-        driveControl.drive(robotOrient);
 
-        /*switch (orientation.readValue()) {
-            case FIELD_ORIENTED:
-                if (xOutput == 0 && yOutput == 0 && rotationOutput == 0) {
-                    driveControl.stopSticky();
-                } else {
-                    driveControl.drive(
-                            ChassisSpeeds.fromFieldRelativeSpeeds(xOutput, yOutput, rotationOutput, odometryControl.getRotation2d())
-                    );
-                }
-                break;
-            case ROBOT_ORIENTED:
-                if (xOutput == 0 && yOutput == 0 && rotationOutput == 0) {
-                    driveControl.stopSticky();
-                } else {
-                    ChassisSpeeds robotOrient = new ChassisSpeeds(xOutput, yOutput, rotationOutput);
-                    driveControl.drive(robotOrient);
-                }
-                break;
-        }
     }
 
     void teleopBalancing() {
@@ -228,9 +219,4 @@ public class DriveSubsystem {
             driveControl.stop();
         }
     }
-<<<<<<< HEAD
-
-
-=======
->>>>>>> main
 }

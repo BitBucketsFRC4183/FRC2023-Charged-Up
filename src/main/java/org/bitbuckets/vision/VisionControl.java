@@ -4,6 +4,7 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import org.bitbuckets.lib.log.Debuggable;
 import org.bitbuckets.lib.log.ILoggable;
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
@@ -21,29 +22,19 @@ public class VisionControl implements Runnable, IVisionControl {
     final PhotonCamera photonCamera;
     final AprilTagFieldLayout aprilTagFieldLayout;
     final PhotonPoseEstimator photonPoseEstimator;
+    final Debuggable debuggable;
 
-    final ILoggable<double[]> loggable;
-    final ILoggable<Translation2d[]> loggable2;
-
-    final ILoggable<Pose3d> targetLog;
-    private Pose3d targetPose;
-    private Pose3d goalPose;
-
-    VisionControl(Transform3d robotToCamera, AprilTagFieldLayout aprilTagFieldLayout, PhotonPoseEstimator photonPoseEstimator, PhotonCamera photonCamera, ILoggable<double[]> loggable, ILoggable<Translation2d[]> loggable2, ILoggable<Pose3d> targetLog) {
+    VisionControl(Transform3d robotToCamera, AprilTagFieldLayout aprilTagFieldLayout, PhotonPoseEstimator photonPoseEstimator, PhotonCamera photonCamera, Debuggable debuggable) {
         this.robotToCamera = robotToCamera;
         this.aprilTagFieldLayout = aprilTagFieldLayout;
         this.photonPoseEstimator = photonPoseEstimator;
         this.photonCamera = photonCamera;
-        this.loggable = loggable;
-        this.loggable2 = loggable2;
-        this.targetLog = targetLog;
+        this.debuggable = debuggable;
     }
 
     @Override
     public void run() {
-        if (targetPose != null) {
-            targetLog.log(goalPose);
-        }
+
 
     }
 
@@ -86,10 +77,10 @@ public class VisionControl implements Runnable, IVisionControl {
 
         SmartDashboard.putString("tagpose", transformToTag.toString());
         // Trasnform the camera's pose to the target's pose
-        targetPose = cameraPose.transformBy(transformToTag);
+        Pose3d targetPose = cameraPose.transformBy(transformToTag);
 
         // Transform the tag's pose to set our goal
-        goalPose = targetPose.transformBy(VisionConstants2.TAG_TO_GOAL);
+        Pose3d goalPose = targetPose.transformBy(VisionConstants2.TAG_TO_GOAL);
         // This is new target data, so recalculate the goal
         double range = PhotonUtils.calculateDistanceToTargetMeters(
                 VisionConstants2.CAMERA_HEIGHT,
