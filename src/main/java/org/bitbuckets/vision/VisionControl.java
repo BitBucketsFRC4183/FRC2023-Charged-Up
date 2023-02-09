@@ -27,7 +27,7 @@ public class VisionControl implements Runnable, IVisionControl {
     final ILoggable<double[]> loggable;
     final ILoggable<Translation2d[]> loggable2;
 
-    VisionControl(Transform3d robotToCamera, AprilTagFieldLayout aprilTagFieldLayout, PhotonPoseEstimator photonPoseEstimator, PhotonCamera photonCamera, ILoggable<double[]> loggable, ILoggable<Translation2d[]> loggable2) {
+    public VisionControl(Transform3d robotToCamera, AprilTagFieldLayout aprilTagFieldLayout, PhotonPoseEstimator photonPoseEstimator, PhotonCamera photonCamera, ILoggable<double[]> loggable, ILoggable<Translation2d[]> loggable2) {
         this.robotToCamera = robotToCamera;
         this.aprilTagFieldLayout = aprilTagFieldLayout;
         this.photonPoseEstimator = photonPoseEstimator;
@@ -38,7 +38,7 @@ public class VisionControl implements Runnable, IVisionControl {
 
     @Override
     public void run() {
-       //TODO log
+        //TODO log
     }
 
     @Override
@@ -96,7 +96,7 @@ public class VisionControl implements Runnable, IVisionControl {
             if (targetOpt.isPresent()) {
                 var target = targetOpt.get();
 
-                Pose3d robotPose = PhotonUtils.estimateFieldToRobotAprilTag(tagPose, VisionConstants.aprilTags.get(  tagID), robotToCamera);
+                Pose3d robotPose = PhotonUtils.estimateFieldToRobotAprilTag(tagPose, VisionConstants.aprilTags.get(tagID), robotToCamera);
 
                 // Transform the robot's pose to find the camera's pose
                 var cameraPose = robotPose.transformBy(robotToCamera);
@@ -122,7 +122,6 @@ public class VisionControl implements Runnable, IVisionControl {
                 Translation2d translationToTag = PhotonUtils.estimateCameraToTargetTranslation(
                         range, Rotation2d.fromDegrees(-aprilTagTarget.getYaw())
                 );
-
 
 
                 //Pose3d robotPose = PhotonUtils.estimateFieldToRobotAprilTag(tagPose, VisionConstants.aprilTags.get(tagID), robotToCamera);

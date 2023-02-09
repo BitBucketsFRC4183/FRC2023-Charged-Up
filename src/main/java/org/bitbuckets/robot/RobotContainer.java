@@ -10,6 +10,7 @@ import org.bitbuckets.elevator.ElevatorSubsystem;
  */
 public class RobotContainer {
 
+
     final DriveSubsystem driveSubsystem;
     final ArmSubsystem armSubsystem;
     final ElevatorSubsystem elevatorSubsystem;
@@ -26,6 +27,7 @@ public class RobotContainer {
     public void robotPeriodic() {
         autoSubsystem.runLoop();
         driveSubsystem.runLoop();
+        elevatorSubsystem.robotPeriodic();
     }
 
     //Shouldn't need to do anything here
@@ -33,8 +35,6 @@ public class RobotContainer {
         elevatorSubsystem.teleopPeriodic();
         armSubsystem.teleopPeriodic();
     }
-
-
 
 
 }
