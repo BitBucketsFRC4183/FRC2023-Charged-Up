@@ -45,6 +45,8 @@ public class ArmSubsystem {
         switch (state) {
             case MANUAL:
                 logState = "MANUAL";
+                armControl.manuallyMoveLowerArm(armInput.getLowerArm_PercentOutput());
+                armControl.manuallyMoveUpperArm(armInput.getUpperArm_PercentOutput());
                 if (armInput.isStoragePressed()) {
                     state = ArmFSM.STORAGE;
                 } else if (armInput.isHumanIntakePressed()) {
