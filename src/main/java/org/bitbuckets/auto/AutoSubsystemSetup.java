@@ -1,15 +1,7 @@
 package org.bitbuckets.auto;
 
-import com.pathplanner.lib.PathConstraints;
-import com.pathplanner.lib.PathPlanner;
-import com.pathplanner.lib.PathPlannerTrajectory;
-import edu.wpi.first.math.controller.HolonomicDriveController;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
-import org.bitbuckets.lib.StartupProfiler;
 import org.bitbuckets.lib.log.Debuggable;
 import org.bitbuckets.lib.tune.IValueTuner;
 import org.bitbuckets.lib.util.MockingUtil;
@@ -30,8 +22,8 @@ public class AutoSubsystemSetup implements ISetup<AutoSubsystem> {
     public AutoSubsystem build(ProcessPath self) {
         if (!enabled) return MockingUtil.buddy(AutoSubsystem.class);
 
-        IAutoControl autoControl = new AutoControlSetup().build( self.addChild("auto-control") );
-        IValueTuner<AutoPath> pathTuner = self.generateEnumTuner("path", AutoPath.class, AutoPath.AUTO_TEST_PATH_ONE);
+        IAutoControl autoControl = new AutoControlSetup().build(self.addChild("auto-control"));
+        IValueTuner<AutoPath> pathTuner = self.generateEnumTuner("path", AutoPath.class, AutoPath.NONE);
         Debuggable debuggable = self.generateDebugger();
         AutoSubsystem subsystem = new AutoSubsystem(pathTuner, autoControl, debuggable);
 
