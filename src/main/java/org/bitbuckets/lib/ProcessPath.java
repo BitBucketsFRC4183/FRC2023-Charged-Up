@@ -142,22 +142,6 @@ public class ProcessPath {
         return logDriver.generateEnumLoggable(currentId, clazz, key);
     }
 
-    public ILoggable<Pose3d> generatePose3dLogger(String name) {
-        var log = new Pose3dLoggable(logDriver, currentId, name);
-
-        log.log(new Pose3d());
-
-        return log;
-    }
-
-    public ILoggable<Pose2d> generatePose2dLogger(String name) {
-        var log = new Pose2dLoggable(logDriver, currentId, name);
-
-        log.log(new Pose2d());
-
-        return log;
-    }
-
     /**
      * Generates a loggable that logs bools. You will have to call log on it to send data
      *

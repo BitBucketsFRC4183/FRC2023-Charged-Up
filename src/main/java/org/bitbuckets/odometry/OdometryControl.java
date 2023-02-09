@@ -7,8 +7,6 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.util.WPIUtilJNI;
 import org.bitbuckets.drive.IDriveControl;
-import org.bitbuckets.lib.log.ILoggable;
-import org.bitbuckets.vision.PhotonCalculationResult;
 import org.bitbuckets.vision.VisionControl;
 import org.bitbuckets.lib.log.Debuggable;
 import org.bitbuckets.vision.IVisionControl;
@@ -22,7 +20,6 @@ public class OdometryControl implements IOdometryControl {
     final IVisionControl visionControl;
     final WPI_Pigeon2 pigeonIMU;
     final SwerveDrivePoseEstimator swerveDrivePoseEstimator;
-    final VisionControl visionControl;
 
     OdometryControl(Debuggable debuggable, IDriveControl driveControl, IVisionControl visionControl, WPI_Pigeon2 pigeonIMU, SwerveDrivePoseEstimator swerveDrivePoseEstimator) {
         this.debuggable = debuggable;
@@ -30,9 +27,6 @@ public class OdometryControl implements IOdometryControl {
         this.pigeonIMU = pigeonIMU;
         this.swerveDrivePoseEstimator = swerveDrivePoseEstimator;
         this.visionControl = visionControl;
-        this.robotPoseLog = robotPoseLog;
-        this.gyroAngleLog = gyroAngleLog;
-        this.estimatedPose2dLog = estimatedPose2dLog;
     }
 
 
@@ -47,13 +41,10 @@ public class OdometryControl implements IOdometryControl {
             Pose2d realPose = res.get().toPose2d();
 
             swerveDrivePoseEstimator.addVisionMeasurement(realPose, epoch);
-            robotPoseLog.log(res.get().robotPose);
-        } else {
-            robotPoseLog.log(new Pose3d());
-        }
 
-        gyroAngleLog.log(gyroangle.getDegrees());
-        estimatedPose2dLog.log(swerveDrivePoseEstimator.getEstimatedPosition());
+        } else {
+
+        }
 
     }
 

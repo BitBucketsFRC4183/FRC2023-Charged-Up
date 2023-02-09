@@ -44,7 +44,7 @@ public class RobotSetup implements ISetup<RobotContainer> {
                 false,
                 autoSubsystem,
                 visionControl
-        ).build(self.addChild("drive-subsystem"))
+        ).build(self.addChild("drive-subsystem"));
 
         /**
          * Register the crasher runnable if

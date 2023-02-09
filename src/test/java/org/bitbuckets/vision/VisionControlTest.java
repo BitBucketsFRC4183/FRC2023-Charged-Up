@@ -2,6 +2,7 @@ package org.bitbuckets.vision;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.geometry.*;
+import org.bitbuckets.lib.log.Debuggable;
 import org.bitbuckets.lib.log.ILoggable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -47,10 +48,7 @@ class VisionControlTest {
                 aprilTagFieldLayout,
                 photonPoseEstimator,
                 photonCamera,
-                mock(ILoggable.class),
-                mock(ILoggable.class),
-                mock(ILoggable.class)
-        );
+                mock(Debuggable.class));
     }
 
     @Test
