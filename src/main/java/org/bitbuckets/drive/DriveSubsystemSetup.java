@@ -63,8 +63,6 @@ public class DriveSubsystemSetup implements ISetup<DriveSubsystem> {
         HoloControl holoControl = new HoloControlSetup(driveControl, odometryControl)
                 .build(self.addChild("holo-control"));
 
-        IValueTuner<AutoPath> pathTuneable = self
-                .generateEnumTuner("set-path", AutoPath.class, AutoPath.AUTO_TEST_PATH_ONE);
         IValueTuner<DriveSubsystem.OrientationChooser> orientationTuner = self
                 .generateEnumTuner("set-orientation", DriveSubsystem.OrientationChooser.class, DriveSubsystem.OrientationChooser.FIELD_ORIENTED);
         Debuggable debuggable = self.generateDebugger();
