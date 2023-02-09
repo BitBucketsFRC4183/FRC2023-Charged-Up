@@ -1,37 +1,34 @@
 package org.bitbuckets.auto;
 
 import com.pathplanner.lib.PathPlannerTrajectory;
-import edu.wpi.first.math.controller.HolonomicDriveController;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.wpilibj.Timer;
-import org.bitbuckets.arm.ArmControl;
+import edu.wpi.first.wpilibj.DriverStation;
 
-public class AutoControl {
+import java.util.HashMap;
+import java.util.Map;
 
+public class AutoControl implements IAutoControl {
 
-    //PathPlannerTrajectory is an array so it can call from the different paths in the enum
-    private final PathPlannerTrajectory[] trajectory;
-    private final HolonomicDriveController controller;
+    final PathPlannerTrajectory[] trajectories;
 
-    //creates paths and Holonomic Controller (used in PathPlanner and to get the code to run the path)
-    public AutoControl(PathPlannerTrajectory[] trajectory, HolonomicDriveController controller) {
-        this.trajectory = trajectory;
-        this.controller = controller;
+    public AutoControl(PathPlannerTrajectory[] trajectories) {
+        this.trajectories = trajectories;
     }
 
-    public ChassisSpeeds getAutoChassisSpeeds(AutoPath path, double time, Pose2d pose) {
+    @Override
+    public AutoPathInstance generateAndStartPath(AutoPath whichOne) {
+        var tj = trajectories[whichOne.index];
+        double trajectoryTime = tj.getTotalTimeSeconds();
+        Map<String, Double> eventMap = new HashMap<>();
 
-        var desiredState = (PathPlannerTrajectory.PathPlannerState) trajectory[path.index].sample(time);
+        for (PathPlannerTrajectory.EventMarker marker : tj.getMarkers()) {
+            //TODO all event markers need to have unique names. If they don't this code here will break.
+            for (String name : marker.names) {
+                eventMap.put(name, marker.timeSeconds);
+            }
+        }
 
-        return controller.calculate(pose, desiredState, desiredState.holonomicRotation);
+        AutoPathInstance instance = new AutoPathInstance(tj, eventMap, trajectoryTime, whichOne);
+        instance.start();
+        return instance;
     }
-
-    public double getTrajectoryTime(AutoPath path) {
-        return trajectory[path.index].getTotalTimeSeconds();
-
-    }
-
-
 }

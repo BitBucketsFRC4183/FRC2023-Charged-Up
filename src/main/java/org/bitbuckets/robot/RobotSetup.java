@@ -2,6 +2,8 @@ package org.bitbuckets.robot;
 
 import org.bitbuckets.arm.ArmSubsystem;
 import org.bitbuckets.arm.ArmSubsystemSetup;
+import org.bitbuckets.auto.AutoSubsystem;
+import org.bitbuckets.auto.AutoSubsystemSetup;
 import org.bitbuckets.drive.DriveSubsystem;
 import org.bitbuckets.drive.DriveSubsystemSetup;
 import org.bitbuckets.elevator.ElevatorSubsystem;
@@ -9,7 +11,6 @@ import org.bitbuckets.elevator.ElevatorSubsystemSetup;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.vision.IVisionControl;
-import org.bitbuckets.vision.VisionControl;
 import org.bitbuckets.vision.VisionControlSetup;
 
 public class RobotSetup implements ISetup<RobotContainer> {
@@ -23,7 +24,11 @@ public class RobotSetup implements ISetup<RobotContainer> {
 
     @Override
     public RobotContainer build(ProcessPath self) {
-        IVisionControl visionControl = new VisionControlSetup(false)
+
+        AutoSubsystem autoSubsystem = new AutoSubsystemSetup(true)
+                .build( self.addChild("auto-subsystem") );
+
+        IVisionControl visionControl = new VisionControlSetup()
                 .build( self.addChild("vision-control") );
 
         ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystemSetup(false)
@@ -33,8 +38,8 @@ public class RobotSetup implements ISetup<RobotContainer> {
                 .build(self.addChild("arm-subsystem"));
 
         DriveSubsystem driveSubsystem = new DriveSubsystemSetup(
-                true,
-                robotStateControl,
+                false,
+                autoSubsystem,
                 visionControl
         ).build(self.addChild("drive-subsystem"));
 
@@ -46,7 +51,7 @@ public class RobotSetup implements ISetup<RobotContainer> {
         }
 
 
-        return new RobotContainer(driveSubsystem, armSubsystem, elevatorSubsystem);
+        return new RobotContainer(driveSubsystem, armSubsystem, elevatorSubsystem, autoSubsystem);
     }
 
 

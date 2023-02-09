@@ -15,7 +15,10 @@ public class NetworkPublisher implements LogDataReceiver {
     private final IntegerPublisher timestampPublisher;
     private final Map<String, GenericPublisher> publishers = new HashMap<>();
 
-    public NetworkPublisher() {
+    public final boolean enabled;
+
+    public NetworkPublisher(boolean enabled) {
+        this.enabled = enabled;
         akitTable = NetworkTableInstance.getDefault().getTable("/");
         timestampPublisher = akitTable.getIntegerTopic(timestampKey.substring(1)).publish(PubSubOption.sendAll(true));
     }
@@ -24,6 +27,8 @@ public class NetworkPublisher implements LogDataReceiver {
 
     //PutTable but it doesn't do dumb stuff
     public void putTable(LogTable table) {
+
+        if (!enabled) return;
 
         counter++;
 
