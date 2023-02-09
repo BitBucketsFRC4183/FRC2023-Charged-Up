@@ -57,6 +57,11 @@ public class DCSimController implements IMotorController, Runnable{
     }
 
     @Override
+    public void moveAtVoltage(double voltage) {
+        simulatedMotor.setInputVoltage(voltage);
+    }
+
+    @Override
     public void moveAtPercent(double percent) {
         simulatedMotor.setInputVoltage(percent * 12.0); //voltage time\
     }
