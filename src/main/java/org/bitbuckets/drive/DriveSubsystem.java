@@ -170,7 +170,7 @@ public class DriveSubsystem {
         ChassisSpeeds robotOrient = new ChassisSpeeds(xOutput, yOutput, rotationOutput);
         driveControl.drive(robotOrient);
 
-        /*switch (orientation.readValue()) {
+        switch (orientation.readValue()) {
             case FIELD_ORIENTED:
                 if (xOutput == 0 && yOutput == 0 && rotationOutput == 0) {
                     driveControl.stopSticky();
@@ -228,9 +228,5 @@ public class DriveSubsystem {
             driveControl.stop();
         }
     }
-<<<<<<< HEAD
 
-
-=======
->>>>>>> main
 }
