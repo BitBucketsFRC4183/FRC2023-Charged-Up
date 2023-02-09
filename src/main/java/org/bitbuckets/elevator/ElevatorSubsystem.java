@@ -28,6 +28,15 @@ public class ElevatorSubsystem {
     }
 
 
+    public void robotPeriodic() {
+        if (autoSubsystem.sampleHasEventStarted("testhehe")) {
+            //random for testing
+            debug.log("elevator with Auto", " we got here");
+            elevatorControl.goToPosition(middlePosExtend, middlePosTilt);
+        }
+
+    }
+
     public void teleopPeriodic() {
         elevatorControl.extendUp(elevatorInput.getLJoystickY());
         elevatorControl.extendUp(elevatorInput.getRJoystickX());

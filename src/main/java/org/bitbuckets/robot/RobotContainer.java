@@ -28,7 +28,7 @@ public class RobotContainer {
     public void robotPeriodic() {
         autoSubsystem.runLoop();
         driveSubsystem.runLoop();
-//        elevatorSubsystem.robotPeriodic();
+        elevatorSubsystem.robotPeriodic();
     }
 
 
