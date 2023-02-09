@@ -4,7 +4,6 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
-import org.bitbuckets.robot.XboxConstants;
 
 public class DriveInput {
 
@@ -52,21 +51,21 @@ public class DriveInput {
      * @units unknown
      */
     public double getInputRot() {
-        return driveDeadband(joystick.getRawAxis(XboxConstants.RIGHT_STICK_X));
+        return driveDeadband(joystick.getRawAxis(XboxController.Axis.kRightX.value));
     }
 
     /**
      * @return whether the slow drive (left trigger) is held down
      */
     public boolean isSlowDrivePressed() {
-        return joystick.getRawAxis(XboxConstants.LEFT_TRIGGER) > 0.1;
+        return joystick.getRawAxis(XboxController.Axis.kLeftTrigger.value) > 0.1;
     }
 
     /**
      * @return whether the aim drive is held or not
      */
     public boolean isAutoHeadingPressed() {
-        return joystick.getRawButtonPressed(XboxConstants.CROSS);
+        return joystick.getRawButtonPressed(XboxController.Button.kA.value);
     }
 
     public boolean isUserInputZeroed() {
@@ -74,19 +73,19 @@ public class DriveInput {
     }
 
     public boolean isDefaultPressed() {
-        return joystick.getRawButtonPressed(XboxConstants.SQUARE);
+        return joystick.getRawButtonPressed(XboxController.Button.kX.value);
     }
 
     public boolean isVisionGoPressed() {
-        return joystick.getRawButton(XboxConstants.TRIANGLE);
+        return joystick.getRawButton(XboxController.Button.kY.value);
     }
 
     public boolean isAutoBalancePressed() {
-        return joystick.getRawButtonPressed(XboxConstants.CIRCLE);
+        return joystick.getRawButtonPressed(XboxController.Button.kB.value);
     }
 
-    public boolean isResetGyroPressed(){
-        return joystick.getRawButtonPressed(XboxConstants.OPTIONS);
+    public boolean isResetGyroPressed() {
+        return joystick.getRawButtonPressed(XboxController.Button.kStart.value);
     }
 
 }
