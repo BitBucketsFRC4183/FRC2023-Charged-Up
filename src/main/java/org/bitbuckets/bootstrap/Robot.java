@@ -19,6 +19,7 @@ import org.bitbuckets.robot.RobotSetup;
 import org.bitbuckets.robot.RobotStateControl;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
 /**

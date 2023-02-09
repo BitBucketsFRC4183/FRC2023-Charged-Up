@@ -3,6 +3,8 @@ package org.bitbuckets.vision;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import org.bitbuckets.lib.log.Debuggable;
 import org.bitbuckets.lib.log.ILoggable;
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
@@ -13,9 +15,6 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 
 import java.util.Optional;
 
-import static org.bitbuckets.vision.VisionConstants2.TAG_TO_CHASE;
-
-
 public class VisionControl implements Runnable, IVisionControl {
 
 
@@ -23,140 +22,87 @@ public class VisionControl implements Runnable, IVisionControl {
     final PhotonCamera photonCamera;
     final AprilTagFieldLayout aprilTagFieldLayout;
     final PhotonPoseEstimator photonPoseEstimator;
-
-    final ILoggable<double[]> loggable;
-    final ILoggable<Translation2d[]> loggable2;
+    final Debuggable debuggable;
 
      public VisionControl(Transform3d robotToCamera, AprilTagFieldLayout aprilTagFieldLayout, PhotonPoseEstimator photonPoseEstimator, PhotonCamera photonCamera, ILoggable<double[]> loggable, ILoggable<Translation2d[]> loggable2) {
         this.robotToCamera = robotToCamera;
         this.aprilTagFieldLayout = aprilTagFieldLayout;
         this.photonPoseEstimator = photonPoseEstimator;
         this.photonCamera = photonCamera;
-        this.loggable = loggable;
-        this.loggable2 = loggable2;
+        this.debuggable = debuggable;
     }
 
     @Override
     public void run() {
-       //TODO log
+
+
     }
+
 
     @Override
     public Optional<Pose3d> estimateTargetPose() {
-        return visionPoseEstimator().map(pr -> pr.goalPose);
+        return visionPoseEstimator().map(r -> r.goalPose);
     }
 
     @Override
     public Optional<Pose3d> estimateRobotPose() {
-        return visionPoseEstimator().map(pr -> pr.robotPose);
+        return visionPoseEstimator().map(r -> r.robotPose);
     }
-
-    public class PhotonCalculationResult {
-        public final Pose3d robotPose;
-        public final Pose3d goalPose;
-        public final Translation2d translationToTag;
-        public final Rotation2d targetYaw;
-        public final double yaw;
-
-        public PhotonCalculationResult(Pose3d robotPose, Pose3d goalPose, Translation2d translationToTag, Rotation2d targetYaw, double yaw) {
-            this.robotPose = robotPose;
-            this.goalPose = goalPose;
-            this.translationToTag = translationToTag;
-            this.targetYaw = targetYaw;
-            this.yaw = yaw;
-        }
-    }
-
 
     public Optional<PhotonCalculationResult> visionPoseEstimator() {
-
         PhotonPipelineResult result = photonCamera.getLatestResult();
         if (!result.hasTargets()) return Optional.empty();
 
         PhotonTrackedTarget aprilTagTarget = result.getBestTarget();
 
-        int count = result.targets.size();
-        if (count == 0) return Optional.empty();
-
         double yaw = aprilTagTarget.getYaw();
         double pitch = aprilTagTarget.getPitch();
         double area = aprilTagTarget.getArea();
         double skew = aprilTagTarget.getSkew();
-        Transform3d tagPose = aprilTagTarget.getBestCameraToTarget();
-        double poseX = tagPose.getX();
+        Transform3d transformToTag = aprilTagTarget.getBestCameraToTarget();
+        double poseX = transformToTag.getX();
         int tagID = aprilTagTarget.getFiducialId();
 
-        if (result.hasTargets()) {
-            // Find the tag we want to chase
-            var targetOpt = result.getTargets().stream()
-                    .filter(t -> t.getFiducialId() == TAG_TO_CHASE)
-                    .filter(t -> !t.equals(aprilTagTarget) && t.getPoseAmbiguity() <= .2 && t.getPoseAmbiguity() != -1)
-                    .findFirst();
+        //Pose3d robotPose = PhotonUtils.estimateFieldToRobotAprilTag(tagPose, VisionConstants.aprilTags.get(tagID), robotToCamera);
+        Optional<EstimatedRobotPose> robotPose3d = photonPoseEstimator.update();
 
-            if (targetOpt.isPresent()) {
-                var target = targetOpt.get();
+        // load the april tag pose for this tagId
+        var aprilTagPose = aprilTagFieldLayout.getTagPose(tagID);
+        if (aprilTagPose.isEmpty()) return Optional.empty();
 
-                Pose3d robotPose = PhotonUtils.estimateFieldToRobotAprilTag(tagPose, VisionConstants.aprilTags.get(  tagID), robotToCamera);
+        Pose3d estimatedFieldRobotPose = PhotonUtils.estimateFieldToRobotAprilTag(transformToTag, aprilTagPose.get(), robotToCamera);
+        SmartDashboard.putString("robotPOSE", estimatedFieldRobotPose.toString());
+        // Transform the robot's pose to find the camera's pose
+        var cameraPose = estimatedFieldRobotPose.transformBy(robotToCamera);
 
-                // Transform the robot's pose to find the camera's pose
-                var cameraPose = robotPose.transformBy(robotToCamera);
+        SmartDashboard.putString("tagpose", transformToTag.toString());
+        // Trasnform the camera's pose to the target's pose
+        Pose3d targetPose = cameraPose.transformBy(transformToTag);
 
-                // Trasnform the camera's pose to the target's pose
-                var camToTarget = target.getBestCameraToTarget();
-                var targetPose = cameraPose.transformBy(camToTarget);
+        // Transform the tag's pose to set our goal
+        Pose3d goalPose = targetPose.transformBy(VisionConstants2.TAG_TO_GOAL);
+        // This is new target data, so recalculate the goal
+        double range = PhotonUtils.calculateDistanceToTargetMeters(
+                VisionConstants2.CAMERA_HEIGHT,
+                VisionConstants2.TAG_HEIGHT,
+                VisionConstants2.CAMERA_PITCH,
+                Units.degreesToRadians(aprilTagTarget.getPitch())
+        );
 
-                // Transform the tag's pose to set our goal
-                var goalPose = targetPose.transformBy(VisionConstants2.TAG_TO_GOAL).toPose2d();
+        Translation2d translationToTag = PhotonUtils.estimateCameraToTargetTranslation(
+                range, Rotation2d.fromDegrees(-aprilTagTarget.getYaw())
+        );
 
+        if (robotPose3d.isEmpty()) return Optional.empty();
+        Pose3d currentEstimatedPose3d = robotPose3d.get().estimatedPose;
+        Pose2d currentEstimatedPose2d = currentEstimatedPose3d.toPose2d();
 
-                // This is new target data, so recalculate the goal
+        Pose3d tagPossiblePose3d = aprilTagFieldLayout.getTagPose(aprilTagTarget.getFiducialId()).orElseThrow();
+        Pose2d tagPossiblePose2d = tagPossiblePose3d.toPose2d();
 
-
-                double range = PhotonUtils.calculateDistanceToTargetMeters(
-                        VisionConstants2.CAMERA_HEIGHT,
-                        VisionConstants2.TAG_HEIGHT,
-                        VisionConstants2.CAMERA_PITCH,
-                        Units.degreesToRadians(aprilTagTarget.getPitch())
-                );
-
-                Translation2d translationToTag = PhotonUtils.estimateCameraToTargetTranslation(
-                        range, Rotation2d.fromDegrees(-aprilTagTarget.getYaw())
-                );
-
-
-
-                //Pose3d robotPose = PhotonUtils.estimateFieldToRobotAprilTag(tagPose, VisionConstants.aprilTags.get(tagID), robotToCamera);
-
-                Optional<EstimatedRobotPose> robotPose3d = photonPoseEstimator.update();
-
-                if (robotPose3d.isEmpty()) return Optional.empty();
-                Pose3d currentEstimatedPose3d = robotPose3d.get().estimatedPose;
-                Pose2d currentEstimatedPose2d = currentEstimatedPose3d.toPose2d();
-
-                Pose3d tagPossiblePose3d = aprilTagFieldLayout.getTagPose(aprilTagTarget.getFiducialId()).orElseThrow();
-                Pose2d tagPossiblePose2d = tagPossiblePose3d.toPose2d();
-
-                Rotation2d targetYaw = PhotonUtils.getYawToPose(currentEstimatedPose2d, tagPossiblePose2d);
-
-
-                return Optional.of(new PhotonCalculationResult(robotPose, tagPossiblePose3d, translationToTag, targetYaw, targetYaw.getRadians()));
-
-
-            }
-
-
-            return Optional.empty();
-
-            //public void driveToPosition (ChassisSpeeds chassisSpeeds){
-            //controller.calculate(
-
-            //  )
-
-
-        }
-
-        return Optional.empty();
-
+        Rotation2d targetYaw = PhotonUtils.getYawToPose(currentEstimatedPose2d, goalPose.toPose2d());
+        SmartDashboard.putString("targetYaw", targetYaw.toString());
+        return Optional.of(new PhotonCalculationResult(estimatedFieldRobotPose, goalPose, translationToTag, targetYaw, targetYaw.getRadians()));
 
     }
 }

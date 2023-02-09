@@ -7,6 +7,7 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.util.WPIUtilJNI;
 import org.bitbuckets.drive.IDriveControl;
+import org.bitbuckets.vision.VisionControl;
 import org.bitbuckets.lib.log.Debuggable;
 import org.bitbuckets.vision.IVisionControl;
 
@@ -23,9 +24,9 @@ public class OdometryControl implements IOdometryControl {
     OdometryControl(Debuggable debuggable, IDriveControl driveControl, IVisionControl visionControl, WPI_Pigeon2 pigeonIMU, SwerveDrivePoseEstimator swerveDrivePoseEstimator) {
         this.debuggable = debuggable;
         this.driveControl = driveControl;
-        this.visionControl = visionControl;
         this.pigeonIMU = pigeonIMU;
         this.swerveDrivePoseEstimator = swerveDrivePoseEstimator;
+        this.visionControl = visionControl;
     }
 
 
@@ -40,6 +41,9 @@ public class OdometryControl implements IOdometryControl {
             Pose2d realPose = res.get().toPose2d();
 
             swerveDrivePoseEstimator.addVisionMeasurement(realPose, epoch);
+
+        } else {
+
         }
 
     }

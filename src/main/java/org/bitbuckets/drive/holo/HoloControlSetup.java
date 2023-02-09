@@ -31,7 +31,7 @@ public class HoloControlSetup implements ISetup<HoloControl> {
                         1,0,0
                 ),
                 new ProfiledPIDController(
-                        1,0,0, new TrapezoidProfile.Constraints(0.1, 0.1)
+                        1,0,0, new TrapezoidProfile.Constraints(1, 1)
                 )
         );
 

@@ -1,5 +1,12 @@
 package org.bitbuckets.drive;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.Preferences;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import org.bitbuckets.auto.AutoControl;
+import org.bitbuckets.auto.AutoPath;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -12,6 +19,9 @@ import org.bitbuckets.drive.holo.HoloControl;
 import org.bitbuckets.lib.log.Debuggable;
 import org.bitbuckets.lib.tune.IValueTuner;
 import org.bitbuckets.odometry.IOdometryControl;
+import org.bitbuckets.robot.RobotStateControl;
+import org.bitbuckets.vision.PhotonCalculationResult;
+import org.bitbuckets.vision.VisionControl;
 import org.bitbuckets.vision.IVisionControl;
 
 import java.util.Optional;
@@ -111,11 +121,11 @@ public class DriveSubsystem {
                 break;
 
             case TELEOP_VISION:
-                if (input.isVisionGoReleased()) {
+                if (!input.isVisionGoPressed()) {
                     state = DriveFSM.TELEOP_NORMAL;
                     break;
                 }
-                    teleopVision();
+                teleopVision();
                 break;
 
             case TELEOP_AUTOHEADING:
@@ -131,43 +141,45 @@ public class DriveSubsystem {
     void teleopVision() {
         Optional<Pose3d> res = visionControl.estimateTargetPose();
         if (res.isEmpty()) return;
-        ChassisSpeeds speeds = holoControl.calculatePose2D(res.get().toPose2d(), 3);
+        ChassisSpeeds speeds = holoControl.calculatePose2D(res.get().toPose2d(), 3, res.get().toPose2d().getRotation());
 
         driveControl.drive(speeds);
     }
 
     void teleopNormal() {
-        if(input.isResetGyroPressed()){
-            odometryControl.zero();
-        }
+            if (input.isResetGyroPressed()) {
+                odometryControl.zero();
+            }
 
-        double xOutput = input.getInputX() * driveControl.getMaxVelocity();
-        double yOutput = -input.getInputY() * driveControl.getMaxVelocity();
-        double rotationOutput = input.getInputRot() * driveControl.getMaxAngularVelocity();
+            double xOutput = input.getInputX() * driveControl.getMaxVelocity();
+            double yOutput = -input.getInputY() * driveControl.getMaxVelocity();
+            double rotationOutput = input.getInputRot() * driveControl.getMaxAngularVelocity();
 
-        debuggable.log("x-output", xOutput);
-        debuggable.log("y-output", yOutput);
-        debuggable.log("rot-output", rotationOutput);
+            debuggable.log("x-output", xOutput);
+            debuggable.log("y-output", yOutput);
+            debuggable.log("rot-output", rotationOutput);
 
-        switch (orientation.readValue()) {
-            case FIELD_ORIENTED:
-                if (xOutput == 0 && yOutput == 0 && rotationOutput == 0) {
-                    driveControl.stopSticky();
-                } else {
-                    driveControl.drive(
-                            ChassisSpeeds.fromFieldRelativeSpeeds(xOutput, yOutput, rotationOutput, odometryControl.getRotation2d())
-                    );
-                }
-                break;
-            case ROBOT_ORIENTED:
-                if (xOutput == 0 && yOutput == 0 && rotationOutput == 0) {
-                    driveControl.stopSticky();
-                } else {
-                    ChassisSpeeds robotOrient = new ChassisSpeeds(xOutput, yOutput, rotationOutput);
-                    driveControl.drive(robotOrient);
-                }
-                break;
-        }
+            switch (orientation.readValue()) {
+                case FIELD_ORIENTED:
+                    if (xOutput == 0 && yOutput == 0 && rotationOutput == 0) {
+                        driveControl.stopSticky();
+                    } else {
+                        driveControl.drive(
+                                ChassisSpeeds.fromFieldRelativeSpeeds(xOutput, yOutput, rotationOutput, odometryControl.getRotation2d())
+                        );
+                    }
+                    break;
+                case ROBOT_ORIENTED:
+                    if (xOutput == 0 && yOutput == 0 && rotationOutput == 0) {
+                        driveControl.stopSticky();
+                    } else {
+                        ChassisSpeeds robotOrient = new ChassisSpeeds(xOutput, yOutput, rotationOutput);
+                        driveControl.drive(robotOrient);
+                    }
+                    break;
+            }
+
+
     }
 
     void teleopBalancing() {

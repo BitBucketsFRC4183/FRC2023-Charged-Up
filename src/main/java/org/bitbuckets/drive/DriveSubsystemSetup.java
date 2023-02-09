@@ -58,7 +58,6 @@ public class DriveSubsystemSetup implements ISetup<DriveSubsystem> {
                 .build(self.addChild("axis-control"));
 
         DriveControl driveControl = buildNeoDriveControl(self); //or use talons, when they work
-
         IOdometryControl odometryControl = new OdometryControlSetup(driveControl, visionControl, 5)
                 .build(self.addChild("odo-control"));
         HoloControl holoControl = new HoloControlSetup(driveControl, odometryControl)
