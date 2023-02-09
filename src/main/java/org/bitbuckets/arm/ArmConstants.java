@@ -16,8 +16,8 @@ public interface ArmConstants {
     MotorConfig LOWER_CONFIG = new MotorConfig(ArmConstants.LOWER_ARM_GEAR_RATIO, 1, 1, false, true, 20.0, false, false, Optional.empty());
     MotorConfig UPPER_CONFIG = new MotorConfig(ArmConstants.UPPER_ARM_GEAR_RATIO, 1, 1, true, true, 20.0, false, false, Optional.empty());
 
-    PIDConfig LOWER_PID = new PIDConfig(0,0,0,0);
-    PIDConfig UPPER_PID = new PIDConfig(0,0,0,0);
+    PIDConfig LOWER_PID = new PIDConfig(0, 0, 0, 0);
+    PIDConfig UPPER_PID = new PIDConfig(0, 0, 0, 0);
     //change these
     double LOWER_JOINT_LENGTH = 0.695;
     double UPPER_JOINT_LENGTH = 0.84;
@@ -47,9 +47,8 @@ public interface ArmConstants {
     double MID_NODE_X = 0.8;
     double MID_NODE_Y = 0.8;
 
-    double HIGH_NODE_X = 1.2;
-    double HIGH_NODE_Y = 1.2;
-
+    double HIGH_NODE_X = 0.8;
+    double HIGH_NODE_Y = 0.8;
 
 
 }
