@@ -18,10 +18,10 @@ public interface ISetup<T> {
      * <p>
      * make sure you call any child factory with tools.child() and NOT with this tools instance
      *
-     * @param path a variety of tools.
+     * @param self a variety of tools.
      * @return a fully initialized object
      */
-    T build(ProcessPath path);
+    T build(ProcessPath self);
 
 
     /**
@@ -37,12 +37,12 @@ public interface ISetup<T> {
             T cached = null;
 
             @Override
-            public T build(ProcessPath path) {
+            public T build(ProcessPath self) {
                 if (cached != null) {
                     return cached;
                 }
 
-                return cached = delegate.build(path);
+                return cached = delegate.build(self);
             }
         };
     }

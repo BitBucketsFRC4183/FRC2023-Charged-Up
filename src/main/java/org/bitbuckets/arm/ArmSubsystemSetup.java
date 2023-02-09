@@ -15,20 +15,20 @@ public class ArmSubsystemSetup implements ISetup<ArmSubsystem> {
     }
 
     @Override
-    public ArmSubsystem build(ProcessPath path) {
+    public ArmSubsystem build(ProcessPath self) {
         if (!isEnabled) {
             return MockingUtil.buddy(ArmSubsystem.class);
         }
 
         ArmControlSetup armControlSetup = new ArmControlSetup(
-                new SparkSetup(11, ArmConstants.LOWER_CONFIG, ArmConstants.LOWER_PID),
-                new SparkSetup(12, ArmConstants.UPPER_CONFIG, ArmConstants.UPPER_PID)
+                new SparkSetup(9, ArmConstants.LOWER_CONFIG, ArmConstants.LOWER_PID),
+                new SparkSetup(10, ArmConstants.UPPER_CONFIG, ArmConstants.UPPER_PID)
         );
 
-        ArmControl armControl = armControlSetup.build(path.addChild("arm-control"));
+        ArmControl armControl = armControlSetup.build(self.addChild("arm-control"));
         ArmInput armInput = new ArmInput(new Joystick(1));
 
-        return new ArmSubsystem(armInput, armControl, path.generateStringLogger("arm-log"));
+        return new ArmSubsystem(armInput, armControl, self.generateStringLogger("arm-log"));
 
     }
 }

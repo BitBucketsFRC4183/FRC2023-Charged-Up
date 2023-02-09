@@ -21,7 +21,7 @@ public class ElevatorSubsystemSetup implements ISetup<ElevatorSubsystem> {
 
 
     @Override
-    public ElevatorSubsystem build(ProcessPath path) {
+    public ElevatorSubsystem build(ProcessPath self) {
         if (!isElevatorEnabled) {
             return MockingUtil.buddy(ElevatorSubsystem.class);
         }
@@ -31,7 +31,7 @@ public class ElevatorSubsystemSetup implements ISetup<ElevatorSubsystem> {
                 new SparkSetup(9, new MotorConfig(ElevatorConstants.getGearRatioExtend, 1, ElevatorConstants.rotToMeterExtend, false, false, 20, false, false, Optional.empty()), new PIDConfig(0, 0, 0, 0)),
                 new SparkSetup(10, new MotorConfig(ElevatorConstants.gearRatioTilt, 1, ElevatorConstants.rotToMeterTilt, false, false, 20, false, false, Optional.empty()), new PIDConfig(0, 0, 0, 0))
         );
-        ElevatorControl elevatorControl = elevatorControlSetup.build(path.addChild("elevator-control"));
+        ElevatorControl elevatorControl = elevatorControlSetup.build(self.addChild("elevator-control"));
 
         return new ElevatorSubsystem(elevatorControl, elevatorInput);
     }

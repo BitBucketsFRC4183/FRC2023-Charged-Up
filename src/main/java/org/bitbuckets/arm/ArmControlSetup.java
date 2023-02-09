@@ -1,8 +1,10 @@
 package org.bitbuckets.arm;
 
+import com.revrobotics.CANSparkMax;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.lib.hardware.IMotorController;
+import org.bitbuckets.lib.log.Debuggable;
 import org.bitbuckets.lib.vendor.spark.SparkSetup;
 
 public class ArmControlSetup implements ISetup<ArmControl> {
@@ -21,10 +23,31 @@ public class ArmControlSetup implements ISetup<ArmControl> {
 
 
     @Override
-    public ArmControl build(ProcessPath path) {
+    public ArmControl build(ProcessPath self) {
+
+        var lower = lowerJoint.build(self.addChild("lower-joint"));
+        var upper = upperJoint.build(self.addChild("upper-joint"));
+
+        var lowerSpark = lower.rawAccess(CANSparkMax.class);
+        var upperSpark = upper.rawAccess(CANSparkMax.class);
+
+        lowerSpark.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, true);
+        lowerSpark.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, true);
+        upperSpark.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, true);
+        upperSpark.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, true);
+
+        lowerSpark.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, (float) 27.3);
+        lowerSpark.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, (float) -13.69);
+
+        upperSpark.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, (float) 25.0);
+        upperSpark.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, (float) -90.0);
+
+        Debuggable debug = self.generateDebugger();
+
         return new ArmControl(
-                lowerJoint.build(path.addChild("lower-joint")),
-                upperJoint.build(path.addChild("upper-joint"))
+                lower,
+                upper,
+                debug
         );
     }
 }

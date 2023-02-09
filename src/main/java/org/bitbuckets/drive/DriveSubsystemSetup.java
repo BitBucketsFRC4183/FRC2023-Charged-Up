@@ -1,8 +1,8 @@
 package org.bitbuckets.drive;
 
 import edu.wpi.first.wpilibj.Joystick;
-import org.bitbuckets.auto.AutoControl;
-import org.bitbuckets.auto.AutoControlSetup;
+import org.bitbuckets.auto.AutoSubsystem;
+import org.bitbuckets.auto.AutoSubsystemSetup;
 import org.bitbuckets.auto.AutoPath;
 import org.bitbuckets.drive.balance.ClosedLoopsControl;
 import org.bitbuckets.drive.balance.ClosedLoopsSetup;
@@ -17,6 +17,7 @@ import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.lib.control.PIDConfig;
 import org.bitbuckets.lib.hardware.MotorConfig;
+import org.bitbuckets.lib.log.Debuggable;
 import org.bitbuckets.lib.log.ILoggable;
 import org.bitbuckets.lib.tune.IValueTuner;
 import org.bitbuckets.lib.util.MockingUtil;
@@ -29,7 +30,7 @@ import org.bitbuckets.lib.vendor.thrifty.ThriftyEncoderSetup;
 import org.bitbuckets.odometry.IOdometryControl;
 import org.bitbuckets.odometry.OdometryControlSetup;
 import org.bitbuckets.robot.RobotStateControl;
-import org.bitbuckets.vision.VisionControl;
+import org.bitbuckets.vision.IVisionControl;
 
 import java.util.Optional;
 
@@ -37,56 +38,52 @@ public class DriveSubsystemSetup implements ISetup<DriveSubsystem> {
 
     final boolean driveEnabled;
 
-    final RobotStateControl robotStateControl;
-    final VisionControl visionControl;
+    final AutoSubsystem autoSubsystem;
+    final IVisionControl visionControl;
 
-
-
-    public DriveSubsystemSetup(boolean driveEnabled, RobotStateControl robotStateControl, VisionControl visionControl) {
+    public DriveSubsystemSetup(boolean driveEnabled, AutoSubsystem autoSubsystem, IVisionControl visionControl) {
         this.driveEnabled = driveEnabled;
-        this.robotStateControl = robotStateControl;
+        this.autoSubsystem = autoSubsystem;
         this.visionControl = visionControl;
     }
 
     @Override
-    public DriveSubsystem build(ProcessPath path) {
+    public DriveSubsystem build(ProcessPath self) {
         if (!driveEnabled) {
             return MockingUtil.buddy(DriveSubsystem.class);
         }
 
         DriveInput input = new DriveInput(new Joystick(0));
         ClosedLoopsControl closedLoopsControl = new ClosedLoopsSetup()
-                .build(path.addChild("axis-control"));
+                .build(self.addChild("axis-control"));
 
-        DriveControl driveControl = buildNeoDriveControl(path); //or use talons, when they work
+        DriveControl driveControl = buildNeoDriveControl(self); //or use talons, when they work
 
         IOdometryControl odometryControl = new OdometryControlSetup(5, driveControl, visionControl)
                 .build(path.addChild("odo-control"));
+        IOdometryControl odometryControl = new OdometryControlSetup(driveControl, visionControl, 5)
+                .build(self.addChild("odo-control"));
         HoloControl holoControl = new HoloControlSetup(driveControl, odometryControl)
-                .build(path.addChild("holo-control"));
-        AutoControl autoControl = new AutoControlSetup()
-                .build(path.addChild("auto-control"));
+                .build(self.addChild("holo-control"));
 
-        IValueTuner<AutoPath> pathTuneable = path.generateEnumTuner("path", AutoPath.class, AutoPath.AUTO_TEST_PATH_ONE);
-        ILoggable<double[]> configs = path.generateDoubleLoggers(
-                "x",
-                "y",
-                "rot"
-        );
+        IValueTuner<AutoPath> pathTuneable = self
+                .generateEnumTuner("set-path", AutoPath.class, AutoPath.AUTO_TEST_PATH_ONE);
+        IValueTuner<DriveSubsystem.OrientationChooser> orientationTuner = self
+                .generateEnumTuner("set-orientation", DriveSubsystem.OrientationChooser.class, DriveSubsystem.OrientationChooser.FIELD_ORIENTED);
+        Debuggable debuggable = self.generateDebugger();
 
         return new DriveSubsystem(
                 input,
-                robotStateControl,
                 odometryControl,
                 closedLoopsControl,
                 driveControl,
-                autoControl,
+                autoSubsystem,
                 holoControl,
                 visionControl,
-                pathTuneable,
-                path.generateEnumLogger("State"),
-                configs,
-                path.generateEnumTuner("Orientation", DriveSubsystem.OrientationChooser.class, DriveSubsystem.OrientationChooser.FIELD_ORIENTED));
+                orientationTuner,
+                debuggable
+
+        );
     }
 
 

@@ -20,7 +20,7 @@ public class HoloControlSetup implements ISetup<HoloControl> {
     }
 
     @Override
-    public HoloControl build(ProcessPath path) {
+    public HoloControl build(ProcessPath self) {
 
         //TODO find constants
         HolonomicDriveController holonomicDriveController = new HolonomicDriveController(

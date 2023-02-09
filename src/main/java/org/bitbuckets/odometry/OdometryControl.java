@@ -1,6 +1,6 @@
 package org.bitbuckets.odometry;
 
-import com.ctre.phoenix.sensors.WPI_PigeonIMU;
+import com.ctre.phoenix.sensors.WPI_Pigeon2;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
@@ -10,22 +10,22 @@ import org.bitbuckets.drive.IDriveControl;
 import org.bitbuckets.lib.log.ILoggable;
 import org.bitbuckets.vision.PhotonCalculationResult;
 import org.bitbuckets.vision.VisionControl;
+import org.bitbuckets.lib.log.Debuggable;
+import org.bitbuckets.vision.IVisionControl;
 
 import java.util.Optional;
 
-public class OdometryControl implements IOdometryControl, Runnable {
+public class OdometryControl implements IOdometryControl {
 
+    final Debuggable debuggable;
     final IDriveControl driveControl;
-
-    final WPI_PigeonIMU pigeonIMU;
+    final IVisionControl visionControl;
+    final WPI_Pigeon2 pigeonIMU;
     final SwerveDrivePoseEstimator swerveDrivePoseEstimator;
     final VisionControl visionControl;
 
-    final ILoggable<Pose3d> robotPoseLog;
-    final ILoggable<Double> gyroAngleLog;
-    final ILoggable<Pose2d> estimatedPose2dLog;
-
-    public OdometryControl(IDriveControl driveControl, SwerveDrivePoseEstimator swerveDrivePoseEstimator, WPI_PigeonIMU pigeonIMU, VisionControl visionControl, ILoggable<Pose3d> robotPoseLog, ILoggable<Double> gyroAngleLog, ILoggable<Pose2d> estimatedPose2dLog) {
+    OdometryControl(Debuggable debuggable, IDriveControl driveControl, IVisionControl visionControl, WPI_Pigeon2 pigeonIMU, SwerveDrivePoseEstimator swerveDrivePoseEstimator) {
+        this.debuggable = debuggable;
         this.driveControl = driveControl;
         this.pigeonIMU = pigeonIMU;
         this.swerveDrivePoseEstimator = swerveDrivePoseEstimator;
@@ -36,16 +36,15 @@ public class OdometryControl implements IOdometryControl, Runnable {
     }
 
 
-    @Override
-    public void run() {
+    public void updateOdometryLoop() {
         Rotation2d gyroangle = Rotation2d.fromDegrees(pigeonIMU.getAbsoluteCompassHeading());
         double epoch = WPIUtilJNI.now();
         swerveDrivePoseEstimator.updateWithTime(epoch, gyroangle, driveControl.currentPositions());
 
-        Optional<PhotonCalculationResult> res = visionControl.visionPoseEstimator();
+        Optional<Pose3d> res = visionControl.estimateRobotPose();
 
         if (res.isPresent()) {
-            Pose2d realPose = res.get().robotPose.toPose2d();
+            Pose2d realPose = res.get().toPose2d();
 
             swerveDrivePoseEstimator.addVisionMeasurement(realPose, epoch);
             robotPoseLog.log(res.get().robotPose);
@@ -58,6 +57,13 @@ public class OdometryControl implements IOdometryControl, Runnable {
 
     }
 
+    public void logLoop() {
+        debuggable.log("yaw", pigeonIMU.getYaw());
+        debuggable.log("pitch", pigeonIMU.getPitch());
+        debuggable.log("roll", pigeonIMU.getRoll());
+        debuggable.log("heading", pigeonIMU.getAbsoluteCompassHeading());
+        debuggable.log("rate", pigeonIMU.getRate());
+    }
 
     @Override
     public Pose2d estimatePose2d() {

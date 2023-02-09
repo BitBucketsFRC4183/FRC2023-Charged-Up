@@ -15,7 +15,6 @@ public class SparkLimitLoggingAspect implements Runnable {
 
     @Override
     public void run() {
-
         data.log(limitSwitch.isPressed());
 
     }
