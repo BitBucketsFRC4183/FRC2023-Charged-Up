@@ -46,7 +46,9 @@ public class ArmControlSetup implements ISetup<ArmControl> {
 
         return new ArmControl(
                 lower,
-                upper);
+                upper,
+                debug
+        );
     }
 }
 

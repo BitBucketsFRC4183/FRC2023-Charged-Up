@@ -23,7 +23,7 @@ public class RobotSetup implements ISetup<RobotContainer> {
 
     @Override
     public RobotContainer build(ProcessPath self) {
-        IVisionControl visionControl = new VisionControlSetup()
+        IVisionControl visionControl = new VisionControlSetup(false)
                 .build( self.addChild("vision-control") );
 
         ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystemSetup(false)
