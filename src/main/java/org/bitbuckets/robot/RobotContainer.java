@@ -12,6 +12,7 @@ import org.bitbuckets.vision.VisionControl;
  */
 public class RobotContainer {
 
+
     final DriveSubsystem driveSubsystem;
     final ArmSubsystem armSubsystem;
     final ElevatorSubsystem elevatorSubsystem;
@@ -28,6 +29,7 @@ public class RobotContainer {
     public void robotPeriodic() {
         autoSubsystem.runLoop();
         driveSubsystem.runLoop();
+        elevatorSubsystem.robotPeriodic();
     }
 
 
