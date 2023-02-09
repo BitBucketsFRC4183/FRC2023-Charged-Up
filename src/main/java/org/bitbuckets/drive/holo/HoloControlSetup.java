@@ -25,13 +25,13 @@ public class HoloControlSetup implements ISetup<HoloControl> {
         //TODO find constants
         HolonomicDriveController holonomicDriveController = new HolonomicDriveController(
                 new PIDController(
-                        1,0,0
+                        .3, 0, 0
                 ),
                 new PIDController(
-                        1,0,0
+                        .3, 0, 0
                 ),
                 new ProfiledPIDController(
-                        1,0,0, new TrapezoidProfile.Constraints(1, 1)
+                        .3, 0, 0, new TrapezoidProfile.Constraints(1, 1)
                 )
         );
 

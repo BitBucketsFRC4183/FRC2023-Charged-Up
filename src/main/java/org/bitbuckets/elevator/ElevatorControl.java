@@ -1,8 +1,8 @@
 package org.bitbuckets.elevator;
 
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.bitbuckets.lib.hardware.IMotorController;
+import org.bitbuckets.lib.log.Debuggable;
 
 public class ElevatorControl {
 
@@ -11,8 +11,14 @@ public class ElevatorControl {
     private IMotorController leftTilt;
     private IMotorController rightTilt;
 
+    final Debuggable debug;
+
+
     private MechanismLigament2d elevator;
     private MechanismLigament2d elevatorWrist;
+
+    private double elevatorExtendSetpoint = 0;
+    private double elevatorTiltSetpoint = 0;
 
 
     private static final double elevatorMinLength = 2;
@@ -25,29 +31,26 @@ public class ElevatorControl {
 
     ElevatorConstants elevatorConstants = new ElevatorConstants();
 
-    public void smartDashboard() {
-        SmartDashboard.putNumber("extendEncoderLeftRaw", leftExtend.getPositionRaw());
-        SmartDashboard.putNumber("extendEncoderLeftMeters", leftExtend.getPositionMechanism_meters());
-        //SmartDashboard.putNumber("extendEncoderRight", rightExtend.getPositionMechanism_meters());
-        SmartDashboard.putNumber("tiltEncoderLeft", Math.toDegrees(leftTilt.getMechanismPositionAccum_rot() * 2.0 * Math.PI));
-        //     SmartDashboard.putNumber("tiltEncoderRight", Math.toDegrees(rightTilt.getMechanismPositionAccum_rot() * 2.0 * Math.PI));
-        SmartDashboard.putNumber("x1", x1);
-        SmartDashboard.putNumber("extenROt", unitToRotExtend(x1));
 
-        //   degrees = Math.toDegrees(leftTilt.getMechanismPositionAccum_rot() * 2.0 * Math.PI)
-
-        //SmartDashboard.putNumber("output", leftExtend.rawAccess(CANSparkMax.class).getAppliedOutput());
-        //SmartDashboard.putNumber("angleTheta1",theta1);
-    }
-
-
-    public ElevatorControl(IMotorController leftExtend, IMotorController leftTilt, MechanismLigament2d elevator, MechanismLigament2d elevatorWrist) {
+    public ElevatorControl(IMotorController leftExtend, IMotorController leftTilt, Debuggable debug, MechanismLigament2d elevator, MechanismLigament2d elevatorWrist) {
         this.leftExtend = leftExtend;
+        this.debug = debug;
         this.rightExtend = rightExtend;
         this.leftTilt = leftTilt;
         this.rightTilt = rightTilt;
         this.elevatorWrist = elevatorWrist;
         this.elevator = elevator;
+
+
+    }
+
+    public void log() {
+        debug.log("Left-extension-encoder", leftExtend.getPositionRaw());
+        debug.log("right-extension-encoder", rightExtend.getPositionRaw());
+        debug.log("Left-tilt-encoder", leftTilt.getPositionRaw());
+        debug.log("right-tilt-encoder", rightTilt.getPositionRaw());
+        debug.log("elevator-setpoint", elevatorExtendSetpoint);
+        debug.log("elevator-setpoint", elevatorTiltSetpoint);
 
 
     }
@@ -72,49 +75,21 @@ public class ElevatorControl {
 
     }
 
-
-    public void setElevatorActualIK() {
-
-        // SmartDashboard.putNumber("pPPP", leftExtend.rawAccess(CANSparkMax.class).getPIDController().getP());
-        // leftExtend.rawAccess(CANSparkMax.class).getPIDController().setP(0.05);
-        SmartDashboard.putNumber("angleTheta1", theta1);
-
-        double rot = unitToRotExtend(x1);
-        SmartDashboard.putNumber("extendEncoderLeftSetpoint", rot);
-        SmartDashboard.putNumber("extendEncoderLeftSetpointMeters", x1);
-
-        SmartDashboard.putNumber("rotsw", rot);
-        leftExtend.moveToPosition(rot);       // leftTilt.moveToPosition(theta1*elevatorConstants.gearRatioTilt  );
-        leftTilt.moveToPosition(theta1 / 360.0 / ElevatorConstants.gearRatioTilt
-        );
-
-
-    }
-
     public double unitToRotExtend(double unit) {
         return unit / ElevatorConstants.rotToMeterExtend * ElevatorConstants.getGearRatioExtend;
 
     }
 
-    public void goToPosition(double phi, double r) {
-
-        double a = r * r;
-        double b = Math.sqrt(a - endEffectorMagnitude * endEffectorMagnitude);
-        double x = Math.sqrt(r * r - endEffectorMagnitude * endEffectorMagnitude);
-        double theta = phi - Math.atan(endEffectorMagnitude / (Math.sqrt(x)));
-        SmartDashboard.putNumber("x", x);
-
-
-        x1 = x;
-        theta1 = theta;
-
+    public void goToPosition(double extension, double tilt) {
+        elevatorExtendSetpoint = extension;
+        elevatorTiltSetpoint = tilt;
+        leftTilt.moveToPosition(tilt);
+        leftExtend.moveToPosition(extension);
 
     }
 
     public void gotoPositionButton() {
         goToPosition(60.0, 1.3);
-        // setElevatorMech2dIK();
-        setElevatorActualIK();
 
 
     }
