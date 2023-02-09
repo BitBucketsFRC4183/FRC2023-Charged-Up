@@ -13,7 +13,7 @@ import org.photonvision.PhotonPoseEstimator;
 
 import java.io.IOException;
 
-public class VisionControlSetup implements ISetup<VisionControl> {
+public class VisionControlSetup implements ISetup<IVisionControl> {
 
     final boolean isEnabled;
 
