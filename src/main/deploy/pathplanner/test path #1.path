@@ -51,6 +51,12 @@
       "names": [
         "testhehe"
       ]
+    },
+    {
+      "position": 0.0,
+      "names": [
+        "event"
+      ]
     }
   ]
 }
