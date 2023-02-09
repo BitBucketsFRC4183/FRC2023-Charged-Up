@@ -26,7 +26,7 @@ public class CANCoderAbsoluteEncoderSetup implements ISetup<IAbsoluteEncoder> {
     }
 
     @Override
-    public IAbsoluteEncoder build(ProcessPath path) {
+    public IAbsoluteEncoder build(ProcessPath self) {
         WPI_CANCoder encoder = new WPI_CANCoder(canId);
 
         CANCoderConfiguration config = new CANCoderConfiguration();

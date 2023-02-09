@@ -25,10 +25,10 @@ public class SteerControllerSetup implements ISetup<ISteerController> {
     }
 
     @Override
-    public ISteerController build(ProcessPath path) {
+    public ISteerController build(ProcessPath self) {
         var controller = new SteerController(
-                motor.build(path.addChild("motor")),
-                encoder.build(path.addChild("encoder")),
+                motor.build(self.addChild("motor")),
+                encoder.build(self.addChild("encoder")),
                 sensorPositionCoefficient
         );
 

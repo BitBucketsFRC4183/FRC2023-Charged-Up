@@ -2,6 +2,7 @@ package org.bitbuckets.robot;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.bitbuckets.arm.ArmSubsystem;
+import org.bitbuckets.auto.AutoSubsystem;
 import org.bitbuckets.drive.DriveSubsystem;
 import org.bitbuckets.elevator.ElevatorSubsystem;
 import org.bitbuckets.vision.VisionControl;
@@ -14,22 +15,19 @@ public class RobotContainer {
     final DriveSubsystem driveSubsystem;
     final ArmSubsystem armSubsystem;
     final ElevatorSubsystem elevatorSubsystem;
-
-    final VisionControl visionControl;
-
-    public RobotContainer(DriveSubsystem driveSubsystem, ArmSubsystem armSubsystem, ElevatorSubsystem elevatorSubsystem, VisionControl visionControl) {
+    final AutoSubsystem autoSubsystem;
+    
+    public RobotContainer(DriveSubsystem driveSubsystem, ArmSubsystem armSubsystem, ElevatorSubsystem elevatorSubsystem, AutoSubsystem autoSubsystem) {
         this.driveSubsystem = driveSubsystem;
         this.armSubsystem = armSubsystem;
         this.elevatorSubsystem = elevatorSubsystem;
-        this.visionControl = visionControl;
+        this.autoSubsystem = autoSubsystem;
     }
 
-    public void autoPeriodic() {
-
-    }
 
     public void robotPeriodic() {
-        driveSubsystem.robotPeriodic();
+        autoSubsystem.runLoop();
+        driveSubsystem.runLoop();
     }
 
 

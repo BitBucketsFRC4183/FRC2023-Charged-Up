@@ -15,7 +15,7 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 import java.util.Optional;
 
 
-public class VisionControl implements Runnable {
+public class VisionControl implements Runnable, IVisionControl {
 
 
     final Transform3d robotToCamera;
@@ -42,8 +42,32 @@ public class VisionControl implements Runnable {
 
     @Override
     public void run() {
-        if (targetPose != null) {
-            targetLog.log(goalPose);
+       //TODO log
+    }
+
+    @Override
+    public Optional<Pose3d> estimateTargetPose() {
+        return visionPoseEstimator().map(pr -> pr.goalPose);
+    }
+
+    @Override
+    public Optional<Pose3d> estimateRobotPose() {
+        return visionPoseEstimator().map(pr -> pr.robotPose);
+    }
+
+    public class PhotonCalculationResult {
+        public final Pose3d robotPose;
+        public final Pose3d goalPose;
+        public final Translation2d translationToTag;
+        public final Rotation2d targetYaw;
+        public final double yaw;
+
+        public PhotonCalculationResult(Pose3d robotPose, Pose3d goalPose, Translation2d translationToTag, Rotation2d targetYaw, double yaw) {
+            this.robotPose = robotPose;
+            this.goalPose = goalPose;
+            this.translationToTag = translationToTag;
+            this.targetYaw = targetYaw;
+            this.yaw = yaw;
         }
 
     }

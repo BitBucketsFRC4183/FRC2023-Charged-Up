@@ -1,5 +1,7 @@
 package org.bitbuckets.lib.log;
 
+import edu.wpi.first.math.kinematics.SwerveModuleState;
+
 /**
  * Something that can be logged
  * @param <T>
@@ -11,5 +13,7 @@ public interface ILoggable<T> {
      * @param data your data
      */
     void log(T data);
+
+
 
 }
