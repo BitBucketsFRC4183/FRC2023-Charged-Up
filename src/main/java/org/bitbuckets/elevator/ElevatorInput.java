@@ -10,9 +10,6 @@ public class ElevatorInput {
         this.joystick = joystick;
     }
 
-    public boolean getInputA() {
-        return joystick.getRawButton(XboxController.Button.kA.value);
-    }
 
     public boolean getInputDpadUp() {
         int pressed = joystick.getPOV();
@@ -35,14 +32,21 @@ public class ElevatorInput {
         return pressed == 90;
     }
 
-    public boolean getInputDpadZero() {
-
-        int pressed = joystick.getPOV();
-        return pressed == -1;
-    }
 
     public boolean getInputB() {
         return joystick.getRawButtonPressed(XboxController.Button.kB.value);
+    }
+
+    public boolean getInputA() {
+        return joystick.getRawButton(XboxController.Button.kA.value);
+    }
+
+    public boolean getInputX() {
+        return joystick.getRawButton(XboxController.Button.kX.value);
+    }
+
+    public boolean getInputY() {
+        return joystick.getRawButton(XboxController.Button.kY.value);
     }
 
 

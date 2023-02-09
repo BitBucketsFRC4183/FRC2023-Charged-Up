@@ -76,8 +76,8 @@ public class DriveSubsystem {
                 if (autoSubsystem.state() == AutoFSM.AUTO_ENDED) {
                     driveControl.drive(new ChassisSpeeds(0, 0, 0));
                     break;
-                }
 
+                }
                 Optional<PathPlannerTrajectory.PathPlannerState> opt = autoSubsystem.samplePathPlannerState();
                 if (opt.isPresent()) {
                     ChassisSpeeds targetSpeeds = holoControl.calculatePose2DFromState(opt.get());
@@ -171,7 +171,7 @@ public class DriveSubsystem {
                 }
                 break;
         }
-
+        debuggable.log("state", state);
 
     }
 
