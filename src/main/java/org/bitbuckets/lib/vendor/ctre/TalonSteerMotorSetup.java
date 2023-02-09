@@ -35,7 +35,7 @@ public class TalonSteerMotorSetup implements ISetup<IMotorController> {
     }
 
     @Override
-    public IMotorController build(ProcessPath path) {
+    public IMotorController build(ProcessPath self) {
 
         final double sensorPositionCoefficient = 2.0 * Math.PI / TICKS_PER_ROTATION * moduleConfiguration.getSteerReduction();
         final double sensorVelocityCoefficient = sensorPositionCoefficient * 10.0;

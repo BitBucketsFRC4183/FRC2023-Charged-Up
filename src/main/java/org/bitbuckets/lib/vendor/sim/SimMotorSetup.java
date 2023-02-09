@@ -21,12 +21,12 @@ public class SimMotorSetup implements ISetup<IMotorController> {
     }
 
     @Override
-    public IMotorController build(ProcessPath path) {
+    public IMotorController build(ProcessPath self) {
         FlywheelSim motorSim = new FlywheelSim(DCMotor.getNeo550(1), 1, simulationConfig.simulatedMomentOfInertia);//TODO reverse, because for us numbers greater than one represent upgear not reduc)
         PIDController pidController = new PIDController(simulationConfig.simulatedP, simulationConfig.simulatedI, simulationConfig.simulatedD);
         SimMotorController simMotorController = new SimMotorController(config, motorSim, pidController);
 
-        path.registerLoop(simMotorController, 20, "ass");
+        self.registerLoop(simMotorController, 20, "ass");
 
         return simMotorController;
     }

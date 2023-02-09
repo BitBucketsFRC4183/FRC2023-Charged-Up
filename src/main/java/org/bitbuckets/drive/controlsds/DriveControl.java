@@ -9,8 +9,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import org.bitbuckets.drive.DriveConstants;
 import org.bitbuckets.drive.IDriveControl;
 import org.bitbuckets.drive.controlsds.sds.ISwerveModule;
-import org.bitbuckets.lib.log.ILoggable;
-import org.littletonrobotics.junction.Logger;
+import org.bitbuckets.lib.log.Debuggable;
 
 import java.util.List;
 
@@ -19,8 +18,7 @@ import java.util.List;
  */
 public class DriveControl implements IDriveControl {
 
-    final ILoggable<SwerveModuleState[]> desiredStates;
-    final ILoggable<SwerveModuleState[]> actualStates;
+    final Debuggable debug;
 
     // Swerve Modules
     final ISwerveModule moduleFrontLeft;
@@ -32,7 +30,6 @@ public class DriveControl implements IDriveControl {
     //Speed factor that edits the max velocity and max angular velocity
     double speedModifier = .75;
 
-
     List<ISwerveModule> modules;
 
     SwerveModuleState[] cachedSetpoint = new SwerveModuleState[]{
@@ -42,14 +39,12 @@ public class DriveControl implements IDriveControl {
             new SwerveModuleState()
     };
 
-    public DriveControl(ISwerveModule moduleFrontLeft, ISwerveModule moduleFrontRight, ISwerveModule moduleBackLeft, ISwerveModule moduleBackRight, ILoggable<SwerveModuleState[]> desiredStates, ILoggable<SwerveModuleState[]> actualStates) {
+    public DriveControl(Debuggable debug, ISwerveModule moduleFrontLeft, ISwerveModule moduleFrontRight, ISwerveModule moduleBackLeft, ISwerveModule moduleBackRight) {
         this.moduleFrontLeft = moduleFrontLeft;
         this.moduleFrontRight = moduleFrontRight;
         this.moduleBackLeft = moduleBackLeft;
         this.moduleBackRight = moduleBackRight;
-        this.desiredStates = desiredStates;
-        this.actualStates = actualStates;
-
+        this.debug = debug;
         // if disabled, we don't create a list of modules at all
         if (moduleFrontLeft != null) {
             modules = List.of(
@@ -62,27 +57,6 @@ public class DriveControl implements IDriveControl {
             modules = List.of();
         }
     }
-
-    public void guaranteedLoggingLoop() {
-        Logger.getInstance().recordOutput("a", reportSetpointStates());
-
-        //desiredStates.log(reportSetpointStates());
-        //actualStates.log(reportActualStates());
-    }
-
-    public SwerveModuleState[] reportSetpointStates() {
-        return cachedSetpoint;
-    }
-
-    public SwerveModuleState[] reportActualStates() {
-        return new SwerveModuleState[]{
-                new SwerveModuleState(),
-                new SwerveModuleState(),
-                new SwerveModuleState(),
-                new SwerveModuleState()
-        };
-    }
-
 
     public void drive(ChassisSpeeds chassisSpeeds) {
         doDriveWithStates(DriveConstants.KINEMATICS.toSwerveModuleStates(chassisSpeeds));
@@ -120,25 +94,27 @@ public class DriveControl implements IDriveControl {
 
             for (int i = 0; i < 4; i++) {
                 //System.out.println("Module " + i + ": " + states[i].angle.getDegrees());
-                modules.get(i).set(velocityToDriveVolts(states[i].speedMetersPerSecond), states[i].angle.getRadians());
+                int maxVoltage = 12;
+                double ff = DriveConstants.FF.calculate(states[i].speedMetersPerSecond);
+                modules.get(i).set(MathUtil.clamp(ff, -maxVoltage, maxVoltage), states[i].angle.getRadians());
             }
         }
     }
 
-    private double velocityToDriveVolts(double speedMetersPerSecond) {
-        int maxVoltage = 12;
-        double ff = DriveConstants.FF.calculate(speedMetersPerSecond);
-        return MathUtil.clamp(ff, -maxVoltage, maxVoltage);
-    }
-
+    //microoptimization: do this without stream()
     public SwerveModulePosition[] currentPositions() {
-        return new SwerveModulePosition[]{
-                new SwerveModulePosition(),
-                new SwerveModulePosition(),
-                new SwerveModulePosition(),
-                new SwerveModulePosition()
-        };
+        return this.modules.stream().map(ISwerveModule::getPosition).toArray(SwerveModulePosition[]::new);
     }
 
 
+    SwerveModuleState[] currentStates() {
+        return this.modules.stream().map(ISwerveModule::getState).toArray(SwerveModuleState[]::new);
+    }
+
+
+    public void log() { //example log loop
+        debug.log("command-modules", cachedSetpoint);
+        debug.log("actual-modules", currentStates());
+        debug.log("actual-positions", currentPositions());
+    }
 }

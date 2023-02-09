@@ -1,6 +1,7 @@
 package org.bitbuckets.odometry;
 
-import com.ctre.phoenix.sensors.WPI_PigeonIMU;
+import com.ctre.phoenix.sensors.Pigeon2;
+import com.ctre.phoenix.sensors.WPI_Pigeon2;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -9,23 +10,27 @@ import org.bitbuckets.drive.DriveConstants;
 import org.bitbuckets.drive.IDriveControl;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
-import org.bitbuckets.vision.VisionControl;
+import org.bitbuckets.lib.StartupProfiler;
+import org.bitbuckets.lib.log.Debuggable;
+import org.bitbuckets.vision.IVisionControl;
 
 public class OdometryControlSetup implements ISetup<OdometryControl> {
 
 
     final IDriveControl control;
-    final VisionControl visionControl;
+    final IVisionControl visionControl;
     final int pidgeonId;
 
-    public OdometryControlSetup(IDriveControl control, VisionControl visionControl, int pidgeonId1) {
+    public OdometryControlSetup(IDriveControl control, IVisionControl visionControl, int pidgeonId1) {
         this.control = control;
         this.visionControl = visionControl;
         this.pidgeonId = pidgeonId1;
     }
 
     @Override
-    public OdometryControl build(ProcessPath addChild) {
+    public OdometryControl build(ProcessPath self) {
+        StartupProfiler initializePidgeon = self.generateSetupProfiler("init-pidgeon");
+
         SwerveDrivePoseEstimator estimator = new SwerveDrivePoseEstimator(
                 DriveConstants.KINEMATICS,
                 Rotation2d.fromDegrees(0),
@@ -37,10 +42,24 @@ public class OdometryControlSetup implements ISetup<OdometryControl> {
                 },
                 new Pose2d()
         );
-        WPI_PigeonIMU pigeonIMU = new WPI_PigeonIMU(pidgeonId);
-        OdometryControl odometryControl = new OdometryControl (control, visionControl, pigeonIMU, estimator);;
 
-        addChild.registerLoop(odometryControl, "odometry-loop");
+        initializePidgeon.markProcessing();
+        WPI_Pigeon2 pigeonIMU = new WPI_Pigeon2(pidgeonId);
+        pigeonIMU.configFactoryDefault();
+        pigeonIMU.configMountPose(Pigeon2.AxisDirection.PositiveY, Pigeon2.AxisDirection.PositiveZ);
+        initializePidgeon.markCompleted();
+
+        Debuggable debug = self.generateDebugger();
+        OdometryControl odometryControl = new OdometryControl (
+                debug,
+                control,
+                visionControl,
+                pigeonIMU,
+                estimator
+        );;
+
+        self.registerLogLoop(odometryControl::logLoop);
+        self.registerLogicLoop(odometryControl::updateOdometryLoop);
 
         return odometryControl;
     }

@@ -2,30 +2,33 @@ package org.bitbuckets.lib;
 
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import org.bitbuckets.lib.core.IdentityDriver;
-import org.bitbuckets.lib.core.LogDriver;
 import org.bitbuckets.lib.core.LoopDriver;
+import org.bitbuckets.lib.log.Debuggable;
+import org.bitbuckets.lib.log.ILogDriver;
 import org.bitbuckets.lib.log.ILoggable;
-import org.bitbuckets.lib.log.type.DataLoggable;
-import org.bitbuckets.lib.log.type.DoubleLoggable;
-import org.bitbuckets.lib.log.type.StateLoggable;
-import org.bitbuckets.lib.log.type.StringLoggable;
-import org.bitbuckets.lib.startup.SetupDriver;
+import org.bitbuckets.lib.log.LoggingConstants;
+import org.bitbuckets.lib.startup.IStartupDriver;
 import org.bitbuckets.lib.tune.IValueTuner;
 import org.bitbuckets.lib.tune.TuneableDriver;
 
-//TODO documet
+import java.util.Arrays;
+
+
+/**
+ * does everythihg
+ */
 public class ProcessPath {
 
     final int currentId;
 
-    final SetupDriver setupDriver;
+    final IStartupDriver setupDriver;
     final IdentityDriver identityDriver;
-    final LogDriver logDriver;
+    final ILogDriver logDriver;
     final LoopDriver loopDriver;
     final TuneableDriver tuneableDriver;
     final boolean isReal;
 
-    public ProcessPath(int currentId, SetupDriver setupDriver, IdentityDriver identityDriver, LogDriver logDriver, LoopDriver loopDriver, TuneableDriver tuneableDriver, boolean isReal) {
+    public ProcessPath(int currentId, IStartupDriver setupDriver, IdentityDriver identityDriver, ILogDriver logDriver, LoopDriver loopDriver, TuneableDriver tuneableDriver, boolean isReal) {
         this.currentId = currentId;
         this.setupDriver = setupDriver;
         this.identityDriver = identityDriver;
@@ -60,6 +63,14 @@ public class ProcessPath {
         loopDriver.registerLoopPeriodic(currentId, executable, 100);
     }
 
+    public void registerLogLoop(Runnable executable) {
+        loopDriver.registerLoopPeriodic(currentId, executable, LoggingConstants.LOGGING_PERIOD);
+    }
+
+    public void registerLogicLoop(Runnable executable) {
+        loopDriver.registerLoopPeriodic(currentId, executable, 20);
+    }
+
 
     /**
      * Register a loop that will run all the time even when disabled.
@@ -87,10 +98,10 @@ public class ProcessPath {
 
     @Deprecated
     @DontUseIncubating
-    public SetupProfiler generateSetupProfiler(String taskName) {
+    public StartupProfiler generateSetupProfiler(String taskName) {
         int taskId = setupDriver.generateStartup(currentId, taskName);
 
-        return new SetupProfiler(setupDriver, taskId);
+        return new StartupProfiler(setupDriver, taskId);
     }
 
 
@@ -123,14 +134,10 @@ public class ProcessPath {
     }
 
 
-    /**
-     * Generates a loggable that logs doubles. You will have to call log on it to send data
-     *
-     * @param name the name it should show up as in logs
-     * @return loggable
-     */
-    public ILoggable<Double> generateDoubleLogger(String name) {
-        return new DoubleLoggable(logDriver, currentId, name);
+
+
+    public <T extends Enum<T>> ILoggable<T> generateEnumLogger(String key, Class<T> clazz) {
+        return logDriver.generateEnumLoggable(currentId, clazz, key);
     }
 
     /**
@@ -140,7 +147,7 @@ public class ProcessPath {
      * @return loggable
      */
     public ILoggable<Boolean> generateBooleanLogger(String name) {
-        return data -> logDriver.report(currentId, name, data);
+        return logDriver.generateBoolLoggable(currentId, name);
     }
 
     /**
@@ -150,7 +157,11 @@ public class ProcessPath {
      * @return loggable
      */
     public ILoggable<double[]> generateDoubleLoggers(String... namesInOrder) {
-        return new DataLoggable(namesInOrder, logDriver, currentId);
+        return logDriver.generateMultiLoggable(currentId, namesInOrder);
+    }
+
+    public ILoggable<String> generateStringLogger(String key) {
+        return logDriver.generateStringLoggable(currentId, key);
     }
 
     /**
@@ -159,10 +170,9 @@ public class ProcessPath {
      * @param name
      * @return
      */
-    public ILoggable<SwerveModuleState[]> generateStateLogger(String name) {
+    public ILoggable<SwerveModuleState[]> generateStateLogger(String... name) {
 
-        return new StateLoggable(logDriver, currentId, name);
-
+        return logDriver.generateSwerveLogger(currentId, Arrays.toString(name));
     }
 
 
@@ -170,14 +180,12 @@ public class ProcessPath {
         return isReal;
     }
 
-    /**
-     * read the other ones please
-     *
-     * @param name
-     * @return
-     */
-    public ILoggable<String> generateStringLogger(String name) {
-        return new StringLoggable(logDriver, currentId, name);
-
+    public int exposeProcessId() {
+        return currentId;
     }
+
+    public Debuggable generateDebugger() {
+        return logDriver.generateDebugger(currentId);
+    }
+
 }
