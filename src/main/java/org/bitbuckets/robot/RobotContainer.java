@@ -5,7 +5,6 @@ import org.bitbuckets.arm.ArmSubsystem;
 import org.bitbuckets.auto.AutoSubsystem;
 import org.bitbuckets.drive.DriveSubsystem;
 import org.bitbuckets.elevator.ElevatorSubsystem;
-import org.bitbuckets.vision.VisionControl;
 
 /**
  * This class represents your robot's periodic behavior
@@ -17,7 +16,7 @@ public class RobotContainer {
     final ArmSubsystem armSubsystem;
     final ElevatorSubsystem elevatorSubsystem;
     final AutoSubsystem autoSubsystem;
-    
+
     public RobotContainer(DriveSubsystem driveSubsystem, ArmSubsystem armSubsystem, ElevatorSubsystem elevatorSubsystem, AutoSubsystem autoSubsystem) {
         this.driveSubsystem = driveSubsystem;
         this.armSubsystem = armSubsystem;
