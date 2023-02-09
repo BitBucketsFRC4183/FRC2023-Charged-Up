@@ -5,7 +5,6 @@ import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.bitbuckets.lib.log.Debuggable;
-import org.bitbuckets.lib.log.ILoggable;
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
@@ -24,7 +23,7 @@ public class VisionControl implements Runnable, IVisionControl {
     final PhotonPoseEstimator photonPoseEstimator;
     final Debuggable debuggable;
 
-    VisionControl(Transform3d robotToCamera, AprilTagFieldLayout aprilTagFieldLayout, PhotonPoseEstimator photonPoseEstimator, PhotonCamera photonCamera, Debuggable debuggable) {
+    public VisionControl(Transform3d robotToCamera, AprilTagFieldLayout aprilTagFieldLayout, PhotonPoseEstimator photonPoseEstimator, PhotonCamera photonCamera, Debuggable debuggable) {
         this.robotToCamera = robotToCamera;
         this.aprilTagFieldLayout = aprilTagFieldLayout;
         this.photonPoseEstimator = photonPoseEstimator;
