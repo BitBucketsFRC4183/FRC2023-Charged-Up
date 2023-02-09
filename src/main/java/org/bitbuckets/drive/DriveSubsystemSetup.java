@@ -1,8 +1,8 @@
 package org.bitbuckets.drive;
 
 import edu.wpi.first.wpilibj.Joystick;
-import org.bitbuckets.auto.AutoControl;
-import org.bitbuckets.auto.AutoControlSetup;
+import org.bitbuckets.auto.AutoSubsystem;
+import org.bitbuckets.auto.AutoSubsystemSetup;
 import org.bitbuckets.auto.AutoPath;
 import org.bitbuckets.drive.balance.ClosedLoopsControl;
 import org.bitbuckets.drive.balance.ClosedLoopsSetup;
@@ -17,6 +17,7 @@ import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.lib.control.PIDConfig;
 import org.bitbuckets.lib.hardware.MotorConfig;
+import org.bitbuckets.lib.log.Debuggable;
 import org.bitbuckets.lib.log.ILoggable;
 import org.bitbuckets.lib.tune.IValueTuner;
 import org.bitbuckets.lib.util.MockingUtil;
@@ -30,7 +31,6 @@ import org.bitbuckets.odometry.IOdometryControl;
 import org.bitbuckets.odometry.OdometryControlSetup;
 import org.bitbuckets.robot.RobotStateControl;
 import org.bitbuckets.vision.IVisionControl;
-import org.bitbuckets.vision.VisionControl;
 
 import java.util.Optional;
 
@@ -38,12 +38,12 @@ public class DriveSubsystemSetup implements ISetup<DriveSubsystem> {
 
     final boolean driveEnabled;
 
-    final RobotStateControl robotStateControl;
+    final AutoSubsystem autoSubsystem;
     final IVisionControl visionControl;
 
-    public DriveSubsystemSetup(boolean driveEnabled, RobotStateControl robotStateControl, IVisionControl visionControl) {
+    public DriveSubsystemSetup(boolean driveEnabled, AutoSubsystem autoSubsystem, IVisionControl visionControl) {
         this.driveEnabled = driveEnabled;
-        this.robotStateControl = robotStateControl;
+        this.autoSubsystem = autoSubsystem;
         this.visionControl = visionControl;
     }
 
@@ -63,31 +63,24 @@ public class DriveSubsystemSetup implements ISetup<DriveSubsystem> {
                 .build(self.addChild("odo-control"));
         HoloControl holoControl = new HoloControlSetup(driveControl, odometryControl)
                 .build(self.addChild("holo-control"));
-        AutoControl autoControl = new AutoControlSetup()
-                .build(self.addChild("auto-control"));
 
         IValueTuner<AutoPath> pathTuneable = self
                 .generateEnumTuner("set-path", AutoPath.class, AutoPath.AUTO_TEST_PATH_ONE);
-        ILoggable<double[]> xyrotLoggers = self
-                .generateDoubleLoggers("x", "y", "rot");
-        ILoggable<DriveFSM> fsmLoggable = self
-                .generateEnumLogger("fsm-state", DriveFSM.class);
         IValueTuner<DriveSubsystem.OrientationChooser> orientationTuner = self
                 .generateEnumTuner("set-orientation", DriveSubsystem.OrientationChooser.class, DriveSubsystem.OrientationChooser.FIELD_ORIENTED);
+        Debuggable debuggable = self.generateDebugger();
 
         return new DriveSubsystem(
                 input,
-                robotStateControl,
                 odometryControl,
                 closedLoopsControl,
                 driveControl,
-                autoControl,
+                autoSubsystem,
                 holoControl,
                 visionControl,
-                pathTuneable,
-                fsmLoggable,
-                xyrotLoggers,
-                orientationTuner
+                orientationTuner,
+                debuggable
+
         );
     }
 
