@@ -13,4 +13,14 @@ public interface IMotorController extends IMotor, IEncoder {
         return getSetpoint_rawUnits() * getRawToRotationsFactor();
     }
 
+    /**
+     * Gets error in terms of encoder rotations
+     * @return the current error
+     */
+    default double getError(){
+        double setpoint = getSetpoint_rawUnits();
+        double actualPosition = getPositionRaw();
+        return setpoint - actualPosition;
+    }
+
 }

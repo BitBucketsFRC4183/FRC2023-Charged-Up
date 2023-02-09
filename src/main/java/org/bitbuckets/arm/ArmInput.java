@@ -45,25 +45,24 @@ public class ArmInput {
     //checks if the user wants to move the upper arm back (if the right bumper is held)
 
 
+    public boolean isStoragePressed()
+    {
+        return operatorControl.getRawButtonPressed(XboxController.Button.kRightBumper.value);
+    }
+
     // checks if operator wants to move arms to intake for human player station (by pressing X)
-    public boolean isIntakeHumanPressed() {
+    public boolean isHumanIntakePressed() {
         return operatorControl.getRawButtonPressed(XboxController.Button.kX.value);
     }
 
-    // checks if operator wants to move arms to intake for game piece on the floor (by pressing Y)
-    public boolean isIntakeGroundPressed() {
+    // checks if operator wants to move arms to score in medium node position (by pressing Y)
+    public boolean isScoreMidPressed() {
         return operatorControl.getRawButtonPressed(XboxController.Button.kY.value);
     }
 
-
-    // checks if operator wants to move arms to score in medium grid position (by pressing A)
-    public boolean isScoreMidPressed() {
-        return operatorControl.getRawButtonPressed(XboxController.Button.kA.value);
-    }
-
-    // checks if operator wants to move arms to score in high grid position (by pressing B)
+    // checks if operator wants to move arms to score in high node position (by pressing A)
     public boolean isScoreHighPressed() {
-        return operatorControl.getRawButtonPressed(XboxController.Button.kB.value);
+        return operatorControl.getRawButtonPressed(XboxController.Button.kA.value);
     }
 
 
