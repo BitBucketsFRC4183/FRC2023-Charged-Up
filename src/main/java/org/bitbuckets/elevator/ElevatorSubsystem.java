@@ -8,6 +8,16 @@ public class ElevatorSubsystem {
     final ElevatorInput elevatorInput;
     final Debuggable debug;
     final AutoSubsystem autoSubsystem;
+    final double storePosExtend = 0;
+    final double storePosTilt = 0;
+    final double loadZoneExtend = 0;
+    final double loadZoneTilt = 0;
+    final double lowPosExtend = 0;
+    final double lowPosTilt = 0;
+    final double middlePosExtend = 0;
+    final double middlePosTilt = 0;
+    final double highPosExtend = 0;
+    final double highPosTilt = 0;
 
 
     public ElevatorSubsystem(ElevatorControl elevatorControl, ElevatorInput elevatorInput, Debuggable debug, AutoSubsystem autoSubsystem) {
@@ -19,53 +29,23 @@ public class ElevatorSubsystem {
 
 
     public void teleopPeriodic() {
+        elevatorControl.extendUp(elevatorInput.getLJoystickY());
+        elevatorControl.extendUp(elevatorInput.getRJoystickX());
 
-/*
-(X) Tap Face Button to switch to store position
-(Y) Tap Face Button to switch to high position
-(A) Tap face button to switch to middle position
- */
-
-        //  elevatorControl.setElevatorMech2d();
-        if (elevatorInput.getInputB()) {
-            elevatorControl.zeroTilt();
-            elevatorControl.zeroExtend();
-        }
-
-
-        if (elevatorInput.getInputDpadUp()) {
-            elevatorControl.extendUp();
-
-        } else if (elevatorInput.getInputDpadDown()) {
-            elevatorControl.extendDown();
-
-        } else if (elevatorInput.getInputDpadLeft()) {
-            elevatorControl.tiltBack();
-
+        if (elevatorInput.getInputX()) {
+            elevatorControl.goToPosition(storePosExtend, storePosTilt);
         } else if (elevatorInput.getInputDpadRight()) {
-            elevatorControl.tiltForward();
-
-        } else if (elevatorInput.getInputX()) {
-            // default
-
-            elevatorControl.gotoPositionButton();
-        } else if (elevatorInput.getInputB()) {
-            //loading zone
-
-            elevatorControl.gotoPositionButton();
-        } else if (elevatorInput.getInputY()) {
-            //high node
-
-            elevatorControl.gotoPositionButton();
-        } else if (elevatorInput.getInputA()) {
-            // midle node
-
-            elevatorControl.gotoPositionButton();
+            elevatorControl.goToPosition(loadZoneExtend, loadZoneTilt);
+        } else if (elevatorInput.getInputDpadLeft()) {
+            elevatorControl.goToPosition(lowPosExtend, lowPosTilt);
+        } else if (elevatorInput.getInputDpadUp()) {
+            elevatorControl.goToPosition(highPosExtend, highPosTilt);
+        } else if (elevatorInput.getInputDpadDown()) {
+            elevatorControl.goToPosition(middlePosExtend, middlePosTilt);
         } else {
+            elevatorControl.stopTilt();
             elevatorControl.stopExtend();
-
         }
-
 
     }
 }

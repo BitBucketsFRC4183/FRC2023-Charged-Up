@@ -88,30 +88,17 @@ public class ElevatorControl {
 
     }
 
-    public void gotoPositionButton() {
-        goToPosition(60.0, 1.3);
+
+    public void extendUp(double percentOut) {
+        leftExtend.moveAtPercent(percentOut);
 
 
     }
 
-
-    public void extendUp() {
-        //rightExtend.moveAtPercent(0.2);
-        leftExtend.moveAtPercent(0.2);
-
-
-    }
-
-    public void extendDown() {
-
-        // rightExtend.moveAtPercent(-0.2);
-        leftExtend.moveAtPercent(-0.2);
-    }
-
-    public void tiltForward() {
+    public void tiltForward(double percentOut) {
 
         //   rightTilt.moveAtPercent(0.2);
-        leftTilt.moveAtPercent(0.05);
+        leftTilt.moveAtPercent(percentOut);
     }
 
     public void tiltBack() {
