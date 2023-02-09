@@ -1,7 +1,7 @@
 package org.bitbuckets.elevator;
 
 import edu.wpi.first.wpilibj.Joystick;
-import org.bitbuckets.robot.XboxConstants;
+import edu.wpi.first.wpilibj.XboxController;
 
 public class ElevatorInput {
     final Joystick joystick;
@@ -10,8 +10,8 @@ public class ElevatorInput {
         this.joystick = joystick;
     }
 
-    public boolean getInputCirlce() {
-        return joystick.getRawButton(XboxConstants.CIRCLE);
+    public boolean getInputA() {
+        return joystick.getRawButton(XboxController.Button.kA.value);
     }
 
     public boolean getInputDpadUp() {
@@ -41,12 +41,8 @@ public class ElevatorInput {
         return pressed == -1;
     }
 
-    public boolean getInputSquare() {
-        return joystick.getRawButtonPressed(XboxConstants.SQUARE);
-    }
-
-    public boolean getInputLeftStick() {
-        return joystick.getRawButtonPressed(XboxConstants.L_STICK);
+    public boolean getInputB() {
+        return joystick.getRawButtonPressed(XboxController.Button.kB.value);
     }
 
 

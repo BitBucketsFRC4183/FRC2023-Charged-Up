@@ -30,7 +30,7 @@ public class ElevatorSubsystem {
 
 
         //  elevatorControl.setElevatorMech2d();
-        if (elevatorInput.getInputSquare()) {
+        if (elevatorInput.getInputB()) {
             elevatorControl.zeroTilt();
             elevatorControl.zeroExtend();
         }
@@ -49,7 +49,7 @@ public class ElevatorSubsystem {
             elevatorControl.tiltForward();
 
 
-        } else if (elevatorInput.getInputCirlce()) {
+        } else if (elevatorInput.getInputA()) {
 
             elevatorControl.gotoPositionButton();
 
