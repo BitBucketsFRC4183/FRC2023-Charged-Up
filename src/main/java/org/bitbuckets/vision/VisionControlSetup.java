@@ -7,14 +7,27 @@ import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.lib.log.ILoggable;
 import org.bitbuckets.lib.log.LoggingConstants;
+import org.bitbuckets.lib.util.MockingUtil;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 
 import java.io.IOException;
 
-public class VisionControlSetup implements ISetup<IVisionControl> {
+public class VisionControlSetup implements ISetup<VisionControl> {
+
+    final boolean isEnabled;
+
+    public VisionControlSetup(boolean isEnabled) {
+        this.isEnabled = isEnabled;
+    }
+
+
     @Override
     public IVisionControl build(ProcessPath self) {
+
+        if (!isEnabled) {
+            return MockingUtil.buddy(VisionControl.class);
+        }
 
         AprilTagFieldLayout aprilTagFieldLayout;
         try {
