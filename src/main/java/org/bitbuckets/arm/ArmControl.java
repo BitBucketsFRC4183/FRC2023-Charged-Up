@@ -1,6 +1,7 @@
 package org.bitbuckets.arm;
 
 import org.bitbuckets.lib.hardware.IMotorController;
+import org.bitbuckets.lib.log.Debuggable;
 import org.bitbuckets.lib.log.ILoggable;
 
 
@@ -9,40 +10,17 @@ public class ArmControl {
 
     final IMotorController lowerJoint;
     final IMotorController upperJoint;
-    final ILoggable<Boolean> isArmOutOfReach;
-
-    // convertLowerRawToMechanism and convertUpperRawToMechanism are 0 by default
-    final ILoggable<Double> convertLowerRawToMechanism;
-    final ILoggable<Double> convertUpperRawToMechanism;
-
-    final ILoggable<Double> findLowerAngleKinematics;
-    final ILoggable<Double> findUpperAngleKinematics;
+    final Debuggable debuggable;
 
 
 
     // How do set up IMotorController and IEncoder so that lowerJoint == lowerEncoder
 
 
-    public ArmControl(IMotorController lowerJoint, IMotorController upperJoint, ILoggable<Boolean> isArmOutOfReach, ILoggable<Double> convertRawToMechanism, ILoggable<Double> convertLowerRawToMechanism, ILoggable<Double> findLowerAngle, ILoggable<Double> findUpperAngle) {
+    public ArmControl(IMotorController lowerJoint, IMotorController upperJoint, Debuggable debuggable) {
         this.lowerJoint = lowerJoint;
         this.upperJoint = upperJoint;
-
-
-
-        this.isArmOutOfReach = isArmOutOfReach;
-
-        this.findLowerAngleKinematics = findLowerAngle;
-        this.findUpperAngleKinematics = findUpperAngle;
-
-        findLowerAngle.log(0.);
-        findUpperAngle.log(0.);
-
-        isArmOutOfReach.log(false);
-
-        this.convertLowerRawToMechanism = convertLowerRawToMechanism;
-        this.convertUpperRawToMechanism = convertRawToMechanism;
-        convertLowerRawToMechanism.log(0.);
-        convertUpperRawToMechanism.log(0.);
+        this.debuggable = debuggable;
     }
 
     public void calibrateLowerArm() {
@@ -71,14 +49,12 @@ public class ArmControl {
 
     public void moveLowerArmToPosition_DEGREES(double angle) {
         double lowerConverted = convertMechanismRotationtoRawRotation_upperJoint(angle / 360.);
-        convertLowerRawToMechanism.log(lowerConverted);
         lowerJoint.moveToPosition(lowerConverted);
     }
 
     public void moveUpperArmToPosition_DEGREES(double angle) {
 
         double upperConverted = convertMechanismRotationtoRawRotation_upperJoint(angle / 360.);
-        convertUpperRawToMechanism.log(upperConverted);
         upperJoint.moveToPosition(upperConverted);
     }
 
@@ -100,11 +76,11 @@ public class ArmControl {
     {
         if (Double.isNaN(lowerAngle) || Double.isNaN(upperAngle))
         {
-            isArmOutOfReach.log(false);
+            debuggable.log("out-of-reach", false);
             return false;
         }
         else {
-            isArmOutOfReach.log(true);
+            debuggable.log("out-of-reach", true);
             return true;
         }
     }
@@ -124,8 +100,8 @@ public class ArmControl {
         double lowerAngle = humanPlayer.getLowerJointAngle();
         double upperAngle = humanPlayer.getUpperJointAngle();
 
-        findLowerAngleKinematics.log(Math.toDegrees(lowerAngle));
-        findUpperAngleKinematics.log(Math.toDegrees(upperAngle));
+        debuggable.log("lower-kinematics", Math.toDegrees(lowerAngle));
+        debuggable.log("upper-kinematics", Math.toDegrees(upperAngle));
 
         //finding NaN errors
         if (isReachable(lowerAngle, upperAngle))
@@ -143,8 +119,8 @@ public class ArmControl {
         double lowerAngle = store.getLowerJointAngle();
         double upperAngle = store.getUpperJointAngle();
 
-        findLowerAngleKinematics.log(Math.toDegrees(lowerAngle));
-        findUpperAngleKinematics.log(Math.toDegrees(upperAngle));
+        debuggable.log("lower-kinematics", Math.toDegrees(lowerAngle));
+        debuggable.log("upper-kinematics", Math.toDegrees(upperAngle));
 
         //finding NaN errors
         if (isReachable(lowerAngle, upperAngle))
@@ -162,8 +138,8 @@ public class ArmControl {
         double lowerAngle = prepare.getLowerJointAngle();
         double upperAngle = prepare.getUpperJointAngle();
 
-        findLowerAngleKinematics.log(Math.toDegrees(lowerAngle));
-        findUpperAngleKinematics.log(Math.toDegrees(upperAngle));
+        debuggable.log("lower-kinematics", Math.toDegrees(lowerAngle));
+        debuggable.log("upper-kinematics", Math.toDegrees(upperAngle));
 
         //finding NaN errors
         if (isReachable(lowerAngle, upperAngle))
@@ -192,8 +168,8 @@ public class ArmControl {
         double lowerAngle = midNode.getLowerJointAngle();
         double upperAngle = midNode.getUpperJointAngle();
 
-        findLowerAngleKinematics.log(Math.toDegrees(lowerAngle));
-        findUpperAngleKinematics.log(Math.toDegrees(upperAngle));
+        debuggable.log("lower-kinematics", Math.toDegrees(lowerAngle));
+        debuggable.log("upper-kinematics", Math.toDegrees(upperAngle));
 
         //finding NaN errors
         if (isReachable(lowerAngle, upperAngle))
@@ -214,8 +190,8 @@ public class ArmControl {
         double lowerAngle = highNode.getLowerJointAngle();
         double upperAngle = highNode.getUpperJointAngle();
 
-        findLowerAngleKinematics.log(Math.toDegrees(lowerAngle));
-        findUpperAngleKinematics.log(Math.toDegrees(upperAngle));
+        debuggable.log("lower-kinematics", Math.toDegrees(lowerAngle));
+        debuggable.log("upper-kinematics", Math.toDegrees(upperAngle));
 
         //finding NaN errors
         if (isReachable(lowerAngle, upperAngle))
