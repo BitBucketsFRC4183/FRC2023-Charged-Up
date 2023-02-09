@@ -22,7 +22,7 @@ class ArmControlTest {
     @Disabled
     @Test
     void convertMechanismRotationToRawRotation_lowerJoint() {
-        ArmControl control = new ArmControl(lowerJoint, upperJoint);
+        ArmControl control = new ArmControl(lowerJoint, upperJoint, null, null, null, null, null);
 
         assertEquals(27.69, control.convertMechanismRotationtoRawRotation_lowerJoint(1), .1);
     }
@@ -30,7 +30,7 @@ class ArmControlTest {
     @Disabled
     @Test
     void convertMechanismRotationToRawRotation_upperJoint() {
-        ArmControl control = new ArmControl(lowerJoint, upperJoint);
+        ArmControl control = new ArmControl(lowerJoint, upperJoint, null, null, null, null, null);
 
         assertEquals(24., control.convertMechanismRotationtoRawRotation_upperJoint(1), .1);
     }

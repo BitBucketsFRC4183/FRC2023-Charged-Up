@@ -7,15 +7,15 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ForwardKinematicsTest {
 
-    @Disabled
+    //@Disabled
     @Test
     public void getX() {
-        assertEquals(0, new ForwardKinematics(45, 0).getX());
+        assertEquals(1.535 * Math.sqrt(2) / 2, new ForwardKinematics(Math.PI/4, 0).getX(), 0.01);
     }
 
-    @Disabled
+    //@Disabled
     @Test
     public void getY() {
-        assertEquals(0, new ForwardKinematics(45, 0).getY());
+        assertEquals(1.535 * Math.sqrt(2) / 2, new ForwardKinematics(Math.PI/4, 0).getY(), 0.01);
     }
 }
