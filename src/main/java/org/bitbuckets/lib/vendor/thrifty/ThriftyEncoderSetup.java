@@ -3,7 +3,7 @@ package org.bitbuckets.lib.vendor.thrifty;
 import edu.wpi.first.wpilibj.AnalogInput;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
-import org.bitbuckets.lib.SetupProfiler;
+import org.bitbuckets.lib.StartupProfiler;
 import org.bitbuckets.lib.hardware.IAbsoluteEncoder;
 import org.bitbuckets.lib.log.ILoggable;
 
@@ -19,15 +19,15 @@ public class ThriftyEncoderSetup implements ISetup<IAbsoluteEncoder> {
     }
 
     @Override
-    public IAbsoluteEncoder build(ProcessPath path) {
+    public IAbsoluteEncoder build(ProcessPath self) {
 
-        SetupProfiler libSetup = path.generateSetupProfiler("lib-setup");
+        StartupProfiler libSetup = self.generateSetupProfiler("lib-setup");
         AnalogInput input = new AnalogInput(channel);
         
-        ILoggable<double[]> thriftydata = path.generateDoubleLoggers("Raw-Angle-Degrees", "Angle-Degrees", "Voltage");
+        ILoggable<double[]> thriftydata = self.generateDoubleLoggers("Raw-Angle-Degrees", "Angle-Degrees", "Voltage");
         ThriftyEncoder thrifty = new ThriftyEncoder(input, thriftydata, offset_radians);
 
-        path.registerLoop(thrifty, 100, "thrifty-log-loop");
+        self.registerLoop(thrifty, 100, "thrifty-log-loop");
 
         return thrifty;
     }

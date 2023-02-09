@@ -2,13 +2,15 @@ package org.bitbuckets.robot;
 
 import org.bitbuckets.arm.ArmSubsystem;
 import org.bitbuckets.arm.ArmSubsystemSetup;
+import org.bitbuckets.auto.AutoSubsystem;
+import org.bitbuckets.auto.AutoSubsystemSetup;
 import org.bitbuckets.drive.DriveSubsystem;
 import org.bitbuckets.drive.DriveSubsystemSetup;
 import org.bitbuckets.elevator.ElevatorSubsystem;
 import org.bitbuckets.elevator.ElevatorSubsystemSetup;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
-import org.bitbuckets.vision.VisionControl;
+import org.bitbuckets.vision.IVisionControl;
 import org.bitbuckets.vision.VisionControlSetup;
 
 public class RobotSetup implements ISetup<RobotContainer> {
@@ -19,26 +21,37 @@ public class RobotSetup implements ISetup<RobotContainer> {
         this.robotStateControl = robotStateControl;
     }
 
-    @Override
-    public RobotContainer build(ProcessPath path) {
 
-        VisionControl visionControl = new VisionControlSetup(true)
-                .build(path.addChild("vision-control") );
+    @Override
+    public RobotContainer build(ProcessPath self) {
+
+        AutoSubsystem autoSubsystem = new AutoSubsystemSetup(true)
+                .build( self.addChild("auto-subsystem") );
+
+        IVisionControl visionControl = new VisionControlSetup()
+                .build( self.addChild("vision-control") );
 
         ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystemSetup(false)
-                .build(path.addChild("elevator-subsystem") );
+                .build( self.addChild("elevator-subsystem") );
 
-        ArmSubsystem armSubsystem = new ArmSubsystemSetup(true)
-                .build(path.addChild("arm-subsystem"));
+        ArmSubsystem armSubsystem = new ArmSubsystemSetup(false)
+                .build(self.addChild("arm-subsystem"));
 
         DriveSubsystem driveSubsystem = new DriveSubsystemSetup(
                 false,
-                robotStateControl,
+                autoSubsystem,
                 visionControl
-        ).build(path.addChild("drive-subsystem"));
+        ).build(self.addChild("drive-subsystem"));
+
+        /**
+         * Register the crasher runnable if
+         */
+        if (System.getenv().containsKey("CI")) {
+            self.registerLoop(new SimulatorKillAspect(), "simulator-kill-loop");
+        }
 
 
-        return new RobotContainer(driveSubsystem, armSubsystem, elevatorSubsystem);
+        return new RobotContainer(driveSubsystem, armSubsystem, elevatorSubsystem, autoSubsystem);
     }
 
 

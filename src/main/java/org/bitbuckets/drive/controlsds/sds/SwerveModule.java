@@ -1,5 +1,7 @@
 package org.bitbuckets.drive.controlsds.sds;
 
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import org.bitbuckets.lib.log.ILoggable;
 
 public class SwerveModule implements ISwerveModule, Runnable {
@@ -16,6 +18,20 @@ public class SwerveModule implements ISwerveModule, Runnable {
         this.swerveAngleVoltage = swerveAngleVelocity;
     }
 
+
+    //TODO this isn't working
+    @Override
+    public SwerveModulePosition getPosition() {
+        return new SwerveModulePosition();
+    }
+
+    //TODO this isn't working
+    @Override
+    public SwerveModuleState getState() {
+        return new SwerveModuleState();
+    }
+
+
     @Override
     public double getDriveVelocity() {
         return driveController.getStateVelocity();
@@ -28,6 +44,7 @@ public class SwerveModule implements ISwerveModule, Runnable {
 
     @Override
     public void set(double driveVoltage, double steerAngle) {
+
         steerAngle %= (2.0 * Math.PI);
         if (steerAngle < 0.0) {
             steerAngle += 2.0 * Math.PI;

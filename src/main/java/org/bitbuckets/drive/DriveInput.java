@@ -3,6 +3,7 @@ package org.bitbuckets.drive;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.XboxController;
 import org.bitbuckets.robot.XboxConstants;
 
 public class DriveInput {
@@ -65,7 +66,6 @@ public class DriveInput {
      * @return whether the aim drive is held or not
      */
     public boolean isAutoHeadingPressed() {
-
         return joystick.getRawButtonPressed(XboxConstants.CROSS);
     }
 
@@ -85,9 +85,12 @@ public class DriveInput {
         return joystick.getRawButtonReleased(XboxConstants.TRIANGLE);
     }
 
-
     public boolean isAutoBalancePressed() {
         return joystick.getRawButtonPressed(XboxConstants.CIRCLE);
+    }
+
+    public boolean isResetGyroPressed(){
+        return joystick.getRawButtonPressed(XboxConstants.OPTIONS);
     }
 
 }

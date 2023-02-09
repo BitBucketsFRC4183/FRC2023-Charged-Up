@@ -6,11 +6,14 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.lib.core.IdentityDriver;
-import org.bitbuckets.lib.core.LogDriver;
 import org.bitbuckets.lib.core.LoopDriver;
 import org.bitbuckets.lib.core.NetworkPublisher;
-import org.bitbuckets.lib.startup.SetupDriver;
+import org.bitbuckets.lib.log.ILogDriver;
+import org.bitbuckets.lib.log.LogDriver;
+import org.bitbuckets.lib.startup.StartupDriver;
+import org.bitbuckets.lib.startup.IStartupDriver;
 import org.bitbuckets.lib.tune.TuneableDriver;
+import org.bitbuckets.robot.RobotConstants;
 import org.bitbuckets.robot.RobotContainer;
 import org.bitbuckets.robot.RobotSetup;
 import org.bitbuckets.robot.RobotStateControl;
@@ -42,25 +45,24 @@ public class Robot extends LoggedRobot {
         logger.recordMetadata("GitBranch", BuildConstants.GIT_BRANCH);
         logger.recordMetadata("Powered By", "MattLib");
 
-
         if (isReal()) {
             logger.addDataReceiver(new WPILOGWriter("/media/sda1/")); // Log to a USB stick
-            logger.addDataReceiver(new NetworkPublisher()); // Publish data to NetworkTables
+            logger.addDataReceiver(new NetworkPublisher(RobotConstants.LOGGING_ENABLED)); // Publish data to NetworkTables
             new PowerDistribution(1, PowerDistribution.ModuleType.kRev); // Enables power distribution logging
         } else {
             logger.addDataReceiver(new WPILOGWriter("analysis/"));
-            logger.addDataReceiver(new NetworkPublisher());
+            logger.addDataReceiver(new NetworkPublisher(true)); //always log during sim
         }
 
         logger.start(); // Start logging! No more data receivers, replay sources, or metadata values may be added.
 
         loopDriver = new LoopDriver();
         IdentityDriver identityDriver = new IdentityDriver();
-        LogDriver logDriver = new LogDriver(logger, identityDriver);
+        ILogDriver logDriver = new LogDriver(logger, identityDriver);
         TuneableDriver tuneableDriver = new TuneableDriver(NetworkTableInstance.getDefault().getTable("RealOutputs/MattTuneables"), identityDriver);
 
         int consoleId = identityDriver.childProcess(0, "Console");
-        SetupDriver setupDriver = new SetupDriver(identityDriver, logDriver, consoleId);
+        IStartupDriver setupDriver = new StartupDriver(identityDriver, logger);
         ProcessPath rootPath = new ProcessPath(0, setupDriver, identityDriver, logDriver, loopDriver, tuneableDriver, isReal());
         RobotStateControl robotStateControl = new RobotStateControl(this);
         RobotSetup setup = new RobotSetup(robotStateControl);
@@ -81,6 +83,17 @@ public class Robot extends LoggedRobot {
 
     //periodics
 
+
+    @Override
+    public void autonomousInit() {
+        super.autonomousInit();
+    }
+
+    @Override
+    public void teleopInit() {
+        super.teleopInit();
+    }
+
     @Override
     public void robotPeriodic() {
         loopDriver.runPeriodic();
@@ -92,10 +105,6 @@ public class Robot extends LoggedRobot {
         robotHandle.teleopPeriodic();
     }
 
-    @Override
-    public void autonomousPeriodic() {
-        robotHandle.autoPeriodic();
-    }
 
     @Override
     public void simulationPeriodic() {

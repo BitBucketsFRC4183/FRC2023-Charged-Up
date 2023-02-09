@@ -24,19 +24,18 @@ public class DriveControlSetup implements ISetup<DriveControl> {
     }
 
     @Override
-    public DriveControl build(ProcessPath path) {
+    public DriveControl build(ProcessPath self) {
 
 
         DriveControl control = new DriveControl(
-                frontLeft.build(path.addChild("front-left")),
-                frontRight.build(path.addChild("front-right")),
-                backLeft.build(path.addChild("back-left")),
-                backRight.build(path.addChild("back-right")),
-                path.generateStateLogger("desired-states"),
-                path.generateStateLogger("actual-states")
+                self.generateDebugger(),
+                frontLeft.build(self.addChild("front-left")),
+                frontRight.build(self.addChild("front-right")),
+                backLeft.build(self.addChild("back-left")),
+                backRight.build(self.addChild("back-right"))
         );
 
-        path.registerLoop(control::guaranteedLoggingLoop, 30, "help me");
+        self.registerLoop(control::log, "logging-loop");
 
         return control;
     }

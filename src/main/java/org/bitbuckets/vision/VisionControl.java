@@ -1,11 +1,7 @@
 package org.bitbuckets.vision;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.math.controller.HolonomicDriveController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.*;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import org.bitbuckets.lib.log.ILoggable;
 import org.photonvision.EstimatedRobotPose;
@@ -20,7 +16,7 @@ import java.util.Optional;
 import static org.bitbuckets.vision.VisionConstants2.TAG_TO_CHASE;
 
 
-public class VisionControl implements Runnable{
+public class VisionControl implements Runnable, IVisionControl {
 
 
     final Transform3d robotToCamera;
@@ -43,6 +39,16 @@ public class VisionControl implements Runnable{
     @Override
     public void run() {
        //TODO log
+    }
+
+    @Override
+    public Optional<Pose3d> estimateTargetPose() {
+        return visionPoseEstimator().map(pr -> pr.goalPose);
+    }
+
+    @Override
+    public Optional<Pose3d> estimateRobotPose() {
+        return visionPoseEstimator().map(pr -> pr.robotPose);
     }
 
     public class PhotonCalculationResult {
