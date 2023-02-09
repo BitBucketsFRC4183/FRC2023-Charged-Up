@@ -11,6 +11,12 @@ package org.bitbuckets.lib.hardware;
  */
 public interface IMotor extends IRaw {
 
+    /**
+     *
+     * @param voltage voltage to move at
+     */
+    void moveAtVoltage(double voltage);
+
 
     /**
      * This method will tell the motor controller underneath to move at a specified percent of
