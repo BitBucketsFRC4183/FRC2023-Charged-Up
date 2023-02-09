@@ -2,7 +2,11 @@ package org.bitbuckets.robot;
 
 public interface RobotConstants {
 
-    int SET_MAXCONFIGTIME_MS = 100;
+    /**
+     * Only controls whether data will be sent to networktables.
+     * Data will always be logged to wpi files so you can read it.
+     */
+    boolean LOGGING_ENABLED = true;
     double NETWORK_SEND_PERIOD = 100;
 
 }

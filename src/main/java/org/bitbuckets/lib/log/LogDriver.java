@@ -131,25 +131,25 @@ public class LogDriver implements ILogDriver {
             public void log(String key, Translation3d trans3) {
 
 
-                logger.recordOutput("WARNING", "cannot log positions because i havent added them yet");
+                logger.recordOutput(computed + "WARNING", "cannot log positions because i havent added them yet");
             }
 
             @Override
             public void log(String key, Translation2d trans2) {
 
-                logger.recordOutput("WARNING", "cannot log translations because i havent added them yet");
+                logger.recordOutput(computed + "WARNING", "cannot log translations because i havent added them yet");
             }
 
             @Override
             public void log(String key, SwerveModulePosition[] positions) {
                 //Do nothing, not implemented yet
 
-                logger.recordOutput("WARNING", "cannot log positions because i havent added them yet");
+                logger.recordOutput(computed + "WARNING", "cannot log positions because i havent added them yet");
             }
 
             @Override
             public void log(String key, SwerveModuleState[] states) {
-                logger.recordOutput(key, states);
+                logger.recordOutput(computed + key, states);
             }
         };
     }
