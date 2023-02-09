@@ -38,7 +38,6 @@ public class OdometryControl implements IOdometryControl {
         debuggable.log("yaw", (pigeonIMU.getYaw()));
         debuggable.log("pitch", (pigeonIMU.getPitch()));
         debuggable.log("roll", (pigeonIMU.getRoll()));
-        debuggable.log("heading", pigeonIMU.getYaw());
         debuggable.log("rate", pigeonIMU.getRate());
     }
 
