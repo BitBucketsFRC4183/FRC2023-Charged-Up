@@ -4,6 +4,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import org.bitbuckets.lib.hardware.IMotorController;
 
+@Deprecated
 public class TalonRelativeMotorController implements IMotorController, Runnable {
     final WPI_TalonFX motor;
 
@@ -47,6 +48,11 @@ public class TalonRelativeMotorController implements IMotorController, Runnable 
     }
 
     @Override
+    public void forceOffset_mechanismRotations(double offsetUnits_mechanismRotations) {
+
+    }
+
+    @Override
     public void moveAtVoltage(double voltage) {
         motor.setVoltage(voltage);
     }
@@ -72,7 +78,7 @@ public class TalonRelativeMotorController implements IMotorController, Runnable 
     }
 
     @Override
-    public double getSetpoint_rawUnits() {
+    public double getSetpoint_mechanismRotations() {
         return motor.getClosedLoopTarget();
     }
 

@@ -74,6 +74,16 @@ public class LogDriver implements ILogDriver {
     }
 
     @Override
+    public ILoggable<Double> generateDoubleLoggable(int id, String key) {
+        String computed = identityDriver.fullPath(id) + key;
+
+        ILoggable<Double> log = a -> logger.recordOutput(computed, a);;
+        log.log(0.0);
+
+        return log;
+    }
+
+    @Override
     public ILoggable<Translation2d[]> generateTranslationLogger(int id, String... key) {
         String computed = identityDriver.fullPath(id) + key;
         String x = computed + "-x";

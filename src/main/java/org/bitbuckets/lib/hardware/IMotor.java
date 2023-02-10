@@ -53,7 +53,7 @@ public interface IMotor extends IRaw {
      * Gets the current desired position of the pid algorithm in the units used by the controller
      * @return The current PID setpoint, if using PID, in the raw units of the motor controller
      */
-    double getSetpoint_rawUnits();
+    double getSetpoint_mechanismRotations();
 
 
 }
