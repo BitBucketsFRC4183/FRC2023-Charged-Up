@@ -23,7 +23,6 @@ public class AngleUtil {
         double unbound_rotations = unbound_rotationsInitial;
 
         if (unbound_rotations > 1.0) {
-            System.out.println("ASSS");
 
             while (unbound_rotations > 1.0) {
                 unbound_rotations -= 1.0;
