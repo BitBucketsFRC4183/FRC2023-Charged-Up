@@ -95,7 +95,7 @@ Right Joystick to control upper joint on arm
         return operatorControl.getRawButtonPressed(XboxController.Button.kX.value);
     }
 
-    // checks if operator wants to move arms to intake for human player station (by pressing X)
+    // checks if operator wants to move arms to intake for human player station (by pressing RIGHT DPAD)
     public boolean isHumanIntakePressed() {
         return getInputDpadRight();
     }
