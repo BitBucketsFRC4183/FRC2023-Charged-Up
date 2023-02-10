@@ -82,7 +82,7 @@ public class SparkRelativeMotorController implements IMotorController, Runnable 
 
     @Override
     public double getSetpoint_rawUnits() {
-        throw new UnsupportedOperationException("cannot use getSetpoint on a spark :(");
+        return positionSetpoint;
     }
 
     @Override
