@@ -162,10 +162,8 @@ public class StartupDriver implements IStartupDriver, Runnable {
             int lineNumber = element.getLineNumber();
             String methodName = element.getMethodName();
 
-            logger.recordOutput("anal", record.processName + record.taskName + methodName + lineNumber + message);
-
             String consolePost = format(
-                    "[%s] (Task %s): Threw exception at ('%s' line %s), report: %s",
+                    "[%s] (Task %s): Threw exception at %s %s, report: %s",
                     record.processName,
                     record.taskName,
                     methodName,
