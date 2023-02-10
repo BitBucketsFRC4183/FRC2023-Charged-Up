@@ -73,6 +73,11 @@ public class ElevatorSimController implements IMotorController, Runnable {
     }
 
     @Override
+    public void moveToPosition_mechanismRotations(double position_mechanismRotations) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public void moveAtVelocity(double velocity_encoderMetersPerSecond) {
         throw new IllegalStateException("cannot move at velocity :(");
     }

@@ -62,6 +62,11 @@ public class TalonRelativeMotorController implements IMotorController, Runnable 
     }
 
     @Override
+    public void moveToPosition_mechanismRotations(double position_mechanismRotations) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public void moveAtVelocity(double velocity_encoderMetersPerSecond) {
         motor.set(ControlMode.Velocity, velocity_encoderMetersPerSecond);
     }
