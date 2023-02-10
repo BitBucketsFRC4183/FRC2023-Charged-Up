@@ -7,6 +7,11 @@ import org.bitbuckets.lib.hardware.IMotorController;
 import org.bitbuckets.lib.log.Debuggable;
 import org.bitbuckets.lib.vendor.spark.SparkSetup;
 
+import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
+
+
 public class ArmControlSetup implements ISetup<ArmControl> {
 
     // Lower Device ID = 9
@@ -41,6 +46,26 @@ public class ArmControlSetup implements ISetup<ArmControl> {
 
         upperSpark.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, (float) 25.0);
         upperSpark.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, (float) -90.0);
+
+        //Arm Simulation stuff
+        /*
+        Mechanism2d mech = new Mechanism2d(3, 3);
+        // the mechanism root node
+        MechanismRoot2d base = mech.getRoot("base", 1.5, 0);
+        Mechanism2d upperPivot = getUpperPivot(mech);
+
+        arm = base.append(new MechanismLigament2d("elevator", 2, 90));
+        elevatorWrist =
+                elevator.append(
+                        new MechanismLigament2d("wrist", -0.5, 90, 6, new Color8Bit(Color.kPurple)));
+
+        // post the mechanism to the dashboard
+        SmartDashboard.putData("Mech2d", mech);
+        var debug = self.generateDebugger();
+
+        //Debuggable debug = self.generateDebugger();
+        // ADD DEBUGGABLES
+        */
 
         Debuggable debug = self.generateDebugger();
 
