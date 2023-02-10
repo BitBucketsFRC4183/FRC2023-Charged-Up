@@ -37,16 +37,17 @@ public class ArmSubsystem {
             armControl.calibrateUpperArm();
             System.out.println("Arms calibrated!");
         }
-        if (armInput.isDisablePositionControlPressed()) {
-            state = ArmFSM.MANUAL;
-            logState = "MANUAL";
-        }
+        //if (armInput.isDisablePositionControlPressed()) {
+        //    state = ArmFSM.MANUAL;
+        //}
 
         switch (state) {
             case MANUAL:
-                logState = "MANUAL";
                 armControl.manuallyMoveLowerArm(armInput.getLowerArm_PercentOutput());
                 armControl.manuallyMoveUpperArm(armInput.getUpperArm_PercentOutput());
+
+                debuggable.log("line 49", true);
+
                 if (armInput.isStoragePressed()) {
                     state = ArmFSM.STORAGE;
                 } else if (armInput.isHumanIntakePressed()) {
@@ -60,157 +61,60 @@ public class ArmSubsystem {
                     nextState = ArmFSM.SCORE_HIGH;
                 }
                 break;
+
             case STORAGE:
-                if (armControl.storeArm()) {
-                    logState = "STORAGE";
+                armControl.storeArm();
+                if (armControl.isErrorSmallEnough(3.69)) {
                     state = ArmFSM.MANUAL;
                 }
                 break;
+
             case PREPARE:
-                if (armControl.prepareArm()){
-                    logState = "PREPARE";
+                armControl.prepareArm();
+
+                InverseKinematics kinematics = new InverseKinematics(0.8,0.8);
+
+
+                armControl.moveToDegrees(69, kinematics.getLowerJointAngle());
+
+                if (armControl.isErrorSmallEnough(3.69)){
                     state = nextState;
                 }
                 break;
+
             case HUMAN_INTAKE:
-                if (armControl.humanIntake()) {
-                    logState = "HUMAN_INTAKE";
+                armControl.humanIntake();
+                if (armControl.isErrorSmallEnough(3.69)) {
                     state = ArmFSM.MANUAL;
                 }
                 break;
+
+            case SCORE_LOW:
+                armControl.scoreLow();
+                if (armControl.isErrorSmallEnough(3.69)) {
+                    state = ArmFSM.MANUAL;
+                }
+                break;
+
             case SCORE_MID:
-                if (armControl.scoreMid()) {
-                    logState = "SCORE_MID";
+                armControl.scoreMid();
+                if (armControl.isErrorSmallEnough(3.69))
+                {
                     state = ArmFSM.MANUAL;
                 }
                 break;
+
             case SCORE_HIGH:
-                if(armControl.scoreHigh()){
-                    logState = "SCORE_HIGH";
+                armControl.scoreHigh();
+                if (armControl.isErrorSmallEnough(3.69)){
                     state = ArmFSM.MANUAL;
                 }
                 break;
         }
-        mode.log(getLogState());
-    }
-
-    public String getLogState() {
-        return logState;
+        debuggable.log("state", state);
     }
 
 
 
 
 }
-
-
-
-
-        /*
-        if (armInput.isCalibratedPressed()) {
-            armControl.calibrateLowerArm();
-            armControl.calibrateUpperArm();
-            System.out.println("Arms calibrated!");
-        }
-
-        switch (state)
-        {
-            case MANUAL:
-                if (armInput.isStoragePressed()){
-                    state = ArmFSM.STORAGE;
-                }
-                else if (armInput.isHumanIntakePressed()){
-                    state = ArmFSM.PREPARE;
-                    nextState = ArmFSM.HUMAN_INTAKE;
-                }
-                else if (armInput.isScoreMidPressed()){
-                    state = ArmFSM.PREPARE;
-                    nextState = ArmFSM.SCORE_MID;
-                }
-                else if (armInput.isScoreHighPressed()){
-                    state = ArmFSM.PREPARE;
-                    nextState = ArmFSM.SCORE_HIGH;
-                }
-                break;
-            case POSITION_CONTROL:
-                if (armInput.isDisablePositionControlPressed()) {
-                    state = ArmFSM.MANUAL;
-                }
-                else{
-                    switch (state){
-                        case STORAGE:
-                            armControl.storeArm();
-                            break;
-                        case PREPARE:
-                            armControl.prepareArm();
-                            state = nextState;
-                        case HUMAN_INTAKE:
-                            armControl.intakeHumanPlayer();
-                            break;
-                        case SCORE_MID:
-                            armControl.scoreMid();
-                            break;
-                        case SCORE_HIGH:
-                            armControl.scoreHigh();
-                            break;
-                        }
-                    state = ArmFSM.MANUAL;
-
-                }
-
-                }
-        }
-        */
-
-        /*
-
-        switch (state) {
-            case MANUAL:
-                if (armInput.isIntakeHumanPressed()) {
-                    state = ArmFSM.POSITION_CONTROL;
-                    positionMode = "IntakeHuman";
-                } else if (armInput.isIntakeGroundPressed()) {
-                    state = ArmFSM.POSITION_CONTROL;
-                    positionMode = "IntakeGround";
-                } else if (armInput.isScoreMidPressed()) {
-                    state = ArmFSM.POSITION_CONTROL;
-                    positionMode = "ScoreMid";
-                } else if (armInput.isScoreHighPressed()) {
-                    state = ArmFSM.POSITION_CONTROL;
-                    positionMode = "ScoreHigh";
-                } else {
-                    armControl.manuallyMoveLowerArm(armInput.getLowerArm_PercentOutput());
-                    armControl.manuallyMoveUpperArm(armInput.getUpperArm_PercentOutput());
-                }
-            case PREPARE:
-                armControl.
-                break;
-            case POSITION_CONTROL:
-                if (armInput.isDisablePositionControlPressed()) {
-                    state = ArmFSM.MANUAL;
-                } else {
-                    switch (positionMode) {
-                        case "IntakeHuman":
-                            armControl.intakeHumanPlayer();
-                            break;
-                        case "IntakeGround":
-                            armControl.intakeGround();
-                            break;
-                        case "ScoreMid":
-                            armControl.scoreMid();
-                            break;
-                        case "ScoreHigh":
-                            armControl.scoreHigh();
-                            break;
-                    }
-                }
-                break;
-        }
-
-
-        mode.log(positionMode);
-
-    }
-
-         */
-

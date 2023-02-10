@@ -3,26 +3,41 @@ package org.bitbuckets.arm;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import org.bitbuckets.lib.log.Debuggable;
 
 
 public class ArmInput {
 
     final Joystick operatorControl;
+    final Debuggable debug;
 
 
-
-    public ArmInput(Joystick operatorControl) {
+    public ArmInput(Joystick operatorControl, Debuggable debug) {
         this.operatorControl = operatorControl;
+        this.debug = debug;
     }
 
+
     /*
-    (A) Hold to deploy and run floor intake, release to retract
-    (Y) Tap Face Button to switch to low position
-    (B) Tap Face Button to switch to high position
-    (X) Tap to align to human player station
-    Left Joystick to control lower joint on arm
-    Right Joystick to control upper joint on arm
+
+New Documentation for Arm Controls
+
+(X) While held start stowing to default
+(B) To stop all arm motors
+(Right Trigger) Tap to grab with arm - clamp down
+(left trigger) tap to grab with arm - release clamp
+Dpad up – hold to go high
+Dpad down – hold to go middle
+Dpad right – hold to load zone
+Dpad left – score low
+Right bumper – align with scoring zone
+Left bumper – align with loading zone
+Left Joystick  to control lower joint on arm
+Right Joystick to control upper joint on arm
+
      */
+
+
     public static double armDeadband(double input) {
         double value = input;
 
@@ -32,39 +47,71 @@ public class ArmInput {
         return value;
     }
 
+    public boolean getInputDpadUp() {
+        int pressed = operatorControl.getPOV();
+        return pressed == 0;
+    }
+
+    public boolean getInputDpadDown() {
+        return operatorControl.getRawAxis(0) != 0.0;
+    }
+
+    public boolean getInputDpadLeft() {
+        int pressed = operatorControl.getPOV();
+        return pressed == 270;
+    }
+
+    public boolean getInputDpadRight() {
+        return false; //TODO FIX THIS
+    }
+
     public double getLowerArm_PercentOutput() {
 
         return armDeadband(operatorControl.getRawAxis(XboxController.Axis.kLeftY.value));
     }
 
-
-    //how fast the user wants to move the upper arm (controlled by right trigger)
     public double getUpperArm_PercentOutput() {
 
         return armDeadband(operatorControl.getRawAxis(XboxController.Axis.kRightY.value));
     }
 
-    //checks if the user wants to move the upper arm back (if the right bumper is held)
+    public double getIsClampReleasePressed()
+    {
+        return armDeadband(operatorControl.getRawAxis(XboxController.Axis.kLeftTrigger.value));
+    }
 
+    public double getIsClampDownPressed()
+    {
+        return armDeadband(operatorControl.getRawAxis(XboxController.Axis.kRightTrigger.value));
+    }
+
+    public boolean isStopAllMotorsPressed()
+    {
+        return operatorControl.getRawButtonPressed(XboxController.Button.kB.value);
+    }
 
     public boolean isStoragePressed()
     {
-        return operatorControl.getRawButtonPressed(XboxController.Button.kRightBumper.value);
+        return operatorControl.getRawButtonPressed(XboxController.Button.kX.value);
     }
 
     // checks if operator wants to move arms to intake for human player station (by pressing X)
     public boolean isHumanIntakePressed() {
-        return operatorControl.getRawButtonPressed(XboxController.Button.kX.value);
+        return getInputDpadRight();
     }
 
-    // checks if operator wants to move arms to score in medium node position (by pressing Y)
+    public boolean isScoreLowPressed() {
+        return getInputDpadLeft();
+    }
+
+    // checks if operator wants to move arms to score in medium node position (by pressing DPadDown)
     public boolean isScoreMidPressed() {
-        return operatorControl.getRawButtonPressed(XboxController.Button.kY.value);
+        return getInputDpadDown();
     }
 
-    // checks if operator wants to move arms to score in high node position (by pressing A)
+    // checks if operator wants to move arms to score in high node position (by pressing )
     public boolean isScoreHighPressed() {
-        return operatorControl.getRawButtonPressed(XboxController.Button.kA.value);
+        return getInputDpadUp();
     }
 
 

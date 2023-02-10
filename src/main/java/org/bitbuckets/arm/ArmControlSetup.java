@@ -48,7 +48,12 @@ public class ArmControlSetup implements ISetup<ArmControl> {
                 lower,
                 upper,
                 debug
+
         );
+    }
+
+    private static MechanismRoot2d getUpperPivot(Mechanism2d mech) {
+        return mech.getRoot("upperPivot", 1.5, 1);
     }
 }
 
