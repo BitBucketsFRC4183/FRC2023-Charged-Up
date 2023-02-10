@@ -18,7 +18,7 @@ class TuneableDriverTest {
     void tuneable_shouldBeGenerated() throws InterruptedException {
         assert HAL.initialize(500, 0);
 
-        NetworkTable table = NetworkTableInstance.getDefault().getTable("RealOutputs/MattTuneables");
+        NetworkTable table = NetworkTableInstance.getDefault().getTable("RealOutputs");
         IdentityDriver id = new IdentityDriver();
         TuneableDriver driver = new TuneableDriver(table, id);
 
@@ -41,7 +41,7 @@ class TuneableDriverTest {
     void tuneable_shouldBeGeneratedProcessPath() throws InterruptedException {
         assert HAL.initialize(500, 0);
 
-        NetworkTable table = NetworkTableInstance.getDefault().getTable("RealOutputs/MattTuneables");
+        NetworkTable table = NetworkTableInstance.getDefault().getTable("RealOutputs");
         IdentityDriver id = new IdentityDriver();
         TuneableDriver driver = new TuneableDriver(table, id);
         ProcessPath path = new ProcessPath(
@@ -75,7 +75,7 @@ class TuneableDriverTest {
     void tuneable_shouldWorkWithEnum() throws InterruptedException {
         assert HAL.initialize(500, 0);
 
-        NetworkTable table = NetworkTableInstance.getDefault().getTable("RealOutputs/MattTuneables");
+        NetworkTable table = NetworkTableInstance.getDefault().getTable("RealOutputs");
         IdentityDriver id = new IdentityDriver();
         TuneableDriver driver = new TuneableDriver(table, id);
         ProcessPath path = new ProcessPath(

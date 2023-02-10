@@ -171,7 +171,6 @@ public class DriveSubsystem {
                 }
                 break;
         }
-        debuggable.log("state", state);
 
     }
 
