@@ -29,7 +29,9 @@ public class StartupDriver implements IStartupDriver, Runnable {
     }
 
     int nextId() {
-        return ++current;
+        current++;
+
+        return current;
     }
 
     static class DataRecord {
@@ -46,6 +48,8 @@ public class StartupDriver implements IStartupDriver, Runnable {
         long report = 0;
     }
 
+    int called = 0;
+
     @Override
     public int generateStartup(int processId, String name) {
         int alloc = nextId();
@@ -54,14 +58,14 @@ public class StartupDriver implements IStartupDriver, Runnable {
         map.put(
                 alloc,
                 new DataRecord(
-                        driver.fullPath(alloc),
+                        fullPath, //don't try to get the full path of alloc
                         name,
                         processId
                 )
         );
 
         consoleReports.add(
-                new SetupRecord(processId, fullPath, name, "MODE Uninitialized")
+                new SetupRecord(alloc, fullPath, name, "MODE Uninitialized")
         );
 
         return alloc;
@@ -158,8 +162,10 @@ public class StartupDriver implements IStartupDriver, Runnable {
             int lineNumber = element.getLineNumber();
             String methodName = element.getMethodName();
 
+            logger.recordOutput("anal", record.processName + record.taskName + methodName + lineNumber + message);
+
             String consolePost = format(
-                    "[%s] (Task %s): Threw exception at (%s:%s), report: %s",
+                    "[%s] (Task %s): Threw exception at ('%s' line %s), report: %s",
                     record.processName,
                     record.taskName,
                     methodName,
@@ -167,11 +173,17 @@ public class StartupDriver implements IStartupDriver, Runnable {
                     message
             );
 
+            System.out.println(consolePost);
 
             errorReport.append(consolePost).append("\n");
         }
 
-        logger.recordOutput("MattConsole/Errors", errorReport.toString());
+        if (exceptions) {
+            exceptions = false;
+            logger.recordOutput("MattConsole/Errors", errorReport.toString());
+        }
+
+
     }
 
     @Override
@@ -190,14 +202,13 @@ public class StartupDriver implements IStartupDriver, Runnable {
 
             String consolePost = format(
                     "[%s] (Task %s): %s",
-                    record.fullpath,
+                    record.processPath,
                     record.taskName,
                     record.message
             );
 
-
             report.append(consolePost).append("\n");
-            thisIsBad.computeIfAbsent(record.id, id -> new StringBuilder()).append(consolePost).append("\n");
+            thisIsBad.computeIfAbsent(record.taskId, id -> new StringBuilder()).append(consolePost).append("\n");
         }
 
 
@@ -211,6 +222,7 @@ public class StartupDriver implements IStartupDriver, Runnable {
             StringBuilder builder = e.getValue();
 
             if (builder.length() > 0) {
+
                 String fullExtension = map.get(id).fullpath + "/" + map.get(id).taskName;
 
                 logger.recordOutput("MattConsole/" + fullExtension, builder.toString());
