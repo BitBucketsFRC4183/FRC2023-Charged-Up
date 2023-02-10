@@ -12,6 +12,8 @@ public enum ArmFSM {
 
     SCORE_HIGH,
 
+    SCORE_LOW,
+
     HUMAN_INTAKE
 
 }

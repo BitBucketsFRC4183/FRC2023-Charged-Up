@@ -59,6 +59,9 @@ public class ArmSubsystem {
                 } else if (armInput.isScoreHighPressed()) {
                     state = ArmFSM.PREPARE;
                     nextState = ArmFSM.SCORE_HIGH;
+                } else if (armInput.isScoreLowPressed()){
+                    state = ArmFSM.PREPARE;
+                    nextState = ArmFSM.SCORE_LOW;
                 }
                 break;
 
