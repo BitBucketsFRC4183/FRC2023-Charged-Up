@@ -33,7 +33,7 @@ public class AutoSubsystemSetup implements ISetup<AutoSubsystem> {
         Debuggable debuggable = self.generateDebugger();
         AutoSubsystem subsystem = new AutoSubsystem(pathTuner, autoControl, debuggable);
 
-        self.registerLogicLoop(subsystem::logLoop);
+        self.registerLogLoop(subsystem::logLoop);
 
         return subsystem;
     }
