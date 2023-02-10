@@ -60,7 +60,7 @@ public class Robot extends LoggedRobot {
         loopDriver = new LoopDriver();
         IdentityDriver identityDriver = new IdentityDriver();
         ILogDriver logDriver = new LogDriver(logger, identityDriver);
-        TuneableDriver tuneableDriver = new TuneableDriver(NetworkTableInstance.getDefault().getTable("RealOutputs/MattTuneables"), identityDriver);
+        TuneableDriver tuneableDriver = new TuneableDriver(NetworkTableInstance.getDefault().getTable("RealOutputs"), identityDriver);
 
         int consoleId = identityDriver.childProcess(0, "Console");
         StartupDriver setupDriver = new StartupDriver(identityDriver, logger);
