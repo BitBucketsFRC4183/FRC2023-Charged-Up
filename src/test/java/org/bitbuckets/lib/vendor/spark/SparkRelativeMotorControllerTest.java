@@ -23,7 +23,7 @@ class SparkRelativeMotorControllerTest {
     @Test
     void forceOffset() {
         assert HAL.initialize(500, 0);
-        SparkRelativeMotorController c = new SparkRelativeMotorController(test, new CANSparkMax(0, CANSparkMaxLowLevel.MotorType.kBrushless));
+        SparkRelativeMotorController c = new SparkRelativeMotorController(test, new CANSparkMax(2, CANSparkMaxLowLevel.MotorType.kBrushless));
 
         c.forceOffset(2.0); //2 encoder rotations
 
@@ -33,7 +33,7 @@ class SparkRelativeMotorControllerTest {
     @Test
     void forceOffset_mechanismRotations() {
         assert HAL.initialize(500, 0);
-        SparkRelativeMotorController c = new SparkRelativeMotorController(test, new CANSparkMax(0, CANSparkMaxLowLevel.MotorType.kBrushless));
+        SparkRelativeMotorController c = new SparkRelativeMotorController(test, new CANSparkMax(2, CANSparkMaxLowLevel.MotorType.kBrushless));
 
         c.forceOffset_mechanismRotations(1.0); //1 mechanism rotation is 2 encoder rotations according to our motor coefficient
 
@@ -44,7 +44,7 @@ class SparkRelativeMotorControllerTest {
     @Test
     void moveAtVoltage() {
         assert HAL.initialize(500, 0);
-        SparkRelativeMotorController c = new SparkRelativeMotorController(test, new CANSparkMax(0, CANSparkMaxLowLevel.MotorType.kBrushless));
+        SparkRelativeMotorController c = new SparkRelativeMotorController(test, new CANSparkMax(2, CANSparkMaxLowLevel.MotorType.kBrushless));
 
         c.moveAtVoltage(12);
 
@@ -57,7 +57,7 @@ class SparkRelativeMotorControllerTest {
     @Test
     void moveAtPercent() {
         assert HAL.initialize(500, 0);
-        SparkRelativeMotorController c = new SparkRelativeMotorController(test, new CANSparkMax(0, CANSparkMaxLowLevel.MotorType.kBrushless));
+        SparkRelativeMotorController c = new SparkRelativeMotorController(test, new CANSparkMax(2, CANSparkMaxLowLevel.MotorType.kBrushless));
 
         c.moveAtPercent(12);
 
