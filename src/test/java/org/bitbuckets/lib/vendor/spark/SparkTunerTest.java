@@ -36,7 +36,7 @@ class SparkTunerTest {
         IValueTuner<Double> tuner = Mockito.mock(IValueTuner.class);
         Mockito.when(tuner.hasUpdated()).thenReturn(true);
         Mockito.when(tuner.consumeValue()).thenReturn(1.0);
-        CANSparkMax sparkMax = new CANSparkMax(0, CANSparkMaxLowLevel.MotorType.kBrushless);
+        CANSparkMax sparkMax = new CANSparkMax(1, CANSparkMaxLowLevel.MotorType.kBrushless);
 
         SparkTuner tuningAspect = new SparkTuner(tuner, tuner, tuner, sparkMax.getPIDController());
         tuningAspect.run(); //load ur data boy

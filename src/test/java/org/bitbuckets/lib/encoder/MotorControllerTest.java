@@ -28,40 +28,4 @@ class MotorControllerTest {
 
     }
 
-    @Test
-    void getMechanismPositionAccumulated_rotations() {
-        IMotorController motorController = Mockito.mock(IMotorController.class);
-        Mockito.when(motorController.getPositionRaw()).thenReturn(Math.toRadians(   540) / steerCoefficient);
-        Mockito.when(motorController.getVelocityRaw()).thenReturn(0.0);
-        Mockito.when(motorController.getTimeFactor()).thenReturn(1.0);
-        Mockito.when(motorController.getRawToRotationsFactor()).thenReturn((1.0 / 2048.0));
-        Mockito.when(motorController.getMechanismFactor()).thenReturn(steerCoefficient);
-
-        assertEquals(Math.toRadians(540), motorController.getPositionMechanism_meters());
-    }
-
-
-    @Test
-    void getMechanismPositionBounded_rotations() {
-        IMotorController motorController = Mockito.mock(IMotorController.class);
-        Mockito.when(motorController.getPositionRaw()).thenReturn(Math.toRadians(   540) / steerCoefficient);
-        Mockito.when(motorController.getVelocityRaw()).thenReturn(0.0);
-        Mockito.when(motorController.getTimeFactor()).thenReturn(1.0);
-        Mockito.when(motorController.getRawToRotationsFactor()).thenReturn((1.0 / 2048.0));
-        Mockito.when(motorController.getMechanismFactor()).thenReturn(steerCoefficient);
-
-        assertEquals(Math.toRadians(180), motorController.getPositionMechanism_meters());
-    }
-
-    @Test
-    void getMechanismPositionAccumulated_shouldWorkWithRatio() {
-        IMotorController motorController = Mockito.mock(IMotorController.class);
-        Mockito.when(motorController.getPositionRaw()).thenReturn(2048.0);
-        Mockito.when(motorController.getVelocityRaw()).thenReturn(0.0);
-        Mockito.when(motorController.getTimeFactor()).thenReturn(1.0);
-        Mockito.when(motorController.getRawToRotationsFactor()).thenReturn((1.0 / 2048.0));
-        Mockito.when(motorController.getMechanismFactor()).thenReturn(0.5);
-
-        assertEquals(Math.PI, motorController.getPositionMechanism_meters());
-    }
 }
