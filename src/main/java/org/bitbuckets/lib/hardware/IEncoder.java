@@ -43,12 +43,14 @@ public interface IEncoder extends IRaw {
      *
      * @return The raw position output of the encoder
      */
+    @Deprecated
     double getPositionRaw();
 
     /**
      *
      * @return The raw velocity output of the encoder
      */
+    @Deprecated
     double getVelocityRaw();
 
     /**
@@ -57,7 +59,13 @@ public interface IEncoder extends IRaw {
      *
      * @param offsetUnits_baseUnits
      */
+    @Deprecated
     void forceOffset(double offsetUnits_baseUnits);
+
+    /**
+     * Forces the offset in terms of mechanism rotations
+     */
+    void forceOffset_mechanismRotations(double offsetUnits_mechanismRotations);
 
 
     //utility methods
@@ -68,7 +76,7 @@ public interface IEncoder extends IRaw {
     }
 
     default double getEncoderPositionBound_rot() {
-        return AngleUtil.wrap(getEncoderPositionAccumulated_rot());
+        return AngleUtil.wrapRotations(getEncoderPositionAccumulated_rot());
     }
 
     default double getMechanismPositionAccum_rot() {
@@ -76,7 +84,7 @@ public interface IEncoder extends IRaw {
     }
 
     default double getMechanismPositionBound_rot() {
-        return AngleUtil.wrap(getMechanismPositionAccum_rot());
+        return AngleUtil.wrapRotations(getMechanismPositionAccum_rot());
     }
 
     default double getPositionMechanism_meters() {

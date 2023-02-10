@@ -166,6 +166,10 @@ public class ProcessPath {
         return logDriver.generateStringLoggable(currentId, key);
     }
 
+    public ILoggable<Double> generateDoubleLogger(String name) {
+        return logDriver.generateDoubleLoggable(currentId, name);
+    }
+
     /**
      * swerving on mattlib
      *

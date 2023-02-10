@@ -26,7 +26,7 @@ public class DCSimSetup implements ISetup<IMotorController> {
 
     @Override
     public IMotorController build(ProcessPath self) {
-        DCMotorSim motorSim = new DCMotorSim(DCMotor.getNeo550(1), 1.0 / config.mechanismCoefficient, dcMotorConfig.momentOfInertia, dcMotorConfig.stdDevs);//TODO reverse, because for us numbers greater than one represent upgear not reduc)
+        DCMotorSim motorSim = new DCMotorSim(DCMotor.getNeo550(1), 1.0 / config.encoderToMechanismCoefficient, dcMotorConfig.momentOfInertia, dcMotorConfig.stdDevs);//TODO reverse, because for us numbers greater than one represent upgear not reduc)
         PIDController pidController = new PIDController(pidConfig.kP, pidConfig.kI, pidConfig.kD);
         DCSimController DCSimController = new DCSimController(config, motorSim, pidController);
 

@@ -7,13 +7,12 @@ public interface IMotorController extends IMotor, IEncoder {
 
 
     /**
-     * Gets error in terms of encoder rotations
+     * Gets error in terms of mechanism rotations
      * @return the current error
      */
-    @Deprecated
-    default double getError(){
-        double setpoint = getSetpoint_rawUnits();
-        double actualPosition = getPositionRaw();
+    default double getError_mechanismRotations(){
+        double setpoint = getSetpoint_mechanismRotations();
+        double actualPosition = getMechanismPositionAccum_rot();
         return setpoint - actualPosition;
     }
 

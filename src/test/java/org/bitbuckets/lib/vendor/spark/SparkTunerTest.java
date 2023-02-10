@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-class SparkTuningAspectTest {
+class SparkTunerTest {
 
 
     @Test
@@ -19,7 +19,7 @@ class SparkTuningAspectTest {
         Mockito.when(tuner.consumeValue()).thenReturn(1.0);
 
         SparkMaxPIDController canSparkMax = Mockito.mock(SparkMaxPIDController.class);
-        SparkTuningAspect tuningAspect = new SparkTuningAspect(tuner, tuner, tuner, canSparkMax);
+        SparkTuner tuningAspect = new SparkTuner(tuner, tuner, tuner, canSparkMax);
 
         tuningAspect.run(); //it's been ran
 
@@ -38,7 +38,7 @@ class SparkTuningAspectTest {
         Mockito.when(tuner.consumeValue()).thenReturn(1.0);
         CANSparkMax sparkMax = new CANSparkMax(0, CANSparkMaxLowLevel.MotorType.kBrushless);
 
-        SparkTuningAspect tuningAspect = new SparkTuningAspect(tuner, tuner, tuner, sparkMax.getPIDController());
+        SparkTuner tuningAspect = new SparkTuner(tuner, tuner, tuner, sparkMax.getPIDController());
         tuningAspect.run(); //load ur data boy
 
         Thread.sleep(500);
