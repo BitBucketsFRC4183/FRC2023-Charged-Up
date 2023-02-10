@@ -3,7 +3,7 @@ package org.bitbuckets.robot;
 /**
  * Designed to kill the robot
  */
-public class SimulatorKillAspect implements Runnable {
+public class SimulatorKiller implements Runnable {
 
     //only should be registered if..
 
