@@ -79,6 +79,11 @@ public class SparkRelativeMotorController implements IMotorController, Runnable 
     }
 
     @Override
+    public void moveToPosition_mechanismRotations(double position_mechanismRotations) {
+        throw new UnsupportedOperationException(); //TODO fill thsi out
+    }
+
+    @Override
     public void moveAtVelocity(double velocity_encoderMetersPerSecond) {
         double rotationsPerMinute = velocity_encoderMetersPerSecond / getRotationsToMetersFactor() * 60.0;
 

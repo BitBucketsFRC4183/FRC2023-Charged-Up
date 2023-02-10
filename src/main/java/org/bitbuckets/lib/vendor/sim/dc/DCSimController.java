@@ -78,6 +78,11 @@ public class DCSimController implements IMotorController, Runnable{
     }
 
     @Override
+    public void moveToPosition_mechanismRotations(double position_mechanismRotations) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public void moveAtVelocity(double velocity_encoderMetersPerSecond) {
         throw new IllegalStateException("velocity pid not simulated yet :( sorry");
     }
