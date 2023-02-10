@@ -21,7 +21,7 @@ public class ElevatorSimController implements IMotorController, Runnable {
 
     @Override
     public double getMechanismFactor() {
-        return motorConfig.mechanismCoefficient;
+        return motorConfig.encoderToMechanismCoefficient;
     }
 
     @Override
@@ -56,6 +56,11 @@ public class ElevatorSimController implements IMotorController, Runnable {
     }
 
     @Override
+    public void forceOffset_mechanismRotations(double offsetUnits_mechanismRotations) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public void moveAtVoltage(double voltage) {
         elevatorSim.setInputVoltage(voltage);
     }
@@ -83,7 +88,7 @@ public class ElevatorSimController implements IMotorController, Runnable {
     }
 
     @Override
-    public double getSetpoint_rawUnits() {
+    public double getSetpoint_mechanismRotations() {
         return lastSetpoint;
     }
 

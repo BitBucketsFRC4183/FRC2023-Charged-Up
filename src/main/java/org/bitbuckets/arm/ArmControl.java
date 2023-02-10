@@ -2,7 +2,6 @@ package org.bitbuckets.arm;
 
 import org.bitbuckets.lib.hardware.IMotorController;
 import org.bitbuckets.lib.log.Debuggable;
-import org.bitbuckets.lib.log.ILoggable;
 
 
 public class ArmControl {
@@ -87,7 +86,7 @@ public class ArmControl {
 
     public boolean isErrorSmallEnough(double delta){
         //might change delta later
-        return lowerJoint.getError() < delta && upperJoint.getError() < delta;
+        return lowerJoint.getError_mechanismRotations() < delta && upperJoint.getError_mechanismRotations() < delta;
     }
 
     // Make sure to change/tune lowerAngle and upperAngle for each position

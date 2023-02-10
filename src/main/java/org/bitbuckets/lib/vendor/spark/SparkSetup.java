@@ -11,7 +11,6 @@ import org.bitbuckets.lib.StartupProfiler;
 import org.bitbuckets.lib.control.PIDConfig;
 import org.bitbuckets.lib.hardware.IMotorController;
 import org.bitbuckets.lib.hardware.MotorConfig;
-import org.bitbuckets.lib.log.ILoggable;
 import org.bitbuckets.lib.log.LoggingConstants;
 import org.bitbuckets.lib.tune.IValueTuner;
 
@@ -42,15 +41,13 @@ public class SparkSetup implements ISetup<IMotorController> {
     @Override
     public IMotorController build(ProcessPath self) {
 
-        StartupProfiler configError = self.generateSetupProfiler("config-error");
-        configError.markProcessing();
+        StartupProfiler motorStartup = self.generateSetupProfiler("motor-startup");
+        motorStartup.markProcessing();
 
         //check id for duplicate usage
         if (seen.contains(canId)) {
-            configError.markErrored(
-                    new IllegalStateException(
-                            format("duplicate sparkmax usage of id %s", canId)
-                    )
+            motorStartup.markErrored(
+                    new IllegalStateException(format("duplicate sparkmax usage of id %s", canId))
             );
         }
         seen.add(canId);
@@ -61,8 +58,10 @@ public class SparkSetup implements ISetup<IMotorController> {
         spark.enableVoltageCompensation(12.0);
 
         if (motorConfig.shouldBreakOnNoCommand) {
+            motorStartup.sendInfo("using brake mode");
             spark.setIdleMode(CANSparkMax.IdleMode.kBrake);
         } else {
+            motorStartup.sendInfo("using coast mode");
             spark.setIdleMode(CANSparkMax.IdleMode.kCoast);
         }
 
@@ -76,52 +75,68 @@ public class SparkSetup implements ISetup<IMotorController> {
         SparkMaxLimitSwitch reverseSwitch = null;
 
         if (motorConfig.isForwardLimitEnabled) {
+            motorStartup.sendInfo("using forward limit switch!");
             forwardSwitch = spark.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
             forwardSwitch.enableLimitSwitch(true);
         }
 
         if (motorConfig.isBackwardLimitEnabled) {
+            motorStartup.sendInfo("using backward limit switch!");
             reverseSwitch = spark.getReverseLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
             reverseSwitch.enableLimitSwitch(true);
         }
 
 
-        ILoggable<double[]> data = self.generateDoubleLoggers("appliedOutput", "busVoltage", "positionRotations", "velocityRotatations", "setpointRotations", "error");
-
         // setup tuneable pid
         if (pidConfig.kP == 0 && pidConfig.kI == 0 && pidConfig.kD == 0) {
+            motorStartup.sendInfo("using tuneable pid!");
+
             IValueTuner<Double> p = self.generateValueTuner("p", pidConfig.kP);
             IValueTuner<Double> i = self.generateValueTuner("i", pidConfig.kI);
             IValueTuner<Double> d = self.generateValueTuner("d", pidConfig.kD);
             var pidController = spark.getPIDController();
-            SparkTuningAspect sparkTuningAspect = new SparkTuningAspect(p, i, d, pidController);
+            SparkTuner sparkTuner = new SparkTuner(p, i, d, pidController);
             pidController.setP(p.consumeValue());
             pidController.setI(i.consumeValue());
             pidController.setD(d.consumeValue());
-            self.registerLoop(sparkTuningAspect, LoggingConstants.TUNING_PERIOD, "tuning-loop");
+            self.registerLoop(sparkTuner, LoggingConstants.TUNING_PERIOD, "tuning-loop");
         } else {
+            motorStartup.sendInfo("using hardcoded pid!");
+
             checkNeoError(spark.getPIDController().setP(pidConfig.kP), "Failed to set NEO PID proportional constant");
             checkNeoError(spark.getPIDController().setI(pidConfig.kI), "Failed to set NEO PID integral constant");
             checkNeoError(spark.getPIDController().setD(pidConfig.kD), "Failed to set NEO PID derivative constant");
         }
 
-        SparkRelativeMotorController ctrl = new SparkRelativeMotorController(motorConfig, spark, data);
+        SparkRelativeMotorController ctrl = new SparkRelativeMotorController(motorConfig, spark);
+        OnboardPidLogger onboardPidLogger = new OnboardPidLogger(
+                ctrl,
+                self.generateDoubleLogger("pos-setpoint-mechanism-rotations"),
+                self.generateDoubleLogger("encoder-mechanism-rotations"),
+                self.generateDoubleLogger("error-mechanism-rotations"),
+                self.generateEnumLogger("last-control-mode", LastControlMode.class)
+        );
 
-        self.registerLoop(ctrl, LoggingConstants.LOGGING_PERIOD, "logging-loop");
+        self.registerLogLoop(onboardPidLogger);
+
         if (forwardSwitch != null) {
-            ILoggable<Boolean> loggable = self.generateBooleanLogger("forwardSwitchPressed");
-            SparkLimitLoggingAspect loggingAspect = new SparkLimitLoggingAspect(loggable, forwardSwitch);
-            self.registerLoop(loggingAspect, LoggingConstants.LOGGING_PERIOD, "forw-log-loop");
+            LimitSwitchLogger loggingAspect = new LimitSwitchLogger(
+                    self.generateBooleanLogger("forward-hard-switch-pressed"),
+                    forwardSwitch
+            );
+            self.registerLoop(loggingAspect, LoggingConstants.LOGGING_PERIOD, "forward-log-loop");
         }
         if (reverseSwitch != null) {
-            ILoggable<Boolean> loggable = self.generateBooleanLogger("reverseSwitchPressed");
-            SparkLimitLoggingAspect loggingAspect = new SparkLimitLoggingAspect(loggable, reverseSwitch);
-            self.registerLoop(loggingAspect, LoggingConstants.LOGGING_PERIOD, "revr-log-loop");
+            LimitSwitchLogger loggingAspect = new LimitSwitchLogger(
+                    self.generateBooleanLogger("reverse-hard-switch-pressed"),
+                    reverseSwitch
+            );
+            self.registerLoop(loggingAspect, LoggingConstants.LOGGING_PERIOD, "reverse-log-loop");
         }
 
         REVPhysicsSim.getInstance().addSparkMax(spark, DCMotor.getNeo550(1));
 
-        configError.markCompleted();
+        motorStartup.markCompleted();
         return ctrl;
     }
 

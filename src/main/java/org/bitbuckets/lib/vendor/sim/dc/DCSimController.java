@@ -22,7 +22,7 @@ public class DCSimController implements IMotorController, Runnable{
 
     @Override
     public double getMechanismFactor() {
-        return config.mechanismCoefficient;
+        return config.encoderToMechanismCoefficient;
     }
 
     @Override
@@ -57,6 +57,11 @@ public class DCSimController implements IMotorController, Runnable{
     }
 
     @Override
+    public void forceOffset_mechanismRotations(double offsetUnits_mechanismRotations) {
+
+    }
+
+    @Override
     public void moveAtVoltage(double voltage) {
         simulatedMotor.setInputVoltage(voltage);
     }
@@ -88,7 +93,7 @@ public class DCSimController implements IMotorController, Runnable{
     }
 
     @Override
-    public double getSetpoint_rawUnits() {
+    public double getSetpoint_mechanismRotations() {
         return lastSetpoint;
     }
 
