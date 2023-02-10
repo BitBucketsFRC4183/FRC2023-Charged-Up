@@ -2,6 +2,7 @@ package org.bitbuckets.auto;
 
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
+import org.bitbuckets.lib.StartupProfiler;
 import org.bitbuckets.lib.log.Debuggable;
 import org.bitbuckets.lib.tune.IValueTuner;
 import org.bitbuckets.lib.util.MockingUtil;
@@ -21,6 +22,11 @@ public class AutoSubsystemSetup implements ISetup<AutoSubsystem> {
     @Override
     public AutoSubsystem build(ProcessPath self) {
         if (!enabled) return MockingUtil.buddy(AutoSubsystem.class);
+
+        StartupProfiler p = self.generateSetupProfiler("some-ass");
+
+        p.markProcessing();
+        p.markErrored(new IllegalStateException("the robot exploded"));
 
         IAutoControl autoControl = new AutoControlSetup().build(self.addChild("auto-control"));
         IValueTuner<AutoPath> pathTuner = self.generateEnumTuner("path", AutoPath.class, AutoPath.NONE);

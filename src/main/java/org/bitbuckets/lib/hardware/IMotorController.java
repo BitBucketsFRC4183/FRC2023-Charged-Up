@@ -5,18 +5,12 @@ package org.bitbuckets.lib.hardware;
  */
 public interface IMotorController extends IMotor, IEncoder {
 
-    /**
-     * Gets the current setpoint of the pid algorithm, converted to rotations
-     * @return the current setpoint
-     */
-    default double getEncoderSetpointAccumulated_rotations() {
-        return getSetpoint_rawUnits() * getRawToRotationsFactor();
-    }
 
     /**
      * Gets error in terms of encoder rotations
      * @return the current error
      */
+    @Deprecated
     default double getError(){
         double setpoint = getSetpoint_rawUnits();
         double actualPosition = getPositionRaw();
