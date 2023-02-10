@@ -1,6 +1,7 @@
 package org.bitbuckets.arm;
 
 import org.bitbuckets.auto.AutoSubsystem;
+import org.bitbuckets.lib.log.Debuggable;
 import org.bitbuckets.lib.log.ILoggable;
 
 public class ArmSubsystem {
@@ -10,16 +11,15 @@ public class ArmSubsystem {
 
     final ArmInput armInput;
     final ArmControl armControl;
-    final ILoggable<String> mode;
+    final Debuggable debuggable;
 
     ArmFSM state = ArmFSM.MANUAL;
     ArmFSM nextState = ArmFSM.MANUAL;
-    public String logState = "MANUAL";
 
-    public ArmSubsystem(ArmInput armInput, ArmControl armControl, ILoggable<String> mode) {
+    public ArmSubsystem(ArmInput armInput, ArmControl armControl, Debuggable debuggable) {
         this.armInput = armInput;
         this.armControl = armControl;
-        this.mode = mode;
+        this.debuggable = debuggable;
     }
 
 
@@ -54,6 +54,8 @@ public class ArmSubsystem {
                     state = ArmFSM.PREPARE;
                     nextState = ArmFSM.HUMAN_INTAKE;
                 } else if (armInput.isScoreMidPressed()) {
+                    debuggable.log("line 55", true);
+
                     state = ArmFSM.PREPARE;
                     nextState = ArmFSM.SCORE_MID;
                 } else if (armInput.isScoreHighPressed()) {

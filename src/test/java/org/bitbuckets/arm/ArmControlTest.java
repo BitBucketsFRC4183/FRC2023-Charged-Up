@@ -11,19 +11,11 @@ import static org.mockito.Mockito.mock;
 
 class ArmControlTest {
 
-    IMotorController lowerJoint;
-    IMotorController upperJoint;
-
-    @BeforeEach
-    public void beforeEach() {
-        lowerJoint = mock();
-        upperJoint = mock();
-    }
 
     @Disabled
     @Test
     void convertMechanismRotationToRawRotation_lowerJoint() {
-        ArmControl control = new ArmControl(lowerJoint, upperJoint, Mockito.mock());
+        ArmControl control = new ArmControl(Mockito.mock(), Mockito.mock(), Mockito.mock());
 
         assertEquals(27.69, control.convertMechanismRotationtoRawRotation_lowerJoint(1), .1);
     }
@@ -31,8 +23,22 @@ class ArmControlTest {
     @Disabled
     @Test
     void convertMechanismRotationToRawRotation_upperJoint() {
-        ArmControl control = new ArmControl(lowerJoint, upperJoint, Mockito.mock());
+        ArmControl control = new ArmControl(Mockito.mock(), Mockito.mock(), Mockito.mock());
 
         assertEquals(24., control.convertMechanismRotationtoRawRotation_upperJoint(1), .1);
+    }
+
+
+
+    @Test
+    void test() {
+        IMotorController lowerJointSpy = Mockito.mock();
+
+        ArmControl control = new ArmControl(lowerJointSpy, Mockito.mock(), Mockito.mock());
+        control.moveToDegrees(90, 0);
+
+
+        Mockito.verify(lowerJointSpy).moveToPosition(12.0);
+
     }
 }
