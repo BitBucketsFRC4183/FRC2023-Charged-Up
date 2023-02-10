@@ -23,6 +23,9 @@ public interface ILogDriver {
     ILoggable<Boolean> generateBoolLoggable(int id, String key);
     ILoggable<Double> generateDoubleLoggable(int id, String key);
 
+    //ILoggable<Double> generateTripWireDouble(int id, String key);
+
+
     /**
      * Generates a translation logger with x y and vector normalized
      * @param id

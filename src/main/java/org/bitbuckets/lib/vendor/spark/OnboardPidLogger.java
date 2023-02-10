@@ -24,13 +24,9 @@ public class OnboardPidLogger implements Runnable {
 
     @Override
     public void run() {
-        double setpoint = motorController.getSetpoint_mechanismRotations();
-        double encoder = motorController.getMechanismPositionAccum_rot();
-        double error = setpoint - encoder;
-
         positionSetpoint_mechanismRotations.log( motorController.getSetpoint_mechanismRotations() );
         encoderReadout_mechanismRotations.log( motorController.getMechanismPositionAccum_rot() );
-        error_mechanismRotations.log(error);
+        error_mechanismRotations.log( motorController.getError_mechanismRotations());
 
         lastControlMode.log( motorController.lastControlMode );
     }

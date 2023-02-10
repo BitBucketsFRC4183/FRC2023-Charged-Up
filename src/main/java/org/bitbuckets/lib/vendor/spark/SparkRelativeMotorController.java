@@ -87,14 +87,15 @@ public class SparkRelativeMotorController implements IMotorController {
     @Override
     public void moveToPosition(double position_encoderRotations) {
         lastControlMode = LastControlMode.POSITION;
-        sparkMaxPIDController.setReference(position_encoderRotations, CANSparkMax.ControlType.kPosition);
+        lastSetpoint_mechanismRotations = position_encoderRotations * motorConfig.encoderToMechanismCoefficient;
 
-        lastSetpoint_mechanismRotations = position_encoderRotations;
+        sparkMaxPIDController.setReference(position_encoderRotations, CANSparkMax.ControlType.kPosition);
     }
 
     @Override
     public void moveToPosition_mechanismRotations(double position_mechanismRotations) {
         lastControlMode = LastControlMode.POSITION;
+        lastSetpoint_mechanismRotations = position_mechanismRotations;
         double position_encoderRotations = position_mechanismRotations * (1.0 / motorConfig.encoderToMechanismCoefficient);
 
         sparkMaxPIDController.setReference(position_encoderRotations, CANSparkMax.ControlType.kPosition);

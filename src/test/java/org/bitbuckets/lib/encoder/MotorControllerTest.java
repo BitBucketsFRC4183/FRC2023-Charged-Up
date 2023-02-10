@@ -1,7 +1,6 @@
 package org.bitbuckets.lib.encoder;
 
 import org.bitbuckets.lib.hardware.IMotorController;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
@@ -13,9 +12,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class MotorControllerTest {
 
     double steerReduction = (15.0 / 32.0) * (10.0 / 60.0);
-    double steerCoefficient = 2.0 * Math.PI / 2048 * steerReduction;
+    double steerCoefficient = 2048 * steerReduction;
 
-    @Disabled
     @Test
     void zeroShouldReturnZero() {
         IMotorController motorController = Mockito.mock(IMotorController.class);
@@ -30,9 +28,8 @@ class MotorControllerTest {
 
     }
 
-    @Disabled
     @Test
-    void getMechanismPositionAccumulated_radians() {
+    void getMechanismPositionAccumulated_rotations() {
         IMotorController motorController = Mockito.mock(IMotorController.class);
         Mockito.when(motorController.getPositionRaw()).thenReturn(Math.toRadians(   540) / steerCoefficient);
         Mockito.when(motorController.getVelocityRaw()).thenReturn(0.0);
@@ -43,9 +40,9 @@ class MotorControllerTest {
         assertEquals(Math.toRadians(540), motorController.getPositionMechanism_meters());
     }
 
-    @Disabled
+
     @Test
-    void getMechanismPositionBounded_radians() {
+    void getMechanismPositionBounded_rotations() {
         IMotorController motorController = Mockito.mock(IMotorController.class);
         Mockito.when(motorController.getPositionRaw()).thenReturn(Math.toRadians(   540) / steerCoefficient);
         Mockito.when(motorController.getVelocityRaw()).thenReturn(0.0);
@@ -56,7 +53,6 @@ class MotorControllerTest {
         assertEquals(Math.toRadians(180), motorController.getPositionMechanism_meters());
     }
 
-    @Disabled
     @Test
     void getMechanismPositionAccumulated_shouldWorkWithRatio() {
         IMotorController motorController = Mockito.mock(IMotorController.class);
