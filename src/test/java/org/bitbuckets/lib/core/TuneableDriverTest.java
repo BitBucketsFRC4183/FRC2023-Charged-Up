@@ -2,6 +2,7 @@ package org.bitbuckets.lib.core;
 
 import edu.wpi.first.hal.HAL;
 import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import org.bitbuckets.drive.DriveSubsystem;
 import org.bitbuckets.lib.ProcessPath;
@@ -92,10 +93,12 @@ class TuneableDriverTest {
         IValueTuner<DriveSubsystem.OrientationChooser> tuner = path.generateEnumTuner(key, DriveSubsystem.OrientationChooser.class, DriveSubsystem.OrientationChooser.FIELD_ORIENTED);
         Thread.sleep(100);
 
-        Assertions.assertTrue(table.getEntry(key).exists());
+        NetworkTableEntry theThingThatActuallyChanges = table.getSubTable(key).getEntry("selected");
+
+        Assertions.assertTrue(theThingThatActuallyChanges.exists());
         Assertions.assertEquals(DriveSubsystem.OrientationChooser.FIELD_ORIENTED, tuner.readValue());
 
-        table.getEntry(key).setString(DriveSubsystem.OrientationChooser.ROBOT_ORIENTED.toString());
+        theThingThatActuallyChanges.setString(DriveSubsystem.OrientationChooser.ROBOT_ORIENTED.toString());
         Thread.sleep(100);
 
         Assertions.assertEquals(DriveSubsystem.OrientationChooser.ROBOT_ORIENTED, tuner.readValue());
