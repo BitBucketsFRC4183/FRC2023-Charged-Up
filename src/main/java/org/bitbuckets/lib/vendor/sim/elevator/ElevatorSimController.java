@@ -56,6 +56,11 @@ public class ElevatorSimController implements IMotorController, Runnable {
     }
 
     @Override
+    public void moveAtVoltage(double voltage) {
+        elevatorSim.setInputVoltage(voltage);
+    }
+
+    @Override
     public void moveAtPercent(double percent) {
         elevatorSim.setInputVoltage(percent * 12.0);
     }
@@ -65,6 +70,11 @@ public class ElevatorSimController implements IMotorController, Runnable {
         double output = positionPid.calculate(getPositionRaw(), position_encoderRotations);
         lastSetpoint = output;
         elevatorSim.setInputVoltage(output);
+    }
+
+    @Override
+    public void moveToPosition_mechanismRotations(double position_mechanismRotations) {
+        throw new UnsupportedOperationException();
     }
 
     @Override

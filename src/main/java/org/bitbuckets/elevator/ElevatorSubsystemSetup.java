@@ -1,6 +1,7 @@
 package org.bitbuckets.elevator;
 
 import edu.wpi.first.wpilibj.Joystick;
+import org.bitbuckets.auto.AutoSubsystem;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.lib.control.PIDConfig;
@@ -14,9 +15,11 @@ public class ElevatorSubsystemSetup implements ISetup<ElevatorSubsystem> {
 
 
     final boolean isElevatorEnabled;
+    final AutoSubsystem autoSubsystem;
 
-    public ElevatorSubsystemSetup(boolean isElevatorEnabled) {
+    public ElevatorSubsystemSetup(boolean isElevatorEnabled, AutoSubsystem autoSubsystem) {
         this.isElevatorEnabled = isElevatorEnabled;
+        this.autoSubsystem = autoSubsystem;
     }
 
 
@@ -31,8 +34,10 @@ public class ElevatorSubsystemSetup implements ISetup<ElevatorSubsystem> {
                 new SparkSetup(9, new MotorConfig(ElevatorConstants.getGearRatioExtend, 1, ElevatorConstants.rotToMeterExtend, false, false, 20, false, false, Optional.empty()), new PIDConfig(0, 0, 0, 0)),
                 new SparkSetup(10, new MotorConfig(ElevatorConstants.gearRatioTilt, 1, ElevatorConstants.rotToMeterTilt, false, false, 20, false, false, Optional.empty()), new PIDConfig(0, 0, 0, 0))
         );
-        ElevatorControl elevatorControl = elevatorControlSetup.build(self.addChild("elevator-control"));
 
-        return new ElevatorSubsystem(elevatorControl, elevatorInput);
+        var debug = self.generateDebugger();
+
+        ElevatorControl elevatorControl = elevatorControlSetup.build(self.addChild("elevator-control"));
+        return new ElevatorSubsystem(elevatorControl, elevatorInput, debug, autoSubsystem);
     }
 }

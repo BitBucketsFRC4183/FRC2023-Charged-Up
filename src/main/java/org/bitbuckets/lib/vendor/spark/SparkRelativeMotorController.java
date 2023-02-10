@@ -60,6 +60,11 @@ public class SparkRelativeMotorController implements IMotorController, Runnable 
     }
 
     @Override
+    public void moveAtVoltage(double voltage) {
+        sparkMax.setVoltage(voltage);
+    }
+
+    @Override
     public void moveAtPercent(double percent) {
         sparkMax.set(percent);
     }
@@ -71,6 +76,11 @@ public class SparkRelativeMotorController implements IMotorController, Runnable 
         sparkMaxPIDController.setReference(position_encoderRotations, CANSparkMax.ControlType.kPosition);
 
         positionSetpoint = position_encoderRotations;
+    }
+
+    @Override
+    public void moveToPosition_mechanismRotations(double position_mechanismRotations) {
+        throw new UnsupportedOperationException(); //TODO fill thsi out
     }
 
     @Override

@@ -2,14 +2,14 @@ package org.bitbuckets.lib.startup;
 
 public class SetupRecord {
 
-    final int id;
-    final String fullpath;
+    final int taskId;
+    final String processPath;
     final String taskName;
     final String message;
 
-    public SetupRecord(int id, String fullpath, String taskName, String message) {
-        this.id = id;
-        this.fullpath = fullpath;
+    public SetupRecord(int taskId, String processPath, String taskName, String message) {
+        this.taskId = taskId;
+        this.processPath = processPath;
         this.taskName = taskName;
         this.message = message;
     }
