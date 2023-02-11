@@ -2,7 +2,6 @@ package org.bitbuckets.drive;
 
 import edu.wpi.first.wpilibj.Joystick;
 import org.bitbuckets.auto.AutoSubsystem;
-import org.bitbuckets.auto.AutoSubsystemSetup;
 import org.bitbuckets.auto.AutoPath;
 import org.bitbuckets.drive.balance.ClosedLoopsControl;
 import org.bitbuckets.drive.balance.ClosedLoopsSetup;
@@ -18,7 +17,6 @@ import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.lib.control.PIDConfig;
 import org.bitbuckets.lib.hardware.MotorConfig;
 import org.bitbuckets.lib.log.Debuggable;
-import org.bitbuckets.lib.log.ILoggable;
 import org.bitbuckets.lib.tune.IValueTuner;
 import org.bitbuckets.lib.util.MockingUtil;
 import org.bitbuckets.lib.vendor.ctre.CANCoderAbsoluteEncoderSetup;
@@ -29,7 +27,6 @@ import org.bitbuckets.lib.vendor.spark.SparkSteerMotorSetup;
 import org.bitbuckets.lib.vendor.thrifty.ThriftyEncoderSetup;
 import org.bitbuckets.odometry.IOdometryControl;
 import org.bitbuckets.odometry.OdometryControlSetup;
-import org.bitbuckets.robot.RobotStateControl;
 import org.bitbuckets.vision.IVisionControl;
 
 import java.util.Optional;
@@ -60,7 +57,7 @@ public class DriveSubsystemSetup implements ISetup<DriveSubsystem> {
         DriveControl driveControl = buildNeoDriveControl(self); //or use talons, when they work
         IOdometryControl odometryControl = new OdometryControlSetup(driveControl, visionControl, 5)
                 .build(self.addChild("odo-control"));
-        HoloControl holoControl = new HoloControlSetup(driveControl, odometryControl)
+        HoloControl holoControl = new HoloControlSetup(driveControl, visionControl, odometryControl)
                 .build(self.addChild("holo-control"));
 
         IValueTuner<AutoPath> pathTuneable = self

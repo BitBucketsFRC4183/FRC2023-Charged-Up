@@ -15,14 +15,16 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 
 import java.util.Optional;
 
-public class VisionControl implements Runnable, IVisionControl {
+public class VisionControl implements IVisionControl {
 
 
     final Transform3d robotToCamera;
     final PhotonCamera photonCamera;
     final AprilTagFieldLayout aprilTagFieldLayout;
     final PhotonPoseEstimator photonPoseEstimator;
+
     final Debuggable debuggable;
+
 
     VisionControl(Transform3d robotToCamera, AprilTagFieldLayout aprilTagFieldLayout, PhotonPoseEstimator photonPoseEstimator, PhotonCamera photonCamera, Debuggable debuggable) {
         this.robotToCamera = robotToCamera;
@@ -32,9 +34,14 @@ public class VisionControl implements Runnable, IVisionControl {
         this.debuggable = debuggable;
     }
 
-    @Override
-    public void run() {
 
+    public void logLoop() {
+        debuggable.log("a", "a");
+
+        var opt = estimateTargetPose();
+        opt.ifPresent(pose3d -> debuggable.log("target-pose", pose3d));
+        var op2 = estimateRobotPose();
+        op2.ifPresent(pose3d -> debuggable.log("robot-pose", pose3d));
 
     }
 
@@ -49,19 +56,19 @@ public class VisionControl implements Runnable, IVisionControl {
         return visionPoseEstimator().map(r -> r.robotPose);
     }
 
+
+
     public Optional<PhotonCalculationResult> visionPoseEstimator() {
         PhotonPipelineResult result = photonCamera.getLatestResult();
         if (!result.hasTargets()) return Optional.empty();
-
         PhotonTrackedTarget aprilTagTarget = result.getBestTarget();
 
-        double yaw = aprilTagTarget.getYaw();
-        double pitch = aprilTagTarget.getPitch();
-        double area = aprilTagTarget.getArea();
-        double skew = aprilTagTarget.getSkew();
         Transform3d transformToTag = aprilTagTarget.getBestCameraToTarget();
-        double poseX = transformToTag.getX();
         int tagID = aprilTagTarget.getFiducialId();
+
+        debuggable.log("tag-id", tagID);
+        debuggable.log("transform-to-tag-from-origin", new Pose3d().transformBy(transformToTag));
+
 
         //Pose3d robotPose = PhotonUtils.estimateFieldToRobotAprilTag(tagPose, VisionConstants.aprilTags.get(tagID), robotToCamera);
         Optional<EstimatedRobotPose> robotPose3d = photonPoseEstimator.update();

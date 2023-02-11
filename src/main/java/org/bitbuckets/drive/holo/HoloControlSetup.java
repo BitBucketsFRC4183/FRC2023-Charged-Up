@@ -8,14 +8,18 @@ import org.bitbuckets.drive.controlsds.DriveControl;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.odometry.IOdometryControl;
+import org.bitbuckets.vision.IVisionControl;
+import org.bitbuckets.vision.VisionControl;
 
 public class HoloControlSetup implements ISetup<HoloControl> {
 
     final DriveControl drive;
+    final IVisionControl visionControl;
     final IOdometryControl odo;
 
-    public HoloControlSetup(DriveControl drive, IOdometryControl odo) {
+    public HoloControlSetup(DriveControl drive, IVisionControl visionControl, IOdometryControl odo) {
         this.drive = drive;
+        this.visionControl = visionControl;
         this.odo = odo;
     }
 
@@ -37,6 +41,7 @@ public class HoloControlSetup implements ISetup<HoloControl> {
 
         return new HoloControl(
                 drive,
+                visionControl,
                 odo,
                 holonomicDriveController
         );
