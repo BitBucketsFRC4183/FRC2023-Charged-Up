@@ -7,9 +7,9 @@ import edu.wpi.first.math.numbers.N2;
 public class DCMotorConfig {
 
     public final double momentOfInertia;
-    public final Matrix<N2, N1> stdDevs;
+    public final Matrix<N1, N1> stdDevs;
 
-    public DCMotorConfig(double momentOfInertia, Matrix<N2, N1> stdDevs) {
+    public DCMotorConfig(double momentOfInertia, Matrix<N1, N1> stdDevs) {
         this.momentOfInertia = momentOfInertia;
         this.stdDevs = stdDevs;
     }

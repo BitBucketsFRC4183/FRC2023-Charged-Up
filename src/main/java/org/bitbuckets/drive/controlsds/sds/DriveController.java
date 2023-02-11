@@ -5,21 +5,18 @@ import org.bitbuckets.lib.hardware.IMotorController;
 public class DriveController implements IDriveController {
     private final IMotorController motor;
 
-    private final double nominalVoltage;
-
-    public DriveController(IMotorController motor, double nominalVoltage) {
+    public DriveController(IMotorController motor) {
         this.motor = motor;
-        this.nominalVoltage = nominalVoltage;
     }
 
     @Override
     public void setReferenceVoltage(double voltage) {
-        motor.moveAtPercent(voltage / nominalVoltage);
+        motor.moveAtVoltage(voltage);
     }
 
     @Override
     public double getStateVelocity() {
-        return motor.getVelocityRaw();
+        return motor.getVelocityMechanism_metersPerSecond();
     }
 
     @Override

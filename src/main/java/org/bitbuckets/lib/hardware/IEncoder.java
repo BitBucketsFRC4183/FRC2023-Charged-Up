@@ -88,7 +88,7 @@ public interface IEncoder extends IRaw {
     }
 
     default double getPositionMechanism_meters() {
-        return getPositionEncoder_meters() * getMechanismFactor();
+        return getPositionRaw() * getRawToRotationsFactor() * getMechanismFactor() * getRotationsToMetersFactor();
     }
 
     default double getPositionEncoder_meters() {
