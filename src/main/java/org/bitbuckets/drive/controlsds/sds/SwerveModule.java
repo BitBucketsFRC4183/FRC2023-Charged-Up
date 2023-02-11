@@ -22,12 +22,12 @@ public class SwerveModule implements ISwerveModule, Runnable {
 
     @Override
     public SwerveModulePosition getPosition() {
-        return new SwerveModulePosition(driveController.getStatePosition_meters(), Rotation2d.fromDegrees(getSteerAngle()));
+        return new SwerveModulePosition(driveController.getStatePosition_meters(), Rotation2d.fromRadians(getSteerAngle()));
     }
 
     @Override
     public SwerveModuleState getState() {
-        return new SwerveModuleState(getDriveVelocity(), Rotation2d.fromDegrees(getSteerAngle()));
+        return new SwerveModuleState(getDriveVelocity(), Rotation2d.fromRadians(getSteerAngle()));
     }
 
 
@@ -81,7 +81,7 @@ public class SwerveModule implements ISwerveModule, Runnable {
 
     @Override
     public void run() {
-        swerveAngleVoltage.log(new double[] {
+        swerveAngleVoltage.log(new double[]{
                 Math.toDegrees(steerAngle),
                 driveVoltage,
         });

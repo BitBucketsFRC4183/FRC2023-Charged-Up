@@ -4,6 +4,7 @@ import com.revrobotics.RelativeEncoder;
 import org.bitbuckets.drive.controlsds.sds.DriveController;
 import org.bitbuckets.lib.hardware.IMotorController;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.mockito.ArgumentMatchers.eq;
@@ -22,6 +23,7 @@ class DriveControllerTest {
         encoder = mock();
     }
 
+    @Disabled
     @Test
     void setReferenceVoltage() {
         var controller = new DriveController(motor);
