@@ -102,14 +102,14 @@ class VisionControlTest {
         when(photonPipelineResult.hasTargets()).thenReturn(true);
 
         // Photon vision estimates that ouer robot is at 1, 0, 0 -> rotated 180º field relative
-        EstimatedRobotPose robotPose = new EstimatedRobotPose(new Pose3d(1, 0, 0, new Rotation3d(0, 0, Math.toRadians(180))), 0);
+        EstimatedRobotPose robotPose = new EstimatedRobotPose(new Pose3d(2, 0, 0, new Rotation3d(0, 0, Math.toRadians(180))), 0);
         when(photonPoseEstimator.update()).thenReturn(Optional.of(robotPose));
 
         // Mock our apriltag to 0, 0, rotated 180 (facing towards us)
         var aprilTagPose = new Pose3d(new Translation3d(0, 0, 0), new Rotation3d(0, 0, Math.toRadians(180)));
         when(aprilTagFieldLayout.getTagPose(anyInt())).thenReturn(Optional.of(aprilTagPose));
         // we should need to move (-1, 0) to translate to our target april tag
-        Transform3d cameraToTargetTransform = new Transform3d(new Translation3d(-1, 0, 0), new Rotation3d(0, 0, 0));
+        Transform3d cameraToTargetTransform = new Transform3d(new Translation3d(-2, 0, 0), new Rotation3d(0, 0, 0));
 
         PhotonTrackedTarget aprilTagTarget = mock(PhotonTrackedTarget.class);
 
@@ -129,11 +129,12 @@ class VisionControlTest {
         var result = control.visionPoseEstimator();
         assertEquals(true, result.isPresent());
 
-        // if we are at (1,0), the target is at (0, 0) and we are facing it
+        // if we are at (2,0), the target is at (0, 0) and we are facing it
         // we expect the translation to target to be (-1, 0) and our rotation should stay at 180
+        // we want to be move 1 towards the target
         var actual = result.get();
-        assertEquals(new Pose3d(new Translation3d(-1, 0, 0), new Rotation3d(0, 0, Math.toRadians(180))), actual.robotPose);
-        assertEquals(new Pose2d(new Translation2d(), new Rotation2d(Math.toRadians(180))), actual.goalPose.toPose2d());
+        assertEquals(new Pose3d(new Translation3d(-2, 0, 0), new Rotation3d(0, 0, Math.toRadians(180))), actual.robotPose);
+        assertEquals(new Pose2d(new Translation2d(-1, 0), new Rotation2d(Math.toRadians(180))), actual.goalPose.toPose2d());
         assertEquals(-1, actual.translationToTag.getX(), .01);
         assertEquals(0, actual.translationToTag.getY(), .01);
         assertEquals(Math.toRadians(0), actual.targetYaw.getDegrees(), .01);
