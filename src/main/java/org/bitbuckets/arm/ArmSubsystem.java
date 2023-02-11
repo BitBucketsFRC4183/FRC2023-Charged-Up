@@ -1,8 +1,6 @@
 package org.bitbuckets.arm;
 
-import org.bitbuckets.auto.AutoSubsystem;
 import org.bitbuckets.lib.log.Debuggable;
-import org.bitbuckets.lib.log.ILoggable;
 
 public class ArmSubsystem {
 
@@ -76,12 +74,6 @@ public class ArmSubsystem {
 
             case PREPARE:
                 armControl.prepareArm();
-
-                InverseKinematics kinematics = new InverseKinematics(0.8,0.8);
-
-
-                armControl.moveToDegrees(69, kinematics.getLowerJointAngle());
-
                 if (armControl.isErrorSmallEnough(3.69)){
                     state = nextState;
                 }
