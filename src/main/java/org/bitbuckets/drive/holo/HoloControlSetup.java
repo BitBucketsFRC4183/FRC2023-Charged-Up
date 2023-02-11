@@ -28,13 +28,13 @@ public class HoloControlSetup implements ISetup<HoloControl> {
         //TODO find constants
         HolonomicDriveController holonomicDriveController = new HolonomicDriveController(
                 new PIDController(
-                        3, 0, 0
+                        1.5, 0, 0
                 ),
                 new PIDController(
-                        3, 0, 0
+                        1.5, 0, 0
                 ),
                 new ProfiledPIDController(
-                        1, 0, 0, new TrapezoidProfile.Constraints(drive.getMaxAngularVelocity()/20, drive.getMaxAngularVelocity() * 10)
+                        3, 0, 0, new TrapezoidProfile.Constraints(drive.getMaxAngularVelocity()/20, drive.getMaxAngularVelocity() * 10)
                 )
         );
         var debuggable = self.generateDebugger();
