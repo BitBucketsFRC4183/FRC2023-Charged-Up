@@ -49,6 +49,7 @@ public class OdometryControl implements IOdometryControl {
         debuggable.log("pitch", pigeonIMU.getPitch());
         debuggable.log("roll", pigeonIMU.getRoll());
         debuggable.log("rate", pigeonIMU.getRate());
+        debuggable.log("pose", swerveDrivePoseEstimator.getEstimatedPosition());
     }
 
     @Override
