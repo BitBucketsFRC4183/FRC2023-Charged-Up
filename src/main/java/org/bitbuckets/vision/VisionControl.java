@@ -37,9 +37,9 @@ public class VisionControl implements IVisionControl {
         debuggable.log("a", "a");
 
         var opt = estimateVisionTargetPose();
-        opt.ifPresent(pose3d -> debuggable.log("target-pose", pose3d));
+        opt.ifPresent(pose3d -> debuggable.log("target-pose", opt.get()));
         var op2 = estimateVisionRobotPose();
-        op2.ifPresent(pose3d -> debuggable.log("robot-pose", pose3d));
+        op2.ifPresent(pose3d -> debuggable.log("robot-pose", op2.get()));
 
     }
 

@@ -29,7 +29,6 @@ public class HoloControl {
         this.odometryControl = odometryControl;
         this.controller = controller;
         this.debuggable = debuggable;
-        controller.setTolerance(new Pose2d(0.1, 0.1, Rotation2d.fromDegrees(1)));
     }
 
 
@@ -39,6 +38,8 @@ public class HoloControl {
      * @param target setpoint global
      */
     public ChassisSpeeds calculatePose2D(Pose2d target, double desiredVelocity, Rotation2d desiredRotation) {
+
+
         var speed = controller.calculate(
                 odometryControl.estimateFusedPose2d(),
                 target,
@@ -48,6 +49,17 @@ public class HoloControl {
 
 
         );
+        double X_error = controller.getXController().getPositionError();
+        double Y_error =  controller.getYController().getPositionError();
+        double theta_error = controller.getThetaController().getPositionError();
+
+
+
+
+        if((X_error < 0.4 && X_error > -0.4) && (Y_error < 0.2 && Y_error > -0.2) && (theta_error < 5 && theta_error > -5))
+        {
+            return new ChassisSpeeds(0,0,0);
+        }
         debuggable.log("rotation", speed.omegaRadiansPerSecond);
         debuggable.log("x-movement", speed.vxMetersPerSecond);
         debuggable.log("y-movement", speed.vyMetersPerSecond);
