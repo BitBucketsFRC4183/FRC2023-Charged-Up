@@ -1,6 +1,11 @@
 package org.bitbuckets.arm;
 
+import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
+import org.bitbuckets.arm.sim.ArmConfig;
+import org.bitbuckets.arm.sim.SimArm;
+import org.bitbuckets.arm.sim.SimArmSetup;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.lib.log.Debuggable;

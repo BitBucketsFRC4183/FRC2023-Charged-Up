@@ -1,0 +1,102 @@
+package org.bitbuckets.arm.sim;
+
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
+import org.bitbuckets.arm.ArmConstants;
+import org.bitbuckets.lib.control.PIDCalculator;
+import org.bitbuckets.lib.hardware.IMotorController;
+import org.bitbuckets.lib.hardware.MotorConfig;
+
+public class SimArm implements IMotorController {
+
+    final MotorConfig motorConfig;
+    final SingleJointedArmSim sim;
+    final PIDController armPositionPid;
+
+    double setpoint_encoderRadians = 0;
+
+    public SimArm(MotorConfig motorConfig, SingleJointedArmSim sim, PIDController armPositionPid) {
+        this.motorConfig = motorConfig;
+        this.sim = sim;
+        this.armPositionPid = armPositionPid;
+    }
+
+    @Override
+    public double getMechanismFactor() {
+        return motorConfig.encoderToMechanismCoefficient;
+    }
+
+    @Override
+    public double getRotationsToMetersFactor() {
+        return motorConfig.rotationToMeterCoefficient;
+    }
+
+    @Override
+    public double getRawToRotationsFactor() {
+        return 1;
+    }
+
+    @Override
+    public double getTimeFactor() {
+        return motorConfig.timeCoefficient;
+    }
+
+    @Override
+    public double getPositionRaw() {
+        return sim.getAngleRads() / Math.PI / 2.0;
+    }
+
+    @Override
+    public double getVelocityRaw() {
+        return sim.getVelocityRadPerSec() / Math.PI / 2.0;
+    }
+
+    @Override
+    public void forceOffset(double offsetUnits_baseUnits) {
+        throw new UnsupportedOperationException("69");
+    }
+
+    @Override
+    public void forceOffset_mechanismRotations(double offsetUnits_mechanismRotations) {
+        throw new UnsupportedOperationException("69");
+    }
+
+    @Override
+    public void moveAtVoltage(double voltage) {
+        sim.setInputVoltage(voltage);
+    }
+
+    @Override
+    public void moveAtPercent(double percent) {
+        sim.setInputVoltage(percent * 12.0);
+    }
+
+    @Override
+    public void moveToPosition(double position_encoderRotations) {
+        setpoint_encoderRadians = position_encoderRotations * 2.0 * Math.PI;
+        double voltage = armPositionPid.calculate(setpoint_encoderRadians);
+
+
+        sim.setInputVoltage(voltage);
+    }
+
+    @Override
+    public void moveToPosition_mechanismRotations(double position_mechanismRotations) {
+        moveToPosition(position_mechanismRotations / ArmConstants.LOWER_ARM_GEAR_RATIO);
+    }
+
+    @Override
+    public void moveAtVelocity(double velocity_encoderMetersPerSecond) {
+        throw new UnsupportedOperationException("does not support");
+    }
+
+    @Override
+    public double getSetpoint_mechanismRotations() {
+        return setpoint_encoderRadians;
+    }
+
+    @Override
+    public <T> T rawAccess(Class<T> clazz) throws UnsupportedOperationException {
+        throw new UnsupportedOperationException("bad");
+    }
+}
