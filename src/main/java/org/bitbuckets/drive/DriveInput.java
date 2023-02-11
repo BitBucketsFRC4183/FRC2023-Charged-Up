@@ -88,4 +88,8 @@ public class DriveInput {
         return joystick.getRawButtonPressed(XboxController.Button.kStart.value);
     }
 
+    public boolean isResetOdoPressed() {
+        return joystick.getRawButtonPressed(XboxController.Button.kLeftBumper.value);
+    }
+
 }
