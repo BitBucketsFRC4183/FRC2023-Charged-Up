@@ -2,7 +2,6 @@ package org.bitbuckets.lib;
 
 import org.bitbuckets.lib.startup.IStartupDriver;
 
-@Deprecated @DontUseIncubating
 public class StartupProfiler {
 
     final IStartupDriver startupDriver;

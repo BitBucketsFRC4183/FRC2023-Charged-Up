@@ -13,6 +13,7 @@ import org.bitbuckets.lib.hardware.IMotorController;
 
 import static org.bitbuckets.lib.vendor.ctre.CtreUtils.checkCtreError;
 
+@Deprecated
 public class TalonSteerMotorSetup implements ISetup<IMotorController> {
 
     private static final double TICKS_PER_ROTATION = 2048.0;
