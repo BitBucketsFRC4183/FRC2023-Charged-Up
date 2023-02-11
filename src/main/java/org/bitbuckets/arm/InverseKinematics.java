@@ -1,5 +1,7 @@
 package org.bitbuckets.arm;
 
+import org.opencv.core.Mat;
+
 public class InverseKinematics {
 
     final double x;
@@ -20,7 +22,7 @@ public class InverseKinematics {
         // lowerJointLength^2 + c^2 +
         //double lowerJointAngle = (Math.pow(ArmConstants.lowerJointLength, 2) + Math.pow(c, 2) + Math.pow(ArmConstants.upperJointLength, 2)) / (2 * ArmConstants.lowerJointLength * c) - alpha;
 
-        return Math.acos((Math.pow(ArmConstants.LOWER_JOINT_LENGTH, 2) + Math.pow(c, 2) - Math.pow(ArmConstants.UPPER_JOINT_LENGTH, 2)) / (2 * ArmConstants.LOWER_JOINT_LENGTH * c)) - alpha;
+        return (180. / Math.PI) * (Math.acos((Math.pow(ArmConstants.LOWER_JOINT_LENGTH, 2) + Math.pow(c, 2) - Math.pow(ArmConstants.UPPER_JOINT_LENGTH, 2)) / (2 * ArmConstants.LOWER_JOINT_LENGTH * c)) - alpha);
     }
 
     // Result is in radians
