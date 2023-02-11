@@ -70,6 +70,7 @@ public class DriveSubsystem {
                 break;
 
             case AUTO_PATHFINDING:
+
                 if (autoSubsystem.state() == AutoFSM.TELEOP) {
                     state = DriveFSM.TELEOP_NORMAL;
                     break;

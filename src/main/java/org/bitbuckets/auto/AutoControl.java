@@ -1,6 +1,8 @@
 package org.bitbuckets.auto;
 
 import com.pathplanner.lib.PathPlannerTrajectory;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
+import org.bitbuckets.odometry.IOdometryControl;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,7 +16,7 @@ public class AutoControl implements IAutoControl {
     }
 
     @Override
-    public AutoPathInstance generateAndStartPath(AutoPath whichOne) {
+    public AutoPathInstance generateAndStartPath(AutoPath whichOne, SwerveModulePosition[] swerveModulePositions, IOdometryControl odometryControl) {
         var tj = trajectories[whichOne.index];
         double trajectoryTime = tj.getTotalTimeSeconds();
         Map<String, Double> eventMap = new HashMap<>();
@@ -28,7 +30,9 @@ public class AutoControl implements IAutoControl {
             }
         }
 
+        odometryControl.setPos(tj.getInitialState().holonomicRotation, swerveModulePositions, tj.getInitialState().poseMeters);
         AutoPathInstance instance = new AutoPathInstance(tj, eventMap, trajectoryTime, whichOne);
+
         instance.start();
         return instance;
     }
