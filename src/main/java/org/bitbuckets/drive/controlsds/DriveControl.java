@@ -103,6 +103,8 @@ public class DriveControl implements IDriveControl {
 
     //microoptimization: do this without stream()
     public SwerveModulePosition[] currentPositions() {
+        debug.log("Pos 0 Dis", this.modules.get(3).getPosition().distanceMeters);
+        debug.log("Pos 0 Angle", this.modules.get(3).getPosition().angle.getDegrees());
         return new SwerveModulePosition[]
                 {
                         this.modules.get(0).getPosition(),

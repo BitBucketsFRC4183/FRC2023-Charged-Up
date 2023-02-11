@@ -1,7 +1,9 @@
 package org.bitbuckets.drive;
 
 import com.pathplanner.lib.PathPlannerTrajectory;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Preferences;
 import org.bitbuckets.auto.AutoFSM;
@@ -11,9 +13,8 @@ import org.bitbuckets.drive.controlsds.DriveControl;
 import org.bitbuckets.drive.holo.HoloControl;
 import org.bitbuckets.lib.log.Debuggable;
 import org.bitbuckets.lib.tune.IValueTuner;
-import org.bitbuckets.odometry.IOdometryControl;
+import org.bitbuckets.odometry.OdometryControl;
 import org.bitbuckets.vision.IVisionControl;
-import org.bitbuckets.vision.PhotonCalculationResult;
 
 import java.util.Optional;
 
@@ -27,7 +28,7 @@ public class DriveSubsystem {
     final DriveInput input;
 
     final AutoSubsystem autoSubsystem;
-    final IOdometryControl odometryControl;
+    final OdometryControl odometryControl;
     final ClosedLoopsControl closedLoopsControl;
     final DriveControl driveControl;
     final HoloControl holoControl;
@@ -41,7 +42,7 @@ public class DriveSubsystem {
     }
 
 
-    public DriveSubsystem(DriveInput input, IOdometryControl odometryControl, ClosedLoopsControl closedLoopsControl, DriveControl driveControl, AutoSubsystem autoSubsystem, HoloControl holoControl, IVisionControl visionControl, IValueTuner<OrientationChooser> orientation, Debuggable debuggable) {
+    public DriveSubsystem(DriveInput input, OdometryControl odometryControl, ClosedLoopsControl closedLoopsControl, DriveControl driveControl, AutoSubsystem autoSubsystem, HoloControl holoControl, IVisionControl visionControl, IValueTuner<OrientationChooser> orientation, Debuggable debuggable) {
         this.input = input;
         this.odometryControl = odometryControl;
         this.closedLoopsControl = closedLoopsControl;
@@ -143,6 +144,9 @@ public class DriveSubsystem {
     void teleopNormal() {
         if (input.isResetGyroPressed()) {
             odometryControl.zero();
+        }
+        if (input.isResetOdoPressed()) {
+            odometryControl.setPos(Rotation2d.fromDegrees(0), driveControl.currentPositions(), new Pose2d(0, 0, Rotation2d.fromDegrees(0)));
         }
 
         double xOutput = input.getInputX() * driveControl.getMaxVelocity();
