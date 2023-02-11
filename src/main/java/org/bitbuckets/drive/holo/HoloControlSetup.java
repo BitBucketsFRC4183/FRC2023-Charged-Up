@@ -37,12 +37,14 @@ public class HoloControlSetup implements ISetup<HoloControl> {
                         1, 0, 0, new TrapezoidProfile.Constraints(drive.getMaxAngularVelocity(), drive.getMaxAngularVelocity() * 10)
                 )
         );
+        var debuggable = self.generateDebugger();
+
 
         return new HoloControl(
                 drive,
                 visionControl,
                 odo,
-                holonomicDriveController
-        );
+                holonomicDriveController,
+                debuggable);
     }
 }

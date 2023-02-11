@@ -6,6 +6,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.Trajectory;
 import org.bitbuckets.drive.controlsds.DriveControl;
+import org.bitbuckets.lib.log.Debuggable;
 import org.bitbuckets.odometry.IOdometryControl;
 import org.bitbuckets.vision.IVisionControl;
 
@@ -17,11 +18,14 @@ public class HoloControl {
     final IOdometryControl odometryControl;
     final HolonomicDriveController controller;
 
-    public HoloControl(DriveControl driveControl, IVisionControl visionControl, IOdometryControl odometryControl, HolonomicDriveController controller) {
+    final Debuggable debuggable;
+
+    public HoloControl(DriveControl driveControl, IVisionControl visionControl, IOdometryControl odometryControl, HolonomicDriveController controller, Debuggable debuggable) {
         this.driveControl = driveControl;
         this.visionControl = visionControl;
         this.odometryControl = odometryControl;
         this.controller = controller;
+        this.debuggable = debuggable;
     }
 
 
@@ -31,13 +35,19 @@ public class HoloControl {
      * @param target setpoint global
      */
     public ChassisSpeeds calculatePose2D(Pose2d target, double desiredVelocity, Rotation2d desiredRotation) {
-        return controller.calculate(
+        var speed = controller.calculate(
                 visionControl.estimateRobotPose().get().toPose2d(),
                 target,
                 desiredVelocity,
                 desiredRotation
 
+
+
         );
+        debuggable.log("rotation", speed.omegaRadiansPerSecond);
+        debuggable.log("x-movement", speed.vxMetersPerSecond);
+        debuggable.log("y-movement", speed.vyMetersPerSecond);
+    return speed;
     }
 
     public ChassisSpeeds calculatePose2DFromState(Trajectory.State state) {
