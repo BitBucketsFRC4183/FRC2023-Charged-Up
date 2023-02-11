@@ -52,7 +52,7 @@ public class HoloControl {
 
     public ChassisSpeeds calculatePose2DFromState(Trajectory.State state) {
         return controller.calculate(
-                odometryControl.estimatePose2d(),
+                odometryControl.estimateFusedPose2d(),
                 state,
                 state.poseMeters.getRotation()
         );

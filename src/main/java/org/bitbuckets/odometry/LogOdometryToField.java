@@ -15,7 +15,7 @@ public class LogOdometryToField implements Runnable {
     @Override
     public void run() {
         field2d.setRobotPose(
-                control.estimatePose2d()
+                control.estimateFusedPose2d()
         );
     }
 }

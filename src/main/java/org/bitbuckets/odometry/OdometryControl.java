@@ -16,7 +16,6 @@ import edu.wpi.first.util.WPIUtilJNI;
 import org.bitbuckets.drive.IDriveControl;
 import org.bitbuckets.lib.log.Debuggable;
 import org.bitbuckets.vision.IVisionControl;
-import org.bitbuckets.vision.VisionConstants2;
 
 import java.util.Optional;
 
@@ -46,6 +45,7 @@ public class OdometryControl implements IOdometryControl {
         Rotation2d gyroangle = Rotation2d.fromDegrees(pigeonIMU.getYaw());
         double epoch = WPIUtilJNI.now();
         swerveDrivePoseEstimator.updateWithTime(epoch, gyroangle, driveControl.currentPositions());
+        //Todo: re add when vision is fixed
         Optional<Pose3d> res = visionControl.estimateVisionRobotPose();
 
         if (res.isPresent()) {
@@ -64,18 +64,14 @@ public class OdometryControl implements IOdometryControl {
         debuggable.log("pitch", pigeonIMU.getPitch());
         debuggable.log("roll", pigeonIMU.getRoll());
         debuggable.log("rate", pigeonIMU.getRate());
-        debuggable.log("pose", estimatePose2d());
+        debuggable.log("pose", estimateFusedPose2d());
     }
 
     @Override
-    public Pose2d estimatePose2d() {
+    public Pose2d estimateFusedPose2d() {
         return swerveDrivePoseEstimator.getEstimatedPosition();
     }
 
-    @Override
-    public Pose2d fuseEstimatedPose2d() {
-        return
-    }
 
 
     @Override
