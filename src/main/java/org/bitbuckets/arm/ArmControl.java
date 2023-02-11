@@ -1,5 +1,6 @@
 package org.bitbuckets.arm;
 
+import org.bitbuckets.arm.kinematics.InverseKinematics;
 import org.bitbuckets.lib.hardware.IMotorController;
 import org.bitbuckets.lib.log.Debuggable;
 
