@@ -25,7 +25,7 @@ public class ElevatorMotorSetup implements ISetup<IMotorController> {
     public IMotorController build(ProcessPath self) {
         ElevatorSim elevatorSim = new ElevatorSim(
                 DCMotor.getNeo550(1),
-                1.0 / motorConfig.mechanismCoefficient,
+                1.0 / motorConfig.encoderToMechanismCoefficient,
                 elevatorConfig.carriageMassKg,
                 elevatorConfig.drumRadius,
                 elevatorConfig.minHeight,
