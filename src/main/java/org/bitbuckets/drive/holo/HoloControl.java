@@ -1,10 +1,13 @@
 package org.bitbuckets.drive.holo;
 
 import edu.wpi.first.math.controller.HolonomicDriveController;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import org.bitbuckets.drive.controlsds.DriveControl;
 import org.bitbuckets.lib.log.Debuggable;
 import org.bitbuckets.odometry.IOdometryControl;
@@ -16,7 +19,7 @@ public class HoloControl {
 
     final IVisionControl visionControl;
     final IOdometryControl odometryControl;
-    final HolonomicDriveController controller;
+    HolonomicDriveController controller;
 
     final Debuggable debuggable;
 
@@ -26,6 +29,7 @@ public class HoloControl {
         this.odometryControl = odometryControl;
         this.controller = controller;
         this.debuggable = debuggable;
+        controller.setTolerance(new Pose2d(0.1, 0.1, Rotation2d.fromDegrees(1)));
     }
 
 
@@ -36,7 +40,7 @@ public class HoloControl {
      */
     public ChassisSpeeds calculatePose2D(Pose2d target, double desiredVelocity, Rotation2d desiredRotation) {
         var speed = controller.calculate(
-                visionControl.estimateVisionRobotPose().get().toPose2d(),
+                odometryControl.estimateFusedPose2d(),
                 target,
                 desiredVelocity,
                 desiredRotation

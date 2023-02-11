@@ -82,10 +82,10 @@ public class VisionControl implements IVisionControl {
 
         SmartDashboard.putString("tagpose", transformToTag.toString());
         // Trasnform the camera's pose to the target's pose
-        Pose3d targetPose = cameraPose.transformBy(transformToTag);
+        Pose3d tagPose = cameraPose.transformBy(transformToTag);
 
         // Transform the tag's pose to set our goal
-        Pose3d goalPose = targetPose.transformBy(VisionConstants2.TAG_TO_GOAL);
+        Pose3d goalPose = tagPose.transformBy(VisionConstants2.TAG_TO_GOAL);
         // This is new target data, so recalculate the goal
         double range = PhotonUtils.calculateDistanceToTargetMeters(
                 VisionConstants2.CAMERA_HEIGHT,
@@ -106,6 +106,7 @@ public class VisionControl implements IVisionControl {
         Pose2d tagPossiblePose2d = tagPossiblePose3d.toPose2d();
 
         Rotation2d targetYaw = PhotonUtils.getYawToPose(currentEstimatedPose2d, goalPose.toPose2d());
+
         SmartDashboard.putString("targetYaw", targetYaw.toString());
         return Optional.of(new PhotonCalculationResult(estimatedFieldRobotPose, goalPose, translationToTag, targetYaw, targetYaw.getRadians()));
 
