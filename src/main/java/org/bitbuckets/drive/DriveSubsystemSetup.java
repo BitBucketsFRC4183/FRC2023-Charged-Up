@@ -53,11 +53,14 @@ public class DriveSubsystemSetup implements ISetup<DriveSubsystem> {
         if (isSimulated) {
             driveControl = buildSimDriveControl(self);
         } else {
-            driveControl =  buildNeoDriveControl(self); //or use talons, when they work}
+            driveControl = buildNeoDriveControl(self); //or use talons, when they work}
         }
+        autoSubsystem.setDriveControl(driveControl);
 
         IOdometryControl odometryControl = new OdometryControlSetup(driveControl, visionControl, 5)
                 .build(self.addChild("odo-control"));
+        autoSubsystem.setOdometryControl(odometryControl);
+
         HoloControl holoControl = new HoloControlSetup(driveControl, visionControl, odometryControl)
                 .build(self.addChild("holo-control"));
 
@@ -79,7 +82,6 @@ public class DriveSubsystemSetup implements ISetup<DriveSubsystem> {
         );
 
     }
-
 
 
     DriveControl buildNeoDriveControl(ProcessPath path) {

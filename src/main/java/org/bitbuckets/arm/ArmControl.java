@@ -9,23 +9,23 @@ public class ArmControl {
 
 
     final IMotorController lowerJoint;
+    final IMotorController lowerJoint1;
     final IMotorController upperJoint;
     final Debuggable debuggable;
 
 
-
-
-
     // How do set up IMotorController and IEncoder so that lowerJoint == lowerEncoder
 
-    public ArmControl(IMotorController lowerJoint, IMotorController upperJoint, Debuggable debuggable) {
+    public ArmControl(IMotorController lowerJoint, IMotorController lowerJoint1, IMotorController upperJoint, Debuggable debuggable) {
         this.lowerJoint = lowerJoint;
+        this.lowerJoint1 = lowerJoint1;
         this.upperJoint = upperJoint;
         this.debuggable = debuggable;
     }
 
     public void calibrateLowerArm() {
         lowerJoint.forceOffset(convertMechanismRotationtoRawRotation_lowerJoint(convertDegreesToRotation(0)));
+        lowerJoint1.forceOffset(convertMechanismRotationtoRawRotation_lowerJoint(convertDegreesToRotation(0)));
     }
 
     public void calibrateUpperArm() {
@@ -60,28 +60,24 @@ public class ArmControl {
     }
 
 
-    public boolean isReachable(double lowerAngle_degrees, double upperAngle_degrees)
-    {
-        if (Double.isNaN(lowerAngle_degrees) || Double.isNaN(upperAngle_degrees))
-        {
+    public boolean isReachable(double lowerAngle_degrees, double upperAngle_degrees) {
+        if (Double.isNaN(lowerAngle_degrees) || Double.isNaN(upperAngle_degrees)) {
             debuggable.log("out-of-reach", false);
             return false;
-        }
-        else {
+        } else {
             debuggable.log("out-of-reach", true);
             return true;
         }
     }
 
     // may change delta later
-    public boolean isErrorSmallEnough(double delta){
+    public boolean isErrorSmallEnough(double delta) {
         return lowerJoint.getError_mechanismRotations() < delta && upperJoint.getError_mechanismRotations() < delta;
     }
 
 
     // Make sure to change/tune lowerAngle_degrees and upperAngle_degrees for each position
-    public void stopArmMotors()
-    {
+    public void stopArmMotors() {
         lowerJoint.moveAtPercent(0);
         upperJoint.moveAtPercent(0);
     }
@@ -104,8 +100,7 @@ public class ArmControl {
         debuggable.log("upper-kinematics", upperAngle_degrees);
 
         //finding NaN errors
-        if (isReachable(lowerAngle_degrees, upperAngle_degrees))
-        {
+        if (isReachable(lowerAngle_degrees, upperAngle_degrees)) {
             lowerJoint.moveToPosition_mechanismRotations(convertDegreesToRotation(lowerAngle_degrees));
             upperJoint.moveToPosition_mechanismRotations(convertDegreesToRotation(upperAngle_degrees));
 
@@ -118,12 +113,11 @@ public class ArmControl {
         double lowerAngle_degrees = store.getLowerJoint_degrees();
         double upperAngle_degrees = store.getUpperJoint_degrees();
 
-        debuggable.log("lower-kinematics", lowerAngle_degrees);
-        debuggable.log("upper-kinematics", upperAngle_degrees);
+        debuggable.log("lower-kinematics", convertDegreesToRotation(lowerAngle_degrees));
+        debuggable.log("upper-kinematics", convertDegreesToRotation(upperAngle_degrees));
 
         //finding NaN errors
-        if (isReachable(lowerAngle_degrees, upperAngle_degrees))
-        {
+        if (isReachable(lowerAngle_degrees, upperAngle_degrees)) {
             lowerJoint.moveToPosition_mechanismRotations(convertDegreesToRotation(lowerAngle_degrees));
             upperJoint.moveToPosition_mechanismRotations(convertDegreesToRotation(upperAngle_degrees));
         }
@@ -141,8 +135,7 @@ public class ArmControl {
         debuggable.log("upper-kinematics", upperAngle_degrees);
 
         //finding NaN errors
-        if (isReachable(lowerAngle_degrees, upperAngle_degrees))
-        {
+        if (isReachable(lowerAngle_degrees, upperAngle_degrees)) {
             lowerJoint.moveToPosition_mechanismRotations(convertDegreesToRotation(lowerAngle_degrees));
             upperJoint.moveToPosition_mechanismRotations(convertDegreesToRotation(upperAngle_degrees));
         }
@@ -157,8 +150,7 @@ public class ArmControl {
         debuggable.log("upper-kinematics", upperAngle_degrees);
 
         //finding NaN errors
-        if (isReachable(lowerAngle_degrees, upperAngle_degrees))
-        {
+        if (isReachable(lowerAngle_degrees, upperAngle_degrees)) {
             lowerJoint.moveToPosition_mechanismRotations(convertDegreesToRotation(lowerAngle_degrees));
             upperJoint.moveToPosition_mechanismRotations(convertDegreesToRotation(upperAngle_degrees));
         }
@@ -187,8 +179,7 @@ public class ArmControl {
         debuggable.log("upper-kinematics", upperAngle_degrees);
 
         //finding NaN errors
-        if (isReachable(lowerAngle_degrees, upperAngle_degrees))
-        {
+        if (isReachable(lowerAngle_degrees, upperAngle_degrees)) {
             lowerJoint.moveToPosition_mechanismRotations(convertDegreesToRotation(lowerAngle_degrees));
             upperJoint.moveToPosition_mechanismRotations(convertDegreesToRotation(upperAngle_degrees));
         }
@@ -209,7 +200,6 @@ public class ArmControl {
             upperJoint.moveToPosition_mechanismRotations(convertDegreesToRotation(upperAngle_degrees));
         }
     }
-
 
 
 }

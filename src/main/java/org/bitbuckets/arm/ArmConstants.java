@@ -16,6 +16,7 @@ public interface ArmConstants {
     double UPPER_ARM_GEAR_RATIO = 1.0 / ((5.0 * 4.0 * 3.0) * (12. / 30.)); // encoder rotations to mechanism rotations; 130 encoder rotations = 1 mechanism rotation
 
     MotorConfig LOWER_CONFIG = new MotorConfig(ArmConstants.LOWER_ARM_GEAR_RATIO, 1, 1, false, true, 20.0, false, false, Optional.empty());
+    MotorConfig LOWER_CONFIG1 = new MotorConfig(ArmConstants.LOWER_ARM_GEAR_RATIO, 1, 1, true, true, 20.0, false, false, Optional.empty());
     MotorConfig UPPER_CONFIG = new MotorConfig(ArmConstants.UPPER_ARM_GEAR_RATIO, 1, 1, true, true, 20.0, false, false, Optional.empty());
 
     PIDConfig LOWER_PID = new PIDConfig(0, 0, 0, 0);
