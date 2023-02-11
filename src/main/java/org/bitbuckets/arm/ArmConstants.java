@@ -46,6 +46,9 @@ public interface ArmConstants {
     double HUMAN_INTAKE_X = 0.5;
     double HUMAN_INTAKE_Y = 0.5;
 
+    double LOW_NODE_X = 0.4;
+    double LOW_NODE_Y = 0.4;
+
     double MID_NODE_X = 0.8;
     double MID_NODE_Y = 0.8;
 
