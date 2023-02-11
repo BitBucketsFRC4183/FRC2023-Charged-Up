@@ -1,5 +1,7 @@
-package org.bitbuckets.arm;
+package org.bitbuckets.arm.kinematics;
 
+
+import org.bitbuckets.arm.ArmConstants;
 
 public class ForwardKinematics {
     final double theta1;

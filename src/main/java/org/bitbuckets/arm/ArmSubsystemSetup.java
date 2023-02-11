@@ -34,7 +34,6 @@ public class ArmSubsystemSetup implements ISetup<ArmSubsystem> {
             lowerArm = new SparkSetup(9, ArmConstants.LOWER_CONFIG, ArmConstants.LOWER_PID);
             upperArm = new SparkSetup(10, ArmConstants.UPPER_CONFIG, ArmConstants.UPPER_PID);
         } else {
-
             lowerArm = new SimArmSetup(ArmConstants.LOWER_CONFIG, new ArmConfig(ArmConstants.LOWER_JOINT_LENGTH, 1, 1, 1,true), ArmConstants.LOWER_PID);
             upperArm = new SimArmSetup(ArmConstants.UPPER_CONFIG, new ArmConfig(ArmConstants.UPPER_JOINT_LENGTH, 1, 1, 1,true), ArmConstants.UPPER_PID);
         }

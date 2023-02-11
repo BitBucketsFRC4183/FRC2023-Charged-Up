@@ -1,5 +1,6 @@
-package org.bitbuckets.arm;
+package org.bitbuckets.arm.kinematics;
 
+import org.bitbuckets.arm.ArmConstants;
 import org.opencv.core.Mat;
 
 public class InverseKinematics {
