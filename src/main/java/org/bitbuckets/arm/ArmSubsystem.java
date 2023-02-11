@@ -67,14 +67,14 @@ public class ArmSubsystem {
 
             case STORAGE:
                 armControl.storeArm();
-                if (armControl.isErrorSmallEnough(3.69)) {
+                if (armControl.isErrorSmallEnough(0.0069)) {
                     state = ArmFSM.MANUAL;
                 }
                 break;
 
             case PREPARE:
                 armControl.prepareArm();
-                if (armControl.isErrorSmallEnough(3.69)){
+                if (armControl.isErrorSmallEnough(0.0069)){
                     state = nextState;
                 }
                 break;
