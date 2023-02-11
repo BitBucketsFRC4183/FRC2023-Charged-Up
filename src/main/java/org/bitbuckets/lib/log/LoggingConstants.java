@@ -8,7 +8,7 @@ package org.bitbuckets.lib.log;
 public interface LoggingConstants {
 
     //log data every 40ms
-    int LOGGING_PERIOD = 40;
+    int LOGGING_PERIOD = 20;
 
     //update tune values from the smartdashboard every half second
     int TUNING_PERIOD = 500;
