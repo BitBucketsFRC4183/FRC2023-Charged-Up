@@ -13,6 +13,7 @@ import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.lib.StartupProfiler;
 import org.bitbuckets.lib.log.Debuggable;
 import org.bitbuckets.vision.IVisionControl;
+import org.bitbuckets.vision.VisionConstants2;
 
 
 public class OdometryControlSetup implements ISetup<IOdometryControl> {
@@ -20,6 +21,7 @@ public class OdometryControlSetup implements ISetup<IOdometryControl> {
 
     final IDriveControl control;
     final IVisionControl visionControl;
+
     final int pidgeonId;
 
     public OdometryControlSetup(IDriveControl control, IVisionControl visionControl, int pidgeonId1) {
@@ -50,16 +52,17 @@ public class OdometryControlSetup implements ISetup<IOdometryControl> {
         initializePidgeon.markCompleted();
 
         Debuggable debug = self.generateDebugger();
+
         OdometryControl odometryControl = new OdometryControl(
                 debug,
                 control,
                 visionControl,
                 pigeonIMU,
-                estimator
-        );
+                estimator);
 
         self.registerLogLoop(odometryControl::logLoop);
         self.registerLogicLoop(odometryControl::updateOdometryLoop);
+
 
         return odometryControl;
     }

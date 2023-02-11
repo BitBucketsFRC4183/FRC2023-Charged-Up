@@ -36,7 +36,7 @@ public class HoloControl {
      */
     public ChassisSpeeds calculatePose2D(Pose2d target, double desiredVelocity, Rotation2d desiredRotation) {
         var speed = controller.calculate(
-                visionControl.estimateRobotPose().get().toPose2d(),
+                visionControl.estimateVisionRobotPose().get().toPose2d(),
                 target,
                 desiredVelocity,
                 desiredRotation

@@ -36,21 +36,21 @@ public class VisionControl implements IVisionControl {
     public void logLoop() {
         debuggable.log("a", "a");
 
-        var opt = estimateTargetPose();
+        var opt = estimateVisionTargetPose();
         opt.ifPresent(pose3d -> debuggable.log("target-pose", pose3d));
-        var op2 = estimateRobotPose();
+        var op2 = estimateVisionRobotPose();
         op2.ifPresent(pose3d -> debuggable.log("robot-pose", pose3d));
 
     }
 
 
     @Override
-    public Optional<Pose3d> estimateTargetPose() {
+    public Optional<Pose3d> estimateVisionTargetPose() {
         return visionPoseEstimator().map(r -> r.goalPose);
     }
 
     @Override
-    public Optional<Pose3d> estimateRobotPose() {
+    public Optional<Pose3d> estimateVisionRobotPose() {
         return visionPoseEstimator().map(r -> r.robotPose);
     }
 

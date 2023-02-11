@@ -135,7 +135,7 @@ public class DriveSubsystem {
     }
 
     void teleopVision() {
-        Optional<Pose3d> res = visionControl.estimateTargetPose();
+        Optional<Pose3d> res = visionControl.estimateVisionTargetPose();
         if (res.isEmpty()) return;
         ChassisSpeeds speeds = holoControl.calculatePose2D(res.get().toPose2d(), 1, res.get().toPose2d().getRotation());
 
