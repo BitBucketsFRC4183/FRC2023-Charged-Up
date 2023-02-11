@@ -20,7 +20,7 @@ public class ArmControlSetup implements ISetup<ArmControl> {
     final ISetup<IMotorController> upperJoint;
 
 
-    public ArmControlSetup(ISetup<IMotorController> lowerJoint, SparkSetup sparkSetup) {
+    public ArmControlSetup(ISetup<IMotorController> lowerJoint, ISetup<IMotorController> sparkSetup) {
         this.lowerJoint = lowerJoint;
         this.upperJoint = sparkSetup;
 
