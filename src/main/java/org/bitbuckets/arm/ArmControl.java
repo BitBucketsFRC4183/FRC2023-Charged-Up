@@ -35,13 +35,11 @@ public class ArmControl {
 
 //        double lowerRotation = gearRatio * percentOutput / 360;
 //        lowerJoint.getPIDController().setReference(lowerRotation, CANSparkMax.ControlType.kPosition);
-//
         //test if lower arm moves with outputs
         lowerJoint.moveAtPercent(percentOutput * ArmConstants.CONTROL_JOINT_OUTPUT);
     }
 
 
-    //sets angular position of the upper joint on the arm
     public void manuallyMoveUpperArm(double percentOutput) {
 
         upperJoint.moveAtPercent(percentOutput * ArmConstants.CONTROL_JOINT_OUTPUT);
@@ -76,7 +74,6 @@ public class ArmControl {
 
     // may change delta later
     public boolean isErrorSmallEnough(double delta){
-        //might change delta later
         return lowerJoint.getError_mechanismRotations() < delta && upperJoint.getError_mechanismRotations() < delta;
     }
 
