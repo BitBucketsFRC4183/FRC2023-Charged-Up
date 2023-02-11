@@ -34,7 +34,7 @@ public class RobotSetup implements ISetup<RobotContainer> {
         IVisionControl visionControl = new VisionControlSetup(true)
                 .build(self.addChild("vision-control"));
 
-        ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystemSetup(false, autoSubsystem)
+        ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystemSetup(true, autoSubsystem)
                 .build(self.addChild("elevator-subsystem"));
 
         ArmSubsystem armSubsystem = new ArmSubsystemSetup(false)
@@ -50,7 +50,7 @@ public class RobotSetup implements ISetup<RobotContainer> {
          * Register the crasher runnable if
          */
         if (System.getenv().containsKey("CI")) {
-            self.registerLoop(new SimulatorKillAspect(), "simulator-kill-loop");
+            self.registerLoop(new SimulatorKiller(), "simulator-kill-loop");
         }
 
 

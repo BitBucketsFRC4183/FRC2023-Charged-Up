@@ -1,12 +1,5 @@
 package org.bitbuckets.drive;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.wpilibj.Preferences;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import org.bitbuckets.auto.AutoControl;
-import org.bitbuckets.auto.AutoPath;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -19,9 +12,6 @@ import org.bitbuckets.drive.holo.HoloControl;
 import org.bitbuckets.lib.log.Debuggable;
 import org.bitbuckets.lib.tune.IValueTuner;
 import org.bitbuckets.odometry.IOdometryControl;
-import org.bitbuckets.robot.RobotStateControl;
-import org.bitbuckets.vision.PhotonCalculationResult;
-import org.bitbuckets.vision.VisionControl;
 import org.bitbuckets.vision.IVisionControl;
 
 import java.util.Optional;
@@ -50,7 +40,6 @@ public class DriveSubsystem {
     }
 
 
-
     public DriveSubsystem(DriveInput input, IOdometryControl odometryControl, ClosedLoopsControl closedLoopsControl, DriveControl driveControl, AutoSubsystem autoSubsystem, HoloControl holoControl, IVisionControl visionControl, IValueTuner<OrientationChooser> orientation, Debuggable debuggable) {
         this.input = input;
         this.odometryControl = odometryControl;
@@ -72,7 +61,7 @@ public class DriveSubsystem {
                     state = DriveFSM.AUTO_PATHFINDING;
                     break;
                 }
-                if (autoSubsystem.state() == AutoFSM.TELEOP)  {
+                if (autoSubsystem.state() == AutoFSM.TELEOP) {
                     state = DriveFSM.TELEOP_NORMAL;
                     break;
                 }
@@ -84,10 +73,14 @@ public class DriveSubsystem {
                     break;
                 }
 
-                if (autoSubsystem.state() == AutoFSM.AUTO_ENDED) break;
+                if (autoSubsystem.state() == AutoFSM.AUTO_ENDED) {
+                    driveControl.drive(new ChassisSpeeds(0, 0, 0));
+                    break;
+
+                }
                 Optional<PathPlannerTrajectory.PathPlannerState> opt = autoSubsystem.samplePathPlannerState();
                 if (opt.isPresent()) {
-                    ChassisSpeeds targetSpeeds = holoControl.calculatePose2DFromState( opt.get() );
+                    ChassisSpeeds targetSpeeds = holoControl.calculatePose2DFromState(opt.get());
                     driveControl.drive(targetSpeeds);
                 }
                 break;
@@ -147,38 +140,37 @@ public class DriveSubsystem {
     }
 
     void teleopNormal() {
-            if (input.isResetGyroPressed()) {
-                odometryControl.zero();
-            }
+        if (input.isResetGyroPressed()) {
+            odometryControl.zero();
+        }
 
-            double xOutput = input.getInputX() * driveControl.getMaxVelocity();
-            double yOutput = -input.getInputY() * driveControl.getMaxVelocity();
-            double rotationOutput = input.getInputRot() * driveControl.getMaxAngularVelocity();
+        double xOutput = input.getInputX() * driveControl.getMaxVelocity();
+        double yOutput = -input.getInputY() * driveControl.getMaxVelocity();
+        double rotationOutput = input.getInputRot() * driveControl.getMaxAngularVelocity();
 
-            debuggable.log("x-output", xOutput);
-            debuggable.log("y-output", yOutput);
-            debuggable.log("rot-output", rotationOutput);
+        debuggable.log("x-output", xOutput);
+        debuggable.log("y-output", yOutput);
+        debuggable.log("rot-output", rotationOutput);
 
-            switch (orientation.readValue()) {
-                case FIELD_ORIENTED:
-                    if (xOutput == 0 && yOutput == 0 && rotationOutput == 0) {
-                        driveControl.stopSticky();
-                    } else {
-                        driveControl.drive(
-                                ChassisSpeeds.fromFieldRelativeSpeeds(xOutput, yOutput, rotationOutput, odometryControl.getRotation2d())
-                        );
-                    }
-                    break;
-                case ROBOT_ORIENTED:
-                    if (xOutput == 0 && yOutput == 0 && rotationOutput == 0) {
-                        driveControl.stopSticky();
-                    } else {
-                        ChassisSpeeds robotOrient = new ChassisSpeeds(xOutput, yOutput, rotationOutput);
-                        driveControl.drive(robotOrient);
-                    }
-                    break;
-            }
-
+        switch (orientation.readValue()) {
+            case FIELD_ORIENTED:
+                if (xOutput == 0 && yOutput == 0 && rotationOutput == 0) {
+                    driveControl.stopSticky();
+                } else {
+                    driveControl.drive(
+                            ChassisSpeeds.fromFieldRelativeSpeeds(xOutput, yOutput, rotationOutput, odometryControl.getRotation2d())
+                    );
+                }
+                break;
+            case ROBOT_ORIENTED:
+                if (xOutput == 0 && yOutput == 0 && rotationOutput == 0) {
+                    driveControl.stopSticky();
+                } else {
+                    ChassisSpeeds robotOrient = new ChassisSpeeds(xOutput, yOutput, rotationOutput);
+                    driveControl.drive(robotOrient);
+                }
+                break;
+        }
 
     }
 
@@ -195,6 +187,7 @@ public class DriveSubsystem {
 
         }
     }
+
 
     void teleopAutoheading() {
         double IMU_Yaw = Math.toRadians(odometryControl.getYaw_deg());//Math.toRadians(-350);

@@ -19,4 +19,23 @@ public class AngleUtil {
         return angle;
     }
 
+    public static double wrapRotations(double unbound_rotationsInitial) {
+        double unbound_rotations = unbound_rotationsInitial;
+
+        if (unbound_rotations > 1.0) {
+
+            while (unbound_rotations > 1.0) {
+                unbound_rotations -= 1.0;
+            }
+        }
+
+        if (unbound_rotations < 0) {
+            while (unbound_rotations < 0) {
+                unbound_rotations += 1.0;
+            }
+        }
+
+        return unbound_rotations;
+    }
+
 }

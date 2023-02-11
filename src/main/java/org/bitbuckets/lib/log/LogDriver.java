@@ -9,7 +9,10 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import org.bitbuckets.lib.core.IdentityDriver;
 import org.littletonrobotics.junction.Logger;
 
-public class LogDriver implements ILogDriver {
+import java.util.ArrayDeque;
+import java.util.Queue;
+
+public class LogDriver implements ILogDriver, Runnable {
 
     final Logger logger;
     final IdentityDriver identityDriver;
@@ -74,6 +77,16 @@ public class LogDriver implements ILogDriver {
     }
 
     @Override
+    public ILoggable<Double> generateDoubleLoggable(int id, String key) {
+        String computed = identityDriver.fullPath(id) + key;
+
+        ILoggable<Double> log = a -> logger.recordOutput(computed, a);;
+        log.log(0.0);
+
+        return log;
+    }
+
+    @Override
     public ILoggable<Translation2d[]> generateTranslationLogger(int id, String... key) {
         String computed = identityDriver.fullPath(id) + key;
         String x = computed + "-x";
@@ -108,15 +121,27 @@ public class LogDriver implements ILogDriver {
         return log;
     }
 
+    class ToDoRecord {
+        final String computed;
+        final String data;
+
+        public ToDoRecord(String computed, String data) {
+            this.computed = computed;
+            this.data = data;
+        }
+    }
+
+    final Queue<ToDoRecord> queue = new ArrayDeque<>();
+
     @Override
     public Debuggable generateDebugger(int id) {
         String computed = identityDriver.fullPath(id);
 
         return new Debuggable() {
+
             @Override
             public void out(String data) {
-                //TODO buffer
-                logger.recordOutput(computed + "logs", data);
+                queue.add(new ToDoRecord(computed, data));
             }
 
             @Override
@@ -174,5 +199,16 @@ public class LogDriver implements ILogDriver {
                 logger.recordOutput(computed + key, states);
             }
         };
+    }
+
+    @Override
+    public void run() {
+
+        while (!queue.isEmpty()) {
+            ToDoRecord rec = queue.poll();
+
+            logger.recordOutput(rec.computed + "logs", rec.data);
+        }
+
     }
 }

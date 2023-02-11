@@ -9,7 +9,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 class LoopDriverTest {
 
     @Test
-    @Disabled
     void runAlways_shouldFailIfNotDelay() throws InterruptedException {
         LoopDriver loopDriver = new LoopDriver();
         AtomicBoolean run = new AtomicBoolean(false);
