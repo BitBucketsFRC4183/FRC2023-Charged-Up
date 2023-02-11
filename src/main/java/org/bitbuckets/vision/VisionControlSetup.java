@@ -30,6 +30,10 @@ public class VisionControlSetup implements ISetup<IVisionControl> {
     @Override
     public IVisionControl build(ProcessPath self) {
 
+        var p = self.generateSetupProfiler("startup");
+
+        p.markProcessing();
+
         if (!isEnabled) {
             return MockingUtil.buddy(VisionControl.class);
         }
@@ -45,12 +49,14 @@ public class VisionControlSetup implements ISetup<IVisionControl> {
         //TODO find the offset from robot to camera
         Transform3d robotToCamera = new Transform3d(new Translation3d(Units.inchesToMeters(13), 0, Units.inchesToMeters(11.5)), new Rotation3d());
         PhotonCamera photonCamera = new PhotonCamera("Arducam_OV9281_USB_Camera");
-        PhotonPoseEstimator photonPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PhotonPoseEstimator.PoseStrategy.CLOSEST_TO_REFERENCE_POSE, photonCamera, robotToCamera);
+        PhotonPoseEstimator photonPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PhotonPoseEstimator.PoseStrategy.LOWEST_AMBIGUITY, photonCamera, robotToCamera);
         Debuggable debuggable = self.generateDebugger();
 
         VisionControl control = new VisionControl(robotToCamera, aprilTagFieldLayout, photonPoseEstimator, photonCamera, debuggable);
 
-        self.registerLoop(control, LoggingConstants.LOGGING_PERIOD, "vision-log");
+        self.registerLogLoop(control::logLoop);
+
+        p.markCompleted();
 
         return control;
     }

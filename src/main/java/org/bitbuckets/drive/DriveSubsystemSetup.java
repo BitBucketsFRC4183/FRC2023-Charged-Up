@@ -58,7 +58,7 @@ public class DriveSubsystemSetup implements ISetup<DriveSubsystem> {
 
         IOdometryControl odometryControl = new OdometryControlSetup(driveControl, visionControl, 5)
                 .build(self.addChild("odo-control"));
-        HoloControl holoControl = new HoloControlSetup(driveControl, odometryControl)
+        HoloControl holoControl = new HoloControlSetup(driveControl, visionControl, odometryControl)
                 .build(self.addChild("holo-control"));
 
         IValueTuner<DriveSubsystem.OrientationChooser> orientationTuner = self

@@ -3,7 +3,6 @@ package org.bitbuckets.arm;
 public enum ArmFSM {
 
     MANUAL,
-    POSITION_CONTROL,
 
     STORAGE,
 
@@ -12,6 +11,8 @@ public enum ArmFSM {
     SCORE_MID,
 
     SCORE_HIGH,
+
+    SCORE_LOW,
 
     HUMAN_INTAKE
 
