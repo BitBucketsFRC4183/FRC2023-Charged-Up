@@ -13,7 +13,7 @@ public class InverseKinematics {
 
     //joint 1
     // Result is in radians
-    public double getLowerJointAngle() {
+    public double getLowerJoint_degrees() {
         double c = Math.sqrt(x * x + y * y);
         double alpha = Math.atan(y / x);
         // Math.pow takes first double variable to the 2nd double variable power
@@ -24,10 +24,10 @@ public class InverseKinematics {
     }
 
     // Result is in radians
-    public double getUpperJointAngle() {
+    public double getUpperJoint_degrees() {
         double c = Math.sqrt(x * x + y * y);
         double beta = Math.acos((Math.pow(ArmConstants.LOWER_JOINT_LENGTH, 2) + Math.pow(ArmConstants.UPPER_JOINT_LENGTH, 2) - Math.pow(c, 2)) / (2 * ArmConstants.UPPER_JOINT_LENGTH * ArmConstants.LOWER_JOINT_LENGTH));
 
-        return Math.PI - beta;
+        return (180./Math.PI) * (Math.PI - beta);
     }
 }

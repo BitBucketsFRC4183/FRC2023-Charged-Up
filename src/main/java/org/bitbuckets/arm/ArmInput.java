@@ -53,7 +53,8 @@ Right Joystick to control upper joint on arm
     }
 
     public boolean getInputDpadDown() {
-        return operatorControl.getRawAxis(0) != 0.0;
+        int pressed = operatorControl.getPOV();
+        return pressed == 180;
     }
 
     public boolean getInputDpadLeft() {
@@ -62,7 +63,9 @@ Right Joystick to control upper joint on arm
     }
 
     public boolean getInputDpadRight() {
-        return false; //TODO FIX THIS
+
+        int pressed = operatorControl.getPOV();
+        return pressed == 90;
     }
 
     public double getLowerArm_PercentOutput() {
