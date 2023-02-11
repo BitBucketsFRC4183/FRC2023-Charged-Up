@@ -103,7 +103,14 @@ public class DriveControl implements IDriveControl {
 
     //microoptimization: do this without stream()
     public SwerveModulePosition[] currentPositions() {
-        return this.modules.stream().map(ISwerveModule::getPosition).toArray(SwerveModulePosition[]::new);
+        return new SwerveModulePosition[]
+                {
+                        this.modules.get(0).getPosition(),
+                        this.modules.get(1).getPosition(),
+                        this.modules.get(2).getPosition(),
+                        this.modules.get(3).getPosition()
+                };
+
     }
 
 
