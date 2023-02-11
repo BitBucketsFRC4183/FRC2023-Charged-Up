@@ -1,19 +1,59 @@
 package org.bitbuckets.drive;
 
 
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.numbers.N2;
 import org.bitbuckets.drive.controlsds.sds.SwerveModuleConfiguration;
+import org.bitbuckets.lib.control.PIDConfig;
+import org.bitbuckets.lib.hardware.MotorConfig;
+import org.bitbuckets.lib.vendor.sim.dc.DCMotorConfig;
+
+import java.util.Optional;
 
 public interface DriveConstants {
 
-    double HALF_WIDTH = 0.3797;
-    double HALF_BASE = 0.3797;
     double WHEEL_DIAMETER_METERS = 0.10033;
     double WHEEL_CIRCUMFERENCE_METERS = WHEEL_DIAMETER_METERS * Math.PI;
+
+    MotorConfig DRIVE_CONFIG = new MotorConfig(
+            (14.0 / 50.0) * (27.0 / 17.0) * (15.0 / 45.0),
+            1,
+            WHEEL_CIRCUMFERENCE_METERS,
+            true,
+            true,
+            20,
+            false,
+            false,
+            Optional.empty()
+    );
+
+    MotorConfig STEER_CONFIG = new MotorConfig(
+            (14.0 / 50.0) * (10.0 / 60.0),
+            1,
+            Math.PI * WHEEL_DIAMETER_METERS,
+            true,
+            true,
+            20,
+            false,
+            false,
+            Optional.empty()
+    );
+
+    PIDConfig DRIVE_PID = new PIDConfig(0,0,0,0);
+    PIDConfig STEER_PID = new PIDConfig(1, 0, 0.1, 0);
+
+    DCMotorConfig DRIVE_MOTOR = new DCMotorConfig(0.025, Matrix.mat(Nat.N1(), Nat.N1()).fill(0));
+    DCMotorConfig STEER_MOTOR = new DCMotorConfig(0.005, Matrix.mat(Nat.N1(), Nat.N1()).fill(0));
+
+    double HALF_WIDTH = 0.3797;
+    double HALF_BASE = 0.3797;
+
 
     SwerveDriveKinematics KINEMATICS = new SwerveDriveKinematics(
             new Translation2d(HALF_WIDTH, HALF_BASE),
@@ -84,6 +124,7 @@ public interface DriveConstants {
     double nominalVoltage = 12.0;
     double driveCurrentLimit = 80.0;
     double steerCurrentLimit = 20.0;
+
 
     String autoBalanceDeadbandDegKey = "AutoBalance.deadbandDeg";
     double BalanceDeadbandDeg = 6;

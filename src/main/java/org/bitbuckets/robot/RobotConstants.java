@@ -7,6 +7,5 @@ public interface RobotConstants {
      * Data will always be logged to wpi files so you can read it.
      */
     boolean LOGGING_ENABLED = true;
-    double NETWORK_SEND_PERIOD = 100;
 
 }

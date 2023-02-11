@@ -24,7 +24,7 @@ class DriveControllerTest {
 
     @Test
     void setReferenceVoltage() {
-        var controller = new DriveController(motor, 12);
+        var controller = new DriveController(motor);
 
         controller.setReferenceVoltage(9);
 
