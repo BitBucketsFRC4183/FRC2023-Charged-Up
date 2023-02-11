@@ -8,7 +8,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.numbers.N2;
+import edu.wpi.first.math.util.Units;
 import org.bitbuckets.drive.controlsds.sds.SwerveModuleConfiguration;
 import org.bitbuckets.lib.control.PIDConfig;
 import org.bitbuckets.lib.hardware.MotorConfig;
@@ -45,14 +45,14 @@ public interface DriveConstants {
             Optional.empty()
     );
 
-    PIDConfig DRIVE_PID = new PIDConfig(0,0,0,0);
+    PIDConfig DRIVE_PID = new PIDConfig(0, 0, 0, 0);
     PIDConfig STEER_PID = new PIDConfig(1, 0, 0.1, 0);
 
     DCMotorConfig DRIVE_MOTOR = new DCMotorConfig(0.025, Matrix.mat(Nat.N1(), Nat.N1()).fill(0));
     DCMotorConfig STEER_MOTOR = new DCMotorConfig(0.005, Matrix.mat(Nat.N1(), Nat.N1()).fill(0));
 
-    double HALF_WIDTH = 0.3797;
-    double HALF_BASE = 0.3797;
+    double HALF_WIDTH = Units.inchesToMeters(18.25 / 2);
+    double HALF_BASE = Units.inchesToMeters(20.5 / 2);
 
 
     SwerveDriveKinematics KINEMATICS = new SwerveDriveKinematics(

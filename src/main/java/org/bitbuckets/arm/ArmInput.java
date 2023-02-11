@@ -79,24 +79,20 @@ Right Joystick to control upper joint on arm
     }
 
     //for picking up cones
-    public double getIsClampReleased()
-    {
+    public double getIsClampReleased() {
         return armDeadband(operatorControl.getRawAxis(XboxController.Axis.kLeftTrigger.value));
     }
 
-    public double getIsClampHeld()
-    {
+    public double getIsClampHeld() {
         return armDeadband(operatorControl.getRawAxis(XboxController.Axis.kRightTrigger.value));
     }
 
-    public boolean isStopAllMotorsPressed()
-    {
+    public boolean isStopAllMotorsPressed() {
         return operatorControl.getRawButtonPressed(XboxController.Button.kB.value);
     }
 
-    public boolean isStoragePressed()
-    {
-        return operatorControl.getRawButtonPressed(XboxController.Button.kX.value);
+    public boolean isStoragePressed() {
+        return operatorControl.getRawButton(XboxController.Button.kX.value);
     }
 
     // checks if operator wants to move arms to intake for human player station (by pressing RIGHT DPAD)

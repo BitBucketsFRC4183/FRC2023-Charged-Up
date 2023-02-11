@@ -1,7 +1,9 @@
 package org.bitbuckets.drive;
 
 import com.pathplanner.lib.PathPlannerTrajectory;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Preferences;
 import org.bitbuckets.auto.AutoFSM;
@@ -13,7 +15,6 @@ import org.bitbuckets.lib.log.Debuggable;
 import org.bitbuckets.lib.tune.IValueTuner;
 import org.bitbuckets.odometry.IOdometryControl;
 import org.bitbuckets.vision.IVisionControl;
-import org.bitbuckets.vision.PhotonCalculationResult;
 
 import java.util.Optional;
 
@@ -69,6 +70,7 @@ public class DriveSubsystem {
                 break;
 
             case AUTO_PATHFINDING:
+
                 if (autoSubsystem.state() == AutoFSM.TELEOP) {
                     state = DriveFSM.TELEOP_NORMAL;
                     break;
@@ -133,7 +135,7 @@ public class DriveSubsystem {
     }
 
     void teleopVision() {
-        Optional<Pose3d> res = visionControl.estimateTargetPose();
+        Optional<Pose3d> res = visionControl.estimateVisionTargetPose();
         if (res.isEmpty()) return;
         ChassisSpeeds speeds = holoControl.calculatePose2D(res.get().toPose2d(), 1, res.get().toPose2d().getRotation());
 
@@ -143,6 +145,9 @@ public class DriveSubsystem {
     void teleopNormal() {
         if (input.isResetGyroPressed()) {
             odometryControl.zero();
+        }
+        if (input.isResetOdoPressed()) {
+            odometryControl.setPos(Rotation2d.fromDegrees(0), driveControl.currentPositions(), new Pose2d(0, 0, Rotation2d.fromDegrees(0)));
         }
 
         double xOutput = input.getInputX() * driveControl.getMaxVelocity();
