@@ -81,7 +81,7 @@ public class SwerveModule implements ISwerveModule, Runnable {
 
     @Override
     public void run() {
-        swerveAngleVoltage.log(new double[] {
+        swerveAngleVoltage.log(new double[]{
                 Math.toDegrees(steerAngle),
                 driveVoltage,
         });

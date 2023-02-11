@@ -28,7 +28,7 @@ public class DriveControl implements IDriveControl {
 
 
     //Speed factor that edits the max velocity and max angular velocity
-    double speedModifier = .75;
+    double speedModifier = .25;
 
     List<ISwerveModule> modules;
 

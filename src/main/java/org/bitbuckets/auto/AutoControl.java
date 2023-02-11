@@ -18,15 +18,12 @@ public class AutoControl implements IAutoControl {
         var tj = trajectories[whichOne.index];
         double trajectoryTime = tj.getTotalTimeSeconds();
         Map<String, Double> eventMap = new HashMap<>();
-        System.out.println("HERE");
 
         for (PathPlannerTrajectory.EventMarker marker : tj.getMarkers()) {
-            System.out.println("HEREQWERTYUI");
 
             //TODO all event markers need to have unique names. If they don't this code here will break.
             for (String name : marker.names) {
 
-                System.out.println("SHIT: " + name);
                 eventMap.put(name, marker.timeSeconds);
             }
         }
