@@ -81,21 +81,21 @@ public class ArmSubsystem {
 
             case HUMAN_INTAKE:
                 armControl.humanIntake();
-                if (armControl.isErrorSmallEnough(3.69)) {
+                if (armControl.isErrorSmallEnough(0.0069)) {
                     state = ArmFSM.MANUAL;
                 }
                 break;
 
             case SCORE_LOW:
                 armControl.scoreLow();
-                if (armControl.isErrorSmallEnough(3.69)) {
+                if (armControl.isErrorSmallEnough(0.0069)) {
                     state = ArmFSM.MANUAL;
                 }
                 break;
 
             case SCORE_MID:
                 armControl.scoreMid();
-                if (armControl.isErrorSmallEnough(3.69))
+                if (armControl.isErrorSmallEnough(0.0069))
                 {
                     state = ArmFSM.MANUAL;
                 }
@@ -103,7 +103,7 @@ public class ArmSubsystem {
 
             case SCORE_HIGH:
                 armControl.scoreHigh();
-                if (armControl.isErrorSmallEnough(3.69)){
+                if (armControl.isErrorSmallEnough(0.0069)){
                     state = ArmFSM.MANUAL;
                 }
                 break;
