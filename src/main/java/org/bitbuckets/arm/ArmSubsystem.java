@@ -21,7 +21,6 @@ public class ArmSubsystem {
     }
 
 
-
     //private double CONTROL_JOINT_OUTPUT = 0.1;
 
     //calculated gearRatio
@@ -59,7 +58,7 @@ public class ArmSubsystem {
                 } else if (armInput.isScoreHighPressed()) {
                     state = ArmFSM.PREPARE;
                     nextState = ArmFSM.SCORE_HIGH;
-                } else if (armInput.isScoreLowPressed()){
+                } else if (armInput.isScoreLowPressed()) {
                     state = ArmFSM.PREPARE;
                     nextState = ArmFSM.SCORE_LOW;
                 }
@@ -67,14 +66,14 @@ public class ArmSubsystem {
 
             case STORAGE:
                 armControl.storeArm();
-                if (armControl.isErrorSmallEnough(3.69)) {
+                if (!armInput.isStoragePressed()) {
                     state = ArmFSM.MANUAL;
                 }
                 break;
 
             case PREPARE:
                 armControl.prepareArm();
-                if (armControl.isErrorSmallEnough(3.69)){
+                if (armControl.isErrorSmallEnough(3.69)) {
                     state = nextState;
                 }
                 break;
@@ -95,23 +94,20 @@ public class ArmSubsystem {
 
             case SCORE_MID:
                 armControl.scoreMid();
-                if (armControl.isErrorSmallEnough(3.69))
-                {
+                if (armControl.isErrorSmallEnough(3.69)) {
                     state = ArmFSM.MANUAL;
                 }
                 break;
 
             case SCORE_HIGH:
                 armControl.scoreHigh();
-                if (armControl.isErrorSmallEnough(3.69)){
+                if (armControl.isErrorSmallEnough(3.69)) {
                     state = ArmFSM.MANUAL;
                 }
                 break;
         }
         debuggable.log("state", state);
     }
-
-
 
 
 }
