@@ -52,13 +52,14 @@ public class ElevatorControlSetup implements ISetup<ElevatorControl> {
 
         // post the mechanism to the dashboard
         SmartDashboard.putData("Mech2d", mech);
+        var debug = self.generateDebugger();
 
         ElevatorControl control = new ElevatorControl(
                 leftExtend.build(self.addChild("elevator-left-extension")),
                 // rightExtend.build(path.addChild("elevator-right-extension")),
                 leftTilt.build(self.addChild("elevator-left-tilt")),
                 //  rightTilt.build(path.addChild("elevator-right-tilt")),
-                elevator,
+                debug, elevator,
                 elevatorWrist
 
 

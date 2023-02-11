@@ -2,9 +2,14 @@ package org.bitbuckets.vision;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
-import edu.wpi.first.math.geometry.*;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.util.Units;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
+import org.bitbuckets.lib.log.Debuggable;
 import org.bitbuckets.lib.log.ILoggable;
 import org.bitbuckets.lib.log.LoggingConstants;
 import org.bitbuckets.lib.util.MockingUtil;
@@ -38,13 +43,12 @@ public class VisionControlSetup implements ISetup<IVisionControl> {
 
 
         //TODO find the offset from robot to camera
-        Transform3d robotToCamera = new Transform3d(new Translation3d(), new Rotation3d());
+        Transform3d robotToCamera = new Transform3d(new Translation3d(Units.inchesToMeters(13), 0, Units.inchesToMeters(11.5)), new Rotation3d());
         PhotonCamera photonCamera = new PhotonCamera("Arducam_OV9281_USB_Camera");
-        ILoggable<double[]> loggable = self.generateDoubleLoggers("yaw", "pitch", "area","skew", "range");
         PhotonPoseEstimator photonPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PhotonPoseEstimator.PoseStrategy.CLOSEST_TO_REFERENCE_POSE, photonCamera, robotToCamera);
-        ILoggable<Translation2d[]> loggable2 = null;
+        Debuggable debuggable = self.generateDebugger();
 
-        VisionControl control = new VisionControl(robotToCamera, aprilTagFieldLayout, photonPoseEstimator, photonCamera, loggable, loggable2);
+        VisionControl control = new VisionControl(robotToCamera, aprilTagFieldLayout, photonPoseEstimator, photonCamera, debuggable);
 
         self.registerLoop(control, LoggingConstants.LOGGING_PERIOD, "vision-log");
 

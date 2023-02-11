@@ -19,7 +19,7 @@ class PIDCalculatorSetupTest {
     void pidCalculator_shouldWork() throws InterruptedException {
         assert HAL.initialize(500, 0);
 
-        NetworkTable table = NetworkTableInstance.getDefault().getTable("RealOutputs/MattTuneables");
+        NetworkTable table = NetworkTableInstance.getDefault().getTable("RealOutputs");
 
         IdentityDriver id = new IdentityDriver();
         TuneableDriver driver = new TuneableDriver(table, id);

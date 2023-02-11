@@ -2,6 +2,7 @@ package org.bitbuckets.drive.holo;
 
 import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.Trajectory;
 import org.bitbuckets.drive.controlsds.DriveControl;
@@ -21,16 +22,17 @@ public class HoloControl {
 
 
     //TODO this is dangerous
+
     /**
-     *
-     * @param pose2d setpoint global
+     * @param target setpoint global
      */
-    public ChassisSpeeds calculatePose2D(Pose2d pose2d, double desiredVelocity) {
+    public ChassisSpeeds calculatePose2D(Pose2d target, double desiredVelocity, Rotation2d desiredRotation) {
         return controller.calculate(
                 odometryControl.estimatePose2d(),
-                pose2d,
+                target,
                 desiredVelocity,
-                pose2d.getRotation()
+                desiredRotation
+
         );
     }
 

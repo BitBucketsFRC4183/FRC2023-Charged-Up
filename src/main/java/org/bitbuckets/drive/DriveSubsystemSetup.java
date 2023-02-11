@@ -58,14 +58,11 @@ public class DriveSubsystemSetup implements ISetup<DriveSubsystem> {
                 .build(self.addChild("axis-control"));
 
         DriveControl driveControl = buildNeoDriveControl(self); //or use talons, when they work
-
         IOdometryControl odometryControl = new OdometryControlSetup(driveControl, visionControl, 5)
                 .build(self.addChild("odo-control"));
         HoloControl holoControl = new HoloControlSetup(driveControl, odometryControl)
                 .build(self.addChild("holo-control"));
 
-        IValueTuner<AutoPath> pathTuneable = self
-                .generateEnumTuner("set-path", AutoPath.class, AutoPath.AUTO_TEST_PATH_ONE);
         IValueTuner<DriveSubsystem.OrientationChooser> orientationTuner = self
                 .generateEnumTuner("set-orientation", DriveSubsystem.OrientationChooser.class, DriveSubsystem.OrientationChooser.FIELD_ORIENTED);
         Debuggable debuggable = self.generateDebugger();

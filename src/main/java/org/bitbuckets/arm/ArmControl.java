@@ -3,7 +3,6 @@ package org.bitbuckets.arm;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import org.bitbuckets.lib.hardware.IMotorController;
 import org.bitbuckets.lib.log.Debuggable;
-import org.bitbuckets.lib.log.ILoggable;
 
 
 public class ArmControl {
@@ -89,8 +88,8 @@ public class ArmControl {
 
     // may change delta later
     public boolean isErrorSmallEnough(double delta){
-        debuggable.log("error-small-enough-called", true);
-        return Math.abs(lowerJoint.getError()) < delta && Math.abs(upperJoint.getError()) < delta;
+        //might change delta later
+        return lowerJoint.getError_mechanismRotations() < delta && upperJoint.getError_mechanismRotations() < delta;
     }
 
     // Make sure to change/tune lowerAngle and upperAngle for each position
