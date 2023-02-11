@@ -7,16 +7,16 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import org.bitbuckets.drive.controlsds.DriveControl;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
-import org.bitbuckets.odometry.OdometryControl;
+import org.bitbuckets.odometry.IOdometryControl;
 import org.bitbuckets.vision.IVisionControl;
 
 public class HoloControlSetup implements ISetup<HoloControl> {
 
     final DriveControl drive;
     final IVisionControl visionControl;
-    final OdometryControl odo;
+    final IOdometryControl odo;
 
-    public HoloControlSetup(DriveControl drive, IVisionControl visionControl, OdometryControl odo) {
+    public HoloControlSetup(DriveControl drive, IVisionControl visionControl, IOdometryControl odo) {
         this.drive = drive;
         this.visionControl = visionControl;
         this.odo = odo;

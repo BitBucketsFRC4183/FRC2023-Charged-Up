@@ -20,7 +20,7 @@ import org.bitbuckets.lib.vendor.sim.dc.DCSimSetup;
 import org.bitbuckets.lib.vendor.spark.SparkDriveMotorSetup;
 import org.bitbuckets.lib.vendor.spark.SparkSteerMotorSetup;
 import org.bitbuckets.lib.vendor.thrifty.ThriftyEncoderSetup;
-import org.bitbuckets.odometry.OdometryControl;
+import org.bitbuckets.odometry.IOdometryControl;
 import org.bitbuckets.odometry.OdometryControlSetup;
 import org.bitbuckets.vision.IVisionControl;
 
@@ -56,7 +56,7 @@ public class DriveSubsystemSetup implements ISetup<DriveSubsystem> {
             driveControl = buildNeoDriveControl(self); //or use talons, when they work}
         }
 
-        OdometryControl odometryControl = new OdometryControlSetup(driveControl, visionControl, 5)
+        IOdometryControl odometryControl = new OdometryControlSetup(driveControl, visionControl, 5)
                 .build(self.addChild("odo-control"));
         HoloControl holoControl = new HoloControlSetup(driveControl, visionControl, odometryControl)
                 .build(self.addChild("holo-control"));

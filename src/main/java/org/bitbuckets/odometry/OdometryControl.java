@@ -10,7 +10,7 @@ import org.bitbuckets.drive.IDriveControl;
 import org.bitbuckets.lib.log.Debuggable;
 import org.bitbuckets.vision.IVisionControl;
 
-public class OdometryControl {
+public class OdometryControl implements IOdometryControl {
 
     final Debuggable debuggable;
     final IDriveControl driveControl;
@@ -18,7 +18,7 @@ public class OdometryControl {
     final WPI_Pigeon2 pigeonIMU;
     final SwerveDrivePoseEstimator swerveDrivePoseEstimator;
 
-    OdometryControl(Debuggable debuggable, IDriveControl driveControl, IVisionControl visionControl, WPI_Pigeon2 pigeonIMU, SwerveDrivePoseEstimator swerveDrivePoseEstimator) {
+    public OdometryControl(Debuggable debuggable, IDriveControl driveControl, IVisionControl visionControl, WPI_Pigeon2 pigeonIMU, SwerveDrivePoseEstimator swerveDrivePoseEstimator) {
         this.debuggable = debuggable;
         this.driveControl = driveControl;
         this.pigeonIMU = pigeonIMU;
@@ -53,27 +53,33 @@ public class OdometryControl {
         debuggable.log("pose", estimatePose2d());
     }
 
+    @Override
     public Pose2d estimatePose2d() {
         return swerveDrivePoseEstimator.getEstimatedPosition();
     }
 
+    @Override
     public Rotation2d getRotation2d() {
         return Rotation2d.fromDegrees(pigeonIMU.getYaw());
     }
 
+    @Override
     public double getYaw_deg() {
         return pigeonIMU.getYaw();
     }
 
 
+    @Override
     public double getRoll_deg() {
         return pigeonIMU.getRoll();
     }
 
+    @Override
     public void zero() {
         pigeonIMU.reset();
     }
 
+    @Override
     public void setPos(Rotation2d gyroAngle, SwerveModulePosition[] modulePositions, Pose2d poseMeters) {
         swerveDrivePoseEstimator.resetPosition(gyroAngle, modulePositions, poseMeters);
     }

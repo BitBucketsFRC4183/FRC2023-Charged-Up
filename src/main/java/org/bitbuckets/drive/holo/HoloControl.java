@@ -6,7 +6,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.Trajectory;
 import org.bitbuckets.drive.controlsds.DriveControl;
-import org.bitbuckets.odometry.OdometryControl;
+import org.bitbuckets.odometry.IOdometryControl;
 import org.bitbuckets.vision.IVisionControl;
 
 public class HoloControl {
@@ -14,10 +14,10 @@ public class HoloControl {
     final DriveControl driveControl;
 
     final IVisionControl visionControl;
-    final OdometryControl odometryControl;
+    final IOdometryControl odometryControl;
     final HolonomicDriveController controller;
 
-    public HoloControl(DriveControl driveControl, IVisionControl visionControl, OdometryControl odometryControl, HolonomicDriveController controller) {
+    public HoloControl(DriveControl driveControl, IVisionControl visionControl, IOdometryControl odometryControl, HolonomicDriveController controller) {
         this.driveControl = driveControl;
         this.visionControl = visionControl;
         this.odometryControl = odometryControl;

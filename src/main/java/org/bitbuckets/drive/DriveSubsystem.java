@@ -13,7 +13,7 @@ import org.bitbuckets.drive.controlsds.DriveControl;
 import org.bitbuckets.drive.holo.HoloControl;
 import org.bitbuckets.lib.log.Debuggable;
 import org.bitbuckets.lib.tune.IValueTuner;
-import org.bitbuckets.odometry.OdometryControl;
+import org.bitbuckets.odometry.IOdometryControl;
 import org.bitbuckets.vision.IVisionControl;
 
 import java.util.Optional;
@@ -28,7 +28,7 @@ public class DriveSubsystem {
     final DriveInput input;
 
     final AutoSubsystem autoSubsystem;
-    final OdometryControl odometryControl;
+    final IOdometryControl odometryControl;
     final ClosedLoopsControl closedLoopsControl;
     final DriveControl driveControl;
     final HoloControl holoControl;
@@ -42,7 +42,7 @@ public class DriveSubsystem {
     }
 
 
-    public DriveSubsystem(DriveInput input, OdometryControl odometryControl, ClosedLoopsControl closedLoopsControl, DriveControl driveControl, AutoSubsystem autoSubsystem, HoloControl holoControl, IVisionControl visionControl, IValueTuner<OrientationChooser> orientation, Debuggable debuggable) {
+    public DriveSubsystem(DriveInput input, IOdometryControl odometryControl, ClosedLoopsControl closedLoopsControl, DriveControl driveControl, AutoSubsystem autoSubsystem, HoloControl holoControl, IVisionControl visionControl, IValueTuner<OrientationChooser> orientation, Debuggable debuggable) {
         this.input = input;
         this.odometryControl = odometryControl;
         this.closedLoopsControl = closedLoopsControl;
