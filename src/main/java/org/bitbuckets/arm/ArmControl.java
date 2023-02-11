@@ -13,8 +13,9 @@ public class ArmControl {
 
 
 
-    // How do set up IMotorController and IEncoder so that lowerJoint == lowerEncoder
 
+
+    // How do set up IMotorController and IEncoder so that lowerJoint == lowerEncoder
 
     public ArmControl(IMotorController lowerJoint, IMotorController upperJoint, Debuggable debuggable) {
         this.lowerJoint = lowerJoint;
@@ -34,27 +35,14 @@ public class ArmControl {
 
 //        double lowerRotation = gearRatio * percentOutput / 360;
 //        lowerJoint.getPIDController().setReference(lowerRotation, CANSparkMax.ControlType.kPosition);
-//
         //test if lower arm moves with outputs
         lowerJoint.moveAtPercent(percentOutput * ArmConstants.CONTROL_JOINT_OUTPUT);
     }
 
 
-    //sets angular position of the upper joint on the arm
     public void manuallyMoveUpperArm(double percentOutput) {
 
         upperJoint.moveAtPercent(percentOutput * ArmConstants.CONTROL_JOINT_OUTPUT);
-    }
-
-    public void moveLowerArmToPosition_DEGREES(double angle) {
-        double lowerConverted = convertMechanismRotationtoRawRotation_upperJoint(angle / 360.);
-        lowerJoint.moveToPosition(lowerConverted);
-    }
-
-    public void moveUpperArmToPosition_DEGREES(double angle) {
-
-        double upperConverted = convertMechanismRotationtoRawRotation_upperJoint(angle / 360.);
-        upperJoint.moveToPosition(upperConverted);
     }
 
 
@@ -71,9 +59,9 @@ public class ArmControl {
     }
 
 
-    public boolean isReachable(double lowerAngle, double upperAngle)
+    public boolean isReachable(double lowerAngle_degrees, double upperAngle_degrees)
     {
-        if (Double.isNaN(lowerAngle) || Double.isNaN(upperAngle))
+        if (Double.isNaN(lowerAngle_degrees) || Double.isNaN(upperAngle_degrees))
         {
             debuggable.log("out-of-reach", false);
             return false;
@@ -84,75 +72,102 @@ public class ArmControl {
         }
     }
 
+    // may change delta later
     public boolean isErrorSmallEnough(double delta){
-        //might change delta later
         return lowerJoint.getError_mechanismRotations() < delta && upperJoint.getError_mechanismRotations() < delta;
     }
 
-    // Make sure to change/tune lowerAngle and upperAngle for each position
+
+    // Make sure to change/tune lowerAngle_degrees and upperAngle_degrees for each position
+    public void stopArmMotors()
+    {
+        lowerJoint.moveAtPercent(0);
+        upperJoint.moveAtPercent(0);
+    }
+
+    public void goToCalibrationPosition() {
+
+        lowerJoint.moveToPosition_mechanismRotations(0);
+        upperJoint.moveToPosition_mechanismRotations(0);
+    }
 
     // Press X
-    public boolean humanIntake() {
+    public void humanIntake() {
         //Need inverse kinematics
 
         InverseKinematics humanPlayer = new InverseKinematics(ArmConstants.HUMAN_INTAKE_X, ArmConstants.HUMAN_INTAKE_Y);
-        double lowerAngle = humanPlayer.getLowerJointAngle();
-        double upperAngle = humanPlayer.getUpperJointAngle();
+        double lowerAngle_degrees = humanPlayer.getLowerJoint_degrees();
+        double upperAngle_degrees = humanPlayer.getUpperJoint_degrees();
 
-        debuggable.log("lower-kinematics", Math.toDegrees(lowerAngle));
-        debuggable.log("upper-kinematics", Math.toDegrees(upperAngle));
+        debuggable.log("lower-kinematics", lowerAngle_degrees);
+        debuggable.log("upper-kinematics", upperAngle_degrees);
 
         //finding NaN errors
-        if (isReachable(lowerAngle, upperAngle))
+        if (isReachable(lowerAngle_degrees, upperAngle_degrees))
         {
-            moveLowerArmToPosition_DEGREES(Math.toDegrees(lowerAngle));
-            moveUpperArmToPosition_DEGREES(Math.toDegrees(upperAngle));
-            return isErrorSmallEnough(3.69);
+            lowerJoint.moveToPosition_mechanismRotations(convertDegreesToRotation(lowerAngle_degrees));
+            upperJoint.moveToPosition_mechanismRotations(convertDegreesToRotation(upperAngle_degrees));
+
         }
-        return false;
 
     }
 
-    public boolean storeArm() {
+    public void storeArm() {
         InverseKinematics store = new InverseKinematics(ArmConstants.STORAGE_X, ArmConstants.STORAGE_Y);
-        double lowerAngle = store.getLowerJointAngle();
-        double upperAngle = store.getUpperJointAngle();
+        double lowerAngle_degrees = store.getLowerJoint_degrees();
+        double upperAngle_degrees = store.getUpperJoint_degrees();
 
-        debuggable.log("lower-kinematics", Math.toDegrees(lowerAngle));
-        debuggable.log("upper-kinematics", Math.toDegrees(upperAngle));
+        debuggable.log("lower-kinematics", lowerAngle_degrees);
+        debuggable.log("upper-kinematics", upperAngle_degrees);
 
         //finding NaN errors
-        if (isReachable(lowerAngle, upperAngle))
+        if (isReachable(lowerAngle_degrees, upperAngle_degrees))
         {
-            moveLowerArmToPosition_DEGREES(Math.toDegrees(lowerAngle));
-            moveUpperArmToPosition_DEGREES(Math.toDegrees(upperAngle));
-            return isErrorSmallEnough(3.69);
+            lowerJoint.moveToPosition_mechanismRotations(convertDegreesToRotation(lowerAngle_degrees));
+            upperJoint.moveToPosition_mechanismRotations(convertDegreesToRotation(upperAngle_degrees));
         }
-        return false;
 
     }
 
-    public boolean prepareArm() {
+    public void prepareArm() {
+        debuggable.log("arm-is-called", true);
+
         InverseKinematics prepare = new InverseKinematics(ArmConstants.PREPARE_X, ArmConstants.PREPARE_Y);
-        double lowerAngle = prepare.getLowerJointAngle();
-        double upperAngle = prepare.getUpperJointAngle();
+        double lowerAngle_degrees = prepare.getLowerJoint_degrees();
+        double upperAngle_degrees = prepare.getUpperJoint_degrees();
 
-        debuggable.log("lower-kinematics", Math.toDegrees(lowerAngle));
-        debuggable.log("upper-kinematics", Math.toDegrees(upperAngle));
+        debuggable.log("lower-kinematics", lowerAngle_degrees);
+        debuggable.log("upper-kinematics", upperAngle_degrees);
 
         //finding NaN errors
-        if (isReachable(lowerAngle, upperAngle))
+        if (isReachable(lowerAngle_degrees, upperAngle_degrees))
         {
-            moveLowerArmToPosition_DEGREES(Math.toDegrees(lowerAngle));
-            moveUpperArmToPosition_DEGREES(Math.toDegrees(upperAngle));
+            lowerJoint.moveToPosition_mechanismRotations(convertDegreesToRotation(lowerAngle_degrees));
+            upperJoint.moveToPosition_mechanismRotations(convertDegreesToRotation(upperAngle_degrees));
         }
-        return isErrorSmallEnough(3.69);
     }
 
+    public void scoreLow() {
+        InverseKinematics lowNode = new InverseKinematics(ArmConstants.LOW_NODE_X, ArmConstants.LOW_NODE_Y);
+        double lowerAngle_degrees = lowNode.getLowerJoint_degrees();
+        double upperAngle_degrees = lowNode.getUpperJoint_degrees();
+
+        debuggable.log("lower-kinematics", lowerAngle_degrees);
+        debuggable.log("upper-kinematics", upperAngle_degrees);
+
+        //finding NaN errors
+        if (isReachable(lowerAngle_degrees, upperAngle_degrees))
+        {
+            lowerJoint.moveToPosition_mechanismRotations(convertDegreesToRotation(lowerAngle_degrees));
+            upperJoint.moveToPosition_mechanismRotations(convertDegreesToRotation(upperAngle_degrees));
+        }
+
+
+    }
 
 
     // Press A
-    public boolean scoreMid() {
+    public void scoreMid() {
         //Need inverse kinematics
 
         // pass x position and y position as parameters to the inverse kinematics constructor
@@ -164,45 +179,36 @@ public class ArmControl {
          */
 
         InverseKinematics midNode = new InverseKinematics(ArmConstants.MID_NODE_X, ArmConstants.MID_NODE_Y);
-        double lowerAngle = midNode.getLowerJointAngle();
-        double upperAngle = midNode.getUpperJointAngle();
+        double lowerAngle_degrees = midNode.getLowerJoint_degrees();
+        double upperAngle_degrees = midNode.getUpperJoint_degrees();
 
-        debuggable.log("lower-kinematics", Math.toDegrees(lowerAngle));
-        debuggable.log("upper-kinematics", Math.toDegrees(upperAngle));
+        debuggable.log("lower-kinematics", lowerAngle_degrees);
+        debuggable.log("upper-kinematics", upperAngle_degrees);
 
         //finding NaN errors
-        if (isReachable(lowerAngle, upperAngle))
+        if (isReachable(lowerAngle_degrees, upperAngle_degrees))
         {
-            moveLowerArmToPosition_DEGREES(Math.toDegrees(lowerAngle));
-            moveUpperArmToPosition_DEGREES(Math.toDegrees(upperAngle));
-            return isErrorSmallEnough(3.69);
+            lowerJoint.moveToPosition_mechanismRotations(convertDegreesToRotation(lowerAngle_degrees));
+            upperJoint.moveToPosition_mechanismRotations(convertDegreesToRotation(upperAngle_degrees));
         }
-
-        return false;
-
 
     }
 
-    // Press B
-    public boolean scoreHigh() {
+    public void scoreHigh() {
         InverseKinematics highNode = new InverseKinematics(ArmConstants.HIGH_NODE_X, ArmConstants.HIGH_NODE_Y);
-        double lowerAngle = highNode.getLowerJointAngle();
-        double upperAngle = highNode.getUpperJointAngle();
+        double lowerAngle_degrees = highNode.getLowerJoint_degrees();
+        double upperAngle_degrees = highNode.getUpperJoint_degrees();
 
-        debuggable.log("lower-kinematics", Math.toDegrees(lowerAngle));
-        debuggable.log("upper-kinematics", Math.toDegrees(upperAngle));
+        debuggable.log("lower-kinematics", lowerAngle_degrees);
+        debuggable.log("upper-kinematics", upperAngle_degrees);
 
         //finding NaN errors
-        if (isReachable(lowerAngle, upperAngle))
-        {
-            moveLowerArmToPosition_DEGREES(Math.toDegrees(lowerAngle));
-            moveUpperArmToPosition_DEGREES(Math.toDegrees(upperAngle));
-            return isErrorSmallEnough(3.69);
+        if (isReachable(lowerAngle_degrees, upperAngle_degrees)) {
+            lowerJoint.moveToPosition_mechanismRotations(convertDegreesToRotation(lowerAngle_degrees));
+            upperJoint.moveToPosition_mechanismRotations(convertDegreesToRotation(upperAngle_degrees));
         }
-
-        return false;
-
     }
+
 
 
 }
