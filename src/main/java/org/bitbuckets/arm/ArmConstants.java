@@ -55,5 +55,4 @@ public interface ArmConstants {
     double HIGH_NODE_X = 0.8;
     double HIGH_NODE_Y = 0.8;
 
-
 }
