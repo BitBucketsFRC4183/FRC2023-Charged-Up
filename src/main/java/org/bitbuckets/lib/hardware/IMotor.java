@@ -11,6 +11,12 @@ package org.bitbuckets.lib.hardware;
  */
 public interface IMotor extends IRaw {
 
+    /**
+     *
+     * @param voltage voltage to move at
+     */
+    void moveAtVoltage(double voltage);
+
 
     /**
      * This method will tell the motor controller underneath to move at a specified percent of
@@ -23,10 +29,16 @@ public interface IMotor extends IRaw {
     /**
      * commands to move using pid position control to a specified position of units rotations.
      * To tune the pid constants of this device please use the shuffleboard
-     *
      * @param position_encoderRotations
      */
+    @Deprecated
     void moveToPosition(double position_encoderRotations);
+
+    /**
+     * Commands to move using pid position in rotations of the mechanism. Does not wrap around.
+     * @param position_mechanismRotations
+     */
+    void moveToPosition_mechanismRotations(double position_mechanismRotations);
 
     /**
      * commands to move with pid control at a velocity
@@ -41,7 +53,7 @@ public interface IMotor extends IRaw {
      * Gets the current desired position of the pid algorithm in the units used by the controller
      * @return The current PID setpoint, if using PID, in the raw units of the motor controller
      */
-    double getSetpoint_rawUnits();
+    double getSetpoint_mechanismRotations();
 
 
 }

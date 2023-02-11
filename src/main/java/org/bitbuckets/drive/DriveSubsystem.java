@@ -40,7 +40,6 @@ public class DriveSubsystem {
     }
 
 
-
     public DriveSubsystem(DriveInput input, IOdometryControl odometryControl, ClosedLoopsControl closedLoopsControl, DriveControl driveControl, AutoSubsystem autoSubsystem, HoloControl holoControl, IVisionControl visionControl, IValueTuner<OrientationChooser> orientation, Debuggable debuggable) {
         this.input = input;
         this.odometryControl = odometryControl;
@@ -62,7 +61,7 @@ public class DriveSubsystem {
                     state = DriveFSM.AUTO_PATHFINDING;
                     break;
                 }
-                if (autoSubsystem.state() == AutoFSM.TELEOP)  {
+                if (autoSubsystem.state() == AutoFSM.TELEOP) {
                     state = DriveFSM.TELEOP_NORMAL;
                     break;
                 }
@@ -74,10 +73,14 @@ public class DriveSubsystem {
                     break;
                 }
 
-                if (autoSubsystem.state() == AutoFSM.AUTO_ENDED) break;
+                if (autoSubsystem.state() == AutoFSM.AUTO_ENDED) {
+                    driveControl.drive(new ChassisSpeeds(0, 0, 0));
+                    break;
+
+                }
                 Optional<PathPlannerTrajectory.PathPlannerState> opt = autoSubsystem.samplePathPlannerState();
                 if (opt.isPresent()) {
-                    ChassisSpeeds targetSpeeds = holoControl.calculatePose2DFromState( opt.get() );
+                    ChassisSpeeds targetSpeeds = holoControl.calculatePose2DFromState(opt.get());
                     driveControl.drive(targetSpeeds);
                 }
                 break;
@@ -111,11 +114,11 @@ public class DriveSubsystem {
                 break;
 
             case TELEOP_VISION:
-                if (input.isVisionGoReleased()) {
+                if (!input.isVisionGoPressed()) {
                     state = DriveFSM.TELEOP_NORMAL;
                     break;
                 }
-                    teleopVision();
+                teleopVision();
                 break;
 
             case TELEOP_AUTOHEADING:
@@ -131,13 +134,13 @@ public class DriveSubsystem {
     void teleopVision() {
         Optional<Pose3d> res = visionControl.estimateTargetPose();
         if (res.isEmpty()) return;
-        ChassisSpeeds speeds = holoControl.calculatePose2D(res.get().toPose2d(), 3);
+        ChassisSpeeds speeds = holoControl.calculatePose2D(res.get().toPose2d(), 3, res.get().toPose2d().getRotation());
 
         driveControl.drive(speeds);
     }
 
     void teleopNormal() {
-        if(input.isResetGyroPressed()){
+        if (input.isResetGyroPressed()) {
             odometryControl.zero();
         }
 
@@ -168,6 +171,7 @@ public class DriveSubsystem {
                 }
                 break;
         }
+
     }
 
     void teleopBalancing() {
@@ -183,6 +187,7 @@ public class DriveSubsystem {
 
         }
     }
+
 
     void teleopAutoheading() {
         double IMU_Yaw = Math.toRadians(odometryControl.getYaw_deg());//Math.toRadians(-350);

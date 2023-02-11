@@ -20,6 +20,14 @@ public class MathUtil {
         return value;
     }
 
+    public static double deadband(double value) {
+        // Deadband
+        value = edu.wpi.first.math.MathUtil.applyDeadband(value, 0.1);
+
+
+        return value;
+    }
+
     public static double wrap(double unbound_radians) {
         double angle = unbound_radians;
 

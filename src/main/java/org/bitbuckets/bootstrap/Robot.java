@@ -19,6 +19,7 @@ import org.bitbuckets.robot.RobotSetup;
 import org.bitbuckets.robot.RobotStateControl;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
 /**
@@ -58,17 +59,19 @@ public class Robot extends LoggedRobot {
 
         loopDriver = new LoopDriver();
         IdentityDriver identityDriver = new IdentityDriver();
-        ILogDriver logDriver = new LogDriver(logger, identityDriver);
-        TuneableDriver tuneableDriver = new TuneableDriver(NetworkTableInstance.getDefault().getTable("RealOutputs/MattTuneables"), identityDriver);
+        LogDriver logDriver = new LogDriver(logger, identityDriver);
+        TuneableDriver tuneableDriver = new TuneableDriver(NetworkTableInstance.getDefault().getTable("RealOutputs"), identityDriver);
 
         int consoleId = identityDriver.childProcess(0, "Console");
-        IStartupDriver setupDriver = new StartupDriver(identityDriver, logger);
+        StartupDriver setupDriver = new StartupDriver(identityDriver, logger);
         ProcessPath rootPath = new ProcessPath(0, setupDriver, identityDriver, logDriver, loopDriver, tuneableDriver, isReal());
         RobotStateControl robotStateControl = new RobotStateControl(this);
         RobotSetup setup = new RobotSetup(robotStateControl);
 
         rootPath.registerLoop(robotStateControl, "stateControl");
-
+        rootPath.registerLogLoop(setupDriver);
+        rootPath.registerLogLoop(setupDriver::generateStartupReport);
+        rootPath.registerLogLoop(logDriver);
 
 
         try {

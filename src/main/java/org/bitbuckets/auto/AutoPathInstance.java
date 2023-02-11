@@ -23,14 +23,14 @@ public class AutoPathInstance implements HasLifecycle {
     final Timer timer = new Timer();
 
 
-
     /**
-     *
      * @param eventName the event of the path
      * @return whether it has happened yet
      */
     public boolean sampleHasEventStarted(String eventName) {
         double secondsNow = timer.get();
+
+        if (eventToTimeMap.get(eventName) == null) return false;
 
         return secondsNow > eventToTimeMap.get(eventName);
     }

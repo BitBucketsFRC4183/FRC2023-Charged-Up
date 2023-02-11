@@ -34,7 +34,7 @@ public class DriveControlSetup implements ISetup<DriveControl> {
                 backLeft.build(self.addChild("back-left")),
                 backRight.build(self.addChild("back-right"))
         );
-
+        
         self.registerLoop(control::log, "logging-loop");
 
         return control;

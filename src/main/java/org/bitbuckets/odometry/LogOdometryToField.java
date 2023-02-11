@@ -1,15 +1,13 @@
 package org.bitbuckets.odometry;
 
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
-import org.bitbuckets.drive.controlsds.DriveControl;
-import org.bitbuckets.odometry.OdometryControl;
 
-public class FieldLoggingAspect implements Runnable {
+public class LogOdometryToField implements Runnable {
 
     final Field2d field2d;
     final OdometryControl control;
 
-    public FieldLoggingAspect(Field2d field2d, OdometryControl control) {
+    public LogOdometryToField(Field2d field2d, OdometryControl control) {
         this.field2d = field2d;
         this.control = control;
     }

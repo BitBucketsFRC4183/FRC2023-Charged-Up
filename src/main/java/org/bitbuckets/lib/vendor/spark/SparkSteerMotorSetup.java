@@ -19,11 +19,6 @@ public class SparkSteerMotorSetup extends SparkSetup {
 
     final SwerveModuleConfiguration swerveModuleConfiguration;
 
-    double nominalVoltage = 12;
-    // set by RobotSetup in default motor config
-//    double pidProportional = 1;
-//    double pidIntegral = 0;
-//    double pidDerivative = .1;
 
     public SparkSteerMotorSetup(int canId, MotorConfig motorConfig, PIDConfig pidConfig, SwerveModuleConfiguration swerveModuleConfiguration) {
         super(canId, motorConfig, pidConfig);

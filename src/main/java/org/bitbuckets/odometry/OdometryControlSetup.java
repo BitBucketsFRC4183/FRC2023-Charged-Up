@@ -14,6 +14,7 @@ import org.bitbuckets.lib.StartupProfiler;
 import org.bitbuckets.lib.log.Debuggable;
 import org.bitbuckets.vision.IVisionControl;
 
+
 public class OdometryControlSetup implements ISetup<OdometryControl> {
 
 
@@ -30,11 +31,10 @@ public class OdometryControlSetup implements ISetup<OdometryControl> {
     @Override
     public OdometryControl build(ProcessPath self) {
         StartupProfiler initializePidgeon = self.generateSetupProfiler("init-pidgeon");
-
         SwerveDrivePoseEstimator estimator = new SwerveDrivePoseEstimator(
                 DriveConstants.KINEMATICS,
                 Rotation2d.fromDegrees(0),
-                new SwerveModulePosition[] {
+                new SwerveModulePosition[]{
                         new SwerveModulePosition(),
                         new SwerveModulePosition(),
                         new SwerveModulePosition(),

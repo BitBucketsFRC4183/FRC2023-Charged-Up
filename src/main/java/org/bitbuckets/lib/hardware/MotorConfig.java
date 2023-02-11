@@ -4,7 +4,7 @@ import java.util.Optional;
 
 public class MotorConfig {
 
-    public final double mechanismCoefficient;
+    public final double encoderToMechanismCoefficient;
     public final double timeCoefficient;
     public final double rotationToMeterCoefficient;
     public final boolean isInverted;
@@ -18,7 +18,7 @@ public class MotorConfig {
     public final Optional<Integer> following;
 
     /**
-     * @param mechanismCoefficient
+     * @param encoderToMechanismCoefficient
      * @param timeCoefficient
      * @param rotationToMeterCoefficient See {@link IEncoder}
      * @param isInverted                 whether motor is inverted
@@ -28,8 +28,8 @@ public class MotorConfig {
      * @param isBackwardLimitEnabled
      * @param following                  possible CAN id to follow.
      */
-    public MotorConfig(double mechanismCoefficient, double timeCoefficient, double rotationToMeterCoefficient, boolean isInverted, boolean shouldBreakOnNoCommand, double currentLimit, boolean isForwardLimitEnabled, boolean isBackwardLimitEnabled, @Deprecated Optional<Integer> following) {
-        this.mechanismCoefficient = mechanismCoefficient;
+    public MotorConfig(double encoderToMechanismCoefficient, double timeCoefficient, double rotationToMeterCoefficient, boolean isInverted, boolean shouldBreakOnNoCommand, double currentLimit, boolean isForwardLimitEnabled, boolean isBackwardLimitEnabled, @Deprecated Optional<Integer> following) {
+        this.encoderToMechanismCoefficient = encoderToMechanismCoefficient;
         this.timeCoefficient = timeCoefficient;
         this.rotationToMeterCoefficient = rotationToMeterCoefficient;
         this.isInverted = isInverted;

@@ -21,6 +21,10 @@ public interface ILogDriver {
     <T extends Enum<T>> ILoggable<T> generateEnumLoggable(int id, Class<T> clazz, String keyname );
     ILoggable<double[]> generateMultiLoggable(int id, String... keys);
     ILoggable<Boolean> generateBoolLoggable(int id, String key);
+    ILoggable<Double> generateDoubleLoggable(int id, String key);
+
+    //ILoggable<Double> generateTripWireDouble(int id, String key);
+
 
     /**
      * Generates a translation logger with x y and vector normalized
