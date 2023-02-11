@@ -42,7 +42,7 @@ public class RobotSetup implements ISetup<RobotContainer> {
 
         DriveSubsystem driveSubsystem = new DriveSubsystemSetup(
                 true,
-                true,
+                false,
                 autoSubsystem,
                 visionControl
         ).build(self.addChild("drive-subsystem"));
