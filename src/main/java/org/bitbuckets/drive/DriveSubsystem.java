@@ -193,14 +193,20 @@ public class DriveSubsystem {
 
         //This is bad and should be shifted somewhere else
         double BalanceDeadband_deg = Preferences.getDouble(DriveConstants.autoBalanceDeadbandDegKey, DriveConstants.BalanceDeadbandDeg);
-        double Roll_deg = odometryControl.getRoll_deg();
-        if (Math.abs(Roll_deg) > BalanceDeadband_deg) {
-            double output = closedLoopsControl.calculateBalanceOutput(Roll_deg, 0);
+        double Pitch_deg = odometryControl.getPitch_deg();
+        if (Math.abs(Pitch_deg) > BalanceDeadband_deg) {
+            double output = closedLoopsControl.calculateBalanceOutput(Pitch_deg, 0);
             driveControl.drive(new ChassisSpeeds(output, 0.0, 0.0));
+            double error = -Pitch_deg;
+
+            debuggable.log("degree-off-engaged", error);
         } else {
             driveControl.stopSticky();
 
         }
+
+
+
     }
 
 

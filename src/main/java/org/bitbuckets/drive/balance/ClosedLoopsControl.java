@@ -1,6 +1,5 @@
 package org.bitbuckets.drive.balance;
 
-import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
 import org.bitbuckets.lib.control.ProfiledPIDFController;
 
@@ -15,8 +14,8 @@ public class ClosedLoopsControl {
         this.rotController = rotController;
     }
 
-    public double calculateBalanceOutput(double roll_deg, double setpoint) {
-        return balanceController.calculate(roll_deg, setpoint);
+    public double calculateBalanceOutput(double pitch_deg, double setpoint) {
+        return balanceController.calculate(pitch_deg, setpoint);
     }
 
     public double calculateRotOutputRad(double imu_yaw, double setpoint) {
