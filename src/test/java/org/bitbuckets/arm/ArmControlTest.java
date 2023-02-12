@@ -71,7 +71,7 @@ class ArmControlTest {
     @Test
     void storeArm() {
         // we should move the mechanism
-        control.humanIntake();
+        control.storeArm();
         verify(lowerJoint).moveToPosition_mechanismRotations(anyDouble());
         verify(upperJoint).moveToPosition_mechanismRotations(anyDouble());
     }
@@ -79,7 +79,7 @@ class ArmControlTest {
     @Test
     void prepareArm() {
         // we should move the mechanism
-        control.humanIntake();
+        control.prepareArm();
         verify(lowerJoint).moveToPosition_mechanismRotations(anyDouble());
         verify(upperJoint).moveToPosition_mechanismRotations(anyDouble());
     }
@@ -87,7 +87,7 @@ class ArmControlTest {
     @Test
     void scoreLow() {
         // we should move the mechanism
-        control.humanIntake();
+        control.scoreLow();
         verify(lowerJoint).moveToPosition_mechanismRotations(anyDouble());
         verify(upperJoint).moveToPosition_mechanismRotations(anyDouble());
     }
@@ -95,7 +95,7 @@ class ArmControlTest {
     @Test
     void scoreMid() {
         // we should move the mechanism
-        control.humanIntake();
+        control.scoreMid();
         verify(lowerJoint).moveToPosition_mechanismRotations(anyDouble());
         verify(upperJoint).moveToPosition_mechanismRotations(anyDouble());
     }
@@ -103,7 +103,7 @@ class ArmControlTest {
     @Test
     void scoreHigh() {
         // we should move the mechanism
-        control.humanIntake();
+        control.scoreHigh();
         verify(lowerJoint).moveToPosition_mechanismRotations(anyDouble());
         verify(upperJoint).moveToPosition_mechanismRotations(anyDouble());
     }
