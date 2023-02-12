@@ -9,4 +9,6 @@ public interface IVisionControl {
     Optional<Pose3d> estimateVisionTargetPose();
     Optional<Pose3d> estimateVisionRobotPose();
 
+    boolean isTargTrue();
+
 }
