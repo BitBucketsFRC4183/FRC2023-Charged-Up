@@ -2,12 +2,16 @@ package org.bitbuckets.lib.vendor.ctre;
 
 import com.ctre.phoenix.sensors.WPI_CANCoder;
 import org.bitbuckets.lib.hardware.IAbsoluteEncoder;
+import org.bitbuckets.lib.log.ILoggable;
 
-public class CANCoderAbsoluteEncoder implements IAbsoluteEncoder {
+public class CANCoderAbsoluteEncoder implements IAbsoluteEncoder, Runnable {
     final WPI_CANCoder encoder;
 
-    CANCoderAbsoluteEncoder(WPI_CANCoder encoder) {
+    final ILoggable<double[]> encoderData;
+
+    CANCoderAbsoluteEncoder(WPI_CANCoder encoder, ILoggable<double[]> encoderData) {
         this.encoder = encoder;
+        this.encoderData = encoderData;
     }
 
     @Override
@@ -19,6 +23,15 @@ public class CANCoderAbsoluteEncoder implements IAbsoluteEncoder {
         }
 
         return angle;
+
+    }
+
+    @Override
+    public void run() {
+        encoderData.log(new double[]{
+                encoder.getAbsolutePosition(),
+                Math.toDegrees(getAbsoluteAngle())
+        });
 
     }
 }
