@@ -36,6 +36,7 @@ public class DriveSubsystem {
     final IValueTuner<OrientationChooser> orientation;
     final Debuggable debuggable;
 
+
     public enum OrientationChooser {
         FIELD_ORIENTED,
         ROBOT_ORIENTED,
@@ -55,6 +56,8 @@ public class DriveSubsystem {
     }
 
     DriveFSM state = DriveFSM.UNINITIALIZED;
+
+    Optional<Pose3d> visionTarget;
 
     public void runLoop() {
         switch (state) {
@@ -93,7 +96,8 @@ public class DriveSubsystem {
                     state = DriveFSM.AUTO_PATHFINDING;
                     break;
                 }
-                if (input.isVisionGoPressed()) {
+                if (input.isVisionGoPressed() && visionControl.isTargTrue()) {
+                    visionTarget = visionControl.estimateVisionTargetPose();
                     state = DriveFSM.TELEOP_VISION;
                     break;
                 }
@@ -117,7 +121,7 @@ public class DriveSubsystem {
                 break;
 
             case TELEOP_VISION:
-                if (!input.isVisionGoPressed()) {
+                if ((!input.isVisionGoPressed())) {
                     state = DriveFSM.TELEOP_NORMAL;
                     break;
                 }
@@ -135,11 +139,16 @@ public class DriveSubsystem {
     }
 
     void teleopVision() {
-        Optional<Pose3d> res = visionControl.estimateVisionTargetPose();
-        if (res.isEmpty()) return;
-        ChassisSpeeds speeds = holoControl.calculatePose2D(res.get().toPose2d(), 1, res.get().toPose2d().getRotation());
+        if (visionTarget.isPresent()) {ChassisSpeeds speeds = holoControl.calculatePose2D(visionTarget.get().toPose2d(), 1, visionTarget.get().toPose2d().getRotation() );
 
-        driveControl.drive(speeds);
+            driveControl.drive(speeds);
+        }
+        else {
+            ChassisSpeeds speeds = new ChassisSpeeds(0, 0, 0);
+        }
+
+
+
     }
 
     void teleopNormal() {
