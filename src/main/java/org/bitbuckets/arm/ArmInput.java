@@ -87,9 +87,11 @@ Right Joystick to control upper joint on arm
         return armDeadband(operatorControl.getRawAxis(XboxController.Axis.kRightTrigger.value));
     }
 
-    public boolean isStopAllMotorsPressed() {
+    /*
+    public double isStopAllMotorsPressed(){
         return operatorControl.getRawButtonPressed(XboxController.Button.kB.value);
     }
+     */
 
     public boolean isStoragePressed() {
         return operatorControl.getRawButton(XboxController.Button.kX.value);
@@ -123,6 +125,13 @@ Right Joystick to control upper joint on arm
     public boolean isDisablePositionControlPressed() {
         return operatorControl.getRawButtonPressed(XboxController.Button.kRightStick.value);
     }
+
+
+    public boolean isStopPidPressed(){
+        return operatorControl.getRawButtonPressed(XboxController.Button.kB.value);
+    }
+
+
 
 
 }
