@@ -47,6 +47,7 @@ public class RobotStateControl implements Runnable {
 
         if (isRobotDisabled() && !resetYetThisGamePhase) {
             resetYetThisGamePhase = true;
+
             timer.reset();
         }
     }

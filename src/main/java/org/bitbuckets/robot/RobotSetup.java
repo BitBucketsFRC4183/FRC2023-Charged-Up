@@ -18,8 +18,6 @@ public class RobotSetup implements ISetup<RobotContainer> {
 
     final RobotStateControl robotStateControl;
 
-    WPI_PigeonIMU pigeonIMU;
-
     public RobotSetup(RobotStateControl robotStateControl) {
         this.robotStateControl = robotStateControl;
     }
