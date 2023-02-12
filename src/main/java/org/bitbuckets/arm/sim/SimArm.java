@@ -119,6 +119,7 @@ public class SimArm implements IMotorController {
         debuggable.log("voltage", cachedInputVoltage);
         debuggable.log("nextAngle", deg);
         debuggable.log("error", this.getError_mechanismRotations());
+        debuggable.log("setpoint", setpoint_encoderRads / 2.0 / Math.PI * motorConfig.encoderToMechanismCoefficient);
 
         sim.getCurrentDrawAmps();
 

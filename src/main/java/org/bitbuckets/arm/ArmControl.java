@@ -62,11 +62,14 @@ public class ArmControl {
 
 
     public boolean isReachable(double lowerAngle_degrees, double upperAngle_degrees) {
+        debuggable.log("lower-angle", lowerAngle_degrees);
+        debuggable.log("upper-angle", upperAngle_degrees);
+
         if (Double.isNaN(lowerAngle_degrees) || Double.isNaN(upperAngle_degrees)) {
-            debuggable.log("out-of-reach", false);
+            debuggable.log("is-reach", false);
             return false;
         } else {
-            debuggable.log("out-of-reach", true);
+            debuggable.log("is-reach", true);
             return true;
         }
     }
@@ -140,7 +143,7 @@ public class ArmControl {
     }
 
     public void prepareArm() {
-        debuggable.log("arm-is-called", true);
+       debuggable.log("arm-is-called", true);
 
         InverseKinematics prepare = new InverseKinematics(ArmConstants.PREPARE_X, ArmConstants.PREPARE_Y);
         double lowerAngle_degrees = prepare.getLowerJoint_degrees();
@@ -222,5 +225,6 @@ public class ArmControl {
     }
 
 
-
 }
+
+

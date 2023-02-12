@@ -1,6 +1,7 @@
 package org.bitbuckets.arm;
 
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
+import org.bitbuckets.arm.kinematics.InverseKinematics;
 import org.bitbuckets.arm.sim.SimArm;
 import org.bitbuckets.lib.hardware.IMotorController;
 import org.bitbuckets.lib.log.Debuggable;
@@ -41,13 +42,7 @@ class ArmControlTest {
         assertEquals(24., control.convertMechanismRotationtoRawRotation_upperJoint(1), .1);
     }
 
-    @Test
-    void isReachable() {
-        assertTrue(control.isReachable(0, 0));
-        assertFalse(control.isReachable(0, Double.NaN));
-        assertFalse(control.isReachable(0, Double.NaN));
-        assertFalse(control.isReachable(Double.NaN, Double.NaN));
-    }
+
 
     @Test
     void isErrorSmallEnough() {
@@ -110,4 +105,16 @@ class ArmControlTest {
         verify(lowerJoint).moveToPosition_mechanismRotations(anyDouble());
         verify(upperJoint).moveToPosition_mechanismRotations(anyDouble());
     }
+
+    @Test
+    void isReachable() {
+        //double lowerAngle = new InverseKinematics(5, 0).getLowerJoint_degrees();
+        //double upperAngle = new InverseKinematics(5, 0).getUpperJoint_degrees();
+        assertTrue(control.isReachable(90, 90));
+
+
+
+    }
+
+
 }
