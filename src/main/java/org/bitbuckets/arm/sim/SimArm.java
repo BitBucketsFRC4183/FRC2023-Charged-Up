@@ -114,6 +114,8 @@ public class SimArm implements IMotorController {
         debuggable.log("voltage", cachedInputVoltage);
         debuggable.log("nextAngle", deg);
 
+        sim.getCurrentDrawAmps();
+
         ligament2d.setAngle( deg  );
     }
 }

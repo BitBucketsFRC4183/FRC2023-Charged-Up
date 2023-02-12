@@ -5,6 +5,8 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
+import org.bitbuckets.arm.ArmConstants;
+import org.bitbuckets.drive.DriveConstants;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.lib.control.PIDConfig;
@@ -33,9 +35,10 @@ public class SimArmSetup implements ISetup<IMotorController> {
     @Override
     public SimArm build(ProcessPath self) {
 
+
         SingleJointedArmSim sim = new SingleJointedArmSim(
-                DCMotor.getNeo550(1),
-                1.0 / config.encoderToMechanismCoefficient,
+                DCMotor.getNeo550(2),
+                1.0 / config.encoderToMechanismCoefficient * 10.0, //TODO fix this dumb hack
                 estimateMOI(armConfig.lengthMeters, armConfig.armMass),
                 armConfig.lengthMeters,
                 armConfig.armMinAngle,

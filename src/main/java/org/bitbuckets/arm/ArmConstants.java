@@ -17,6 +17,7 @@ public interface ArmConstants {
     double LOWER_ARM_GEAR_RATIO = 1.0 / ((5.0 * 4.0 * 3.0) * (12. / 26.)); // encoder rotations to mechanism rotations; 130 encoder rotations = 1 mechanism rotation
     double UPPER_ARM_GEAR_RATIO = 1.0 / ((5.0 * 4.0 * 3.0) * (12. / 30.)); // encoder rotations to mechanism rotations; 130 encoder rotations = 1 mechanism rotation
 
+    double A = ((5.0 * 4.0 * 3.0));
     //change these
     double LOWER_JOINT_LENGTH = 0.6605;
     double UPPER_JOINT_LENGTH = 0.6731;
@@ -70,7 +71,7 @@ public interface ArmConstants {
             4,
             Units.rotationsToDegrees(LOWER_ARM_FORWARD_LIMIT_MECHANISM),
             Units.rotationsToDegrees(LOWER_ARM_REVERSE_LIMIT_MECHANISM),
-            false
+            true
     );
 
     ArmConfig UPPER_ARM = new ArmConfig(
@@ -88,7 +89,7 @@ public interface ArmConstants {
 
 
     // Feel free to change to make arms faster/slower for input
-    double CONTROL_JOINT_OUTPUT = 0.1;
+    double CONTROL_JOINT_OUTPUT = 1;
 
     /*
     Starting Configuration
