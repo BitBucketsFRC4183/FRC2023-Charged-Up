@@ -32,7 +32,7 @@ class ArmControlTest {
         simLowerArm = mock(MechanismLigament2d.class);
         simUpperArm = mock(MechanismLigament2d.class);
 
-        control = new ArmControl(lowerJoint, lowerJoint1, upperJoint, debuggable);
+        control = new ArmControl(lowerJoint, lowerJoint1, upperJoint, debuggable, simLowerArm, simUpperArm);
     }
 
 

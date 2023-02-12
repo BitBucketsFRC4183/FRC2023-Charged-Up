@@ -9,7 +9,6 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 class InverseKinematicsTest {
 
-
     @Test
     void getLowerJointAngle() {
 
