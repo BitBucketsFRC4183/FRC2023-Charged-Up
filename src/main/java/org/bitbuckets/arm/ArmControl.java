@@ -133,9 +133,13 @@ public class ArmControl {
     }
 
     public void storeArm() {
+        /*
         InverseKinematics store = new InverseKinematics(ArmConstants.STORAGE_X, ArmConstants.STORAGE_Y);
         double lowerAngle_degrees = store.getLowerJoint_degrees();
         double upperAngle_degrees = store.getUpperJoint_degrees();
+
+
+
 
         debuggable.log("lower-kinematics", convertDegreesToRotation(lowerAngle_degrees));
         debuggable.log("upper-kinematics", convertDegreesToRotation(upperAngle_degrees));
@@ -147,6 +151,12 @@ public class ArmControl {
             upperJoint.moveToPosition_mechanismRotations(convertDegreesToRotation(upperAngle_degrees));
         }
 
+         */
+        if (isReachable(0, 10)) {
+            lowerJoint1.moveToPosition_mechanismRotations(convertDegreesToRotation(0));
+            lowerJoint2.moveToPosition_mechanismRotations(convertDegreesToRotation(0));
+            upperJoint.moveToPosition_mechanismRotations(convertDegreesToRotation(10));
+        }
     }
 
     public void prepareArm() {
@@ -197,6 +207,7 @@ public class ArmControl {
          * InverseKinematics midNode = new InverseKinematics(0.85, 0.95); works
          * InverseKinematics midNode = new InverseKinematics(1.169, 0.35); works
          */
+
 
         InverseKinematics midNode = new InverseKinematics(ArmConstants.MID_NODE_X, ArmConstants.MID_NODE_Y);
         double lowerAngle_degrees = midNode.getLowerJoint_degrees();

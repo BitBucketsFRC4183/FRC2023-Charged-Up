@@ -28,20 +28,20 @@ public class RobotSetup implements ISetup<RobotContainer> {
     @Override
     public RobotContainer build(ProcessPath self) {
 
-        AutoSubsystem autoSubsystem = new AutoSubsystemSetup(true)
+        AutoSubsystem autoSubsystem = new AutoSubsystemSetup(false)
                 .build(self.addChild("auto-subsystem"));
 
-        IVisionControl visionControl = new VisionControlSetup(true)
+        IVisionControl visionControl = new VisionControlSetup(false)
                 .build(self.addChild("vision-control"));
 
         ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystemSetup(false, autoSubsystem)
                 .build(self.addChild("elevator-subsystem"));
 
-        ArmSubsystem armSubsystem = new ArmSubsystemSetup(false)
+        ArmSubsystem armSubsystem = new ArmSubsystemSetup(true)
                 .build(self.addChild("arm-subsystem"));
 
         DriveSubsystem driveSubsystem = new DriveSubsystemSetup(
-                true,
+                false,
                 false,
                 autoSubsystem,
                 visionControl
