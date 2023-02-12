@@ -36,21 +36,21 @@ public class VisionControl implements IVisionControl {
     public void logLoop() {
         debuggable.log("a", "a");
 
-        var opt = estimateTargetPose();
-        opt.ifPresent(pose3d -> debuggable.log("target-pose", pose3d));
-        var op2 = estimateRobotPose();
-        op2.ifPresent(pose3d -> debuggable.log("robot-pose", pose3d));
+        var opt = estimateVisionTargetPose();
+        opt.ifPresent(pose3d -> debuggable.log("target-pose", opt.get()));
+        var op2 = estimateVisionRobotPose();
+        op2.ifPresent(pose3d -> debuggable.log("robot-pose", op2.get()));
 
     }
 
 
     @Override
-    public Optional<Pose3d> estimateTargetPose() {
+    public Optional<Pose3d> estimateVisionTargetPose() {
         return visionPoseEstimator().map(r -> r.goalPose);
     }
 
     @Override
-    public Optional<Pose3d> estimateRobotPose() {
+    public Optional<Pose3d> estimateVisionRobotPose() {
         return visionPoseEstimator().map(r -> r.robotPose);
     }
 
@@ -82,10 +82,10 @@ public class VisionControl implements IVisionControl {
 
         SmartDashboard.putString("tagpose", transformToTag.toString());
         // Trasnform the camera's pose to the target's pose
-        Pose3d targetPose = cameraPose.transformBy(transformToTag);
+        Pose3d tagPose = cameraPose.transformBy(transformToTag);
 
         // Transform the tag's pose to set our goal
-        Pose3d goalPose = targetPose.transformBy(VisionConstants2.TAG_TO_GOAL);
+        Pose3d goalPose = tagPose.transformBy(VisionConstants2.TAG_TO_GOAL);
         // This is new target data, so recalculate the goal
         double range = PhotonUtils.calculateDistanceToTargetMeters(
                 VisionConstants2.CAMERA_HEIGHT,
@@ -106,6 +106,7 @@ public class VisionControl implements IVisionControl {
         Pose2d tagPossiblePose2d = tagPossiblePose3d.toPose2d();
 
         Rotation2d targetYaw = PhotonUtils.getYawToPose(currentEstimatedPose2d, goalPose.toPose2d());
+
         SmartDashboard.putString("targetYaw", targetYaw.toString());
         return Optional.of(new PhotonCalculationResult(estimatedFieldRobotPose, goalPose, translationToTag, targetYaw, targetYaw.getRadians()));
 

@@ -28,7 +28,7 @@ public class DriveControl implements IDriveControl {
 
 
     //Speed factor that edits the max velocity and max angular velocity
-    double speedModifier = .75;
+    double speedModifier = .25;
 
     List<ISwerveModule> modules;
 
@@ -103,7 +103,16 @@ public class DriveControl implements IDriveControl {
 
     //microoptimization: do this without stream()
     public SwerveModulePosition[] currentPositions() {
-        return this.modules.stream().map(ISwerveModule::getPosition).toArray(SwerveModulePosition[]::new);
+        debug.log("Pos 0 Dis", this.modules.get(3).getPosition().distanceMeters);
+        debug.log("Pos 0 Angle", this.modules.get(3).getPosition().angle.getDegrees());
+        return new SwerveModulePosition[]
+                {
+                        this.modules.get(0).getPosition(),
+                        this.modules.get(1).getPosition(),
+                        this.modules.get(2).getPosition(),
+                        this.modules.get(3).getPosition()
+                };
+
     }
 
 

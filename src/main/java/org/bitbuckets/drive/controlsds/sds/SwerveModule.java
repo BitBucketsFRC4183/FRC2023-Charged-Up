@@ -1,5 +1,6 @@
 package org.bitbuckets.drive.controlsds.sds;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import org.bitbuckets.lib.log.ILoggable;
@@ -19,16 +20,14 @@ public class SwerveModule implements ISwerveModule, Runnable {
     }
 
 
-    //TODO this isn't working
     @Override
     public SwerveModulePosition getPosition() {
-        return new SwerveModulePosition();
+        return new SwerveModulePosition(driveController.getStatePosition_meters(), Rotation2d.fromRadians(getSteerAngle()));
     }
 
-    //TODO this isn't working
     @Override
     public SwerveModuleState getState() {
-        return new SwerveModuleState();
+        return new SwerveModuleState(getDriveVelocity(), Rotation2d.fromRadians(getSteerAngle()));
     }
 
 
@@ -82,7 +81,7 @@ public class SwerveModule implements ISwerveModule, Runnable {
 
     @Override
     public void run() {
-        swerveAngleVoltage.log(new double[] {
+        swerveAngleVoltage.log(new double[]{
                 Math.toDegrees(steerAngle),
                 driveVoltage,
         });

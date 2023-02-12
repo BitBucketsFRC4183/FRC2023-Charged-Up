@@ -5,9 +5,9 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 public class LogOdometryToField implements Runnable {
 
     final Field2d field2d;
-    final OdometryControl control;
+    final IOdometryControl control;
 
-    public LogOdometryToField(Field2d field2d, OdometryControl control) {
+    public LogOdometryToField(Field2d field2d, IOdometryControl control) {
         this.field2d = field2d;
         this.control = control;
     }
@@ -15,7 +15,7 @@ public class LogOdometryToField implements Runnable {
     @Override
     public void run() {
         field2d.setRobotPose(
-                control.estimatePose2d()
+                control.estimateFusedPose2d()
         );
     }
 }

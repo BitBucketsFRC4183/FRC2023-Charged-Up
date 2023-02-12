@@ -21,7 +21,6 @@ public class ArmSubsystem {
     }
 
 
-
     //private double CONTROL_JOINT_OUTPUT = 0.1;
 
     //calculated gearRatio
@@ -35,9 +34,9 @@ public class ArmSubsystem {
             armControl.calibrateUpperArm();
             System.out.println("Arms calibrated!");
         }
-        //if (armInput.isDisablePositionControlPressed()) {
-        //    state = ArmFSM.MANUAL;
-        //}
+        if (armInput.isDisablePositionControlPressed()) {
+            state = ArmFSM.MANUAL;
+        }
 
         switch (state) {
             case MANUAL:
@@ -59,7 +58,7 @@ public class ArmSubsystem {
                 } else if (armInput.isScoreHighPressed()) {
                     state = ArmFSM.PREPARE;
                     nextState = ArmFSM.SCORE_HIGH;
-                } else if (armInput.isScoreLowPressed()){
+                } else if (armInput.isScoreLowPressed()) {
                     state = ArmFSM.PREPARE;
                     nextState = ArmFSM.SCORE_LOW;
                 }
@@ -67,51 +66,48 @@ public class ArmSubsystem {
 
             case STORAGE:
                 armControl.storeArm();
-                if (armControl.isErrorSmallEnough(3.69)) {
+                if (armControl.isErrorSmallEnough(0.0069)) {
                     state = ArmFSM.MANUAL;
                 }
                 break;
 
             case PREPARE:
                 armControl.prepareArm();
-                if (armControl.isErrorSmallEnough(3.69)){
+                if (armControl.isErrorSmallEnough(0.0069)){
                     state = nextState;
                 }
                 break;
 
             case HUMAN_INTAKE:
                 armControl.humanIntake();
-                if (armControl.isErrorSmallEnough(3.69)) {
+                if (armControl.isErrorSmallEnough(0.0069)) {
                     state = ArmFSM.MANUAL;
                 }
                 break;
 
             case SCORE_LOW:
                 armControl.scoreLow();
-                if (armControl.isErrorSmallEnough(3.69)) {
+                if (armControl.isErrorSmallEnough(0.0069)) {
                     state = ArmFSM.MANUAL;
                 }
                 break;
 
             case SCORE_MID:
                 armControl.scoreMid();
-                if (armControl.isErrorSmallEnough(3.69))
-                {
+                if (armControl.isErrorSmallEnough(0.0069)){
                     state = ArmFSM.MANUAL;
                 }
                 break;
 
             case SCORE_HIGH:
                 armControl.scoreHigh();
-                if (armControl.isErrorSmallEnough(3.69)){
+                if (armControl.isErrorSmallEnough(0.0069)){
                     state = ArmFSM.MANUAL;
                 }
                 break;
         }
         debuggable.log("state", state);
     }
-
-
 
 
 }

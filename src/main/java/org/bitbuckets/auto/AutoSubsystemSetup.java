@@ -15,6 +15,7 @@ public class AutoSubsystemSetup implements ISetup<AutoSubsystem> {
 
     final boolean enabled;
 
+
     public AutoSubsystemSetup(boolean enabled) {
         this.enabled = enabled;
     }
