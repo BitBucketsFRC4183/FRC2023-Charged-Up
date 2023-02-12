@@ -50,39 +50,38 @@ public class ArmControlSetup implements ISetup<ArmControl> {
                 simLower.append(
                         new MechanismLigament2d("upper-arm-sim", ArmConstants.UPPER_JOINT_LENGTH + ArmConstants.GRABBER_LENGTH, 90, ArmConstants.UPPER_JOINT_WIDTH * 690, new Color8Bit(Color.kPurple)));
 
-        // post the mechanism to the dashboard
-        SmartDashboard.putData("Mech2d", mech);
+
+        if (self.isReal())
+        {
+            var lowerSpark1 = lower1.rawAccess(CANSparkMax.class);
+            var lowerSpark2 = lower2.rawAccess(CANSparkMax.class);
+            var upperSpark = upper.rawAccess(CANSparkMax.class);
+
+            lowerSpark1.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, false);
+            lowerSpark1.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, false);
+
+            lowerSpark2.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, false);
+            lowerSpark2.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, false);
+
+            upperSpark.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, false);
+            upperSpark.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, false);
+
+
+            lowerSpark1.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, (float) 27.3);
+            lowerSpark1.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, (float) -13.69);
+
+            lowerSpark2.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, (float) 27.3);
+            lowerSpark2.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, (float) -13.69);
+
+            upperSpark.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, (float) 25.0);
+            upperSpark.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, (float) -90.0);
 
 
 
-        var lowerSpark1 = lower1.rawAccess(CANSparkMax.class);
-        var lowerSpark2 = lower2.rawAccess(CANSparkMax.class);
-        var upperSpark = upper.rawAccess(CANSparkMax.class);
-
-        lowerSpark1.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, true);
-        lowerSpark1.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, true);
-
-        lowerSpark2.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, true);
-        lowerSpark2.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, true);
-
-        upperSpark.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, true);
-        upperSpark.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, true);
 
 
-        lowerSpark1.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, (float) 27.3);
-        lowerSpark1.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, (float) -13.69);
-
-        lowerSpark2.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, (float) 27.3);
-        lowerSpark2.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, (float) -13.69);
-
-        upperSpark.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, (float) 25.0);
-        upperSpark.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, (float) -90.0);
-
-
-
-        lowerSpark1.follow(lowerSpark2);
-
-
+            lowerSpark1.follow(lowerSpark2);
+        }
 
         Debuggable debug = self.generateDebugger();
 

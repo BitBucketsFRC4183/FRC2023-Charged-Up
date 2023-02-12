@@ -35,9 +35,9 @@ public class ArmSubsystem {
             armControl.calibrateUpperArm();
             System.out.println("Arms calibrated!");
         }
-        //if (armInput.isDisablePositionControlPressed()) {
-        //    state = ArmFSM.MANUAL;
-        //}
+        if (armInput.isDisablePositionControlPressed()) {
+            state = ArmFSM.MANUAL;
+        }
 
         switch (state) {
             case MANUAL:

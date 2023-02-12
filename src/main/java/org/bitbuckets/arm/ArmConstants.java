@@ -32,7 +32,7 @@ public interface ArmConstants {
 
 
     // Feel free to change to make arms faster/slower for input
-    double CONTROL_JOINT_OUTPUT = 0.15;
+    double CONTROL_JOINT_OUTPUT = 0.1;
 
     /*
     Starting Configuration
