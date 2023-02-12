@@ -29,7 +29,6 @@ public class ArmSubsystem {
 
     public void teleopPeriodic() {
 
-        armControl.setArmMech2d();
         if (armInput.isCalibratedPressed()) {
             armControl.calibrateLowerArm();
             armControl.calibrateUpperArm();

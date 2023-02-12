@@ -1,5 +1,7 @@
 package org.bitbuckets.arm;
 
+import edu.wpi.first.math.util.Units;
+import org.bitbuckets.arm.sim.ArmConfig;
 import org.bitbuckets.lib.control.PIDConfig;
 import org.bitbuckets.lib.hardware.MotorConfig;
 
@@ -15,17 +17,71 @@ public interface ArmConstants {
     double LOWER_ARM_GEAR_RATIO = 1.0 / ((5.0 * 4.0 * 3.0) * (12. / 26.)); // encoder rotations to mechanism rotations; 130 encoder rotations = 1 mechanism rotation
     double UPPER_ARM_GEAR_RATIO = 1.0 / ((5.0 * 4.0 * 3.0) * (12. / 30.)); // encoder rotations to mechanism rotations; 130 encoder rotations = 1 mechanism rotation
 
-    MotorConfig LOWER_CONFIG1 = new MotorConfig(ArmConstants.LOWER_ARM_GEAR_RATIO, 1, 1, false, true, 20.0, false, false, Optional.empty());
-    MotorConfig LOWER_CONFIG2 = new MotorConfig(ArmConstants.LOWER_ARM_GEAR_RATIO, 1, 1, true, true, 20.0, false, false, Optional.empty());
-    MotorConfig UPPER_CONFIG = new MotorConfig(ArmConstants.UPPER_ARM_GEAR_RATIO, 1, 1, true, true, 20.0, false, false, Optional.empty());
-
-    PIDConfig LOWER_PID = new PIDConfig(0.3, 0, 0, 0);
-    PIDConfig UPPER_PID = new PIDConfig(0.3, 0, 0, 0);
     //change these
     double LOWER_JOINT_LENGTH = 0.6605;
     double UPPER_JOINT_LENGTH = 0.6731;
     double UPPER_JOINT_WIDTH = 0.0254; //mainly for arm sim
     double LOWER_JOINT_WIDTH = 0.0508; //mainly for arm sim
+
+    double ass = 13.69 * LOWER_ARM_GEAR_RATIO;
+
+    double LOWER_ARM_FORWARD_LIMIT_MECHANISM = 0.98; //rotations
+    double LOWER_ARM_FORWARD_LIMIT_ENCODER = LOWER_ARM_FORWARD_LIMIT_MECHANISM / LOWER_ARM_GEAR_RATIO;
+    double LOWER_ARM_REVERSE_LIMIT_MECHANISM = -0.494361111111;
+    double LOWER_ARM_REVERSE_LIMIT_ENCODER = LOWER_ARM_REVERSE_LIMIT_MECHANISM / LOWER_ARM_GEAR_RATIO;
+
+    double UPPER_ARM_FORWARD_LIMIT_MECHANISM = 1.041;
+    double UPPER_ARM_FORWARD_LIMIT_ENCODER = UPPER_ARM_FORWARD_LIMIT_MECHANISM / UPPER_ARM_GEAR_RATIO;
+    double UPPER_ARM_REVERSE_LIMIT_MECHANISM = -3.75;
+    double UPPER_ARM_REVERSE_LIMIT_ENCODER = UPPER_ARM_REVERSE_LIMIT_MECHANISM / UPPER_ARM_GEAR_RATIO;
+
+    MotorConfig LOWER_CONFIG = new MotorConfig(
+            ArmConstants.LOWER_ARM_GEAR_RATIO,
+            1,
+            1,
+            false,
+            true,
+            20.0,
+            false,
+            false,
+            Optional.empty()
+    );
+
+    MotorConfig UPPER_CONFIG = new MotorConfig(
+            ArmConstants.UPPER_ARM_GEAR_RATIO,
+            1,
+            1,
+            true,
+            true,
+            20.0,
+            false,
+            false,
+            Optional.empty()
+    );
+
+    PIDConfig LOWER_PID = new PIDConfig(0.3, 0, 0, 0);
+    PIDConfig UPPER_PID = new PIDConfig(0.3, 0, 0, 0);
+
+    PIDConfig LOWER_SIMPID = new PIDConfig(0, 0, 0, 0);
+    PIDConfig UPPER_SIMPID = new PIDConfig(0, 0, 0, 0);
+
+    ArmConfig LOWER_ARM = new ArmConfig(
+            Units.inchesToMeters(27),
+            4,
+            Units.rotationsToDegrees(LOWER_ARM_FORWARD_LIMIT_MECHANISM),
+            Units.rotationsToDegrees(LOWER_ARM_REVERSE_LIMIT_MECHANISM),
+            false
+    );
+
+    ArmConfig UPPER_ARM = new ArmConfig(
+            Units.inchesToMeters(38.5),
+            10,
+            Units.rotationsToDegrees(UPPER_ARM_FORWARD_LIMIT_MECHANISM),
+            Units.rotationsToDegrees(UPPER_ARM_REVERSE_LIMIT_MECHANISM),
+            false
+    );
+
+
 
     // will most likely change
     double GRABBER_LENGTH = 0.1524;

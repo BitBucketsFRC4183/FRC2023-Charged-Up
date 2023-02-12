@@ -14,30 +14,14 @@ public class ArmControl {
     final IMotorController upperJoint;
     final Debuggable debuggable;
 
-    double upperAngle = 0;
-    double lowerAngle = 0;
-
-    final MechanismLigament2d simLower;
-    final MechanismLigament2d simUpper;
 
     // How do set up IMotorController and IEncoder so that lowerJoint == lowerEncoder
 
-    public ArmControl(IMotorController lowerJoint1, IMotorController lowerJoint2, IMotorController upperJoint, Debuggable debuggable, MechanismLigament2d simLower, MechanismLigament2d simUpper) {
+    public ArmControl(IMotorController lowerJoint1, IMotorController lowerJoint2, IMotorController upperJoint, Debuggable debuggable) {
         this.lowerJoint1 = lowerJoint1;
         this.lowerJoint2 = lowerJoint2;
         this.upperJoint = upperJoint;
         this.debuggable = debuggable;
-        this.simLower = simLower;
-        this.simUpper = simUpper;
-    }
-
-    public void setArmMech2d() {
-        //straight up on right trigger is the lower arm going to the left
-        //straight up on left trigger is the upper arm going to the right
-        simLower.setAngle(90 - Math.toDegrees(lowerJoint1.getMechanismPositionAccum_rot() * 2.0 * Math.PI)+upperAngle);
-        simUpper.setAngle(90 - Math.toDegrees(lowerJoint1.getMechanismPositionAccum_rot() * 2.0 * Math.PI)+lowerAngle);
-
-
     }
 
     public void calibrateLowerArm() {
@@ -56,16 +40,11 @@ public class ArmControl {
         //test if lower arm moves with outputs
         lowerJoint1.moveAtPercent(percentOutput * ArmConstants.CONTROL_JOINT_OUTPUT);
         lowerJoint2.moveAtPercent(percentOutput * ArmConstants.CONTROL_JOINT_OUTPUT);
-
-        lowerAngle = lowerAngle + percentOutput;
-
     }
 
 
     public void manuallyMoveUpperArm(double percentOutput) {
-
         upperJoint.moveAtPercent(percentOutput * ArmConstants.CONTROL_JOINT_OUTPUT);
-        upperAngle = upperAngle + percentOutput;
     }
 
 
@@ -242,12 +221,6 @@ public class ArmControl {
         }
     }
 
-
-    public void simulationLoop() {
-        double realSimulatedAngle_lower = lowerJoint1.getMechanismPositionBound_rot() * 360;
-        double realSimulatedAngle_upper = upperJoint.getMechanismPositionBound_rot() * 360;
-
-    }
 
 
 }
