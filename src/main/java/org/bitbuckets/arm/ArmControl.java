@@ -56,6 +56,7 @@ public class ArmControl {
         //test if lower arm moves with outputs
         lowerJoint1.moveAtPercent(percentOutput * ArmConstants.CONTROL_JOINT_OUTPUT);
         lowerJoint2.moveAtPercent(percentOutput * ArmConstants.CONTROL_JOINT_OUTPUT);
+
         lowerAngle = lowerAngle + percentOutput;
 
     }
@@ -239,6 +240,13 @@ public class ArmControl {
             lowerJoint2.moveToPosition_mechanismRotations(convertDegreesToRotation(lowerAngle_degrees));
             upperJoint.moveToPosition_mechanismRotations(convertDegreesToRotation(upperAngle_degrees));
         }
+    }
+
+
+    public void simulationLoop() {
+        double realSimulatedAngle_lower = lowerJoint1.getMechanismPositionBound_rot() * 360;
+        double realSimulatedAngle_upper = upperJoint.getMechanismPositionBound_rot() * 360;
+
     }
 
 
