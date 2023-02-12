@@ -135,19 +135,18 @@ public class DriveSubsystem {
                 teleopAutoheading();
                 break;
         }
+        debuggable.log("state", state.toString());
     }
 
     void teleopVision() {
         if (visionTarget.isPresent()) {ChassisSpeeds speeds = holoControl.chaseTag(visionTarget.get().toPose2d(), 1, visionTarget.get().toPose2d().getRotation() );
 
             driveControl.drive(speeds);
-        }
-        else {
+        } else {
             ChassisSpeeds speeds = new ChassisSpeeds(0, 0, 0);
 
             driveControl.drive(speeds);
         }
-
 
 
     }
