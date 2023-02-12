@@ -13,6 +13,7 @@ import org.bitbuckets.lib.log.Debuggable;
 import org.bitbuckets.lib.tune.IValueTuner;
 import org.bitbuckets.odometry.IOdometryControl;
 import org.bitbuckets.vision.IVisionControl;
+import org.bitbuckets.vision.PhotonCalculationResult;
 
 import java.util.Optional;
 
@@ -134,7 +135,7 @@ public class DriveSubsystem {
     void teleopVision() {
         Optional<Pose3d> res = visionControl.estimateTargetPose();
         if (res.isEmpty()) return;
-        ChassisSpeeds speeds = holoControl.calculatePose2D(res.get().toPose2d(), 3, res.get().toPose2d().getRotation());
+        ChassisSpeeds speeds = holoControl.calculatePose2D(res.get().toPose2d(), 1, res.get().toPose2d().getRotation());
 
         driveControl.drive(speeds);
     }

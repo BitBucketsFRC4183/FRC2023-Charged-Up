@@ -7,15 +7,20 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.Trajectory;
 import org.bitbuckets.drive.controlsds.DriveControl;
 import org.bitbuckets.odometry.IOdometryControl;
+import org.bitbuckets.vision.IVisionControl;
+import org.bitbuckets.vision.VisionControl;
 
 public class HoloControl {
 
     final DriveControl driveControl;
+
+    final IVisionControl visionControl;
     final IOdometryControl odometryControl;
     final HolonomicDriveController controller;
 
-    public HoloControl(DriveControl driveControl, IOdometryControl odometryControl, HolonomicDriveController controller) {
+    public HoloControl(DriveControl driveControl, IVisionControl visionControl, IOdometryControl odometryControl, HolonomicDriveController controller) {
         this.driveControl = driveControl;
+        this.visionControl = visionControl;
         this.odometryControl = odometryControl;
         this.controller = controller;
     }
@@ -28,7 +33,7 @@ public class HoloControl {
      */
     public ChassisSpeeds calculatePose2D(Pose2d target, double desiredVelocity, Rotation2d desiredRotation) {
         return controller.calculate(
-                odometryControl.estimatePose2d(),
+                visionControl.estimateRobotPose().get().toPose2d(),
                 target,
                 desiredVelocity,
                 desiredRotation
