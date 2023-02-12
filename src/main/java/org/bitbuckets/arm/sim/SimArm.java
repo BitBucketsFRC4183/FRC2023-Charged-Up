@@ -78,10 +78,10 @@ public class SimArm implements IMotorController {
     }
 
     @Override
-    public void moveToPosition(double position_encoderRotations) {
-        debuggable.log("move-to-position", position_encoderRotations);
+    public void moveToPosition(double setpoint_encoderRotations) {
+        debuggable.log("move-to-position", setpoint_encoderRotations);
 
-        cachedInputVoltage = armPositionPid.calculate(position_encoderRotations);
+        cachedInputVoltage = armPositionPid.calculate(getEncoderPositionAccumulated_rot(),setpoint_encoderRotations);
     }
 
     @Override
