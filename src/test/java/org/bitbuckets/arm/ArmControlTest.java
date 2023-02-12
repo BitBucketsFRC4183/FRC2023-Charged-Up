@@ -19,9 +19,6 @@ class ArmControlTest {
 
     ArmControl control;
 
-    MechanismLigament2d simLowerArm;
-
-    MechanismLigament2d simUpperArm;
 
     @BeforeEach
     public void beforeEach() {
@@ -29,10 +26,8 @@ class ArmControlTest {
         lowerJoint1 = mock(IMotorController.class);
         upperJoint = mock(IMotorController.class);
         debuggable = mock(Debuggable.class);
-        simLowerArm = mock(MechanismLigament2d.class);
-        simUpperArm = mock(MechanismLigament2d.class);
 
-        control = new ArmControl(lowerJoint, lowerJoint1, upperJoint, debuggable, simLowerArm, simUpperArm);
+        control = new ArmControl(lowerJoint, lowerJoint1, upperJoint, debuggable);
     }
 
 
