@@ -119,7 +119,8 @@ public class ArmControl {
 
         //finding NaN errors
         if (isReachable(lowerAngle_degrees, upperAngle_degrees)) {
-            lowerJoint.moveToPosition_mechanismRotations(convertDegreesToRotation(lowerAngle_degrees));
+            lowerJoint1.moveToPosition_mechanismRotations(convertDegreesToRotation(lowerAngle_degrees));
+            lowerJoint2.moveToPosition_mechanismRotations(convertDegreesToRotation(lowerAngle_degrees));
             upperJoint.moveToPosition_mechanismRotations(convertDegreesToRotation(upperAngle_degrees));
 
         }
@@ -136,7 +137,8 @@ public class ArmControl {
 
         //finding NaN errors
         if (isReachable(lowerAngle_degrees, upperAngle_degrees)) {
-            lowerJoint.moveToPosition_mechanismRotations(convertDegreesToRotation(lowerAngle_degrees));
+            lowerJoint1.moveToPosition_mechanismRotations(convertDegreesToRotation(lowerAngle_degrees));
+            lowerJoint2.moveToPosition_mechanismRotations(convertDegreesToRotation(lowerAngle_degrees));
             upperJoint.moveToPosition_mechanismRotations(convertDegreesToRotation(upperAngle_degrees));
         }
 
@@ -154,7 +156,8 @@ public class ArmControl {
 
         //finding NaN errors
         if (isReachable(lowerAngle_degrees, upperAngle_degrees)) {
-            lowerJoint.moveToPosition_mechanismRotations(convertDegreesToRotation(lowerAngle_degrees));
+            lowerJoint1.moveToPosition_mechanismRotations(convertDegreesToRotation(lowerAngle_degrees));
+            lowerJoint2.moveToPosition_mechanismRotations(convertDegreesToRotation(lowerAngle_degrees));
             upperJoint.moveToPosition_mechanismRotations(convertDegreesToRotation(upperAngle_degrees));
         }
     }
@@ -169,7 +172,8 @@ public class ArmControl {
 
         //finding NaN errors
         if (isReachable(lowerAngle_degrees, upperAngle_degrees)) {
-            lowerJoint.moveToPosition_mechanismRotations(convertDegreesToRotation(lowerAngle_degrees));
+            lowerJoint1.moveToPosition_mechanismRotations(convertDegreesToRotation(lowerAngle_degrees));
+            lowerJoint2.moveToPosition_mechanismRotations(convertDegreesToRotation(lowerAngle_degrees));
             upperJoint.moveToPosition_mechanismRotations(convertDegreesToRotation(upperAngle_degrees));
         }
 
@@ -198,7 +202,8 @@ public class ArmControl {
 
         //finding NaN errors
         if (isReachable(lowerAngle_degrees, upperAngle_degrees)) {
-            lowerJoint.moveToPosition_mechanismRotations(convertDegreesToRotation(lowerAngle_degrees));
+            lowerJoint1.moveToPosition_mechanismRotations(convertDegreesToRotation(lowerAngle_degrees));
+            lowerJoint2.moveToPosition_mechanismRotations(convertDegreesToRotation(lowerAngle_degrees));
             upperJoint.moveToPosition_mechanismRotations(convertDegreesToRotation(upperAngle_degrees));
         }
 
@@ -214,7 +219,8 @@ public class ArmControl {
 
         //finding NaN errors
         if (isReachable(lowerAngle_degrees, upperAngle_degrees)) {
-            lowerJoint.moveToPosition_mechanismRotations(convertDegreesToRotation(lowerAngle_degrees));
+            lowerJoint1.moveToPosition_mechanismRotations(convertDegreesToRotation(lowerAngle_degrees));
+            lowerJoint2.moveToPosition_mechanismRotations(convertDegreesToRotation(lowerAngle_degrees));
             upperJoint.moveToPosition_mechanismRotations(convertDegreesToRotation(upperAngle_degrees));
         }
     }
