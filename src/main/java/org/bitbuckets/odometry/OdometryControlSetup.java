@@ -48,7 +48,7 @@ public class OdometryControlSetup implements ISetup<IOdometryControl> {
         initializePidgeon.markProcessing();
         WPI_Pigeon2 pigeonIMU = new WPI_Pigeon2(pidgeonId);
         pigeonIMU.configFactoryDefault();
-        pigeonIMU.configMountPose(Pigeon2.AxisDirection.PositiveY, Pigeon2.AxisDirection.PositiveZ);
+        pigeonIMU.configMountPose(Pigeon2.AxisDirection.NegativeX, Pigeon2.AxisDirection.PositiveZ);
         initializePidgeon.markCompleted();
 
         Debuggable debug = self.generateDebugger();
