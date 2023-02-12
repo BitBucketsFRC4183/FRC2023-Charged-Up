@@ -15,15 +15,20 @@ public interface ArmConstants {
     double LOWER_ARM_GEAR_RATIO = 1.0 / ((5.0 * 4.0 * 3.0) * (12. / 26.)); // encoder rotations to mechanism rotations; 130 encoder rotations = 1 mechanism rotation
     double UPPER_ARM_GEAR_RATIO = 1.0 / ((5.0 * 4.0 * 3.0) * (12. / 30.)); // encoder rotations to mechanism rotations; 130 encoder rotations = 1 mechanism rotation
 
-    MotorConfig LOWER_CONFIG = new MotorConfig(ArmConstants.LOWER_ARM_GEAR_RATIO, 1, 1, false, true, 20.0, false, false, Optional.empty());
-    MotorConfig LOWER_CONFIG1 = new MotorConfig(ArmConstants.LOWER_ARM_GEAR_RATIO, 1, 1, true, true, 20.0, false, false, Optional.empty());
+    MotorConfig LOWER_CONFIG1 = new MotorConfig(ArmConstants.LOWER_ARM_GEAR_RATIO, 1, 1, false, true, 20.0, false, false, Optional.empty());
+    MotorConfig LOWER_CONFIG2 = new MotorConfig(ArmConstants.LOWER_ARM_GEAR_RATIO, 1, 1, true, true, 20.0, false, false, Optional.empty());
     MotorConfig UPPER_CONFIG = new MotorConfig(ArmConstants.UPPER_ARM_GEAR_RATIO, 1, 1, true, true, 20.0, false, false, Optional.empty());
 
-    PIDConfig LOWER_PID = new PIDConfig(0, 0, 0, 0);
-    PIDConfig UPPER_PID = new PIDConfig(0, 0, 0, 0);
+    PIDConfig LOWER_PID = new PIDConfig(0.3, 0, 0, 0);
+    PIDConfig UPPER_PID = new PIDConfig(0.3, 0, 0, 0);
     //change these
-    double LOWER_JOINT_LENGTH = 0.695;
-    double UPPER_JOINT_LENGTH = 0.84;
+    double LOWER_JOINT_LENGTH = 0.6605;
+    double UPPER_JOINT_LENGTH = 0.6731;
+    double UPPER_JOINT_WIDTH = 0.0254; //mainly for arm sim
+    double LOWER_JOINT_WIDTH = 0.0508; //mainly for arm sim
+
+    // will most likely change
+    double GRABBER_LENGTH = 0.1524;
 
 
     // Feel free to change to make arms faster/slower for input
