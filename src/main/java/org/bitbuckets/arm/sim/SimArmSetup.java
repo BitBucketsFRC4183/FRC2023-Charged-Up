@@ -41,8 +41,8 @@ public class SimArmSetup implements ISetup<IMotorController> {
                 1.0 / config.encoderToMechanismCoefficient * 10.0, //TODO fix this dumb hack
                 estimateMOI(armConfig.lengthMeters, armConfig.armMass),
                 armConfig.lengthMeters,
-                Math.toRadians(armConfig.armMinAngle),
-                Math.toRadians(armConfig.armMaxAngle),
+                armConfig.armMinAngle,
+                armConfig.armMaxAngle,
                 armConfig.armMass,
                 armConfig.isGravitySimulated,
                 VecBuilder.fill(0.001)

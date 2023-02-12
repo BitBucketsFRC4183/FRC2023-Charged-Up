@@ -17,7 +17,7 @@ public class SimArm implements IMotorController {
     final SingleJointedArmSim sim;
     final PIDController armPositionPid;
 
-    double setpoint_encoderRadians = 0;
+    double setpoint_encoderRot = 0;
 
     public SimArm(Debuggable debuggable, MechanismLigament2d ligament2d, MotorConfig motorConfig, SingleJointedArmSim sim, PIDController armPositionPid) {
         this.debuggable = debuggable;
@@ -79,12 +79,15 @@ public class SimArm implements IMotorController {
 
     @Override
     public void moveToPosition(double position_encoderRotations) {
-        setpoint_encoderRadians = position_encoderRotations * 2.0 * Math.PI;
-        cachedInputVoltage = armPositionPid.calculate(setpoint_encoderRadians);
+        debuggable.log("move-to-position", position_encoderRotations);
+
+        cachedInputVoltage = armPositionPid.calculate(position_encoderRotations);
     }
 
     @Override
     public void moveToPosition_mechanismRotations(double position_mechanismRotations) {
+        debuggable.log("move-to-mech", position_mechanismRotations);
+
         moveToPosition(position_mechanismRotations / ArmConstants.LOWER_ARM_GEAR_RATIO);
     }
 
@@ -95,7 +98,7 @@ public class SimArm implements IMotorController {
 
     @Override
     public double getSetpoint_mechanismRotations() {
-        return setpoint_encoderRadians;
+        return setpoint_encoderRot * (motorConfig.encoderToMechanismCoefficient);
     }
 
     @Override
@@ -113,6 +116,7 @@ public class SimArm implements IMotorController {
 
         debuggable.log("voltage", cachedInputVoltage);
         debuggable.log("nextAngle", deg);
+        debuggable.log("error", this.getError_mechanismRotations());
 
         sim.getCurrentDrawAmps();
 

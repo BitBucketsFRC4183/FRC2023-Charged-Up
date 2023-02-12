@@ -66,19 +66,21 @@ public interface ArmConstants {
     PIDConfig LOWER_SIMPID = new PIDConfig(0.3, 0, 0, 0);
     PIDConfig UPPER_SIMPID = new PIDConfig(0.3, 0, 0, 0);
 
+    double SIM_OFFSET = 0.25;
+
     ArmConfig LOWER_ARM = new ArmConfig(
             Units.inchesToMeters(27),
             4,
-            Units.rotationsToDegrees(LOWER_ARM_FORWARD_LIMIT_MECHANISM),
-            Units.rotationsToDegrees(LOWER_ARM_REVERSE_LIMIT_MECHANISM),
+            Units.rotationsToRadians(LOWER_ARM_FORWARD_LIMIT_MECHANISM),
+            Units.rotationsToRadians(LOWER_ARM_REVERSE_LIMIT_MECHANISM),
             true
     );
 
     ArmConfig UPPER_ARM = new ArmConfig(
             Units.inchesToMeters(38.5),
             10,
-            Units.rotationsToDegrees(UPPER_ARM_FORWARD_LIMIT_MECHANISM),
-            Units.rotationsToDegrees(UPPER_ARM_REVERSE_LIMIT_MECHANISM),
+            Units.rotationsToRadians(UPPER_ARM_FORWARD_LIMIT_MECHANISM),
+            Units.rotationsToRadians(UPPER_ARM_REVERSE_LIMIT_MECHANISM),
             false
     );
 
