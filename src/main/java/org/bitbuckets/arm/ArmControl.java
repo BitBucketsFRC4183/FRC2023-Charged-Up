@@ -9,8 +9,8 @@ import org.bitbuckets.lib.log.Debuggable;
 public class ArmControl {
 
 
-    final IMotorController lowerJoint;
     final IMotorController lowerJoint1;
+    final IMotorController lowerJoint2;
     final IMotorController upperJoint;
     final Debuggable debuggable;
 
@@ -22,9 +22,9 @@ public class ArmControl {
 
     // How do set up IMotorController and IEncoder so that lowerJoint == lowerEncoder
 
-    public ArmControl(IMotorController lowerJoint, IMotorController lowerJoint1, IMotorController upperJoint, Debuggable debuggable) {
-        this.lowerJoint = lowerJoint;
+    public ArmControl(IMotorController lowerJoint1, IMotorController lowerJoint2, IMotorController upperJoint, Debuggable debuggable, MechanismLigament2d simLower, MechanismLigament2d simUpper) {
         this.lowerJoint1 = lowerJoint1;
+        this.lowerJoint2 = lowerJoint2;
         this.upperJoint = upperJoint;
         this.debuggable = debuggable;
         this.simLower = simLower;
@@ -41,8 +41,8 @@ public class ArmControl {
     }
 
     public void calibrateLowerArm() {
-        lowerJoint.forceOffset(convertMechanismRotationtoRawRotation_lowerJoint(convertDegreesToRotation(0)));
         lowerJoint1.forceOffset(convertMechanismRotationtoRawRotation_lowerJoint(convertDegreesToRotation(0)));
+        lowerJoint2.forceOffset(convertMechanismRotationtoRawRotation_lowerJoint(convertDegreesToRotation(0)));
     }
 
     public void calibrateUpperArm() {
@@ -54,7 +54,10 @@ public class ArmControl {
 //        double lowerRotation = gearRatio * percentOutput / 360;
 //        lowerJoint.getPIDController().setReference(lowerRotation, CANSparkMax.ControlType.kPosition);
         //test if lower arm moves with outputs
-        lowerJoint.moveAtPercent(percentOutput * ArmConstants.CONTROL_JOINT_OUTPUT);
+        lowerJoint1.moveAtPercent(percentOutput * ArmConstants.CONTROL_JOINT_OUTPUT);
+        lowerJoint2.moveAtPercent(percentOutput * ArmConstants.CONTROL_JOINT_OUTPUT);
+        lowerAngle = lowerAngle + percentOutput;
+
     }
 
 
@@ -90,19 +93,21 @@ public class ArmControl {
 
     // may change delta later
     public boolean isErrorSmallEnough(double delta) {
-        return lowerJoint.getError_mechanismRotations() < delta && upperJoint.getError_mechanismRotations() < delta;
+        return lowerJoint1.getError_mechanismRotations() < delta && upperJoint.getError_mechanismRotations() < delta;
     }
 
 
     // Make sure to change/tune lowerAngle_degrees and upperAngle_degrees for each position
     public void stopArmMotors() {
-        lowerJoint.moveAtPercent(0);
+        lowerJoint1.moveAtPercent(0);
+        lowerJoint2.moveAtPercent(0);
         upperJoint.moveAtPercent(0);
     }
 
     public void goToCalibrationPosition() {
 
-        lowerJoint.moveToPosition_mechanismRotations(0);
+        lowerJoint1.moveToPosition_mechanismRotations(0);
+        lowerJoint2.moveToPosition_mechanismRotations(0);
         upperJoint.moveToPosition_mechanismRotations(0);
     }
 
