@@ -47,12 +47,13 @@ public class VisionControlSetup implements ISetup<IVisionControl> {
 
 
         //TODO find the offset from robot to camera
+        //TODO change cam names
         Transform3d robotToCamera = new Transform3d(new Translation3d(Units.inchesToMeters(13), 0, Units.inchesToMeters(11.5)), new Rotation3d());
-        PhotonCamera photonCamera = new PhotonCamera("Arducam_OV9281_USB_Camera");
-        PhotonPoseEstimator photonPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PhotonPoseEstimator.PoseStrategy.LOWEST_AMBIGUITY, photonCamera, robotToCamera);
+        PhotonCamera photonCameraFront = new PhotonCamera("Arducam_OV9281_USB_Camera");
+        PhotonPoseEstimator photonPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PhotonPoseEstimator.PoseStrategy.LOWEST_AMBIGUITY, photonCameraFront, robotToCamera);
         Debuggable debuggable = self.generateDebugger();
 
-        VisionControl control = new VisionControl(robotToCamera, aprilTagFieldLayout, photonPoseEstimator, photonCamera, debuggable);
+        VisionControl control = new VisionControl(robotToCamera, aprilTagFieldLayout, photonPoseEstimator, photonCameraFront, debuggable);
 
         self.registerLogLoop(control::logLoop);
 

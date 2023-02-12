@@ -1,7 +1,6 @@
 package org.bitbuckets.drive;
 
 import com.pathplanner.lib.PathPlannerTrajectory;
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -16,7 +15,6 @@ import org.bitbuckets.lib.log.Debuggable;
 import org.bitbuckets.lib.tune.IValueTuner;
 import org.bitbuckets.odometry.IOdometryControl;
 import org.bitbuckets.vision.IVisionControl;
-
 import java.util.Optional;
 
 
@@ -146,6 +144,8 @@ public class DriveSubsystem {
         }
         else {
             ChassisSpeeds speeds = new ChassisSpeeds(0, 0, 0);
+
+            driveControl.drive(speeds);
         }
 
 
@@ -192,7 +192,7 @@ public class DriveSubsystem {
 
     void teleopBalancing() {
         ChassisSpeeds align = holoControl.chargeStationAlign(
-
+                
         )
 
         //This is bad and should be shifted somewhere else

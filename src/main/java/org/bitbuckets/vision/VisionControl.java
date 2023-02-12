@@ -67,6 +67,7 @@ public class VisionControl implements IVisionControl {
         PhotonPipelineResult result = photonCamera.getLatestResult();
 
         boolean isTargetTrue = result.hasTargets();
+
         if (!result.hasTargets()) return Optional.empty();
         PhotonTrackedTarget aprilTagTarget = result.getBestTarget();
 
@@ -75,6 +76,7 @@ public class VisionControl implements IVisionControl {
 
         debuggable.log("tag-id", tagID);
         debuggable.log("transform-to-tag-from-origin", new Pose3d().transformBy(transformToTag));
+        debuggable.log("cam-sees-a-tag", isTargetTrue);
 
 
 
