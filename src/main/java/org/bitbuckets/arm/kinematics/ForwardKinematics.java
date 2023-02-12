@@ -27,7 +27,7 @@ public class ForwardKinematics {
         */
         double x = z * Math.cos(theta1 - beta);
 
-        return z;
+        return x;
     }
 
 

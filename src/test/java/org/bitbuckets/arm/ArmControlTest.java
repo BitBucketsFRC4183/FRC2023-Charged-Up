@@ -106,15 +106,19 @@ class ArmControlTest {
         verify(upperJoint).moveToPosition_mechanismRotations(anyDouble());
     }
 
+
     @Test
     void isReachable() {
-        //double lowerAngle = new InverseKinematics(5, 0).getLowerJoint_degrees();
-        //double upperAngle = new InverseKinematics(5, 0).getUpperJoint_degrees();
-        assertTrue(control.isReachable(90, 90));
 
+        double lowerDegrees = new InverseKinematics(.5, .5).getLowerJoint_degrees();
+        double upperDegrees = new InverseKinematics(.5, .5).getUpperJoint_degrees();
+
+        assertTrue(control.isReachable(lowerDegrees, upperDegrees));
+        //assertFalse(control.isReachable(0, Double.NaN));
+        //assertFalse(control.isReachable(0, Double.NaN));
+        //assertFalse(control.isReachable(Double.NaN, Double.NaN));
 
 
     }
-
 
 }

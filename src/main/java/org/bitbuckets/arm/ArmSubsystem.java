@@ -64,7 +64,13 @@ public class ArmSubsystem {
                 }
                 break;
 
+            //if C is pressed in sim (on keyboard)
             case STORAGE:
+
+                //if X is pressed in sim (on keyboard)
+                if (armInput.isStopPidPressed()) {
+                    state = ArmFSM.MANUAL;
+                }
                 armControl.storeArm();
                 if (armControl.isErrorSmallEnough(0.0069)) {
                     state = ArmFSM.MANUAL;
