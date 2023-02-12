@@ -17,7 +17,7 @@ public class SimArm implements IMotorController {
     final SingleJointedArmSim sim;
     final PIDController armPositionPid;
 
-    double setpoint_encoderRot = 0;
+    double setpoint_encoderRads = 0;
 
     public SimArm(Debuggable debuggable, MechanismLigament2d ligament2d, MotorConfig motorConfig, SingleJointedArmSim sim, PIDController armPositionPid) {
         this.debuggable = debuggable;
@@ -25,6 +25,7 @@ public class SimArm implements IMotorController {
         this.motorConfig = motorConfig;
         this.sim = sim;
         this.armPositionPid = armPositionPid;
+        //armPositionPid.enableContinuousInput(-1.0, 1.0);
     }
 
     @Override
@@ -79,14 +80,15 @@ public class SimArm implements IMotorController {
 
     @Override
     public void moveToPosition(double setpoint_encoderRotations) {
-        debuggable.log("move-to-position", setpoint_encoderRotations);
+        this.setpoint_encoderRads = setpoint_encoderRotations * 2.0 * Math.PI;
+        //debuggable.log("move-to-position", setpoint_encoderRotations);
 
-        cachedInputVoltage = armPositionPid.calculate(getEncoderPositionAccumulated_rot(),setpoint_encoderRotations);
+        cachedInputVoltage = armPositionPid.calculate( sim.getAngleRads() ) * 12.0;
     }
 
     @Override
     public void moveToPosition_mechanismRotations(double position_mechanismRotations) {
-        debuggable.log("move-to-mech", position_mechanismRotations);
+        //debuggable.log("move-to-mech", position_mechanismRotations);
 
         moveToPosition(position_mechanismRotations / ArmConstants.LOWER_ARM_GEAR_RATIO);
     }
@@ -98,7 +100,7 @@ public class SimArm implements IMotorController {
 
     @Override
     public double getSetpoint_mechanismRotations() {
-        return setpoint_encoderRot * (motorConfig.encoderToMechanismCoefficient);
+        return setpoint_encoderRads * (motorConfig.encoderToMechanismCoefficient);
     }
 
     @Override
