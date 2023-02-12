@@ -1,6 +1,7 @@
 package org.bitbuckets.drive;
 
 import com.pathplanner.lib.PathPlannerTrajectory;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -139,7 +140,7 @@ public class DriveSubsystem {
     }
 
     void teleopVision() {
-        if (visionTarget.isPresent()) {ChassisSpeeds speeds = holoControl.calculatePose2D(visionTarget.get().toPose2d(), 1, visionTarget.get().toPose2d().getRotation() );
+        if (visionTarget.isPresent()) {ChassisSpeeds speeds = holoControl.chaseTag(visionTarget.get().toPose2d(), 1, visionTarget.get().toPose2d().getRotation() );
 
             driveControl.drive(speeds);
         }
@@ -190,6 +191,9 @@ public class DriveSubsystem {
     }
 
     void teleopBalancing() {
+        ChassisSpeeds align = holoControl.chargeStationAlign(
+
+        )
 
         //This is bad and should be shifted somewhere else
         double BalanceDeadband_deg = Preferences.getDouble(DriveConstants.autoBalanceDeadbandDegKey, DriveConstants.BalanceDeadbandDeg);
@@ -202,6 +206,7 @@ public class DriveSubsystem {
             debuggable.log("degree-off-engaged", error);
         } else {
             driveControl.stopSticky();
+            
 
         }
 

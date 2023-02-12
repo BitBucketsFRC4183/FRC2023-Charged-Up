@@ -1,13 +1,10 @@
 package org.bitbuckets.drive.holo;
 
 import edu.wpi.first.math.controller.HolonomicDriveController;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import org.bitbuckets.drive.controlsds.DriveControl;
 import org.bitbuckets.lib.log.Debuggable;
 import org.bitbuckets.odometry.IOdometryControl;
@@ -37,7 +34,7 @@ public class HoloControl {
     /**
      * @param target setpoint global
      */
-    public ChassisSpeeds calculatePose2D(Pose2d target, double desiredVelocity, Rotation2d desiredRotation) {
+    public ChassisSpeeds chaseTag(Pose2d target, double desiredVelocity, Rotation2d desiredRotation) {
 
 
         var speed = controller.calculate(
@@ -64,6 +61,15 @@ public class HoloControl {
         debuggable.log("x-movement", speed.vxMetersPerSecond);
         debuggable.log("y-movement", speed.vyMetersPerSecond);
     return speed;
+    }
+
+    public ChassisSpeeds chargeStationAlign(Pose2d startpoint, double desiredVelocity, Rotation2d startPosition) {
+        return controller.calculate(
+                odometryControl.estimateFusedPose2d(),
+                startpoint,
+                desiredVelocity,
+                startPosition
+        );
     }
 
     public ChassisSpeeds calculatePose2DFromState(Trajectory.State state) {
