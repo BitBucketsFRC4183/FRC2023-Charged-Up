@@ -1,21 +1,27 @@
 package org.bitbuckets.arm.sim;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import org.bitbuckets.arm.ArmConstants;
-import org.bitbuckets.lib.control.PIDCalculator;
 import org.bitbuckets.lib.hardware.IMotorController;
 import org.bitbuckets.lib.hardware.MotorConfig;
+import org.bitbuckets.lib.log.Debuggable;
 
 public class SimArm implements IMotorController {
 
+    final Debuggable debuggable;
+    final MechanismLigament2d ligament2d;
     final MotorConfig motorConfig;
     final SingleJointedArmSim sim;
     final PIDController armPositionPid;
 
     double setpoint_encoderRadians = 0;
 
-    public SimArm(MotorConfig motorConfig, SingleJointedArmSim sim, PIDController armPositionPid) {
+    public SimArm(Debuggable debuggable, MechanismLigament2d ligament2d, MotorConfig motorConfig, SingleJointedArmSim sim, PIDController armPositionPid) {
+        this.debuggable = debuggable;
+        this.ligament2d = ligament2d;
         this.motorConfig = motorConfig;
         this.sim = sim;
         this.armPositionPid = armPositionPid;
@@ -63,21 +69,18 @@ public class SimArm implements IMotorController {
 
     @Override
     public void moveAtVoltage(double voltage) {
-        sim.setInputVoltage(voltage);
+        cachedInputVoltage = voltage;
     }
 
     @Override
     public void moveAtPercent(double percent) {
-        sim.setInputVoltage(percent * 12.0);
+        cachedInputVoltage = percent * 12.0;
     }
 
     @Override
     public void moveToPosition(double position_encoderRotations) {
         setpoint_encoderRadians = position_encoderRotations * 2.0 * Math.PI;
-        double voltage = armPositionPid.calculate(setpoint_encoderRadians);
-
-
-        sim.setInputVoltage(voltage);
+        cachedInputVoltage = armPositionPid.calculate(setpoint_encoderRadians);
     }
 
     @Override
@@ -98,5 +101,19 @@ public class SimArm implements IMotorController {
     @Override
     public <T> T rawAccess(Class<T> clazz) throws UnsupportedOperationException {
         throw new UnsupportedOperationException("bad");
+    }
+
+    double cachedInputVoltage = 0;
+
+    public void runSimulationLoop() {
+        sim.setInputVoltage(cachedInputVoltage);
+        sim.update(0.02);
+
+        double deg = Units.radiansToDegrees(sim.getAngleRads());
+
+        debuggable.log("voltage", cachedInputVoltage);
+        debuggable.log("nextAngle", deg);
+
+        ligament2d.setAngle( deg  );
     }
 }

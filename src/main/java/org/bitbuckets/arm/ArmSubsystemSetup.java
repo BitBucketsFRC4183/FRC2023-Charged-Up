@@ -1,10 +1,13 @@
 package org.bitbuckets.arm;
 
-import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
+import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj.util.Color8Bit;
 import org.bitbuckets.arm.sim.ArmConfig;
-import org.bitbuckets.arm.sim.SimArm;
 import org.bitbuckets.arm.sim.SimArmSetup;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
@@ -32,14 +35,38 @@ public class ArmSubsystemSetup implements ISetup<ArmSubsystem> {
         ISetup<IMotorController> upperArm;
 
         if (self.isReal()) {
-            lowerArm1 = new SparkSetup(9, ArmConstants.LOWER_CONFIG1, ArmConstants.LOWER_PID);
-            lowerArm2 = new SparkSetup(11, ArmConstants.LOWER_CONFIG2, ArmConstants.LOWER_PID);
+            lowerArm1 = new SparkSetup(9, ArmConstants.LOWER_CONFIG, ArmConstants.LOWER_PID);
+            lowerArm2 = new SparkSetup(11, ArmConstants.LOWER_CONFIG, ArmConstants.LOWER_PID);
             upperArm = new SparkSetup(10, ArmConstants.UPPER_CONFIG, ArmConstants.UPPER_PID);
 
         } else {
-            lowerArm1 = new SimArmSetup(ArmConstants.LOWER_CONFIG1, new ArmConfig(ArmConstants.LOWER_JOINT_LENGTH, 1, 1, 1,true), ArmConstants.LOWER_PID);
-            lowerArm2 = new SimArmSetup(ArmConstants.LOWER_CONFIG2, new ArmConfig(ArmConstants.LOWER_JOINT_LENGTH, 1, 1, 1,true), ArmConstants.LOWER_PID);
-            upperArm = new SimArmSetup(ArmConstants.UPPER_CONFIG, new ArmConfig(ArmConstants.UPPER_JOINT_LENGTH, 1, 1, 1,true), ArmConstants.UPPER_PID);
+
+            Mechanism2d mech = new Mechanism2d(3, 3);
+            // the mechanism root node
+            MechanismRoot2d root = mech.getRoot("base", 1.5, 0);
+
+            MechanismLigament2d simLower = root.append(new MechanismLigament2d("lower-arm-sim", ArmConstants.LOWER_JOINT_LENGTH, 90, ArmConstants.LOWER_JOINT_WIDTH * 300, new Color8Bit(Color.kWhite)));
+            MechanismLigament2d simUpper  =
+                    simLower.append(
+                            new MechanismLigament2d("upper-arm-sim", ArmConstants.UPPER_JOINT_LENGTH + ArmConstants.GRABBER_LENGTH, 90, ArmConstants.UPPER_JOINT_WIDTH * 300, new Color8Bit(Color.kPurple)));
+
+
+            SmartDashboard.putData("sim-arm",mech);
+
+            lowerArm1 = new SimArmSetup(
+                    ArmConstants.LOWER_CONFIG,
+                    ArmConstants.LOWER_ARM,
+                    ArmConstants.LOWER_SIMPID,
+                    simLower
+            );
+
+            lowerArm2 = MockingUtil.noops(IMotorController.class);
+            upperArm = new SimArmSetup(
+                    ArmConstants.UPPER_CONFIG,
+                    ArmConstants.UPPER_ARM,
+                    ArmConstants.UPPER_SIMPID,
+                    simUpper
+            );
 
         }
 

@@ -22,10 +22,6 @@ public class ArmControlSetup implements ISetup<ArmControl> {
     final ISetup<IMotorController> lowerJoint2;
     final ISetup<IMotorController> upperJoint;
 
-    private MechanismLigament2d simLower;
-    private MechanismLigament2d simUpper;
-
-
     public ArmControlSetup(ISetup<IMotorController> lowerJoint1, ISetup<IMotorController> lowerJoint2, ISetup<IMotorController> upperJoint) {
         this.lowerJoint1 = lowerJoint1;
         this.lowerJoint2 = lowerJoint2;
@@ -40,16 +36,6 @@ public class ArmControlSetup implements ISetup<ArmControl> {
         var lower1 = lowerJoint1.build(self.addChild("lower-joint-1"));
         var lower2 = lowerJoint2.build(self.addChild("lower-joint-2"));
         var upper = upperJoint.build(self.addChild("upper-joint"));
-
-        Mechanism2d mech = new Mechanism2d(3, 3);
-        // the mechanism root node
-        MechanismRoot2d root = mech.getRoot("base", 1.5, 0);
-
-        simLower = root.append(new MechanismLigament2d("lower-arm-sim", ArmConstants.LOWER_JOINT_LENGTH, 90, ArmConstants.LOWER_JOINT_WIDTH * 690, new Color8Bit(Color.kWhite)));
-        simUpper  =
-                simLower.append(
-                        new MechanismLigament2d("upper-arm-sim", ArmConstants.UPPER_JOINT_LENGTH + ArmConstants.GRABBER_LENGTH, 90, ArmConstants.UPPER_JOINT_WIDTH * 690, new Color8Bit(Color.kPurple)));
-
 
         if (self.isReal())
         {
@@ -76,10 +62,6 @@ public class ArmControlSetup implements ISetup<ArmControl> {
             upperSpark.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, (float) 25.0);
             upperSpark.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, (float) -90.0);
 
-
-
-
-
             lowerSpark1.follow(lowerSpark2);
         }
 
@@ -89,10 +71,7 @@ public class ArmControlSetup implements ISetup<ArmControl> {
                 lower1,
                 lower2,
                 upper,
-                debug,
-                simLower,
-                simUpper
-
+                debug
         );
     }
 

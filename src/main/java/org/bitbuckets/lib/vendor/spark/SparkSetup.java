@@ -74,13 +74,13 @@ public class SparkSetup implements ISetup<IMotorController> {
         SparkMaxLimitSwitch forwardSwitch = null;
         SparkMaxLimitSwitch reverseSwitch = null;
 
-        if (motorConfig.isForwardLimitEnabled) {
+        if (motorConfig.isForwardHardLimitEnabled) {
             motorStartup.sendInfo("using forward limit switch!");
             forwardSwitch = spark.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
             forwardSwitch.enableLimitSwitch(true);
         }
 
-        if (motorConfig.isBackwardLimitEnabled) {
+        if (motorConfig.isBackwardHardLimitEnabled) {
             motorStartup.sendInfo("using backward limit switch!");
             reverseSwitch = spark.getReverseLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
             reverseSwitch.enableLimitSwitch(true);
