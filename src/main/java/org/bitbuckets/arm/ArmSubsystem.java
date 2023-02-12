@@ -29,6 +29,7 @@ public class ArmSubsystem {
 
     public void teleopPeriodic() {
 
+        armControl.setArmMech2d();
         if (armInput.isCalibratedPressed()) {
             armControl.calibrateLowerArm();
             armControl.calibrateUpperArm();
@@ -66,7 +67,6 @@ public class ArmSubsystem {
 
             case STORAGE:
                 armControl.storeArm();
-<<<<<<< HEAD
                 if (armControl.isErrorSmallEnough(0.0069)) {
                     state = ArmFSM.MANUAL;
                 }
@@ -74,7 +74,6 @@ public class ArmSubsystem {
 
             case PREPARE:
                 armControl.prepareArm();
-<<<<<<< HEAD
                 if (armControl.isErrorSmallEnough(0.0069)){
                     state = nextState;
                 }
@@ -96,23 +95,14 @@ public class ArmSubsystem {
 
             case SCORE_MID:
                 armControl.scoreMid();
-<<<<<<< HEAD
-                if (armControl.isErrorSmallEnough(0.0069))
-                {
-=======
-                if (armControl.isErrorSmallEnough(3.69)) {
->>>>>>> main
+                if (armControl.isErrorSmallEnough(0.0069)){
                     state = ArmFSM.MANUAL;
                 }
                 break;
 
             case SCORE_HIGH:
                 armControl.scoreHigh();
-<<<<<<< HEAD
                 if (armControl.isErrorSmallEnough(0.0069)){
-=======
-                if (armControl.isErrorSmallEnough(3.69)) {
->>>>>>> main
                     state = ArmFSM.MANUAL;
                 }
                 break;

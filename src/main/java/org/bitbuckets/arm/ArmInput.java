@@ -75,7 +75,7 @@ Right Joystick to control upper joint on arm
 
     public double getUpperArm_PercentOutput() {
 
-        return armDeadband(operatorControl.getRawAxis(XboxController.Axis.kRightY.value));
+        return -armDeadband(operatorControl.getRawAxis(XboxController.Axis.kRightY.value));
     }
 
     //for picking up cones

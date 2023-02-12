@@ -1,5 +1,6 @@
 package org.bitbuckets.arm;
 
+import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import org.bitbuckets.arm.kinematics.InverseKinematics;
 import org.bitbuckets.lib.hardware.IMotorController;
 import org.bitbuckets.lib.log.Debuggable;
@@ -13,6 +14,11 @@ public class ArmControl {
     final IMotorController upperJoint;
     final Debuggable debuggable;
 
+    double upperAngle = 0;
+    double lowerAngle = 0;
+
+    final MechanismLigament2d simLower;
+    final MechanismLigament2d simUpper;
 
     // How do set up IMotorController and IEncoder so that lowerJoint == lowerEncoder
 
@@ -21,6 +27,17 @@ public class ArmControl {
         this.lowerJoint1 = lowerJoint1;
         this.upperJoint = upperJoint;
         this.debuggable = debuggable;
+        this.simLower = simLower;
+        this.simUpper = simUpper;
+    }
+
+    public void setArmMech2d() {
+        //straight up on right trigger is the lower arm going to the left
+        //straight up on left trigger is the upper arm going to the right
+        simLower.setAngle(90 - Math.toDegrees(lowerJoint1.getMechanismPositionAccum_rot() * 2.0 * Math.PI)+upperAngle);
+        simUpper.setAngle(90 - Math.toDegrees(lowerJoint1.getMechanismPositionAccum_rot() * 2.0 * Math.PI)+lowerAngle);
+
+
     }
 
     public void calibrateLowerArm() {
@@ -44,6 +61,7 @@ public class ArmControl {
     public void manuallyMoveUpperArm(double percentOutput) {
 
         upperJoint.moveAtPercent(percentOutput * ArmConstants.CONTROL_JOINT_OUTPUT);
+        upperAngle = upperAngle + percentOutput;
     }
 
 

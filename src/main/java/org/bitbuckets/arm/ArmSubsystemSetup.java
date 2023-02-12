@@ -27,26 +27,31 @@ public class ArmSubsystemSetup implements ISetup<ArmSubsystem> {
             return MockingUtil.buddy(ArmSubsystem.class);
         }
 
-        ISetup<IMotorController> lowerArm;
+        ISetup<IMotorController> lowerArm1;
+        ISetup<IMotorController> lowerArm2;
         ISetup<IMotorController> upperArm;
 
         if (self.isReal()) {
-            lowerArm = new SparkSetup(9, ArmConstants.LOWER_CONFIG, ArmConstants.LOWER_PID);
+            lowerArm1 = new SparkSetup(9, ArmConstants.LOWER_CONFIG1, ArmConstants.LOWER_PID);
+            lowerArm2 = new SparkSetup(11, ArmConstants.LOWER_CONFIG2, ArmConstants.LOWER_PID);
             upperArm = new SparkSetup(10, ArmConstants.UPPER_CONFIG, ArmConstants.UPPER_PID);
+
         } else {
-            lowerArm = new SimArmSetup(ArmConstants.LOWER_CONFIG, new ArmConfig(ArmConstants.LOWER_JOINT_LENGTH, 1, 1, 1,true), ArmConstants.LOWER_PID);
+            lowerArm1 = new SimArmSetup(ArmConstants.LOWER_CONFIG1, new ArmConfig(ArmConstants.LOWER_JOINT_LENGTH, 1, 1, 1,true), ArmConstants.LOWER_PID);
+            lowerArm2 = new SimArmSetup(ArmConstants.LOWER_CONFIG2, new ArmConfig(ArmConstants.LOWER_JOINT_LENGTH, 1, 1, 1,true), ArmConstants.LOWER_PID);
             upperArm = new SimArmSetup(ArmConstants.UPPER_CONFIG, new ArmConfig(ArmConstants.UPPER_JOINT_LENGTH, 1, 1, 1,true), ArmConstants.UPPER_PID);
+
         }
 
         ArmControlSetup armControlSetup = new ArmControlSetup(
-                new SparkSetup(11, ArmConstants.LOWER_CONFIG, ArmConstants.LOWER_PID),
-                new SparkSetup(9, ArmConstants.LOWER_CONFIG1, ArmConstants.LOWER_PID),
-                new SparkSetup(10, ArmConstants.UPPER_CONFIG, ArmConstants.UPPER_PID)
+                lowerArm1,
+                lowerArm2,
+                upperArm
         );
 
+        Debuggable debuggable = self.generateDebugger();
         ArmControl armControl = armControlSetup.build(self.addChild("arm-control"));
         ArmInput armInput = new ArmInput(new Joystick(1), self.generateDebugger());
-        Debuggable debuggable = self.generateDebugger();
 
         return new ArmSubsystem(armInput, armControl, debuggable);
 
