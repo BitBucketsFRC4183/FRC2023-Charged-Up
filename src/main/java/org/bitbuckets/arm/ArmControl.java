@@ -73,7 +73,7 @@ public class ArmControl {
 
     // may change delta later
     public boolean isErrorSmallEnough(double delta) {
-        return lowerJoint1.getError_mechanismRotations() < delta && upperJoint.getError_mechanismRotations() < delta;
+        return Math.abs(lowerJoint1.getError_mechanismRotations()) < delta && Math.abs(upperJoint.getError_mechanismRotations()) < delta;
     }
 
 
@@ -133,9 +133,9 @@ public class ArmControl {
 
          */
         if (isReachable(0, 10)) {
-            lowerJoint1.moveToPosition_mechanismRotations(convertDegreesToRotation(0));
-            lowerJoint2.moveToPosition_mechanismRotations(convertDegreesToRotation(0));
-            upperJoint.moveToPosition_mechanismRotations(convertDegreesToRotation(10));
+            lowerJoint1.moveToPosition_mechanismRotations(convertDegreesToRotation(45));
+            lowerJoint2.moveToPosition_mechanismRotations(convertDegreesToRotation(45));
+            upperJoint.moveToPosition_mechanismRotations(convertDegreesToRotation(90));
         }
     }
 

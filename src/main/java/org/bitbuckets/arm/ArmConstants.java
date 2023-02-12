@@ -63,7 +63,7 @@ public interface ArmConstants {
     PIDConfig LOWER_PID = new PIDConfig(0.3, 0, 0, 0);
     PIDConfig UPPER_PID = new PIDConfig(0.3, 0, 0, 0);
 
-    PIDConfig LOWER_SIMPID = new PIDConfig(1.0, 0, 0, 0);
+    PIDConfig LOWER_SIMPID = new PIDConfig(50.0, 0, 0, 0);
     PIDConfig UPPER_SIMPID = new PIDConfig(5.0, 0, 0, 0);
 
     double SIM_OFFSET = 0.25;
