@@ -32,10 +32,6 @@ public class IdentityDriver {
     }
 
     public String fullPath(int id) {
-        return buildPath(id);
-    }
-
-    String buildPath(int id) {
 
         String possible = fullNameCache.get(id);
         if (possible != null) return possible;

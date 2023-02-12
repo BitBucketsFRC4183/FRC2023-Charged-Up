@@ -32,15 +32,10 @@ public class RobotContainer {
     }
 
 
-    int i = 0;
-
     //Shouldn't need to do anything here
     public void teleopPeriodic() {
-        SmartDashboard.putNumber("debugIncrement", ++i);
         elevatorSubsystem.teleopPeriodic();
         armSubsystem.teleopPeriodic();
-
-
     }
 
 
