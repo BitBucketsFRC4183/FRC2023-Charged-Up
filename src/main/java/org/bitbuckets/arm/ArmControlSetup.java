@@ -18,18 +18,18 @@ public class ArmControlSetup implements ISetup<ArmControl> {
 
     // Lower Device ID = 9
     // Upper Device ID = 3
-    final ISetup<IMotorController> lowerJoint;
     final ISetup<IMotorController> lowerJoint1;
+    final ISetup<IMotorController> lowerJoint2;
     final ISetup<IMotorController> upperJoint;
 
     private MechanismLigament2d simLower;
     private MechanismLigament2d simUpper;
 
 
-    public ArmControlSetup(ISetup<IMotorController> lowerJoint, ISetup<IMotorController> lowerJoint1, SparkSetup sparkSetup) {
-        this.lowerJoint = lowerJoint;
+    public ArmControlSetup(ISetup<IMotorController> lowerJoint1, ISetup<IMotorController> lowerJoint2, ISetup<IMotorController> upperJoint) {
         this.lowerJoint1 = lowerJoint1;
-        this.upperJoint = sparkSetup;
+        this.lowerJoint2 = lowerJoint2;
+        this.upperJoint = upperJoint;
 
     }
 
@@ -37,11 +37,26 @@ public class ArmControlSetup implements ISetup<ArmControl> {
     @Override
     public ArmControl build(ProcessPath self) {
 
-        var lower = lowerJoint.build(self.addChild("lower-joint"));
-        var upper = upperJoint.build(self.addChild("upper-joint"));
         var lower1 = lowerJoint1.build(self.addChild("lower-joint-1"));
+        var lower2 = lowerJoint2.build(self.addChild("lower-joint-2"));
+        var upper = upperJoint.build(self.addChild("upper-joint"));
+
+        Mechanism2d mech = new Mechanism2d(3, 3);
+        // the mechanism root node
+        MechanismRoot2d root = mech.getRoot("base", 1.5, 0);
+
+        simLower = root.append(new MechanismLigament2d("lower-arm-sim", ArmConstants.LOWER_JOINT_LENGTH, 90, ArmConstants.LOWER_JOINT_WIDTH * 690, new Color8Bit(Color.kWhite)));
+        simUpper  =
+                simLower.append(
+                        new MechanismLigament2d("upper-arm-sim", ArmConstants.UPPER_JOINT_LENGTH + ArmConstants.GRABBER_LENGTH, 90, ArmConstants.UPPER_JOINT_WIDTH * 690, new Color8Bit(Color.kPurple)));
+
+        // post the mechanism to the dashboard
+        SmartDashboard.putData("Mech2d", mech);
+
+
+
         var lowerSpark1 = lower1.rawAccess(CANSparkMax.class);
-        var lowerSpark = lower.rawAccess(CANSparkMax.class);
+        var lowerSpark2 = lower2.rawAccess(CANSparkMax.class);
         var upperSpark = upper.rawAccess(CANSparkMax.class);
 
         lowerSpark1.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, true);
@@ -72,9 +87,12 @@ public class ArmControlSetup implements ISetup<ArmControl> {
         Debuggable debug = self.generateDebugger();
 
         return new ArmControl(
-                lower,
-                lower1, upper,
-                debug
+                lower1,
+                lower2,
+                upper,
+                debug,
+                simLower,
+                simUpper
 
         );
     }
