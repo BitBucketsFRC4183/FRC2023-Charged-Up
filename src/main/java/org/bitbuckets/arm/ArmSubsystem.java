@@ -1,7 +1,5 @@
 package org.bitbuckets.arm;
 
-import org.bitbuckets.auto.AutoFSM;
-import org.bitbuckets.auto.AutoSubsystem;
 import org.bitbuckets.lib.log.Debuggable;
 
 public class ArmSubsystem {

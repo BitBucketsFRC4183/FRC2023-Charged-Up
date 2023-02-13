@@ -12,7 +12,7 @@ import java.util.function.Consumer;
  *
  * @param <T>
  */
-@Deprecated
+
 public class ValueTuner<T> implements Consumer<NetworkTableEvent>, IValueTuner<T> {
 
     final T defaultValue;
