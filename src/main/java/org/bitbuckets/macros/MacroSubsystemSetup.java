@@ -1,9 +1,6 @@
 package org.bitbuckets.macros;
 
 import edu.wpi.first.wpilibj.Joystick;
-import org.bitbuckets.arm.ArmControl;
-import org.bitbuckets.arm.ArmInput;
-import org.bitbuckets.arm.ArmSubsystem;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.lib.log.Debuggable;

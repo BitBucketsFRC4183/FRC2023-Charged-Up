@@ -1,9 +1,6 @@
 package org.bitbuckets.macros;
 
 import org.bitbuckets.lib.log.Debuggable;
-import org.ejml.equation.Macro;
-
-import javax.crypto.Mac;
 
 public class MacroSubsystem {
 
