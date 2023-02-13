@@ -1,17 +1,17 @@
-package org.bitbuckets.auto;
+package org.bitbuckets.macros;
 
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import org.bitbuckets.lib.log.Debuggable;
 
-public class AutoInput {
+public class MacroInput {
 
     final Joystick operatorControl;
     final Debuggable debug;
 
 
-    public AutoInput(Joystick operatorControl, Debuggable debug) {
+    public MacroInput(Joystick operatorControl, Debuggable debug) {
         this.operatorControl = operatorControl;
         this.debug = debug;
     }
