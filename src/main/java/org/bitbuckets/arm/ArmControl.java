@@ -76,6 +76,9 @@ public class ArmControl {
 
     // may change delta later
     public boolean isErrorSmallEnough(double delta) {
+        debuggable.log("lowerJoint Error", Math.abs(lowerJoint1.getError_mechanismRotations()));
+        debuggable.log("upperJoint Error", Math.abs(Math.abs(upperJoint.getError_mechanismRotations())));
+
         return Math.abs(lowerJoint1.getError_mechanismRotations()) < delta && Math.abs(upperJoint.getError_mechanismRotations()) < delta;
     }
 

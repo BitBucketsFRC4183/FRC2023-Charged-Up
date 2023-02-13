@@ -47,27 +47,6 @@ Right Joystick to control upper joint on arm
         return value;
     }
 
-    public boolean getInputDpadUp() {
-        int pressed = operatorControl.getPOV();
-        return pressed == 0;
-    }
-
-    public boolean getInputDpadDown() {
-        int pressed = operatorControl.getPOV();
-        return pressed == 180;
-    }
-
-    public boolean getInputDpadLeft() {
-        int pressed = operatorControl.getPOV();
-        return pressed == 270;
-    }
-
-    public boolean getInputDpadRight() {
-
-        int pressed = operatorControl.getPOV();
-        return pressed == 90;
-    }
-
     public double getLowerArm_PercentOutput() {
 
         return armDeadband(operatorControl.getRawAxis(XboxController.Axis.kLeftY.value));
@@ -99,21 +78,27 @@ Right Joystick to control upper joint on arm
 
     // checks if operator wants to move arms to intake for human player station (by pressing RIGHT DPAD)
     public boolean isHumanIntakePressed() {
-        return getInputDpadRight();
+        int pressed = operatorControl.getPOV();
+        return pressed == 90;
     }
 
+
+    //controlled by dPad Left
     public boolean isScoreLowPressed() {
-        return getInputDpadLeft();
+        int pressed = operatorControl.getPOV();
+        return pressed == 270;
     }
 
-    // checks if operator wants to move arms to score in medium node position (by pressing DPadDown)
+    // checks if operator wants to move arms to score in medium node position (by pressing DPad Down)
     public boolean isScoreMidPressed() {
-        return getInputDpadDown();
+        int pressed = operatorControl.getPOV();
+        return pressed == 180;
     }
 
-    // checks if operator wants to move arms to score in high node position (by pressing )
+    // checks if operator wants to move arms to score in high node position (by pressing dPad Up)
     public boolean isScoreHighPressed() {
-        return getInputDpadUp();
+        int pressed = operatorControl.getPOV();
+        return pressed == 0;
     }
 
 
