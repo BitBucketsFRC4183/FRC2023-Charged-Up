@@ -6,7 +6,6 @@ public class ArmSubsystem {
 
     //make motors
 
-
     final ArmInput armInput;
     final ArmControl armControl;
     final Debuggable debuggable;

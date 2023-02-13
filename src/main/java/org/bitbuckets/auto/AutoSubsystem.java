@@ -15,13 +15,16 @@ public class AutoSubsystem {
     final IAutoControl autoControl;
     final Debuggable debug;
 
+    final AutoInput autoInput;
+
     IDriveControl driveControl;
 
     IOdometryControl odometryControl;
 
-    public AutoSubsystem(IValueTuner<AutoPath> pathToUse, IAutoControl autoControl, Debuggable debug) {
+    public AutoSubsystem(IValueTuner<AutoPath> pathToUse, IAutoControl autoControl, AutoInput autoInput, Debuggable debug) {
         this.pathToUse = pathToUse;
         this.autoControl = autoControl;
+        this.autoInput = autoInput;
         this.debug = debug;
     }
 

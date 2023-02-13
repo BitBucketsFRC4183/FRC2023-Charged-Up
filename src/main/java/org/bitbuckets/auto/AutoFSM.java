@@ -5,6 +5,7 @@ public enum AutoFSM {
     DISABLED,
     AUTO_RUN,
     AUTO_ENDED,
-    TELEOP
+    TELEOP,
+    MACRO
 
 }

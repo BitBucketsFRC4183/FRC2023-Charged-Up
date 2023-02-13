@@ -1,5 +1,7 @@
 package org.bitbuckets.auto;
 
+import edu.wpi.first.wpilibj.Joystick;
+import org.bitbuckets.arm.ArmInput;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.lib.StartupProfiler;
@@ -32,7 +34,9 @@ public class AutoSubsystemSetup implements ISetup<AutoSubsystem> {
         IAutoControl autoControl = new AutoControlSetup().build(self.addChild("auto-control"));
         IValueTuner<AutoPath> pathTuner = self.generateEnumTuner("path", AutoPath.class, AutoPath.NONE);
         Debuggable debuggable = self.generateDebugger();
-        AutoSubsystem subsystem = new AutoSubsystem(pathTuner, autoControl, debuggable);
+        AutoInput autoInput = new AutoInput(new Joystick(1), self.generateDebugger());
+        AutoSubsystem subsystem = new AutoSubsystem(pathTuner, autoControl, autoInput, debuggable);
+
 
         self.registerLogLoop(subsystem::logLoop);
 
