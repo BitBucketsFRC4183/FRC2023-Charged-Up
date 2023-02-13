@@ -11,7 +11,6 @@ public class ArmInput {
     final Joystick operatorControl;
     final Debuggable debug;
 
-
     public ArmInput(Joystick operatorControl, Debuggable debug) {
         this.operatorControl = operatorControl;
         this.debug = debug;
