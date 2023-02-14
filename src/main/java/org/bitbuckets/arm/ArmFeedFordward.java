@@ -12,7 +12,6 @@ import edu.wpi.first.math.numbers.N2;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.numbers.N4;
 import edu.wpi.first.math.system.NumericalIntegration;
-import org.bitbuckets.arm.sim.ArmConfig;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.hardware.IMotorController;
 import org.bitbuckets.lib.hardware.MotorConfig;
@@ -22,17 +21,13 @@ public class ArmFeedFordward {
 
 
     private static final double g = 9.80665;
-    private final ISetup<IMotorController> lowerArm1;
-    private final ISetup<IMotorController> upperArm;
-    ;
+     final ISetup<IMotorController> lowerArm;
+     final ISetup<IMotorController> upperArm;
 
-    public ArmFeedFordward(ISetup<IMotorController> lowerArm1, ISetup<IMotorController> upperArm) {
-        this.lowerArm1 = lowerArm1;
-        this.upperArm = upperArm;
 
 
         // Combine elbow and wrist constants
-        var elbowCgRadius =
+        var  elbowCgRadius =
                 (ArmConstants.UPPER_CONFIG.cgRadius * ArmConstants.UPPER_ARM.armMass)
                         + (ArmConstants.UPPER_ARM.lengthMeters + config.wrist().cgRadius()) * config.wrist().mass())
                         / (ArmConstants.UPPER_ARM.armMass + config.wrist().mass());
@@ -41,7 +36,13 @@ public class ArmFeedFordward {
                         + config.wrist().mass()
                         * Math.pow(
                         config.elbow().length() + config.wrist().cgRadius() - elbowCgRadius, 2.0);
-        lowerArm1 =
+        public var getElbowCgRadius() {
+            return elbowCgRadius;
+        }
+
+
+
+    lowerArm =
                 new MotorConfig().JointConfig(
                         config.elbow().mass() + config.wrist().mass(),
                         config.elbow().length() + config.wrist().length(),
@@ -50,7 +51,12 @@ public class ArmFeedFordward {
                         config.elbow().minAngle(),
                         config.elbow().maxAngle(),
                         config.elbow().reduction(),
-                        config.elbow().motor());
+                        config.elbow().motor()
+
+    public ArmFeedFordward(ISetup<IMotorController> lowerArm, ISetup<IMotorController> upperArm) {
+        this.lowerArm = lowerArm;
+        this.upperArm = upperArm;
+    });
     }
 
 
@@ -155,7 +161,7 @@ public class ArmFeedFordward {
                                     M(position)
                                             .inv()
                                             .times(
-                                                    torque.minus(C(position, velocity).times(velocity)).minus(Tg(position)));
+                                                    torque.Mminus(C(position, velocity).times(velocity)).minus(Tg(position)));
 
                             // Return state vector
                             return new MatBuilder<>(Nat.N4(), Nat.N1())

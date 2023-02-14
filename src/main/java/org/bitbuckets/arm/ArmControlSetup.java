@@ -43,6 +43,7 @@ public class ArmControlSetup implements ISetup<ArmControl> {
             var lowerSpark2 = lower2.rawAccess(CANSparkMax.class);
             var upperSpark = upper.rawAccess(CANSparkMax.class);
 
+
             lowerSpark1.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, false);
             lowerSpark1.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, false);
 
