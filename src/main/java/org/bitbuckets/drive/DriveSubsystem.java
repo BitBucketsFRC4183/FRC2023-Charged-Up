@@ -198,7 +198,7 @@ public class DriveSubsystem {
             double output = closedLoopsControl.calculateBalanceOutput(Roll_deg, 0);
             driveControl.drive(new ChassisSpeeds(output, 0.0, 0.0));
         } else {
-            driveControl.stopSticky();
+            driveControl.stop90degrees();
 
         }
     }
