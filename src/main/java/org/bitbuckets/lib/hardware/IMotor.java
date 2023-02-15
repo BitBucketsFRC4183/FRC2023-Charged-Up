@@ -55,5 +55,17 @@ public interface IMotor extends IRaw {
      */
     double getSetpoint_mechanismRotations();
 
+    /**
+     * Gets instantaneous applied voltage in volts
+     * @return
+     */
+    @Deprecated
+    double getVoltage();
+
+    /**
+     * Gets instantaneous applied currents in amps
+     * @return
+     */
+    double getCurrent();
 
 }

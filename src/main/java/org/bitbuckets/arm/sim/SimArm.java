@@ -101,6 +101,16 @@ public class SimArm implements IMotorController {
     }
 
     @Override
+    public double getVoltage() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public double getCurrent() {
+        return sim.getCurrentDrawAmps();
+    }
+
+    @Override
     public <T> T rawAccess(Class<T> clazz) throws UnsupportedOperationException {
         throw new UnsupportedOperationException("bad");
     }
