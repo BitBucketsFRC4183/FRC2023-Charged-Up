@@ -2,9 +2,7 @@ package org.bitbuckets.lib.vendor.spark;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
-import com.revrobotics.REVPhysicsSim;
 import com.revrobotics.SparkMaxLimitSwitch;
-import edu.wpi.first.math.system.plant.DCMotor;
 import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.control.PIDConfig;

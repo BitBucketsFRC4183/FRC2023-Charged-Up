@@ -1,9 +1,9 @@
 package org.bitbuckets.drive.balance;
 
 import edu.wpi.first.math.controller.PIDController;
+import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.control.ProfiledPIDFController;
-import org.bitbuckets.lib.IProcess;
 
 /**
  * labels: high priority

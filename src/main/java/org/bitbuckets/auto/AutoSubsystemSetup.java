@@ -1,9 +1,8 @@
 package org.bitbuckets.auto;
 
-import edu.wpi.first.wpilibj.Joystick;
+import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.log.IDebuggable;
-import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.lib.tune.IValueTuner;
 import org.bitbuckets.lib.util.MockingUtil;
 

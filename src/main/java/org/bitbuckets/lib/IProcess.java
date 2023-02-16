@@ -2,9 +2,9 @@ package org.bitbuckets.lib;
 
 import edu.wpi.first.hal.HALUtil;
 import org.bitbuckets.lib.core.Path;
+import org.bitbuckets.lib.log.IConsole;
 import org.bitbuckets.lib.log.IDebuggable;
 import org.bitbuckets.lib.log.ILoggable;
-import org.bitbuckets.lib.log.IConsole;
 import org.bitbuckets.lib.tune.IValueTuner;
 
 public interface IProcess {

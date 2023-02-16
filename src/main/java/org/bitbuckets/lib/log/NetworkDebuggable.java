@@ -7,7 +7,6 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.networktables.NetworkTable;
-import org.bitbuckets.lib.log.IDebuggable;
 import org.bitbuckets.lib.ProcessMode;
 import org.bitbuckets.lib.tune.IValueTuner;
 

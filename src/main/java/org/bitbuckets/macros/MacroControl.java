@@ -1,12 +1,12 @@
 package org.bitbuckets.macros;
 
-import org.bitbuckets.lib.log.Debuggable;
+import org.bitbuckets.lib.log.IDebuggable;
 
 public class MacroControl {
 
-    final Debuggable debuggable;
+    final IDebuggable debuggable;
 
-    public MacroControl(Debuggable debuggable) {
+    public MacroControl(IDebuggable debuggable) {
         this.debuggable = debuggable;
     }
 

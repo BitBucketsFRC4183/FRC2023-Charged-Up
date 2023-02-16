@@ -1,9 +1,5 @@
 package org.bitbuckets.lib.core;
 
-import edu.wpi.first.math.system.plant.DCMotor;
-import org.bitbuckets.lib.control.ProfiledPIDCalculator;
-
-import java.io.File;
 import java.util.Optional;
 
 /**

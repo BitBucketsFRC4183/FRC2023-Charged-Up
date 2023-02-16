@@ -1,9 +1,9 @@
 package org.bitbuckets.drive.controlsds.sds;
 
+import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.hardware.IAbsoluteEncoder;
 import org.bitbuckets.lib.hardware.IMotorController;
-import org.bitbuckets.lib.IProcess;
 
 public class SteerControllerSetup implements ISetup<ISteerController> {
 

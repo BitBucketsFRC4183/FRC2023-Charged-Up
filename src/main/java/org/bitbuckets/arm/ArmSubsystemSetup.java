@@ -7,12 +7,11 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
-import org.bitbuckets.arm.sim.ArmConfig;
 import org.bitbuckets.arm.sim.SimArmSetup;
-import org.bitbuckets.lib.ISetup;
-import org.bitbuckets.lib.log.IDebuggable;
 import org.bitbuckets.lib.IProcess;
+import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.hardware.IMotorController;
+import org.bitbuckets.lib.log.IDebuggable;
 import org.bitbuckets.lib.util.MockingUtil;
 import org.bitbuckets.lib.vendor.spark.SparkSetup;
 

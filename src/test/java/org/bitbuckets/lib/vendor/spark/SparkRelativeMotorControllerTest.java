@@ -1,6 +1,5 @@
 package org.bitbuckets.lib.vendor.spark;
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 import com.revrobotics.SparkMaxPIDController;

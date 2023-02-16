@@ -1,8 +1,6 @@
 package org.bitbuckets.arm;
 
-import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import org.bitbuckets.arm.kinematics.InverseKinematics;
-import org.bitbuckets.arm.sim.SimArm;
 import org.bitbuckets.lib.hardware.IMotorController;
 import org.bitbuckets.lib.log.IDebuggable;
 import org.junit.jupiter.api.BeforeEach;

@@ -2,30 +2,46 @@ package org.bitbuckets.lib.control;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import org.bitbuckets.lib.HasLoop;
 import org.bitbuckets.lib.tune.IValueTuner;
 
-public class ProfiledPIDFCalculator implements Runnable, IPIDCalculator {
+public class ProfiledPIDFCalculator implements HasLoop, IPIDCalculator {
 
     final ProfiledPIDController profiledPIDController;
-    final IValueTuner<double[]> tuner;
 
-    public ProfiledPIDFCalculator(ProfiledPIDController profiledPIDController, IValueTuner<double[]> tuner) {
+    final IValueTuner<Double> p;
+    final IValueTuner<Double> i;
+    final IValueTuner<Double> d;
+    final IValueTuner<Double> kV;
+    final IValueTuner<Double> kA;
+
+    public ProfiledPIDFCalculator(ProfiledPIDController profiledPIDController, IValueTuner<Double> p, IValueTuner<Double> i, IValueTuner<Double> d, IValueTuner<Double> kV, IValueTuner<Double> kA) {
         this.profiledPIDController = profiledPIDController;
-        this.tuner = tuner;
+        this.p = p;
+        this.i = i;
+        this.d = d;
+        this.kV = kV;
+        this.kA = kA;
     }
 
-    double cachedF = 0;
-
     @Override
-    public void run() {
+    public void loop() {
 
-
-        if (tuner.hasUpdated()) {
-            double[] out = tuner.consumeValue();
-
-            profiledPIDController.setPID(out[0], out[1], out[2]);
-            profiledPIDController.setConstraints(new TrapezoidProfile.Constraints(out[3], out[4]));
+        if (p.hasUpdated()) {
+            profiledPIDController.setP(p.consumeValue());
         }
+        if (i.hasUpdated()) {
+            profiledPIDController.setI(i.consumeValue());
+        }
+        if (d.hasUpdated()) {
+            profiledPIDController.setD(d.consumeValue());
+        }
+        if (kV.hasUpdated() || kA.hasUpdated()) {
+            profiledPIDController.setConstraints(new TrapezoidProfile.Constraints(kV.consumeValue(), kA.consumeValue()));
+        }
+
+
+
 
 
     }

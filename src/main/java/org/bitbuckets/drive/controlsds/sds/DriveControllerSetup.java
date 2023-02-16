@@ -1,8 +1,8 @@
 package org.bitbuckets.drive.controlsds.sds;
 
+import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.hardware.IMotorController;
-import org.bitbuckets.lib.IProcess;
 
 public class DriveControllerSetup implements ISetup<IDriveController> {
 

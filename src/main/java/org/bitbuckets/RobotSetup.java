@@ -7,9 +7,9 @@ import org.bitbuckets.auto.AutoSubsystemSetup;
 import org.bitbuckets.drive.DriveSubsystemSetup;
 import org.bitbuckets.elevator.ElevatorSubsystem;
 import org.bitbuckets.elevator.ElevatorSubsystemSetup;
+import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.SimulatorKiller;
-import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.vision.IVisionControl;
 import org.bitbuckets.vision.VisionControlSetup;
 
