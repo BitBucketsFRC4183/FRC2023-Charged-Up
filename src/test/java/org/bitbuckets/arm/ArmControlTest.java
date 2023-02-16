@@ -1,8 +1,7 @@
 package org.bitbuckets.arm;
 
-import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import org.bitbuckets.arm.kinematics.InverseKinematics;
-import org.bitbuckets.arm.sim.SimArm;
+import org.bitbuckets.lib.control.IPIDCalculator;
 import org.bitbuckets.lib.hardware.IMotorController;
 import org.bitbuckets.lib.log.Debuggable;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,8 +26,10 @@ class ArmControlTest {
         lowerJoint1 = mock(IMotorController.class);
         upperJoint = mock(IMotorController.class);
         debuggable = mock(Debuggable.class);
+        lowerJointPID = mock(IPIDCalculator.class);
+        upperJointPID = mock(IPIDCalculator.class);
 
-        control = new ArmControl(lowerJoint, lowerJoint1, upperJoint, debuggable);
+        control = new ArmControl(lowerJoint, lowerJoint1, upperJoint, debuggable, lowerJointPID, upperJointPID);
     }
 
 
@@ -78,16 +79,16 @@ class ArmControlTest {
     void prepareArm() {
         // we should move the mechanism
         control.prepareArm();
-        verify(lowerJoint).moveToPosition_mechanismRotations(anyDouble());
-        verify(upperJoint).moveToPosition_mechanismRotations(anyDouble());
+        verify(lowerJoint).moveAtVoltage(anyDouble());
+        verify(upperJoint).moveAtVoltage(anyDouble());
     }
 
     @Test
     void scoreLow() {
         // we should move the mechanism
         control.scoreLow();
-        verify(lowerJoint).moveToPosition_mechanismRotations(anyDouble());
-        verify(upperJoint).moveToPosition_mechanismRotations(anyDouble());
+        verify(lowerJoint).moveAtVoltage(anyDouble());
+        verify(upperJoint).moveAtVoltage(anyDouble());
     }
 
     @Test
@@ -102,8 +103,8 @@ class ArmControlTest {
     void scoreHigh() {
         // we should move the mechanism
         control.scoreHigh();
-        verify(lowerJoint).moveToPosition_mechanismRotations(anyDouble());
-        verify(upperJoint).moveToPosition_mechanismRotations(anyDouble());
+        verify(lowerJoint).moveAtVoltage(anyDouble());
+        verify(upperJoint).moveAtVoltage(anyDouble());
     }
 
 

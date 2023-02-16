@@ -20,6 +20,7 @@ public class ProfiledPIDFSetup implements ISetup<IPIDCalculator> {
 
 
         //TODO make this use arjun ff
+
         ProfiledPIDFController controller = new ProfiledPIDFController(initial[0], initial[1], initial[2], 0, new TrapezoidProfile.Constraints(initial[3], initial[4]));
         return new ProfiledPIDFCalculator(controller, tunerForAllValues);
     }
