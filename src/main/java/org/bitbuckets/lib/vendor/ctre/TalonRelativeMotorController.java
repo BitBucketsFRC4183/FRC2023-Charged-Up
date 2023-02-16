@@ -83,6 +83,16 @@ public class TalonRelativeMotorController implements IMotorController, Runnable 
     }
 
     @Override
+    public double getVoltage() {
+        return motor.getMotorOutputVoltage();
+    }
+
+    @Override
+    public double getCurrent() {
+        return motor.getStatorCurrent();
+    }
+
+    @Override
     public <T> T rawAccess(Class<T> clazz) throws UnsupportedOperationException {
         return clazz.cast(motor);
     }
