@@ -4,9 +4,9 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import org.bitbuckets.drive.controlsds.sds.ISwerveModule;
+import org.bitbuckets.lib.HasLogLoop;
 import org.bitbuckets.lib.hardware.IAbsoluteEncoder;
 import org.bitbuckets.lib.hardware.IMotorController;
-import org.bitbuckets.lib.HasLogLoop;
 
 public class CompressedModule implements ISwerveModule, HasLogLoop {
 

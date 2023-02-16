@@ -3,15 +3,15 @@ package org.bitbuckets.macros;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
-import org.bitbuckets.lib.log.Debuggable;
+import org.bitbuckets.lib.log.IDebuggable;
 
 public class MacroInput {
 
     final Joystick operatorControl;
-    final Debuggable debug;
+    final IDebuggable debug;
 
 
-    public MacroInput(Joystick operatorControl, Debuggable debug) {
+    public MacroInput(Joystick operatorControl, IDebuggable debug) {
         this.operatorControl = operatorControl;
         this.debug = debug;
     }

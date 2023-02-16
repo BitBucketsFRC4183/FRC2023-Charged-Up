@@ -6,11 +6,10 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Threads;
 import edu.wpi.first.wpilibj.TimedRobot;
-import org.bitbuckets.lib.ISetup;
-import org.bitbuckets.lib.log.IConsole;
 import org.bitbuckets.lib.IProcess;
-import org.bitbuckets.lib.log.LogRecord;
+import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.Process;
+import org.bitbuckets.lib.log.LogRecord;
 import org.bitbuckets.lib.log.ProcessConsole;
 
 import java.util.HashMap;

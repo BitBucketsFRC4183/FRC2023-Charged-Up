@@ -1,17 +1,10 @@
 package org.bitbuckets.arm;
 
 import com.revrobotics.CANSparkMax;
-import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.util.Color;
-import edu.wpi.first.wpilibj.util.Color8Bit;
+import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.hardware.IMotorController;
 import org.bitbuckets.lib.log.IDebuggable;
-import org.bitbuckets.lib.IProcess;
-import org.bitbuckets.lib.vendor.spark.SparkSetup;
 
 
 public class ArmControlSetup implements ISetup<ArmControl> {
@@ -33,12 +26,9 @@ public class ArmControlSetup implements ISetup<ArmControl> {
     @Override
     public ArmControl build(IProcess self) {
 
-        var lower = self.childSetup("lower-joint", lowerJoint);
-        var upper = self.childSetup("upper-joint", upperJoint);
         var lower1 = self.childSetup("lower-joint-1", lowerJoint1);
-        var lowerSpark1 = lower1.rawAccess(CANSparkMax.class);
-        var lowerSpark = lower.rawAccess(CANSparkMax.class);
-        var upperSpark = upper.rawAccess(CANSparkMax.class);
+        var upper = self.childSetup("upper-joint", upperJoint);
+        var lower2 = self.childSetup("lower-joint-2", lowerJoint2);
 
         if (self.isReal())
         {

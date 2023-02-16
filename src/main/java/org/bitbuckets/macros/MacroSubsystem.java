@@ -1,16 +1,16 @@
 package org.bitbuckets.macros;
 
-import org.bitbuckets.lib.log.Debuggable;
+import org.bitbuckets.lib.log.IDebuggable;
 
 public class MacroSubsystem {
 
     final MacroInput macroInput;
     final MacroControl macroControl;
-    final Debuggable debuggable;
+    final IDebuggable debuggable;
 
     MacroFSM state = MacroFSM.DISABLED;
 
-    public MacroSubsystem(MacroInput macroInput, MacroControl macroControl, Debuggable debuggable) {
+    public MacroSubsystem(MacroInput macroInput, MacroControl macroControl, IDebuggable debuggable) {
         this.macroInput = macroInput;
         this.macroControl = macroControl;
         this.debuggable = debuggable;

@@ -1,7 +1,7 @@
 package org.bitbuckets.lib.log;
 
-import org.bitbuckets.lib.core.Path;
 import org.bitbuckets.lib.ProcessMode;
+import org.bitbuckets.lib.core.Path;
 import org.bitbuckets.lib.tune.IValueTuner;
 
 import java.util.ArrayDeque;

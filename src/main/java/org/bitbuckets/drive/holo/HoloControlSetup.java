@@ -5,8 +5,8 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import org.bitbuckets.drive.controlsds.DriveControl;
-import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.IProcess;
+import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.odometry.IOdometryControl;
 import org.bitbuckets.vision.IVisionControl;
 

@@ -7,7 +7,6 @@ import net.bytebuddy.dynamic.DynamicType;
 import net.bytebuddy.dynamic.scaffold.subclass.ConstructorStrategy;
 import net.bytebuddy.implementation.MethodCall;
 import net.bytebuddy.implementation.StubMethod;
-import org.bitbuckets.lib.DontUseIncubating;
 import org.bitbuckets.lib.ISetup;
 
 import java.lang.reflect.Constructor;

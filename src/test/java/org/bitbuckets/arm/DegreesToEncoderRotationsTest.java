@@ -1,11 +1,5 @@
 package org.bitbuckets.arm;
 
-import org.bitbuckets.lib.hardware.IMotorController;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 public class DegreesToEncoderRotationsTest {
 
 //    final IMotorController lowerJoint;
