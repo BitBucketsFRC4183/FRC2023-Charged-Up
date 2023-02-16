@@ -4,6 +4,7 @@ import edu.wpi.first.math.util.Units;
 import org.bitbuckets.arm.sim.ArmConfig;
 import org.bitbuckets.lib.control.PIDConfig;
 import org.bitbuckets.lib.hardware.MotorConfig;
+import org.bitbuckets.lib.log.Debuggable;
 
 import java.util.Optional;
 
@@ -83,11 +84,25 @@ public interface ArmConstants {
             Units.rotationsToRadians(UPPER_ARM_REVERSE_LIMIT_MECHANISM),
             false
     );
+    //change with accurate numbers
+    double FFUPPER_ARM_MASS = UPPER_ARM.armMass + grabberMass;
+
+    double LOWER_MOI = 0.37294290018;
+
+    double LOWER_CGRADIUS = 0.24384;
+
+    double UPPER_MOI = 0.45913405717;
+
+    double UPPER_CGRADIUS = 0.2794;
+
+
 
 
 
     // will most likely change
     double GRABBER_LENGTH = 0.1524;
+
+    double FFUPPER_ARM_LENGTH = UPPER_JOINT_LENGTH + GRABBER_LENGTH;
 
 
     // Feel free to change to make arms faster/slower for input
@@ -119,6 +134,18 @@ public interface ArmConstants {
 
     double HIGH_NODE_X = 0.8;
     double HIGH_NODE_Y = 0.8;
+
+
+    //wrist + elbow for ff purposes
+    double  elbowCgRadius =
+            (UPPER_CONFIG.cgRadius * UPPER_ARM.armMass)
+                    + (UPPER_ARM.lengthMeters + config.wrist().cgRadius()) * config.wrist().mass()
+            / (UPPER_ARM.armMass + config.wrist().mass());
+    double elbowMoi =
+            UPPER_ARM.armMass * Math.pow(UPPER_CGRADIUS - elbowCgRadius, 2.0)
+                    + config.wrist().mass()
+                    * Math.pow(
+                    UPPER_ARM.lengthMeters + config.wrist().cgRadius() - elbowCgRadius, 2.0);
 
 
 }
