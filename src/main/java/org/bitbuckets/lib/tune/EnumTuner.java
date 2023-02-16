@@ -27,13 +27,18 @@ public class EnumTuner<T extends Enum<T>> implements IForceSendTuner<T>, Consume
 
     }
 
+
+
     int i = 0;
 
     public EnumTuner(NetworkTable subtable, Class<T> enumType, T defaultValue, Consumer<NetworkTableEvent> passTo) {
+
+
+
         this.passTo = passTo;
         //setup shuffleboard support
         subtable.getEntry(".controllable").setBoolean(true);
-        subtable.getEntry(".name").setString("mode " + ++i);
+        subtable.getEntry(".name").setString(subtable.getPath());
         subtable.getEntry(".type").setString("String Chooser");
         subtable.getEntry(".instance").setInteger(0);
         subtable.getEntry("default").setString((defaultValue).name());
@@ -45,14 +50,14 @@ public class EnumTuner<T extends Enum<T>> implements IForceSendTuner<T>, Consume
 
         subtable.getEntry("options").setStringArray(toBuild.toArray(String[]::new));
         this.entry = subtable.getEntry("selected");
-        this.entry.setString("no");
-        subtable.getEntry("active").setString("no");
+        this.entry.setString(defaultValue.name());
+        subtable.getEntry("active").setString(defaultValue.name());
 
         this.enumType = enumType;
         this.cachedValue = new AtomicReference<>(new AtomicRecord<T>(defaultValue, false));
 
-        //entry.getInstance().addListener(entry, EnumSet.of(NetworkTableEvent.Kind.kValueRemote), this);
-        //entry.getInstance().addListener(entry, EnumSet.of(NetworkTableEvent.Kind.kValueRemote), passTo);
+        entry.getInstance().addListener(entry, EnumSet.of(NetworkTableEvent.Kind.kValueRemote), this);
+        entry.getInstance().addListener(entry, EnumSet.of(NetworkTableEvent.Kind.kValueRemote), passTo);
     }
 
     @Override
