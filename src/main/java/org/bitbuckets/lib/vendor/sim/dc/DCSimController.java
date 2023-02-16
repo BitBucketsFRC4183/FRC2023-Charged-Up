@@ -70,6 +70,7 @@ public class DCSimController implements IMotorController, HasLoop {
     @Override
     public void moveAtVoltage(double voltage) {
         //debuggable.out("moveAtVoltage called with" + voltage);
+        lastVoltage = voltage;
 
         simulatedMotor.setInputVoltage(voltage);
     }
@@ -82,6 +83,7 @@ public class DCSimController implements IMotorController, HasLoop {
     }
 
     double lastSetpoint = 0.0;
+    double lastVoltage = 0.0;
 
     @Override
     public void moveToPosition(double position_encoderRotations) {
@@ -89,6 +91,7 @@ public class DCSimController implements IMotorController, HasLoop {
         //position raw should be encoder rotations
         double controllerOutput = simulatedPIDController.calculate(getPositionRaw(), position_encoderRotations);
         lastSetpoint = position_encoderRotations;
+        lastVoltage = controllerOutput;
 
         simulatedMotor.setInputVoltage(controllerOutput);
     }
@@ -106,6 +109,16 @@ public class DCSimController implements IMotorController, HasLoop {
     @Override
     public double getSetpoint_mechanismRotations() {
         return lastSetpoint;
+    }
+
+    @Override
+    public double getVoltage() {
+        return lastVoltage;
+    }
+
+    @Override
+    public double getCurrent() {
+        return simulatedMotor.getCurrentDrawAmps();
     }
 
     @Override

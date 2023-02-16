@@ -115,6 +115,17 @@ public class SparkRelativeMotorController implements IMotorController {
     }
 
     @Override
+    public double getVoltage() {
+        throw new UnsupportedOperationException(); //what is Resistance?
+        //need state space model to output
+    }
+
+    @Override
+    public double getCurrent() {
+        return sparkMax.getOutputCurrent();
+    }
+
+    @Override
     public <T> T rawAccess(Class<T> clazz) throws UnsupportedOperationException {
         return clazz.cast(sparkMax);
     }
