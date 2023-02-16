@@ -12,12 +12,14 @@ import edu.wpi.first.math.numbers.N2;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.numbers.N4;
 import edu.wpi.first.math.system.NumericalIntegration;
+import edu.wpi.first.math.system.plant.DCMotor;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.hardware.IMotorController;
-import org.bitbuckets.lib.hardware.MotorConfig;
 
 
 public class ArmFeedFordward {
+
+    // lower = shoulder, upper = elbow, grippy = wrist
 
 
     private static final double g = 9.80665;
@@ -26,38 +28,46 @@ public class ArmFeedFordward {
 
 
 
-        // Combine elbow and wrist constants
-        var  elbowCgRadius =
-                (ArmConstants.UPPER_CONFIG.cgRadius * ArmConstants.UPPER_ARM.armMass)
-                        + (ArmConstants.UPPER_ARM.lengthMeters + config.wrist().cgRadius()) * config.wrist().mass())
-                        / (ArmConstants.UPPER_ARM.armMass + config.wrist().mass());
-        var elbowMoi =
-                config.elbow().mass() * Math.pow(config.elbow().cgRadius() - elbowCgRadius, 2.0)
-                        + config.wrist().mass()
-                        * Math.pow(
-                        config.elbow().length() + config.wrist().cgRadius() - elbowCgRadius, 2.0);
-        public var getElbowCgRadius() {
-            return elbowCgRadius;
-        }
 
 
 
-    lowerArm =
-                new MotorConfig().JointConfig(
-                        config.elbow().mass() + config.wrist().mass(),
-                        config.elbow().length() + config.wrist().length(),
-                        elbowMoi,
-                        elbowCgRadius,
-                        config.elbow().minAngle(),
-                        config.elbow().maxAngle(),
-                        config.elbow().reduction(),
-                        config.elbow().motor()
+
+
+
+
 
     public ArmFeedFordward(ISetup<IMotorController> lowerArm, ISetup<IMotorController> upperArm) {
         this.lowerArm = lowerArm;
         this.upperArm = upperArm;
-    });
     }
+
+    static double getVoltageNowUpper(double torque, double velocity) {
+        return DCMotor.getNeo550(1).getVoltage(torque, velocity);
+
+    }
+
+    static double getVoltageNowLower(double torque, double velocity) {
+        return DCMotor.getNeo550(2).getVoltage(torque, velocity);
+    }
+
+    static double getCurrentNowUpper(double velocity, double voltage) {
+          return DCMotor.getNeo550(1).getCurrent(velocity, voltage);
+    }
+
+    static double getCurrentNowLower(double velocity, double voltage) {
+          return DCMotor.getNeo550(2).getCurrent(velocity, voltage);
+    }
+
+    static double getTorqueNowUpper(double current) {
+          return DCMotor.getNeo550(1).getTorque(current);
+    }
+
+    static double getTorqueNowLower(double current) {
+          return DCMotor.getNeo550(2).getTorque(current);
+    }
+
+
+
 
 
 
@@ -77,6 +87,9 @@ public class ArmFeedFordward {
                 new Vector<>(state.extractColumnVector(2)));
     }
 
+
+
+
     /** Calculates the joint voltages based on the full joint states as vectors (feedforward). */
     public Vector<N2> feedforward(Vector<N2> position, Vector<N2> velocity, Vector<N2> acceleration) {
         var torque =
@@ -85,8 +98,8 @@ public class ArmFeedFordward {
                         .plus(C(position, velocity).times(velocity))
                         .plus(Tg(position));
         return VecBuilder.fill(
-                shoulder.motor().getVoltage(torque.get(0, 0), velocity.get(0, 0)),
-                elbow.motor().getVoltage(torque.get(1, 0), velocity.get(1, 0)));
+                getVoltageNowUpper(torque.get(0, 0), velocity.get(0, 0)),
+                getVoltageNowLower(torque.get(1, 0), velocity.get(1, 0)));
     }
 
     /**
@@ -109,45 +122,41 @@ public class ArmFeedFordward {
 
                             // Calculate torque
                             var shoulderTorque =
-                                    shoulder
-                                            .motor()
-                                            .getTorque(shoulder.motor().getCurrent(velocity.get(0, 0), u.get(0, 0)));
+                                    getTorqueNowLower(getCurrentNowLower(velocity.get(0, 0), u.get(0, 0)));
                             var elbowTorque =
-                                    elbow
-                                            .motor()
-                                            .getTorque(elbow.motor().getCurrent(velocity.get(1, 0), u.get(1, 0)));
+                                    getTorqueNowUpper(getCurrentNowUpper(velocity.get(1, 0), u.get(1, 0)));
                             var torque = VecBuilder.fill(shoulderTorque, elbowTorque);
 
                             // Apply limits
-                            if (position.get(0, 0) < shoulder.minAngle()) {
-                                position.set(0, 0, shoulder.minAngle());
+                            if (position.get(0, 0) < ArmConstants.LOWER_ARM.armMinAngle) {
+                                position.set(0, 0, ArmConstants.LOWER_ARM.armMinAngle);
                                 if (velocity.get(0, 0) < 0.0) {
                                     velocity.set(0, 0, 0.0);
                                 }
-                                if (torque.(0, 0) < 0.0) {
+                                if (torque.get(0, 0) < 0.0) {
                                     torque.set(0, 0, 0.0);
                                 }
                             }
-                            if (position.get(0, 0) > shoulder.maxAngle()) {
-                                position.set(0, 0, shoulder.maxAngle());
+                            if (position.get(0, 0) > ArmConstants.LOWER_ARM.armMaxAngle) {
+                                position.set(0, 0, ArmConstants.LOWER_ARM.armMaxAngle);
                                 if (velocity.get(0, 0) > 0.0) {
                                     velocity.set(0, 0, 0.0);
                                 }
-                                if (torque.(0, 0) > 0.0) {
+                                if (torque.get(0, 0) > 0.0) {
                                     torque.set(0, 0, 0.0);
                                 }
                             }
-                            if (position.get(1, 0) < elbow.minAngle()) {
-                                position.set(1, 0, elbow.minAngle());
+                            if (position.get(1, 0) < ArmConstants.UPPER_ARM.armMinAngle) {
+                                position.set(1, 0, ArmConstants.UPPER_ARM.armMinAngle);
                                 if (velocity.get(1, 0) < 0.0) {
                                     velocity.set(1, 0, 0.0);
                                 }
-                                if (torque.(1, 0) < 0.0) {
+                                if (torque.get(1, 0) < 0.0) {
                                     torque.set(1, 0, 0.0);
                                 }
                             }
-                            if (position.get(1, 0) > elbow.maxAngle()) {
-                                position.set(1, 0, elbow.maxAngle());
+                            if (position.get(1, 0) > ArmConstants.UPPER_ARM.armMaxAngle) {
+                                position.set(1, 0, ArmConstants.UPPER_ARM.armMaxAngle);
                                 if (velocity.get(1, 0) > 0.0) {
                                     velocity.set(1, 0, 0.0);
                                 }
@@ -161,15 +170,15 @@ public class ArmFeedFordward {
                                     M(position)
                                             .inv()
                                             .times(
-                                                    torque.Mminus(C(position, velocity).times(velocity)).minus(Tg(position)));
+                                                    torque.minus(C(position, velocity).times(velocity)).minus(Tg(position)));
 
                             // Return state vector
                             return new MatBuilder<>(Nat.N4(), Nat.N1())
                                     .fill(
                                             velocity.get(0, 0),
                                             velocity.get(1, 0),
-                                            acceleration.(0, 0),
-                                            acceleration.(1, 0));
+                                            acceleration.get(0, 0),
+                                            acceleration.get(1, 0));
                         },
                         state,
                         voltage,
@@ -181,28 +190,28 @@ public class ArmFeedFordward {
         M.set(
                 0,
                 0,
-                shoulder.mass() * Math.pow(shoulder.cgRadius(), 2.0)
-                        + elbow.mass() * (Math.pow(shoulder.length(), 2.0) + Math.pow(elbow.cgRadius(), 2.0))
-                        + shoulder.moi()
-                        + elbow.moi()
+                ArmConstants.LOWER_ARM.armMass * Math.pow(ArmConstants.LOWER_CGRADIUS, 2.0)
+                        + ArmConstants.FFUPPER_ARM_MASS * (Math.pow(ArmConstants.LOWER_ARM.lengthMeters, 2.0) + Math.pow(ArmConstants.UPPER_CGRADIUS, 2.0))
+                        + ArmConstants.LOWER_MOI
+                        + ArmConstants.UPPER_MOI
                         + 2
-                        * elbow.mass()
-                        * shoulder.length()
-                        * elbow.cgRadius()
+                        * ArmConstants.FFUPPER_ARM_MASS
+                        * ArmConstants.LOWER_ARM.lengthMeters
+                        * ArmConstants.UPPER_CGRADIUS
                         * Math.cos(position.get(1, 0)));
         M.set(
                 1,
                 0,
-                elbow.mass() * Math.pow(elbow.cgRadius(), 2.0)
-                        + elbow.moi()
-                        + elbow.mass() * shoulder.length() * elbow.cgRadius() * Math.cos(position.get(1, 0)));
+                ArmConstants.FFUPPER_ARM_MASS * Math.pow(ArmConstants.UPPER_CGRADIUS, 2.0)
+                        + ArmConstants.UPPER_MOI
+                        + ArmConstants.FFUPPER_ARM_MASS * ArmConstants.LOWER_ARM.lengthMeters * ArmConstants.UPPER_CGRADIUS * Math.cos(position.get(1, 0)));
         M.set(
                 0,
                 1,
-                elbow.mass() * Math.pow(elbow.cgRadius(), 2.0)
-                        + elbow.moi()
-                        + elbow.mass() * shoulder.length() * elbow.cgRadius() * Math.cos(position.get(1, 0)));
-        M.set(1, 1, elbow.mass() * Math.pow(elbow.cgRadius(), 2.0) + elbow.moi());
+                ArmConstants.FFUPPER_ARM_MASS * Math.pow(ArmConstants.UPPER_CGRADIUS, 2.0)
+                        + ArmConstants.UPPER_MOI
+                        + ArmConstants.FFUPPER_ARM_MASS * ArmConstants.LOWER_ARM.lengthMeters * ArmConstants.UPPER_CGRADIUS * Math.cos(position.get(1, 0)));
+        M.set(1, 1, ArmConstants.FFUPPER_ARM_MASS * Math.pow(ArmConstants.UPPER_CGRADIUS, 2.0) + ArmConstants.UPPER_MOI);
         return M;
     }
 
@@ -211,25 +220,25 @@ public class ArmFeedFordward {
         C.set(
                 0,
                 0,
-                -elbow.mass()
-                        * shoulder.length()
-                        * elbow.cgRadius()
+                -ArmConstants.FFUPPER_ARM_MASS
+                        * ArmConstants.LOWER_ARM.lengthMeters
+                        * ArmConstants.UPPER_CGRADIUS
                         * Math.sin(position.get(1, 0))
                         * velocity.get(1, 0));
         C.set(
                 1,
                 0,
-                elbow.mass()
-                        * shoulder.length()
-                        * elbow.cgRadius()
+                ArmConstants.FFUPPER_ARM_MASS
+                        * ArmConstants.LOWER_ARM.lengthMeters
+                        * ArmConstants.UPPER_CGRADIUS
                         * Math.sin(position.get(1, 0))
                         * velocity.get(0, 0));
         C.set(
                 0,
                 1,
-                -elbow.mass()
-                        * shoulder.length()
-                        * elbow.cgRadius()
+                -ArmConstants.FFUPPER_ARM_MASS
+                        * ArmConstants.LOWER_ARM.lengthMeters
+                        * ArmConstants.UPPER_CGRADIUS
                         * Math.sin(position.get(1, 0))
                         * (velocity.get(0, 0) + velocity.get(1, 0)));
         return C;
@@ -240,17 +249,19 @@ public class ArmFeedFordward {
         Tg.set(
                 0,
                 0,
-                (shoulder.mass() * shoulder.cgRadius() + elbow.mass() * shoulder.length())
-                        * g
+                (ArmConstants.LOWER_ARM.armMass * ArmConstants.LOWER_CGRADIUS + ArmConstants.FFUPPER_ARM_MASS * ArmConstants.LOWER_ARM.lengthMeters)
+                        *
+                        g
                         * Math.cos(position.get(0, 0))
-                        + elbow.mass()
-                        * elbow.cgRadius()
+                        + ArmConstants.FFUPPER_ARM_MASS
+                        * ArmConstants.UPPER_CGRADIUS
                         * g
                         * Math.cos(position.get(0, 0) + position.get(1, 0)));
         Tg.set(
                 1,
                 0,
-                elbow.mass() * elbow.cgRadius() * g * Math.cos(position.get(0, 0) + position.get(1, 0)));
+                ArmConstants.FFUPPER_ARM_MASS * ArmConstants.UPPER_CGRADIUS * g * Math.cos(position.get(0, 0) + position.get(1, 0)));
         return Tg;
 
+}
 }
