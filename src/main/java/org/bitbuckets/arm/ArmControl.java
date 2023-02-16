@@ -1,7 +1,7 @@
 package org.bitbuckets.arm;
 
 import org.bitbuckets.lib.hardware.IMotorController;
-import org.bitbuckets.lib.log.Debuggable;
+import org.bitbuckets.lib.log.IDebuggable;
 
 
 public class ArmControl {
@@ -10,12 +10,12 @@ public class ArmControl {
     final IMotorController lowerJoint;
     final IMotorController lowerJoint1;
     final IMotorController upperJoint;
-    final Debuggable debuggable;
+    final IDebuggable debuggable;
 
 
     // How do set up IMotorController and IEncoder so that lowerJoint == lowerEncoder
 
-    public ArmControl(IMotorController lowerJoint, IMotorController lowerJoint1, IMotorController upperJoint, Debuggable debuggable) {
+    public ArmControl(IMotorController lowerJoint, IMotorController lowerJoint1, IMotorController upperJoint, IDebuggable debuggable) {
         this.lowerJoint = lowerJoint;
         this.lowerJoint1 = lowerJoint1;
         this.upperJoint = upperJoint;

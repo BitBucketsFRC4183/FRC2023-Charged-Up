@@ -1,7 +1,7 @@
 package org.bitbuckets.arm;
 
 import org.bitbuckets.lib.hardware.IMotorController;
-import org.bitbuckets.lib.log.Debuggable;
+import org.bitbuckets.lib.log.IDebuggable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -13,7 +13,7 @@ class ArmControlTest {
     IMotorController lowerJoint;
     IMotorController lowerJoint1;
     IMotorController upperJoint;
-    Debuggable debuggable;
+    IDebuggable debuggable;
 
     ArmControl control;
 
@@ -22,7 +22,7 @@ class ArmControlTest {
         lowerJoint = mock(IMotorController.class);
         lowerJoint1 = mock(IMotorController.class);
         upperJoint = mock(IMotorController.class);
-        debuggable = mock(Debuggable.class);
+        debuggable = mock(IDebuggable.class);
 
         control = new ArmControl(lowerJoint, lowerJoint1, upperJoint, debuggable);
     }

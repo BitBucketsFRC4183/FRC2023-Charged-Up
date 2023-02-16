@@ -2,8 +2,8 @@ package org.bitbuckets.arm;
 
 import edu.wpi.first.wpilibj.Joystick;
 import org.bitbuckets.lib.ISetup;
-import org.bitbuckets.lib.ProcessPath;
-import org.bitbuckets.lib.log.Debuggable;
+import org.bitbuckets.lib.log.IDebuggable;
+import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.lib.util.MockingUtil;
 import org.bitbuckets.lib.vendor.spark.SparkSetup;
 
@@ -16,7 +16,7 @@ public class ArmSubsystemSetup implements ISetup<ArmSubsystem> {
     }
 
     @Override
-    public ArmSubsystem build(ProcessPath self) {
+    public ArmSubsystem build(IProcess self) {
         if (!isEnabled) {
             return MockingUtil.buddy(ArmSubsystem.class);
         }
@@ -27,9 +27,9 @@ public class ArmSubsystemSetup implements ISetup<ArmSubsystem> {
                 new SparkSetup(10, ArmConstants.UPPER_CONFIG, ArmConstants.UPPER_PID)
         );
 
-        ArmControl armControl = armControlSetup.build(self.addChild("arm-control"));
-        ArmInput armInput = new ArmInput(new Joystick(1), self.generateDebugger());
-        Debuggable debuggable = self.generateDebugger();
+        ArmControl armControl = self.childSetup("arm-control", armControlSetup);
+        ArmInput armInput = new ArmInput(new Joystick(1), self.getDebuggable());
+        IDebuggable debuggable = self.getDebuggable();
 
         return new ArmSubsystem(armInput, armControl, debuggable);
 

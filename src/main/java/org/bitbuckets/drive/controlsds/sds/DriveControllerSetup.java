@@ -1,8 +1,8 @@
 package org.bitbuckets.drive.controlsds.sds;
 
 import org.bitbuckets.lib.ISetup;
-import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.lib.hardware.IMotorController;
+import org.bitbuckets.lib.IProcess;
 
 public class DriveControllerSetup implements ISetup<IDriveController> {
 
@@ -13,8 +13,8 @@ public class DriveControllerSetup implements ISetup<IDriveController> {
     }
 
     @Override
-    public IDriveController build(ProcessPath self) {
+    public IDriveController build(IProcess self) {
         // pass our configured motorController back to the DriveController
-        return new DriveController(motor.build(self.addChild("motor")));
+        return new DriveController(self.inlineSetup(motor));
     }
 }

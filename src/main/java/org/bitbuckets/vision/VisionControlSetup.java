@@ -4,14 +4,11 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import org.bitbuckets.lib.ISetup;
-import org.bitbuckets.lib.ProcessPath;
-import org.bitbuckets.lib.log.Debuggable;
-import org.bitbuckets.lib.log.ILoggable;
-import org.bitbuckets.lib.log.LoggingConstants;
+import org.bitbuckets.lib.log.IDebuggable;
+import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.lib.util.MockingUtil;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
@@ -28,11 +25,7 @@ public class VisionControlSetup implements ISetup<IVisionControl> {
 
 
     @Override
-    public IVisionControl build(ProcessPath self) {
-
-        var p = self.generateSetupProfiler("startup");
-
-        p.markProcessing();
+    public IVisionControl build(IProcess self) {
 
         if (!isEnabled) {
             return MockingUtil.buddy(VisionControl.class);
@@ -50,13 +43,11 @@ public class VisionControlSetup implements ISetup<IVisionControl> {
         Transform3d robotToCamera = new Transform3d(new Translation3d(Units.inchesToMeters(13), 0, Units.inchesToMeters(11.5)), new Rotation3d());
         PhotonCamera photonCamera = new PhotonCamera("Arducam_OV9281_USB_Camera");
         PhotonPoseEstimator photonPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PhotonPoseEstimator.PoseStrategy.LOWEST_AMBIGUITY, photonCamera, robotToCamera);
-        Debuggable debuggable = self.generateDebugger();
+        IDebuggable debuggable = self.getDebuggable();
 
         VisionControl control = new VisionControl(robotToCamera, aprilTagFieldLayout, photonPoseEstimator, photonCamera, debuggable);
 
         self.registerLogLoop(control::logLoop);
-
-        p.markCompleted();
 
         return control;
     }

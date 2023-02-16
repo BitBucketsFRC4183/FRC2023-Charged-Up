@@ -1,8 +1,8 @@
 package org.bitbuckets.drive.controlsds.sds;
 
 import org.bitbuckets.lib.ISetup;
-import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.lib.log.ILoggable;
+import org.bitbuckets.lib.IProcess;
 
 public class SwerveModuleSetup implements ISetup<ISwerveModule> {
     final ISetup<IDriveController> driveController;
@@ -14,15 +14,16 @@ public class SwerveModuleSetup implements ISetup<ISwerveModule> {
     }
 
     @Override
-    public ISwerveModule build(ProcessPath self) {
-        ILoggable<double[]> swerveAngleVoltage = self.generateDoubleLoggers("command-degrees", "command-po");
-        SwerveModule swerveModule = new SwerveModule(
-                driveController.build(self.addChild("drive-controller")),
-                steerController.build(self.addChild("steer-controller")),
-                swerveAngleVoltage
-        );
+    public ISwerveModule build(IProcess self) {
+        ILoggable<Double> percentOutput = self.generateLogger(Double.class, "percent-command");
+        ILoggable<Double> angleCommand = self.generateLogger(Double.class, "angle-command");
 
-        self.registerLoop(swerveModule, 20, "swerve-log-loop");
+        SwerveModule swerveModule = new SwerveModule(
+                self.childSetup("drive-controller", driveController),
+                self.childSetup("steer-controller", steerController),
+                angleCommand,
+                percentOutput
+        );
 
         return swerveModule;
     }

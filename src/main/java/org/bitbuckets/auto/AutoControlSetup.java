@@ -4,19 +4,15 @@ import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import org.bitbuckets.lib.ISetup;
-import org.bitbuckets.lib.ProcessPath;
-import org.bitbuckets.lib.StartupProfiler;
+import org.bitbuckets.lib.IProcess;
 
 public class AutoControlSetup implements ISetup<IAutoControl> {
 
 
     @Override
-    public IAutoControl build(ProcessPath self) {
-        StartupProfiler load = self.generateSetupProfiler("load-auto-paths");
+    public IAutoControl build(IProcess self) {
 
-        load.markProcessing();
-
-        PathPlannerTrajectory[] traj = new PathPlannerTrajectory[0]; //bad
+        PathPlannerTrajectory[] traj; //bad
         try {
             PathPlannerTrajectory trajectory = PathPlanner.loadPath("test-path-1", new PathConstraints(1.25, 2.25));
             PathPlannerTrajectory trajectory1 = PathPlanner.loadPath("leave-community-2", new PathConstraints(4.0, 3.0));
@@ -29,12 +25,9 @@ public class AutoControlSetup implements ISetup<IAutoControl> {
                     trajectory, trajectory1, trajectory2, trajectory3, trajectory4, trajectory5, trajectory6
             };
         } catch (Exception e) {
-            load.markErrored(e);
+            throw new RuntimeException(e);
         }
-        //load paths
 
-
-        load.markCompleted();
 
 
         return new AutoControl(traj);

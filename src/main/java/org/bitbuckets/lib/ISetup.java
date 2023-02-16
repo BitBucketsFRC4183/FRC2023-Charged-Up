@@ -21,7 +21,7 @@ public interface ISetup<T> {
      * @param self a variety of tools.
      * @return a fully initialized object
      */
-    T build(ProcessPath self);
+    T build(IProcess self);
 
 
     /**
@@ -37,7 +37,7 @@ public interface ISetup<T> {
             T cached = null;
 
             @Override
-            public T build(ProcessPath self) {
+            public T build(IProcess self) {
                 if (cached != null) {
                     return cached;
                 }

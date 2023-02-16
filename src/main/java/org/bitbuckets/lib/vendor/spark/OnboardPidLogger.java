@@ -1,11 +1,12 @@
 package org.bitbuckets.lib.vendor.spark;
 
+import org.bitbuckets.lib.CanLogLoop;
 import org.bitbuckets.lib.log.ILoggable;
 
 /**
  * Log mattlib related stuff of the SparkRelativeMotorController
  */
-public class OnboardPidLogger implements Runnable {
+public class OnboardPidLogger implements CanLogLoop {
 
     final SparkRelativeMotorController motorController;
 
@@ -23,7 +24,7 @@ public class OnboardPidLogger implements Runnable {
     }
 
     @Override
-    public void run() {
+    public void logLoop() {
         positionSetpoint_mechanismRotations.log( motorController.getSetpoint_mechanismRotations() );
         encoderReadout_mechanismRotations.log( motorController.getMechanismPositionAccum_rot() );
         error_mechanismRotations.log( motorController.getError_mechanismRotations());

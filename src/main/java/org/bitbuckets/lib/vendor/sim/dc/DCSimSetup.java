@@ -3,10 +3,8 @@ package org.bitbuckets.lib.vendor.sim.dc;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
-import edu.wpi.first.wpilibj.simulation.FlywheelSim;
-import org.bitbuckets.drive.DriveConstants;
+import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.lib.ISetup;
-import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.lib.control.PIDConfig;
 import org.bitbuckets.lib.hardware.IMotorController;
 import org.bitbuckets.lib.hardware.MotorConfig;
@@ -27,17 +25,14 @@ public class DCSimSetup implements ISetup<IMotorController> {
     }
 
     @Override
-    public IMotorController build(ProcessPath self) {
+    public IMotorController build(IProcess self) {
         double n = 1 / config.encoderToMechanismCoefficient;
 
-        self.generateDebugger().log("the-coefficient", n);
+        self.getDebuggable().log("the-coefficient", n);
 
         DCMotorSim motorSim = new DCMotorSim(DCMotor.getNeo550(1), 1.0/ config.encoderToMechanismCoefficient, dcMotorConfig.momentOfInertia);
         PIDController pidController = new PIDController(pidConfig.kP, pidConfig.kI, pidConfig.kD);
-        DCSimController DCSimController = new DCSimController(config, motorSim, pidController, self.generateDebugger());
 
-        self.registerSimLoop(DCSimController, "dcsim");
-
-        return DCSimController;
+        return new DCSimController(config, motorSim, pidController, self.getDebuggable());
     }
 }

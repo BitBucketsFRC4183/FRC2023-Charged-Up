@@ -1,12 +1,12 @@
 package org.bitbuckets.elevator;
 
 import org.bitbuckets.auto.AutoSubsystem;
-import org.bitbuckets.lib.log.Debuggable;
+import org.bitbuckets.lib.log.IDebuggable;
 
 public class ElevatorSubsystem {
     final ElevatorControl elevatorControl;
     final ElevatorInput elevatorInput;
-    final Debuggable debug;
+    final IDebuggable debug;
     final AutoSubsystem autoSubsystem;
     final double storePosExtend = 0;
     final double storePosTilt = 0;
@@ -20,7 +20,7 @@ public class ElevatorSubsystem {
     final double highPosTilt = 0;
 
 
-    public ElevatorSubsystem(ElevatorControl elevatorControl, ElevatorInput elevatorInput, Debuggable debug, AutoSubsystem autoSubsystem) {
+    public ElevatorSubsystem(ElevatorControl elevatorControl, ElevatorInput elevatorInput, IDebuggable debug, AutoSubsystem autoSubsystem) {
         this.elevatorControl = elevatorControl;
         this.elevatorInput = elevatorInput;
         this.debug = debug;

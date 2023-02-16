@@ -2,21 +2,21 @@ package org.bitbuckets.lib.vendor.sim.dc;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
-import edu.wpi.first.wpilibj.simulation.FlywheelSim;
+import org.bitbuckets.lib.CanLoop;
 import org.bitbuckets.lib.hardware.IMotorController;
 import org.bitbuckets.lib.hardware.MotorConfig;
-import org.bitbuckets.lib.log.Debuggable;
+import org.bitbuckets.lib.log.IDebuggable;
 
 //TODO this needs to be run at 500 hz
-public class DCSimController implements IMotorController, Runnable{
+public class DCSimController implements IMotorController, CanLoop {
 
 
     final MotorConfig config;
     final DCMotorSim simulatedMotor;
     final PIDController simulatedPIDController;
-    final Debuggable debuggable;
+    final IDebuggable debuggable;
 
-    public  DCSimController(MotorConfig config, DCMotorSim simulatedMotor, PIDController simulatedPIDController, Debuggable debuggable) {
+    public  DCSimController(MotorConfig config, DCMotorSim simulatedMotor, PIDController simulatedPIDController, IDebuggable debuggable) {
         this.config = config;
         this.simulatedMotor = simulatedMotor;
         this.simulatedPIDController = simulatedPIDController;
@@ -85,7 +85,6 @@ public class DCSimController implements IMotorController, Runnable{
 
     @Override
     public void moveToPosition(double position_encoderRotations) {
-        debuggable.out("moveToPosition called");
 
         //position raw should be encoder rotations
         double controllerOutput = simulatedPIDController.calculate(getPositionRaw(), position_encoderRotations);
@@ -115,7 +114,7 @@ public class DCSimController implements IMotorController, Runnable{
     }
 
     @Override
-    public void run() {
+    public void loop() {
         simulatedMotor.update(0.02); //TODO this needs to be accurate
 
         position = position + simulatedMotor.getAngularVelocityRadPerSec() * 0.02 / 2.0 / Math.PI;

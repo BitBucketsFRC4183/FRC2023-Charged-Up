@@ -1,9 +1,9 @@
 package org.bitbuckets.drive.controlsds.sds;
 
 import org.bitbuckets.lib.ISetup;
-import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.lib.hardware.IAbsoluteEncoder;
 import org.bitbuckets.lib.hardware.IMotorController;
+import org.bitbuckets.lib.IProcess;
 
 public class SteerControllerSetup implements ISetup<ISteerController> {
 
@@ -25,10 +25,10 @@ public class SteerControllerSetup implements ISetup<ISteerController> {
     }
 
     @Override
-    public ISteerController build(ProcessPath self) {
+    public ISteerController build(IProcess self) {
         var controller = new SteerController(
-                motor.build(self.addChild("motor")),
-                encoder.build(self.addChild("encoder")),
+                self.inlineSetup(motor),
+                self.inlineSetup(encoder),
                 sensorPositionCoefficient
         );
 

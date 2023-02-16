@@ -1,9 +1,10 @@
 package org.bitbuckets.lib.vendor.spark;
 
 import com.revrobotics.SparkMaxLimitSwitch;
+import org.bitbuckets.lib.CanLogLoop;
 import org.bitbuckets.lib.log.ILoggable;
 
-public class LimitSwitchLogger implements Runnable {
+public class LimitSwitchLogger implements CanLogLoop {
 
     final ILoggable<Boolean> data;
     final SparkMaxLimitSwitch limitSwitch;
@@ -14,7 +15,7 @@ public class LimitSwitchLogger implements Runnable {
     }
 
     @Override
-    public void run() {
+    public void logLoop() {
         data.log(limitSwitch.isPressed());
     }
 }
