@@ -16,6 +16,8 @@ class ArmControlTest {
     IMotorController lowerJoint1;
     IMotorController upperJoint;
     Debuggable debuggable;
+    IPIDCalculator lowerJointPID;
+    IPIDCalculator upperJointPID;
 
     ArmControl control;
 
@@ -63,16 +65,16 @@ class ArmControlTest {
     void humanIntake() {
         // we should move the mechanism
         control.humanIntake();
-        verify(lowerJoint).moveToPosition_mechanismRotations(anyDouble());
-        verify(upperJoint).moveToPosition_mechanismRotations(anyDouble());
+        verify(lowerJoint).moveAtVoltage(anyDouble());
+        verify(upperJoint).moveAtVoltage(anyDouble());
     }
 
     @Test
     void storeArm() {
         // we should move the mechanism
         control.storeArm();
-        verify(lowerJoint).moveToPosition_mechanismRotations(anyDouble());
-        verify(upperJoint).moveToPosition_mechanismRotations(anyDouble());
+        verify(lowerJoint).moveAtVoltage(anyDouble());
+        verify(upperJoint).moveAtVoltage(anyDouble());
     }
 
     @Test
@@ -95,8 +97,8 @@ class ArmControlTest {
     void scoreMid() {
         // we should move the mechanism
         control.scoreMid();
-        verify(lowerJoint).moveToPosition_mechanismRotations(anyDouble());
-        verify(upperJoint).moveToPosition_mechanismRotations(anyDouble());
+        verify(lowerJoint).moveAtVoltage(anyDouble());
+        verify(upperJoint).moveAtVoltage(anyDouble());
     }
 
     @Test
