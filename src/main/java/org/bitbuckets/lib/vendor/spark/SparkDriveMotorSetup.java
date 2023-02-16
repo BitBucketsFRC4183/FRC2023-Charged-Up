@@ -2,7 +2,6 @@ package org.bitbuckets.lib.vendor.spark;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
-import com.revrobotics.RelativeEncoder;
 import org.bitbuckets.drive.controlsds.sds.SwerveModuleConfiguration;
 import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.lib.control.PIDConfig;
@@ -21,7 +20,7 @@ public class SparkDriveMotorSetup extends SparkSetup {
     double nominalVoltage = 12;
 
     public SparkDriveMotorSetup(int canId, MotorConfig motorConfig, SwerveModuleConfiguration swerveModuleConfiguration) {
-        super(canId, motorConfig, new PIDConfig(0,0,0,0));
+        super(canId, motorConfig, new PIDConfig(0, 0, 0, 0));
         this.swerveModuleConfiguration = swerveModuleConfiguration;
     }
 
@@ -45,11 +44,6 @@ public class SparkDriveMotorSetup extends SparkSetup {
         // Set neutral mode to brake
         neo.setIdleMode(CANSparkMax.IdleMode.kBrake);
 
-        // Setup encoder
-        RelativeEncoder encoder = neo.getEncoder();
-        double positionConversionFactor = Math.PI * swerveModuleConfiguration.getWheelDiameter() * swerveModuleConfiguration.getDriveReduction();
-        encoder.setPositionConversionFactor(positionConversionFactor);
-        encoder.setVelocityConversionFactor(positionConversionFactor / 60.0);
 
         return motor;
 

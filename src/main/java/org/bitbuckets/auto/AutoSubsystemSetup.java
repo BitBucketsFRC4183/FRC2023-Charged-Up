@@ -1,5 +1,6 @@
 package org.bitbuckets.auto;
 
+import edu.wpi.first.wpilibj.Joystick;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.lib.StartupProfiler;
@@ -14,6 +15,7 @@ import org.bitbuckets.lib.util.MockingUtil;
 public class AutoSubsystemSetup implements ISetup<AutoSubsystem> {
 
     final boolean enabled;
+
 
     public AutoSubsystemSetup(boolean enabled) {
         this.enabled = enabled;
@@ -32,6 +34,7 @@ public class AutoSubsystemSetup implements ISetup<AutoSubsystem> {
         IValueTuner<AutoPath> pathTuner = self.generateEnumTuner("path", AutoPath.class, AutoPath.NONE);
         Debuggable debuggable = self.generateDebugger();
         AutoSubsystem subsystem = new AutoSubsystem(pathTuner, autoControl, debuggable);
+
 
         self.registerLogLoop(subsystem::logLoop);
 

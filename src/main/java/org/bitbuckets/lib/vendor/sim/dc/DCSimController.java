@@ -2,8 +2,10 @@ package org.bitbuckets.lib.vendor.sim.dc;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
+import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import org.bitbuckets.lib.hardware.IMotorController;
 import org.bitbuckets.lib.hardware.MotorConfig;
+import org.bitbuckets.lib.log.Debuggable;
 
 //TODO this needs to be run at 500 hz
 public class DCSimController implements IMotorController, Runnable{
@@ -12,11 +14,13 @@ public class DCSimController implements IMotorController, Runnable{
     final MotorConfig config;
     final DCMotorSim simulatedMotor;
     final PIDController simulatedPIDController;
+    final Debuggable debuggable;
 
-    public DCSimController(MotorConfig config, DCMotorSim simulatedMotor, PIDController simulatedPIDController) {
+    public  DCSimController(MotorConfig config, DCMotorSim simulatedMotor, PIDController simulatedPIDController, Debuggable debuggable) {
         this.config = config;
         this.simulatedMotor = simulatedMotor;
         this.simulatedPIDController = simulatedPIDController;
+        this.debuggable = debuggable;
     }
 
 
@@ -40,10 +44,12 @@ public class DCSimController implements IMotorController, Runnable{
         return config.timeCoefficient;
     }
 
+    double position = 0;
+
     @Override
     public double getPositionRaw() {
-
-        return simulatedMotor.getAngularPositionRotations() ;
+        return simulatedMotor.getAngularPositionRad() / 2.0 / Math.PI;
+        //return position ;
     }
 
     @Override
@@ -53,7 +59,7 @@ public class DCSimController implements IMotorController, Runnable{
 
     @Override
     public void forceOffset(double offsetUnits_baseUnits) {
-        throw new IllegalStateException("Cannot use force offset on simulated motor yet :( sorry!");
+        //do nothing for testing
     }
 
     @Override
@@ -63,21 +69,30 @@ public class DCSimController implements IMotorController, Runnable{
 
     @Override
     public void moveAtVoltage(double voltage) {
+        //debuggable.out("moveAtVoltage called with" + voltage);
+        lastVoltage = voltage;
+
         simulatedMotor.setInputVoltage(voltage);
     }
 
     @Override
     public void moveAtPercent(double percent) {
-        simulatedMotor.setInputVoltage(percent * 12.0); //voltage time\
+
+        throw new UnsupportedOperationException();
+        //simulatedMotor.setInputVoltage(percent * 12.0); //voltage time\
     }
 
     double lastSetpoint = 0.0;
+    double lastVoltage = 0.0;
 
     @Override
     public void moveToPosition(double position_encoderRotations) {
+        debuggable.out("moveToPosition called");
+
         //position raw should be encoder rotations
         double controllerOutput = simulatedPIDController.calculate(getPositionRaw(), position_encoderRotations);
         lastSetpoint = position_encoderRotations;
+        lastVoltage = controllerOutput;
 
         simulatedMotor.setInputVoltage(controllerOutput);
     }
@@ -98,6 +113,16 @@ public class DCSimController implements IMotorController, Runnable{
     }
 
     @Override
+    public double getVoltage() {
+        return lastVoltage;
+    }
+
+    @Override
+    public double getCurrent() {
+        return simulatedMotor.getCurrentDrawAmps();
+    }
+
+    @Override
     public <T> T rawAccess(Class<T> clazz) throws UnsupportedOperationException {
         throw new IllegalStateException("it's a sim motor you buffoon");
     }
@@ -105,6 +130,17 @@ public class DCSimController implements IMotorController, Runnable{
     @Override
     public void run() {
         simulatedMotor.update(0.02); //TODO this needs to be accurate
+
+        position = position + simulatedMotor.getAngularVelocityRadPerSec() * 0.02 / 2.0 / Math.PI;
+
+        debuggable.log("position-mechanism", getPositionMechanism_meters());
+        debuggable.log("velocity-mechanism", getVelocityMechanism_metersPerSecond());
+        debuggable.log("velocity-encoder", getVelocityEncoder_metersPerSecond());
+        debuggable.log("velocity-raw", getVelocityRaw());
+
+        debuggable.log("rot-to-meter-coef",config.rotationToMeterCoefficient);
+        debuggable.log("enc-to-mech",config.encoderToMechanismCoefficient);
+        debuggable.log("rpm", simulatedMotor.getAngularVelocityRPM());
     }
 
 

@@ -13,13 +13,15 @@ import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.lib.StartupProfiler;
 import org.bitbuckets.lib.log.Debuggable;
 import org.bitbuckets.vision.IVisionControl;
+import org.bitbuckets.vision.VisionConstants2;
 
 
-public class OdometryControlSetup implements ISetup<OdometryControl> {
+public class OdometryControlSetup implements ISetup<IOdometryControl> {
 
 
     final IDriveControl control;
     final IVisionControl visionControl;
+
     final int pidgeonId;
 
     public OdometryControlSetup(IDriveControl control, IVisionControl visionControl, int pidgeonId1) {
@@ -29,7 +31,7 @@ public class OdometryControlSetup implements ISetup<OdometryControl> {
     }
 
     @Override
-    public OdometryControl build(ProcessPath self) {
+    public IOdometryControl build(ProcessPath self) {
         StartupProfiler initializePidgeon = self.generateSetupProfiler("init-pidgeon");
         SwerveDrivePoseEstimator estimator = new SwerveDrivePoseEstimator(
                 DriveConstants.KINEMATICS,
@@ -46,20 +48,21 @@ public class OdometryControlSetup implements ISetup<OdometryControl> {
         initializePidgeon.markProcessing();
         WPI_Pigeon2 pigeonIMU = new WPI_Pigeon2(pidgeonId);
         pigeonIMU.configFactoryDefault();
-        pigeonIMU.configMountPose(Pigeon2.AxisDirection.PositiveY, Pigeon2.AxisDirection.PositiveZ);
+        pigeonIMU.configMountPose(Pigeon2.AxisDirection.NegativeX, Pigeon2.AxisDirection.PositiveZ);
         initializePidgeon.markCompleted();
 
         Debuggable debug = self.generateDebugger();
-        OdometryControl odometryControl = new OdometryControl (
+
+        OdometryControl odometryControl = new OdometryControl(
                 debug,
                 control,
                 visionControl,
                 pigeonIMU,
-                estimator
-        );;
+                estimator);
 
         self.registerLogLoop(odometryControl::logLoop);
         self.registerLogicLoop(odometryControl::updateOdometryLoop);
+
 
         return odometryControl;
     }

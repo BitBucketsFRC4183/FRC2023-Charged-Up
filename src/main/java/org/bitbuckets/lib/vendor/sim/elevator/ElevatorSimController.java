@@ -93,6 +93,16 @@ public class ElevatorSimController implements IMotorController, Runnable {
     }
 
     @Override
+    public double getVoltage() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public double getCurrent() {
+        return elevatorSim.getCurrentDrawAmps();
+    }
+
+    @Override
     public <T> T rawAccess(Class<T> clazz) throws UnsupportedOperationException {
         throw new UnsupportedOperationException("Cannot do anything");
     }

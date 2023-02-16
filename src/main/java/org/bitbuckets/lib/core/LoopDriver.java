@@ -41,26 +41,15 @@ public class LoopDriver {
     }
 
     public void runPeriodic() {
-        long now = System.currentTimeMillis();
-
         for (Record record : loopWhenOn) {
-            if (now - record.lastDelayMs >= record.delayMs) {
-                record.lastDelayMs = now;
-
-                record.runnable.run();
-            }
+            record.runnable.run();
         }
     }
 
     public void runWhenSim() {
-        long now = System.currentTimeMillis();
 
         for (Record record : loopWhenSim) {
-            if (now - record.lastDelayMs >= record.delayMs) {
-                record.lastDelayMs = now;
-
-                record.runnable.run();
-            }
+            record.runnable.run();
         }
     }
 

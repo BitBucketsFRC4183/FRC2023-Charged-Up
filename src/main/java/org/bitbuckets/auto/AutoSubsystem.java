@@ -2,8 +2,10 @@ package org.bitbuckets.auto;
 
 import com.pathplanner.lib.PathPlannerTrajectory;
 import edu.wpi.first.wpilibj.DriverStation;
+import org.bitbuckets.drive.IDriveControl;
 import org.bitbuckets.lib.log.Debuggable;
 import org.bitbuckets.lib.tune.IValueTuner;
+import org.bitbuckets.odometry.IOdometryControl;
 
 import java.util.Optional;
 
@@ -13,6 +15,11 @@ public class AutoSubsystem {
     final IAutoControl autoControl;
     final Debuggable debug;
 
+
+    IDriveControl driveControl;
+
+    IOdometryControl odometryControl;
+
     public AutoSubsystem(IValueTuner<AutoPath> pathToUse, IAutoControl autoControl, Debuggable debug) {
         this.pathToUse = pathToUse;
         this.autoControl = autoControl;
@@ -20,6 +27,7 @@ public class AutoSubsystem {
     }
 
     AutoPathInstance instance;
+
     AutoFSM state = AutoFSM.DISABLED;
 
     public AutoFSM state() {
@@ -36,7 +44,6 @@ public class AutoSubsystem {
     }
 
     /**
-     *
      * @return state if in auto, otherwise an empty optional
      */
     public Optional<PathPlannerTrajectory.PathPlannerState> samplePathPlannerState() {
@@ -49,6 +56,7 @@ public class AutoSubsystem {
 
 
     int iteration = 0;
+
     public void runLoop() {
         switch (state) {
             case DISABLED:
@@ -99,12 +107,13 @@ public class AutoSubsystem {
     }
 
     AutoPath toUseLogOnly = AutoPath.NONE;
+
     void transitionToAutoRun() {
 
 
         AutoPath toUse = pathToUse.readValue();
         toUseLogOnly = toUse;
-        instance = autoControl.generateAndStartPath(toUse);
+        instance = autoControl.generateAndStartPath(toUse, driveControl.currentPositions(), odometryControl);
         iteration++;
 
     }
@@ -113,5 +122,13 @@ public class AutoSubsystem {
         debug.log("current-state", state);
         debug.log("actual-path", toUseLogOnly);
         debug.log("dashboard-path", pathToUse.readValue());
+    }
+
+    public void setDriveControl(IDriveControl driveControl) {
+        this.driveControl = driveControl;
+    }
+
+    public void setOdometryControl(IOdometryControl odometryControl) {
+        this.odometryControl = odometryControl;
     }
 }

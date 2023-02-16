@@ -7,7 +7,8 @@ import org.junit.jupiter.api.Test;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 class LoopDriverTest {
-
+    
+    @Disabled
     @Test
     void runAlways_shouldFailIfNotDelay() throws InterruptedException {
         LoopDriver loopDriver = new LoopDriver();

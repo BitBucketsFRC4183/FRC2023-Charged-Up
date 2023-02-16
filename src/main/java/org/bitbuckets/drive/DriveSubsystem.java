@@ -1,7 +1,9 @@
 package org.bitbuckets.drive;
 
 import com.pathplanner.lib.PathPlannerTrajectory;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Preferences;
 import org.bitbuckets.auto.AutoFSM;
@@ -13,7 +15,6 @@ import org.bitbuckets.lib.log.Debuggable;
 import org.bitbuckets.lib.tune.IValueTuner;
 import org.bitbuckets.odometry.IOdometryControl;
 import org.bitbuckets.vision.IVisionControl;
-import org.bitbuckets.vision.PhotonCalculationResult;
 
 import java.util.Optional;
 
@@ -35,6 +36,7 @@ public class DriveSubsystem {
     final IValueTuner<OrientationChooser> orientation;
     final Debuggable debuggable;
 
+
     public enum OrientationChooser {
         FIELD_ORIENTED,
         ROBOT_ORIENTED,
@@ -55,6 +57,8 @@ public class DriveSubsystem {
 
     DriveFSM state = DriveFSM.UNINITIALIZED;
 
+    Optional<Pose3d> visionTarget;
+
     public void runLoop() {
         switch (state) {
             case UNINITIALIZED:
@@ -69,6 +73,7 @@ public class DriveSubsystem {
                 break;
 
             case AUTO_PATHFINDING:
+
                 if (autoSubsystem.state() == AutoFSM.TELEOP) {
                     state = DriveFSM.TELEOP_NORMAL;
                     break;
@@ -91,7 +96,8 @@ public class DriveSubsystem {
                     state = DriveFSM.AUTO_PATHFINDING;
                     break;
                 }
-                if (input.isVisionGoPressed()) {
+                if (input.isVisionGoPressed() && visionControl.isTargTrue()) {
+                    visionTarget = visionControl.estimateVisionTargetPose();
                     state = DriveFSM.TELEOP_VISION;
                     break;
                 }
@@ -115,7 +121,7 @@ public class DriveSubsystem {
                 break;
 
             case TELEOP_VISION:
-                if (!input.isVisionGoPressed()) {
+                if ((!input.isVisionGoPressed())) {
                     state = DriveFSM.TELEOP_NORMAL;
                     break;
                 }
@@ -130,19 +136,27 @@ public class DriveSubsystem {
                 teleopAutoheading();
                 break;
         }
+        debuggable.log("state", state.toString());
     }
 
     void teleopVision() {
-        Optional<Pose3d> res = visionControl.estimateTargetPose();
-        if (res.isEmpty()) return;
-        ChassisSpeeds speeds = holoControl.calculatePose2D(res.get().toPose2d(), 1, res.get().toPose2d().getRotation());
+        if (visionTarget.isPresent()) {
+            ChassisSpeeds speeds = holoControl.calculatePose2D(visionTarget.get().toPose2d(), 1, visionTarget.get().toPose2d().getRotation());
 
-        driveControl.drive(speeds);
+            driveControl.drive(speeds);
+        } else {
+            ChassisSpeeds speeds = new ChassisSpeeds(0, 0, 0);
+        }
+
+
     }
 
     void teleopNormal() {
         if (input.isResetGyroPressed()) {
             odometryControl.zero();
+        }
+        if (input.isResetOdoPressed()) {
+            odometryControl.setPos(Rotation2d.fromDegrees(0), driveControl.currentPositions(), new Pose2d(0, 0, Rotation2d.fromDegrees(0)));
         }
 
         double xOutput = input.getInputX() * driveControl.getMaxVelocity();
