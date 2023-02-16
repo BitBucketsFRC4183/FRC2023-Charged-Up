@@ -1,5 +1,6 @@
 package org.bitbuckets.auto;
 
+import edu.wpi.first.wpilibj.Joystick;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.log.IDebuggable;
 import org.bitbuckets.lib.IProcess;
@@ -28,6 +29,7 @@ public class AutoSubsystemSetup implements ISetup<AutoSubsystem> {
         IValueTuner<AutoPath> pathTuner = self.generateTuner(AutoPath.class, "path", AutoPath.NONE);
         IDebuggable debuggable = self.getDebuggable();
         AutoSubsystem subsystem = new AutoSubsystem(pathTuner, autoControl, debuggable);
+
 
         self.registerLogLoop(subsystem::logLoop);
 

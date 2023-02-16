@@ -17,6 +17,7 @@ public class AutoSubsystem implements HasLoop, HasLogLoop {
     final IAutoControl autoControl;
     final IDebuggable debug;
 
+
     IDriveControl driveControl;
     IOdometryControl odometryControl;
 

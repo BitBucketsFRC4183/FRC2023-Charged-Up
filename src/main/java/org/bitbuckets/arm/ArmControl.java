@@ -1,5 +1,6 @@
 package org.bitbuckets.arm;
 
+import org.bitbuckets.arm.kinematics.InverseKinematics;
 import org.bitbuckets.lib.hardware.IMotorController;
 import org.bitbuckets.lib.log.IDebuggable;
 
@@ -7,24 +8,27 @@ import org.bitbuckets.lib.log.IDebuggable;
 public class ArmControl {
 
 
-    final IMotorController lowerJoint;
     final IMotorController lowerJoint1;
+    final IMotorController lowerJoint2;
     final IMotorController upperJoint;
     final IDebuggable debuggable;
+
+    //final IPIDCalculator ffLowerArmCalculator;
+    //final IPIDCalculator ffUpperArmCalculator;
 
 
     // How do set up IMotorController and IEncoder so that lowerJoint == lowerEncoder
 
-    public ArmControl(IMotorController lowerJoint, IMotorController lowerJoint1, IMotorController upperJoint, IDebuggable debuggable) {
-        this.lowerJoint = lowerJoint;
+    public ArmControl(IMotorController lowerJoint1, IMotorController lowerJoint2, IMotorController upperJoint, IDebuggable debuggable) {
         this.lowerJoint1 = lowerJoint1;
+        this.lowerJoint2 = lowerJoint2;
         this.upperJoint = upperJoint;
         this.debuggable = debuggable;
     }
 
     public void calibrateLowerArm() {
-        lowerJoint.forceOffset(convertMechanismRotationtoRawRotation_lowerJoint(convertDegreesToRotation(0)));
         lowerJoint1.forceOffset(convertMechanismRotationtoRawRotation_lowerJoint(convertDegreesToRotation(0)));
+        lowerJoint2.forceOffset(convertMechanismRotationtoRawRotation_lowerJoint(convertDegreesToRotation(0)));
     }
 
     public void calibrateUpperArm() {
@@ -36,12 +40,12 @@ public class ArmControl {
 //        double lowerRotation = gearRatio * percentOutput / 360;
 //        lowerJoint.getPIDController().setReference(lowerRotation, CANSparkMax.ControlType.kPosition);
         //test if lower arm moves with outputs
-        lowerJoint.moveAtPercent(percentOutput * ArmConstants.CONTROL_JOINT_OUTPUT);
+        lowerJoint1.moveAtPercent(percentOutput * ArmConstants.CONTROL_JOINT_OUTPUT);
+        lowerJoint2.moveAtPercent(percentOutput * ArmConstants.CONTROL_JOINT_OUTPUT);
     }
 
 
     public void manuallyMoveUpperArm(double percentOutput) {
-
         upperJoint.moveAtPercent(percentOutput * ArmConstants.CONTROL_JOINT_OUTPUT);
     }
 
@@ -60,30 +64,38 @@ public class ArmControl {
 
 
     public boolean isReachable(double lowerAngle_degrees, double upperAngle_degrees) {
+        debuggable.log("lower-angle", lowerAngle_degrees);
+        debuggable.log("upper-angle", upperAngle_degrees);
+
         if (Double.isNaN(lowerAngle_degrees) || Double.isNaN(upperAngle_degrees)) {
-            debuggable.log("out-of-reach", false);
+            debuggable.log("is-reach", false);
             return false;
         } else {
-            debuggable.log("out-of-reach", true);
+            debuggable.log("is-reach", true);
             return true;
         }
     }
 
     // may change delta later
     public boolean isErrorSmallEnough(double delta) {
-        return lowerJoint.getError_mechanismRotations() < delta && upperJoint.getError_mechanismRotations() < delta;
+        debuggable.log("lowerJoint Error", Math.abs(lowerJoint1.getError_mechanismRotations()));
+        debuggable.log("upperJoint Error", Math.abs(Math.abs(upperJoint.getError_mechanismRotations())));
+
+        return Math.abs(lowerJoint1.getError_mechanismRotations()) < delta && Math.abs(upperJoint.getError_mechanismRotations()) < delta;
     }
 
 
     // Make sure to change/tune lowerAngle_degrees and upperAngle_degrees for each position
     public void stopArmMotors() {
-        lowerJoint.moveAtPercent(0);
+        lowerJoint1.moveAtPercent(0);
+        lowerJoint2.moveAtPercent(0);
         upperJoint.moveAtPercent(0);
     }
 
     public void goToCalibrationPosition() {
 
-        lowerJoint.moveToPosition_mechanismRotations(0);
+        lowerJoint1.moveToPosition_mechanismRotations(0);
+        lowerJoint2.moveToPosition_mechanismRotations(0);
         upperJoint.moveToPosition_mechanismRotations(0);
     }
 
@@ -100,7 +112,8 @@ public class ArmControl {
 
         //finding NaN errors
         if (isReachable(lowerAngle_degrees, upperAngle_degrees)) {
-            lowerJoint.moveToPosition_mechanismRotations(convertDegreesToRotation(lowerAngle_degrees));
+            lowerJoint1.moveToPosition_mechanismRotations(convertDegreesToRotation(lowerAngle_degrees));
+            lowerJoint2.moveToPosition_mechanismRotations(convertDegreesToRotation(lowerAngle_degrees));
             upperJoint.moveToPosition_mechanismRotations(convertDegreesToRotation(upperAngle_degrees));
 
         }
@@ -108,19 +121,30 @@ public class ArmControl {
     }
 
     public void storeArm() {
+        /*
         InverseKinematics store = new InverseKinematics(ArmConstants.STORAGE_X, ArmConstants.STORAGE_Y);
         double lowerAngle_degrees = store.getLowerJoint_degrees();
         double upperAngle_degrees = store.getUpperJoint_degrees();
+
+
+
 
         debuggable.log("lower-kinematics", convertDegreesToRotation(lowerAngle_degrees));
         debuggable.log("upper-kinematics", convertDegreesToRotation(upperAngle_degrees));
 
         //finding NaN errors
         if (isReachable(lowerAngle_degrees, upperAngle_degrees)) {
-            lowerJoint.moveToPosition_mechanismRotations(convertDegreesToRotation(lowerAngle_degrees));
+            lowerJoint1.moveToPosition_mechanismRotations(convertDegreesToRotation(lowerAngle_degrees));
+            lowerJoint2.moveToPosition_mechanismRotations(convertDegreesToRotation(lowerAngle_degrees));
             upperJoint.moveToPosition_mechanismRotations(convertDegreesToRotation(upperAngle_degrees));
         }
 
+         */
+        if (isReachable(0, 10)) {
+            lowerJoint1.moveToPosition_mechanismRotations(convertDegreesToRotation(45));
+            lowerJoint2.moveToPosition_mechanismRotations(convertDegreesToRotation(45));
+            upperJoint.moveToPosition_mechanismRotations(convertDegreesToRotation(90));
+        }
     }
 
     public void prepareArm() {
@@ -135,8 +159,14 @@ public class ArmControl {
 
         //finding NaN errors
         if (isReachable(lowerAngle_degrees, upperAngle_degrees)) {
-            lowerJoint.moveToPosition_mechanismRotations(convertDegreesToRotation(lowerAngle_degrees));
+
+            //lowerJoint1.moveAtVoltage(ffLowerArmCalculator.calculateNext(lowerJoint1.getMechanismPositionAccum_rot(), convertDegreesToRotation(lowerAngle_degrees)));
+
+            lowerJoint1.moveToPosition_mechanismRotations(convertDegreesToRotation(lowerAngle_degrees));
+            lowerJoint2.moveToPosition_mechanismRotations(convertDegreesToRotation(lowerAngle_degrees));
             upperJoint.moveToPosition_mechanismRotations(convertDegreesToRotation(upperAngle_degrees));
+
+            //waiting for ff to be finished
         }
     }
 
@@ -150,8 +180,16 @@ public class ArmControl {
 
         //finding NaN errors
         if (isReachable(lowerAngle_degrees, upperAngle_degrees)) {
-            lowerJoint.moveToPosition_mechanismRotations(convertDegreesToRotation(lowerAngle_degrees));
+
+            lowerJoint1.moveToPosition_mechanismRotations(convertDegreesToRotation(lowerAngle_degrees));
+            lowerJoint2.moveToPosition_mechanismRotations(convertDegreesToRotation(lowerAngle_degrees));
             upperJoint.moveToPosition_mechanismRotations(convertDegreesToRotation(upperAngle_degrees));
+
+            /*
+            lowerJoint1.moveAtVoltage(ffLowerArmCalculator.calculateNext(lowerJoint1.getMechanismPositionAccum_rot(), convertDegreesToRotation(lowerAngle_degrees)));
+            lowerJoint2.moveAtVoltage(ffLowerArmCalculator.calculateNext(lowerJoint2.getMechanismPositionAccum_rot(), convertDegreesToRotation(lowerAngle_degrees)));
+            upperJoint.moveAtVoltage(ffUpperArmCalculator.calculateNext(upperJoint.getMechanismPositionAccum_rot(), convertDegreesToRotation(upperAngle_degrees)));
+             */
         }
 
 
@@ -170,6 +208,7 @@ public class ArmControl {
          * InverseKinematics midNode = new InverseKinematics(1.169, 0.35); works
          */
 
+
         InverseKinematics midNode = new InverseKinematics(ArmConstants.MID_NODE_X, ArmConstants.MID_NODE_Y);
         double lowerAngle_degrees = midNode.getLowerJoint_degrees();
         double upperAngle_degrees = midNode.getUpperJoint_degrees();
@@ -179,11 +218,21 @@ public class ArmControl {
 
         //finding NaN errors
         if (isReachable(lowerAngle_degrees, upperAngle_degrees)) {
-            lowerJoint.moveToPosition_mechanismRotations(convertDegreesToRotation(lowerAngle_degrees));
-            upperJoint.moveToPosition_mechanismRotations(convertDegreesToRotation(upperAngle_degrees));
-        }
 
+            lowerJoint1.moveToPosition_mechanismRotations(convertDegreesToRotation(lowerAngle_degrees));
+            lowerJoint2.moveToPosition_mechanismRotations(convertDegreesToRotation(lowerAngle_degrees));
+            upperJoint.moveToPosition_mechanismRotations(convertDegreesToRotation(upperAngle_degrees));
+
+
+            /*
+            lowerJoint1.moveAtVoltage(ffLowerArmCalculator.calculateNext(lowerJoint1.getMechanismPositionAccum_rot(), convertDegreesToRotation(lowerAngle_degrees)));
+            lowerJoint2.moveAtVoltage(ffLowerArmCalculator.calculateNext(lowerJoint2.getMechanismPositionAccum_rot(), convertDegreesToRotation(lowerAngle_degrees)));
+            upperJoint.moveAtVoltage(ffUpperArmCalculator.calculateNext(upperJoint.getMechanismPositionAccum_rot(), convertDegreesToRotation(upperAngle_degrees)));
+             */
+            //waiting for ff to be finished
+        }
     }
+
 
     public void scoreHigh() {
         InverseKinematics highNode = new InverseKinematics(ArmConstants.HIGH_NODE_X, ArmConstants.HIGH_NODE_Y);
@@ -195,10 +244,17 @@ public class ArmControl {
 
         //finding NaN errors
         if (isReachable(lowerAngle_degrees, upperAngle_degrees)) {
-            lowerJoint.moveToPosition_mechanismRotations(convertDegreesToRotation(lowerAngle_degrees));
+
+            lowerJoint1.moveToPosition_mechanismRotations(convertDegreesToRotation(lowerAngle_degrees));
+            lowerJoint2.moveToPosition_mechanismRotations(convertDegreesToRotation(lowerAngle_degrees));
             upperJoint.moveToPosition_mechanismRotations(convertDegreesToRotation(upperAngle_degrees));
+
+            //lowerJoint1.moveAtVoltage(ffLowerArmCalculator.calculateNext(lowerJoint1.getMechanismPositionAccum_rot(), convertDegreesToRotation(lowerAngle_degrees)));
+            //lowerJoint2.moveAtVoltage(ffLowerArmCalculator.calculateNext(lowerJoint2.getMechanismPositionAccum_rot(), convertDegreesToRotation(lowerAngle_degrees)));
+            //upperJoint.moveAtVoltage(ffUpperArmCalculator.calculateNext(upperJoint.getMechanismPositionAccum_rot(), convertDegreesToRotation(upperAngle_degrees)));
+
         }
     }
-
-
 }
+
+
