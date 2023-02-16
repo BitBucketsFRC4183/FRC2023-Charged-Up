@@ -3,20 +3,21 @@ package org.bitbuckets.auto;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import edu.wpi.first.wpilibj.DriverStation;
 import org.bitbuckets.drive.IDriveControl;
+import org.bitbuckets.lib.HasLogLoop;
+import org.bitbuckets.lib.HasLoop;
 import org.bitbuckets.lib.log.IDebuggable;
 import org.bitbuckets.lib.tune.IValueTuner;
 import org.bitbuckets.odometry.IOdometryControl;
 
 import java.util.Optional;
 
-public class AutoSubsystem {
+public class AutoSubsystem implements HasLoop, HasLogLoop {
 
     final IValueTuner<AutoPath> pathToUse;
     final IAutoControl autoControl;
     final IDebuggable debug;
 
     IDriveControl driveControl;
-
     IOdometryControl odometryControl;
 
     public AutoSubsystem(IValueTuner<AutoPath> pathToUse, IAutoControl autoControl, IDebuggable debug) {
@@ -55,7 +56,8 @@ public class AutoSubsystem {
 
     int iteration = 0;
 
-    public void runLoop() {
+    @Override
+    public void loop() {
         switch (state) {
             case DISABLED:
                 if (DriverStation.isAutonomousEnabled()) {
@@ -116,7 +118,8 @@ public class AutoSubsystem {
 
     }
 
-    void logLoop() {
+    @Override
+    public void logLoop() {
         debug.log("current-state", state);
         debug.log("actual-path", toUseLogOnly);
         debug.log("dashboard-path", pathToUse.readValue());

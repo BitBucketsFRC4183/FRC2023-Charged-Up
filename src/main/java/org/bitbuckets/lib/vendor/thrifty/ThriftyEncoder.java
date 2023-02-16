@@ -1,7 +1,7 @@
 package org.bitbuckets.lib.vendor.thrifty;
 
 import edu.wpi.first.wpilibj.AnalogInput;
-import org.bitbuckets.lib.CanLogLoop;
+import org.bitbuckets.lib.HasLogLoop;
 import org.bitbuckets.lib.hardware.IAbsoluteEncoder;
 import org.bitbuckets.lib.log.ILoggable;
 
@@ -9,7 +9,7 @@ import org.bitbuckets.lib.log.ILoggable;
 /**
  * It works now don't touch it
  */
-public class ThriftyEncoder implements IAbsoluteEncoder, CanLogLoop {
+public class ThriftyEncoder implements IAbsoluteEncoder, HasLogLoop {
 
     private static final double READ_VOLTAGE_MAX = 4.8;
     final AnalogInput input;

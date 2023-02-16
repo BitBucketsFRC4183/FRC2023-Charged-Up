@@ -3,6 +3,8 @@ package org.bitbuckets.lib.tune;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableEvent;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
@@ -17,12 +19,23 @@ public class EnumTuner<T extends Enum<T>> implements IForceSendTuner<T>, Consume
     final NetworkTableEntry entry;
     final Consumer<NetworkTableEvent> passTo;
 
+    static {
+        SendableChooser<String> ass = new SendableChooser<>();
+        ass.setDefaultOption("anal", "oo");
+        ass.addOption("butt", "butt");
+        SmartDashboard.putData(ass);
+
+    }
+
+    int i = 0;
+
     public EnumTuner(NetworkTable subtable, Class<T> enumType, T defaultValue, Consumer<NetworkTableEvent> passTo) {
         this.passTo = passTo;
         //setup shuffleboard support
         subtable.getEntry(".controllable").setBoolean(true);
-        subtable.getEntry(".name").setString(subtable.getPath());
+        subtable.getEntry(".name").setString("mode " + ++i);
         subtable.getEntry(".type").setString("String Chooser");
+        subtable.getEntry(".instance").setInteger(0);
         subtable.getEntry("default").setString((defaultValue).name());
 
         List<String> toBuild = new ArrayList<>();
@@ -38,8 +51,8 @@ public class EnumTuner<T extends Enum<T>> implements IForceSendTuner<T>, Consume
         this.enumType = enumType;
         this.cachedValue = new AtomicReference<>(new AtomicRecord<T>(defaultValue, false));
 
-        entry.getInstance().addListener(entry, EnumSet.of(NetworkTableEvent.Kind.kValueRemote), this);
-        entry.getInstance().addListener(entry, EnumSet.of(NetworkTableEvent.Kind.kValueRemote), passTo);
+        //entry.getInstance().addListener(entry, EnumSet.of(NetworkTableEvent.Kind.kValueRemote), this);
+        //entry.getInstance().addListener(entry, EnumSet.of(NetworkTableEvent.Kind.kValueRemote), passTo);
     }
 
     @Override

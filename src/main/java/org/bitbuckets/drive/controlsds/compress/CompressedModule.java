@@ -6,9 +6,9 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import org.bitbuckets.drive.controlsds.sds.ISwerveModule;
 import org.bitbuckets.lib.hardware.IAbsoluteEncoder;
 import org.bitbuckets.lib.hardware.IMotorController;
-import org.bitbuckets.lib.CanLogLoop;
+import org.bitbuckets.lib.HasLogLoop;
 
-public class CompressedModule implements ISwerveModule, CanLogLoop {
+public class CompressedModule implements ISwerveModule, HasLogLoop {
 
     final IMotorController driveMotor;
     final IMotorController steerMotor;

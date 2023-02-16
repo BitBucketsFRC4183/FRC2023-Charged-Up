@@ -1,12 +1,12 @@
 package org.bitbuckets.lib.vendor.spark;
 
-import org.bitbuckets.lib.CanLogLoop;
+import org.bitbuckets.lib.HasLogLoop;
 import org.bitbuckets.lib.log.ILoggable;
 
 /**
  * Log mattlib related stuff of the SparkRelativeMotorController
  */
-public class OnboardPidLogger implements CanLogLoop {
+public class OnboardPidLogger implements HasLogLoop {
 
     final SparkRelativeMotorController motorController;
 

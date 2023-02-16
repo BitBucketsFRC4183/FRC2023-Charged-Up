@@ -3,7 +3,7 @@ package org.bitbuckets.lib;
 /**
  * Designed to kill the robot
  */
-public class SimulatorKiller implements CanLoop {
+public class SimulatorKiller implements HasLoop {
 
     //only should be registered if..
 

@@ -19,13 +19,13 @@ public class RobotSetup implements ISetup<Void> {
     @Override
     public Void build(IProcess self) {
 
-        AutoSubsystem autoSubsystem = self.childSetup("auto-system", new AutoSubsystemSetup(true));
+        AutoSubsystem autoSubsystem = self.childSetup("auto-system", new AutoSubsystemSetup(false));
         IVisionControl visionControl = self.childSetup("vision-system", new VisionControlSetup(false));
         ElevatorSubsystem elevatorSubsystem = self.childSetup("elevator-system", new ElevatorSubsystemSetup(false, autoSubsystem));
-        ArmSubsystem armSubsystem = self.childSetup("arm-system", new ArmSubsystemSetup(false));
+        ArmSubsystem armSubsystem = self.childSetup("arm-system", new ArmSubsystemSetup(true));
 
         DriveSubsystemSetup driveSubsystem = new DriveSubsystemSetup(
-                true,
+                false,
                 false,
                 autoSubsystem,
                 visionControl

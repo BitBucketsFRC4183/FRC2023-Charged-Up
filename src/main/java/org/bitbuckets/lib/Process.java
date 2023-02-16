@@ -1,9 +1,10 @@
-package org.bitbuckets.lib.log;
+package org.bitbuckets.lib;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
-import org.bitbuckets.lib.*;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import org.bitbuckets.lib.core.Path;
+import org.bitbuckets.lib.log.*;
 import org.bitbuckets.lib.tune.EnumTuner;
 import org.bitbuckets.lib.tune.IForceSendTuner;
 import org.bitbuckets.lib.tune.IValueTuner;
@@ -16,8 +17,8 @@ public class Process implements IProcess {
 
     final List<Process> children = new ArrayList<>();
 
-    final List<CanLoop> runLogic = new ArrayList<>();
-    final List<CanLogLoop> runLogging = new ArrayList<>();
+    final List<HasLoop> runLogic = new ArrayList<>();
+    final List<HasLogLoop> runLogging = new ArrayList<>();
 
     final NetworkTable table;
     final Path selfPath;
@@ -73,14 +74,22 @@ public class Process implements IProcess {
 
         if (logDataType == Double.class) {
             log = a -> sub.setDouble((Double) a);
+            sub.setDouble(0.0);
         }
 
         if (logDataType == Boolean.class) {
             log = a -> sub.setBoolean((Boolean) a);
+            sub.setBoolean(false);
         }
 
         if (logDataType == String.class) {
             log = a -> sub.setString((String) a);
+            sub.setString("default string");
+        }
+
+        if (logDataType.isEnum()) {
+            log = a -> sub.setString(a.toString());
+            sub.setString("default enum");
         }
 
         if (log != null) {
@@ -91,12 +100,12 @@ public class Process implements IProcess {
     }
 
     @Override
-    public void registerLogLoop(CanLogLoop loop) {
+    public void registerLogLoop(HasLogLoop loop) {
         runLogging.add(loop);
     }
 
     @Override
-    public void registerLogicLoop(CanLoop loop) {
+    public void registerLogicLoop(HasLoop loop) {
         runLogic.add(loop);
     }
 
@@ -106,6 +115,7 @@ public class Process implements IProcess {
         //if process is disabled, do nothing
         if (currentLevel > ProcessMode.DISABLED.level) return;
 
+
         //run children first
         for (Process process : children) { //TODO profile children
             process.run();
@@ -113,15 +123,16 @@ public class Process implements IProcess {
 
         //run own logic loops
 
-        for (CanLoop canLoop : runLogic) {
-            canLoop.loop();
+        for (HasLoop hasLoop : runLogic) {
+            hasLoop.loop();
         }
 
         //If allowed to, run logging loop
 
-        if (currentLevel > ProcessMode.LOG_PROFILING.level) {
-            for (CanLogLoop canLogLoop : runLogging) {
-                canLogLoop.logLoop();
+        if (currentLevel <= ProcessMode.LOG_PROFILING.level) {
+            for (HasLogLoop hasLogLoop : runLogging) {
+                hasLogLoop.logLoop();
+                System.out.println("AAAAA");
             }
         }
 
@@ -144,12 +155,13 @@ public class Process implements IProcess {
 
     @Override
     public <T> T childSetup(String key, ISetup<T> setup) {
+
         Path childPath = selfPath.append(key);
         NetworkTable childTable = table.getSubTable(key);
-
-        NetworkTable childMode = childTable.getInstance().getTable("mattlib").getSubTable(childPath.getAsFlatTablePath() + "-set-mode");
+        NetworkTable childMode = childTable.getInstance().getTable("mattlib/").getSubTable( childPath.getAsTablePath() + "mode");
 
         //setup metadata in ShuffleBoard
+
 
 
         //setup tuner that can change values internally
@@ -160,6 +172,8 @@ public class Process implements IProcess {
                 e -> forceTo(ProcessMode.valueOf(e.valueData.value.getString()))
         );
 
+
+
         //setup console for writing data to
         IConsole childConsole = new ProcessConsole(childModeTuner, childPath);
         IDebuggable childDebuggable = new NetworkDebuggable(childTable, childModeTuner);
@@ -167,9 +181,17 @@ public class Process implements IProcess {
         Process child = new Process(childTable, childPath, childConsole, childModeTuner, childDebuggable);
         children.add(child);
 
-        //TODO automatically register any hasLoops on child...
+        var p = setup.build(child);
 
-        return setup.build(child);
+        if (p instanceof HasLoop) {
+            child.registerLogicLoop((HasLoop) p);
+        }
+
+        if (p instanceof HasLogLoop) {
+            child.registerLogLoop((HasLogLoop) p);
+        }
+
+        return p;
     }
 
     @Override
@@ -177,7 +199,14 @@ public class Process implements IProcess {
         return setup.build(this);
     }
 
-    public static Process root() {
-        throw new UnsupportedOperationException();
+    public static Process root(NetworkTable root) {
+        NetworkTable childMode = NetworkTableInstance.getDefault().getTable("mattlib").getSubTable("root" + "-set-mode");
+
+        return new Process(
+                root,
+                new Path(new String[0]),
+                new NoopsConsole(),
+                new EnumTuner<>(childMode, ProcessMode.class, ProcessMode.LOG_COMPETITION, a-> {}),
+                new NoopsDebuggable());
     }
 }

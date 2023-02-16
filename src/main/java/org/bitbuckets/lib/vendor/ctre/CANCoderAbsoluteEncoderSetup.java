@@ -40,6 +40,6 @@ public class CANCoderAbsoluteEncoderSetup implements ISetup<IAbsoluteEncoder> {
         ILoggable<Double> raw = self.generateLogger(Double.class, "raw-angle-degrees");
         ILoggable<Double> ang = self.generateLogger(Double.class, "angle-degrees");
 
-        return new CANCoderAbsoluteEncoder(encoder, raw, ang);
+        return new HasCoderAbsoluteEncoder(encoder, raw, ang);
     }
 }

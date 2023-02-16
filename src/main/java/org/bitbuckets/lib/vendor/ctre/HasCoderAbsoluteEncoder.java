@@ -1,17 +1,17 @@
 package org.bitbuckets.lib.vendor.ctre;
 
 import com.ctre.phoenix.sensors.WPI_CANCoder;
-import org.bitbuckets.lib.CanLogLoop;
+import org.bitbuckets.lib.HasLogLoop;
 import org.bitbuckets.lib.hardware.IAbsoluteEncoder;
 import org.bitbuckets.lib.log.ILoggable;
 
-public class CANCoderAbsoluteEncoder implements IAbsoluteEncoder, CanLogLoop {
+public class HasCoderAbsoluteEncoder implements IAbsoluteEncoder, HasLogLoop {
     final WPI_CANCoder encoder;
 
     final ILoggable<Double> absolutePos;
     final ILoggable<Double> absoluteAngle;
 
-    public CANCoderAbsoluteEncoder(WPI_CANCoder encoder, ILoggable<Double> absolutePos, ILoggable<Double> absoluteAngle) {
+    public HasCoderAbsoluteEncoder(WPI_CANCoder encoder, ILoggable<Double> absolutePos, ILoggable<Double> absoluteAngle) {
         this.encoder = encoder;
         this.absolutePos = absolutePos;
         this.absoluteAngle = absoluteAngle;
