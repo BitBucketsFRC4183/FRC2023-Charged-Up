@@ -15,6 +15,9 @@ public class ArmControl {
     final IMotorController upperJoint;
     final Debuggable debuggable;
 
+    //final IPIDCalculator ffLowerArmCalculator;
+    //final IPIDCalculator ffUpperArmCalculator;
+
 
     // How do set up IMotorController and IEncoder so that lowerJoint == lowerEncoder
 
@@ -63,18 +66,24 @@ public class ArmControl {
 
 
     public boolean isReachable(double lowerAngle_degrees, double upperAngle_degrees) {
+        debuggable.log("lower-angle", lowerAngle_degrees);
+        debuggable.log("upper-angle", upperAngle_degrees);
+
         if (Double.isNaN(lowerAngle_degrees) || Double.isNaN(upperAngle_degrees)) {
-            debuggable.log("out-of-reach", false);
+            debuggable.log("is-reach", false);
             return false;
         } else {
-            debuggable.log("out-of-reach", true);
+            debuggable.log("is-reach", true);
             return true;
         }
     }
 
     // may change delta later
     public boolean isErrorSmallEnough(double delta) {
-        return lowerJoint1.getError_mechanismRotations() < delta && upperJoint.getError_mechanismRotations() < delta;
+        debuggable.log("lowerJoint Error", Math.abs(lowerJoint1.getError_mechanismRotations()));
+        debuggable.log("upperJoint Error", Math.abs(Math.abs(upperJoint.getError_mechanismRotations())));
+
+        return Math.abs(lowerJoint1.getError_mechanismRotations()) < delta && Math.abs(upperJoint.getError_mechanismRotations()) < delta;
     }
 
 
@@ -134,9 +143,9 @@ public class ArmControl {
 
          */
         if (isReachable(0, 10)) {
-            lowerJoint1.moveToPosition_mechanismRotations(convertDegreesToRotation(0));
-            lowerJoint2.moveToPosition_mechanismRotations(convertDegreesToRotation(0));
-            upperJoint.moveToPosition_mechanismRotations(convertDegreesToRotation(10));
+            lowerJoint1.moveToPosition_mechanismRotations(convertDegreesToRotation(45));
+            lowerJoint2.moveToPosition_mechanismRotations(convertDegreesToRotation(45));
+            upperJoint.moveToPosition_mechanismRotations(convertDegreesToRotation(90));
         }
     }
 
@@ -152,9 +161,14 @@ public class ArmControl {
 
         //finding NaN errors
         if (isReachable(lowerAngle_degrees, upperAngle_degrees)) {
+
+            //lowerJoint1.moveAtVoltage(ffLowerArmCalculator.calculateNext(lowerJoint1.getMechanismPositionAccum_rot(), convertDegreesToRotation(lowerAngle_degrees)));
+
             lowerJoint1.moveToPosition_mechanismRotations(convertDegreesToRotation(lowerAngle_degrees));
             lowerJoint2.moveToPosition_mechanismRotations(convertDegreesToRotation(lowerAngle_degrees));
             upperJoint.moveToPosition_mechanismRotations(convertDegreesToRotation(upperAngle_degrees));
+
+            //waiting for ff to be finished
         }
     }
 
@@ -168,9 +182,16 @@ public class ArmControl {
 
         //finding NaN errors
         if (isReachable(lowerAngle_degrees, upperAngle_degrees)) {
+
             lowerJoint1.moveToPosition_mechanismRotations(convertDegreesToRotation(lowerAngle_degrees));
             lowerJoint2.moveToPosition_mechanismRotations(convertDegreesToRotation(lowerAngle_degrees));
             upperJoint.moveToPosition_mechanismRotations(convertDegreesToRotation(upperAngle_degrees));
+
+            /*
+            lowerJoint1.moveAtVoltage(ffLowerArmCalculator.calculateNext(lowerJoint1.getMechanismPositionAccum_rot(), convertDegreesToRotation(lowerAngle_degrees)));
+            lowerJoint2.moveAtVoltage(ffLowerArmCalculator.calculateNext(lowerJoint2.getMechanismPositionAccum_rot(), convertDegreesToRotation(lowerAngle_degrees)));
+            upperJoint.moveAtVoltage(ffUpperArmCalculator.calculateNext(upperJoint.getMechanismPositionAccum_rot(), convertDegreesToRotation(upperAngle_degrees)));
+             */
         }
 
 
@@ -199,12 +220,21 @@ public class ArmControl {
 
         //finding NaN errors
         if (isReachable(lowerAngle_degrees, upperAngle_degrees)) {
+
             lowerJoint1.moveToPosition_mechanismRotations(convertDegreesToRotation(lowerAngle_degrees));
             lowerJoint2.moveToPosition_mechanismRotations(convertDegreesToRotation(lowerAngle_degrees));
             upperJoint.moveToPosition_mechanismRotations(convertDegreesToRotation(upperAngle_degrees));
-        }
 
+
+            /*
+            lowerJoint1.moveAtVoltage(ffLowerArmCalculator.calculateNext(lowerJoint1.getMechanismPositionAccum_rot(), convertDegreesToRotation(lowerAngle_degrees)));
+            lowerJoint2.moveAtVoltage(ffLowerArmCalculator.calculateNext(lowerJoint2.getMechanismPositionAccum_rot(), convertDegreesToRotation(lowerAngle_degrees)));
+            upperJoint.moveAtVoltage(ffUpperArmCalculator.calculateNext(upperJoint.getMechanismPositionAccum_rot(), convertDegreesToRotation(upperAngle_degrees)));
+             */
+            //waiting for ff to be finished
+        }
     }
+
 
     public void scoreHigh() {
         InverseKinematics highNode = new InverseKinematics(ArmConstants.HIGH_NODE_X, ArmConstants.HIGH_NODE_Y);
@@ -216,13 +246,17 @@ public class ArmControl {
 
         //finding NaN errors
         if (isReachable(lowerAngle_degrees, upperAngle_degrees)) {
+
             lowerJoint1.moveToPosition_mechanismRotations(convertDegreesToRotation(lowerAngle_degrees));
             lowerJoint2.moveToPosition_mechanismRotations(convertDegreesToRotation(lowerAngle_degrees));
             upperJoint.moveToPosition_mechanismRotations(convertDegreesToRotation(upperAngle_degrees));
+
+            //lowerJoint1.moveAtVoltage(ffLowerArmCalculator.calculateNext(lowerJoint1.getMechanismPositionAccum_rot(), convertDegreesToRotation(lowerAngle_degrees)));
+            //lowerJoint2.moveAtVoltage(ffLowerArmCalculator.calculateNext(lowerJoint2.getMechanismPositionAccum_rot(), convertDegreesToRotation(lowerAngle_degrees)));
+            //upperJoint.moveAtVoltage(ffUpperArmCalculator.calculateNext(upperJoint.getMechanismPositionAccum_rot(), convertDegreesToRotation(upperAngle_degrees)));
+
         }
     }
-
-
-
-
 }
+
+

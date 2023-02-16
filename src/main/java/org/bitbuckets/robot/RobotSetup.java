@@ -11,6 +11,8 @@ import org.bitbuckets.elevator.ElevatorSubsystem;
 import org.bitbuckets.elevator.ElevatorSubsystemSetup;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
+import org.bitbuckets.macros.MacroSubsystem;
+import org.bitbuckets.macros.MacroSubsystemSetup;
 import org.bitbuckets.vision.IVisionControl;
 import org.bitbuckets.vision.VisionControlSetup;
 
@@ -47,6 +49,9 @@ public class RobotSetup implements ISetup<RobotContainer> {
                 visionControl
         ).build(self.addChild("drive-subsystem"));
 
+        MacroSubsystem macroSubsystem = new MacroSubsystemSetup(false)
+                .build(self.addChild("macro-subsystem"));
+
         /**
          * Register the crasher runnable if
          */
@@ -55,7 +60,7 @@ public class RobotSetup implements ISetup<RobotContainer> {
         }
 
 
-        return new RobotContainer(driveSubsystem, armSubsystem, elevatorSubsystem, autoSubsystem);
+        return new RobotContainer(driveSubsystem, armSubsystem, elevatorSubsystem, autoSubsystem, macroSubsystem);
     }
 
 
