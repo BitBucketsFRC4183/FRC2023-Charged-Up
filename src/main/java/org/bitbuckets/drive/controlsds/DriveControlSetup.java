@@ -1,9 +1,8 @@
 package org.bitbuckets.drive.controlsds;
 
-import org.bitbuckets.drive.controlsds.DriveControl;
 import org.bitbuckets.drive.controlsds.sds.ISwerveModule;
 import org.bitbuckets.lib.ISetup;
-import org.bitbuckets.lib.ProcessPath;
+import org.bitbuckets.lib.IProcess;
 
 /**
  * Sets up prereqs for a drive controller
@@ -24,18 +23,18 @@ public class DriveControlSetup implements ISetup<DriveControl> {
     }
 
     @Override
-    public DriveControl build(ProcessPath self) {
+    public DriveControl build(IProcess self) {
 
 
         DriveControl control = new DriveControl(
-                self.generateDebugger(),
-                frontLeft.build(self.addChild("front-left")),
-                frontRight.build(self.addChild("front-right")),
-                backLeft.build(self.addChild("back-left")),
-                backRight.build(self.addChild("back-right"))
+                self.getDebuggable(),
+                self.childSetup("front-left",frontLeft),
+                self.childSetup("front-right",frontRight),
+                self.childSetup("back-left",backLeft),
+                self.childSetup("back-right",backRight)
         );
         
-        self.registerLoop(control::log, "logging-loop");
+        self.registerLogLoop(control);
 
         return control;
     }

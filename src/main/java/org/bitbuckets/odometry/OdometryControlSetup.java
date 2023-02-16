@@ -9,11 +9,9 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import org.bitbuckets.drive.DriveConstants;
 import org.bitbuckets.drive.IDriveControl;
 import org.bitbuckets.lib.ISetup;
-import org.bitbuckets.lib.ProcessPath;
-import org.bitbuckets.lib.StartupProfiler;
-import org.bitbuckets.lib.log.Debuggable;
+import org.bitbuckets.lib.log.IDebuggable;
+import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.vision.IVisionControl;
-import org.bitbuckets.vision.VisionConstants2;
 
 
 public class OdometryControlSetup implements ISetup<IOdometryControl> {
@@ -31,8 +29,8 @@ public class OdometryControlSetup implements ISetup<IOdometryControl> {
     }
 
     @Override
-    public IOdometryControl build(ProcessPath self) {
-        StartupProfiler initializePidgeon = self.generateSetupProfiler("init-pidgeon");
+    public IOdometryControl build(IProcess self) {
+
         SwerveDrivePoseEstimator estimator = new SwerveDrivePoseEstimator(
                 DriveConstants.KINEMATICS,
                 Rotation2d.fromDegrees(0),
@@ -45,13 +43,11 @@ public class OdometryControlSetup implements ISetup<IOdometryControl> {
                 new Pose2d()
         );
 
-        initializePidgeon.markProcessing();
         WPI_Pigeon2 pigeonIMU = new WPI_Pigeon2(pidgeonId);
         pigeonIMU.configFactoryDefault();
         pigeonIMU.configMountPose(Pigeon2.AxisDirection.NegativeX, Pigeon2.AxisDirection.PositiveZ);
-        initializePidgeon.markCompleted();
 
-        Debuggable debug = self.generateDebugger();
+        IDebuggable debug = self.getDebuggable();
 
         OdometryControl odometryControl = new OdometryControl(
                 debug,

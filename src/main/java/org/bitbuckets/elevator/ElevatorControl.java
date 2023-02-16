@@ -2,7 +2,7 @@ package org.bitbuckets.elevator;
 
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import org.bitbuckets.lib.hardware.IMotorController;
-import org.bitbuckets.lib.log.Debuggable;
+import org.bitbuckets.lib.log.IDebuggable;
 
 public class ElevatorControl {
 
@@ -11,7 +11,7 @@ public class ElevatorControl {
     private IMotorController leftTilt;
     private IMotorController rightTilt;
 
-    final Debuggable debug;
+    final IDebuggable debug;
 
 
     private MechanismLigament2d elevator;
@@ -32,7 +32,7 @@ public class ElevatorControl {
     ElevatorConstants elevatorConstants = new ElevatorConstants();
 
 
-    public ElevatorControl(IMotorController leftExtend, IMotorController leftTilt, Debuggable debug, MechanismLigament2d elevator, MechanismLigament2d elevatorWrist) {
+    public ElevatorControl(IMotorController leftExtend, IMotorController leftTilt, IDebuggable debug, MechanismLigament2d elevator, MechanismLigament2d elevatorWrist) {
         this.leftExtend = leftExtend;
         this.debug = debug;
         this.rightExtend = rightExtend;

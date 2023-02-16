@@ -9,16 +9,17 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import org.bitbuckets.drive.DriveConstants;
 import org.bitbuckets.drive.IDriveControl;
 import org.bitbuckets.drive.controlsds.sds.ISwerveModule;
-import org.bitbuckets.lib.log.Debuggable;
+import org.bitbuckets.lib.log.IDebuggable;
+import org.bitbuckets.lib.CanLogLoop;
 
 import java.util.List;
 
 /**
  * Represents a real drive controller that implements control of the drivetrain using a list of SwerveModule interfaces
  */
-public class DriveControl implements IDriveControl {
+public class DriveControl implements IDriveControl, CanLogLoop {
 
-    final Debuggable debug;
+    final IDebuggable debug;
 
     // Swerve Modules
     final ISwerveModule moduleFrontLeft;
@@ -39,7 +40,7 @@ public class DriveControl implements IDriveControl {
             new SwerveModuleState()
     };
 
-    public DriveControl(Debuggable debug, ISwerveModule moduleFrontLeft, ISwerveModule moduleFrontRight, ISwerveModule moduleBackLeft, ISwerveModule moduleBackRight) {
+    public DriveControl(IDebuggable debug, ISwerveModule moduleFrontLeft, ISwerveModule moduleFrontRight, ISwerveModule moduleBackLeft, ISwerveModule moduleBackRight) {
         this.moduleFrontLeft = moduleFrontLeft;
         this.moduleFrontRight = moduleFrontRight;
         this.moduleBackLeft = moduleBackLeft;
@@ -120,8 +121,8 @@ public class DriveControl implements IDriveControl {
         return this.modules.stream().map(ISwerveModule::getState).toArray(SwerveModuleState[]::new);
     }
 
-
-    public void log() { //example log loop
+    @Override
+    public void logLoop() {
         debug.log("command-modules", cachedSetpoint);
         debug.log("actual-modules", currentStates());
         debug.log("actual-positions", currentPositions());

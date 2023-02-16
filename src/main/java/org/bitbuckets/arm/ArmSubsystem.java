@@ -1,6 +1,6 @@
 package org.bitbuckets.arm;
 
-import org.bitbuckets.lib.log.Debuggable;
+import org.bitbuckets.lib.log.IDebuggable;
 
 public class ArmSubsystem {
 
@@ -9,12 +9,12 @@ public class ArmSubsystem {
 
     final ArmInput armInput;
     final ArmControl armControl;
-    final Debuggable debuggable;
+    final IDebuggable debuggable;
 
     ArmFSM state = ArmFSM.MANUAL;
     ArmFSM nextState = ArmFSM.MANUAL;
 
-    public ArmSubsystem(ArmInput armInput, ArmControl armControl, Debuggable debuggable) {
+    public ArmSubsystem(ArmInput armInput, ArmControl armControl, IDebuggable debuggable) {
         this.armInput = armInput;
         this.armControl = armControl;
         this.debuggable = debuggable;

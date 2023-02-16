@@ -1,4 +1,4 @@
-package org.bitbuckets.lib.tune.type;
+package org.bitbuckets.lib.tune;
 
 public class AtomicRecord<T> {
 

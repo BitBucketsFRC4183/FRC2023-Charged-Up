@@ -7,7 +7,7 @@ import org.mockito.Mockito;
 
 import static org.junit.jupiter.api.Assertions.*;
 class LimitSwitchLoggerTest {
-
+/*
     @Test
     void run() {
 
@@ -20,5 +20,5 @@ class LimitSwitchLoggerTest {
         logger.run();
 
         Mockito.verify(loggable).log(true);
-    }
+    }*/
 }

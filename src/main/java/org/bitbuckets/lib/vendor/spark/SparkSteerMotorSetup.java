@@ -5,7 +5,7 @@ import com.revrobotics.CANSparkMaxLowLevel;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import org.bitbuckets.drive.controlsds.sds.SwerveModuleConfiguration;
-import org.bitbuckets.lib.ProcessPath;
+import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.lib.control.PIDConfig;
 import org.bitbuckets.lib.hardware.IMotorController;
 import org.bitbuckets.lib.hardware.MotorConfig;
@@ -26,7 +26,8 @@ public class SparkSteerMotorSetup extends SparkSetup {
     }
 
     @Override
-    public IMotorController build(ProcessPath self) {
+    public IMotorController build(IProcess self) {
+
         var motorController = super.build(self);
 
         // configure the raw motor with the same settings for SDS

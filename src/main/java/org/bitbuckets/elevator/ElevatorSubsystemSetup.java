@@ -3,9 +3,9 @@ package org.bitbuckets.elevator;
 import edu.wpi.first.wpilibj.Joystick;
 import org.bitbuckets.auto.AutoSubsystem;
 import org.bitbuckets.lib.ISetup;
-import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.lib.control.PIDConfig;
 import org.bitbuckets.lib.hardware.MotorConfig;
+import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.lib.util.MockingUtil;
 import org.bitbuckets.lib.vendor.spark.SparkSetup;
 
@@ -24,7 +24,7 @@ public class ElevatorSubsystemSetup implements ISetup<ElevatorSubsystem> {
 
 
     @Override
-    public ElevatorSubsystem build(ProcessPath self) {
+    public ElevatorSubsystem build(IProcess self) {
         if (!isElevatorEnabled) {
             return MockingUtil.buddy(ElevatorSubsystem.class);
         }
@@ -35,9 +35,9 @@ public class ElevatorSubsystemSetup implements ISetup<ElevatorSubsystem> {
                 new SparkSetup(10, new MotorConfig(ElevatorConstants.gearRatioTilt, 1, ElevatorConstants.rotToMeterTilt, false, false, 20, false, false, Optional.empty()), new PIDConfig(0, 0, 0, 0))
         );
 
-        var debug = self.generateDebugger();
+        var debug = self.getDebuggable();
 
-        ElevatorControl elevatorControl = elevatorControlSetup.build(self.addChild("elevator-control"));
+        ElevatorControl elevatorControl = self.childSetup("elevator-control", elevatorControlSetup);
         return new ElevatorSubsystem(elevatorControl, elevatorInput, debug, autoSubsystem);
     }
 }

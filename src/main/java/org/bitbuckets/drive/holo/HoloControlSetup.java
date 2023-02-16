@@ -6,7 +6,7 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import org.bitbuckets.drive.controlsds.DriveControl;
 import org.bitbuckets.lib.ISetup;
-import org.bitbuckets.lib.ProcessPath;
+import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.odometry.IOdometryControl;
 import org.bitbuckets.vision.IVisionControl;
 
@@ -23,7 +23,7 @@ public class HoloControlSetup implements ISetup<HoloControl> {
     }
 
     @Override
-    public HoloControl build(ProcessPath self) {
+    public HoloControl build(IProcess self) {
 
         //TODO find constants
         HolonomicDriveController holonomicDriveController = new HolonomicDriveController(
@@ -37,7 +37,7 @@ public class HoloControlSetup implements ISetup<HoloControl> {
                         3, 0, 0, new TrapezoidProfile.Constraints(drive.getMaxAngularVelocity()/20, drive.getMaxAngularVelocity() * 10)
                 )
         );
-        var debuggable = self.generateDebugger();
+        var debuggable = self.getDebuggable();
 
 
         return new HoloControl(

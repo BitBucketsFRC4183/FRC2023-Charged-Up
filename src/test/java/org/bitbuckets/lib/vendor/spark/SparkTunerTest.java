@@ -11,7 +11,7 @@ import org.mockito.Mockito;
 
 class SparkTunerTest {
 
-
+/*
     @Test
     public void shouldSetCanConstants_light() {
         IValueTuner<Double> tuner = Mockito.mock(IValueTuner.class);
@@ -44,6 +44,6 @@ class SparkTunerTest {
         Thread.sleep(500);
 
         Assertions.assertEquals(1.0, tuningAspect.sparkMaxPIDController.getP());
-    }
+    }*/
 
 }

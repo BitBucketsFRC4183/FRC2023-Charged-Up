@@ -7,8 +7,8 @@ import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import org.bitbuckets.drive.controlsds.sds.SwerveModuleConfiguration;
+import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.lib.ISetup;
-import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.lib.hardware.IMotorController;
 
 import static org.bitbuckets.lib.vendor.ctre.CtreUtils.checkCtreError;
@@ -36,7 +36,7 @@ public class TalonSteerMotorSetup implements ISetup<IMotorController> {
     }
 
     @Override
-    public IMotorController build(ProcessPath self) {
+    public IMotorController build(IProcess self) {
 
         final double sensorPositionCoefficient = 2.0 * Math.PI / TICKS_PER_ROTATION * moduleConfiguration.getSteerReduction();
         final double sensorVelocityCoefficient = sensorPositionCoefficient * 10.0;

@@ -11,7 +11,7 @@ import org.bitbuckets.auto.AutoSubsystem;
 import org.bitbuckets.drive.balance.ClosedLoopsControl;
 import org.bitbuckets.drive.controlsds.DriveControl;
 import org.bitbuckets.drive.holo.HoloControl;
-import org.bitbuckets.lib.log.Debuggable;
+import org.bitbuckets.lib.log.IDebuggable;
 import org.bitbuckets.lib.tune.IValueTuner;
 import org.bitbuckets.odometry.IOdometryControl;
 import org.bitbuckets.vision.IVisionControl;
@@ -34,7 +34,7 @@ public class DriveSubsystem {
     final HoloControl holoControl;
     final IVisionControl visionControl;
     final IValueTuner<OrientationChooser> orientation;
-    final Debuggable debuggable;
+    final IDebuggable debuggable;
 
 
     public enum OrientationChooser {
@@ -43,7 +43,7 @@ public class DriveSubsystem {
     }
 
 
-    public DriveSubsystem(DriveInput input, IOdometryControl odometryControl, ClosedLoopsControl closedLoopsControl, DriveControl driveControl, AutoSubsystem autoSubsystem, HoloControl holoControl, IVisionControl visionControl, IValueTuner<OrientationChooser> orientation, Debuggable debuggable) {
+    public DriveSubsystem(DriveInput input, IOdometryControl odometryControl, ClosedLoopsControl closedLoopsControl, DriveControl driveControl, AutoSubsystem autoSubsystem, HoloControl holoControl, IVisionControl visionControl, IValueTuner<OrientationChooser> orientation, IDebuggable debuggable) {
         this.input = input;
         this.odometryControl = odometryControl;
         this.closedLoopsControl = closedLoopsControl;

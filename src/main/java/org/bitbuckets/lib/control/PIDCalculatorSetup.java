@@ -1,10 +1,8 @@
 package org.bitbuckets.lib.control;
 
 import edu.wpi.first.math.controller.PIDController;
-import org.bitbuckets.lib.DontUseIncubating;
+import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.lib.ISetup;
-import org.bitbuckets.lib.ProcessPath;
-import org.bitbuckets.lib.log.LoggingConstants;
 import org.bitbuckets.lib.tune.IValueTuner;
 
 public class PIDCalculatorSetup implements ISetup<IPIDCalculator> {
@@ -20,27 +18,15 @@ public class PIDCalculatorSetup implements ISetup<IPIDCalculator> {
     }
 
     @Override
-    public IPIDCalculator build(ProcessPath self) {
-        IValueTuner<double[]> pidf = self.generateMultiTuner(
-                new String[] {"p", "i", "d", "f"},
-                new double[] {pidConfig.kP, pidConfig.kI, pidConfig.kD, pidConfig.kF}
-        );
+    public IPIDCalculator build(IProcess self) {
+        IValueTuner<Double> p = self.generateTuner(Double.class, "p", pidConfig.kP);
+        IValueTuner<Double> i = self.generateTuner(Double.class, "i", pidConfig.kI);
+        IValueTuner<Double> d = self.generateTuner(Double.class, "d", pidConfig.kD);
 
-        double[] pidfNow = pidf.readValue();
+        double pVal = p.readValue();
+        double iVal = i.readValue();
+        double dVal = d.readValue();
 
-        PIDController use = new PIDController(
-                pidfNow[PIDConfig.P],
-                pidfNow[PIDConfig.I],
-                pidfNow[PIDConfig.D]
-        );
-
-        PIDCalculator pid = new PIDCalculator(
-                use,
-                pidf
-        );
-
-        self.registerLoop(pid, LoggingConstants.TUNING_PERIOD, "tuning-loop");
-
-        return pid;
+        return new PIDCalculator(new PIDController(pVal, iVal, dVal), p,i,d);
     }
 }

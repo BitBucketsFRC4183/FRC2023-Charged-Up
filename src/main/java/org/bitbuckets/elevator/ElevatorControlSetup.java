@@ -7,8 +7,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import org.bitbuckets.lib.ISetup;
-import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.lib.hardware.IMotorController;
+import org.bitbuckets.lib.IProcess;
 
 public class ElevatorControlSetup implements ISetup<ElevatorControl> {
 
@@ -36,7 +36,7 @@ public class ElevatorControlSetup implements ISetup<ElevatorControl> {
 
 
     @Override
-    public ElevatorControl build(ProcessPath self) {
+    public ElevatorControl build(IProcess self) {
 
 
         Mechanism2d mech = new Mechanism2d(3, 3);
@@ -52,12 +52,12 @@ public class ElevatorControlSetup implements ISetup<ElevatorControl> {
 
         // post the mechanism to the dashboard
         SmartDashboard.putData("Mech2d", mech);
-        var debug = self.generateDebugger();
+        var debug = self.getDebuggable();
 
         ElevatorControl control = new ElevatorControl(
-                leftExtend.build(self.addChild("elevator-left-extension")),
+                self.childSetup("left-extension", leftExtend),
                 // rightExtend.build(path.addChild("elevator-right-extension")),
-                leftTilt.build(self.addChild("elevator-left-tilt")),
+                self.childSetup("left-tilt", leftTilt),
                 //  rightTilt.build(path.addChild("elevator-right-tilt")),
                 debug, elevator,
                 elevatorWrist

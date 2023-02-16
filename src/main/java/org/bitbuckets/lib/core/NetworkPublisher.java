@@ -1,7 +1,6 @@
 package org.bitbuckets.lib.core;
 
 import edu.wpi.first.networktables.*;
-import org.bitbuckets.robot.RobotConstants;
 import org.littletonrobotics.junction.LogDataReceiver;
 import org.littletonrobotics.junction.LogTable;
 
@@ -29,6 +28,7 @@ public class NetworkPublisher implements LogDataReceiver {
     public void putTable(LogTable table) {
         // Send timestamp
         timestampPublisher.set(table.getTimestamp(), table.getTimestamp());
+
 
         // Get old and new data
         Map<String, LogTable.LogValue> newMap = table.getAll(false);
