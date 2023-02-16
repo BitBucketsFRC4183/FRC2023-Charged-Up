@@ -118,6 +118,11 @@ public class ArmControl {
 
         //finding NaN errors
         if (isReachable(lowerAngle_degrees, upperAngle_degrees)) {
+
+            lowerJoint1.moveAtVoltage(lowerJointPID.calculateNext(lowerJoint1.getMechanismPositionAccum_rot(), convertDegreesToRotation(lowerAngle_degrees)));
+            upperJoint.moveAtVoltage(upperJointPID.calculateNext(upperJoint.getMechanismPositionAccum_rot(), convertDegreesToRotation(upperAngle_degrees)));
+
+            /*
             lowerJoint1.moveToPosition_mechanismRotations(convertDegreesToRotation(lowerAngle_degrees));
             upperJoint.moveToPosition_mechanismRotations(convertDegreesToRotation(upperAngle_degrees));
 
