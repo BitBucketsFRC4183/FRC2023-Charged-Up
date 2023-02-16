@@ -10,14 +10,14 @@ import org.bitbuckets.drive.DriveConstants;
 import org.bitbuckets.drive.IDriveControl;
 import org.bitbuckets.drive.controlsds.sds.ISwerveModule;
 import org.bitbuckets.lib.log.IDebuggable;
-import org.bitbuckets.lib.CanLogLoop;
+import org.bitbuckets.lib.HasLogLoop;
 
 import java.util.List;
 
 /**
  * Represents a real drive controller that implements control of the drivetrain using a list of SwerveModule interfaces
  */
-public class DriveControl implements IDriveControl, CanLogLoop {
+public class DriveControl implements IDriveControl, HasLogLoop {
 
     final IDebuggable debug;
 

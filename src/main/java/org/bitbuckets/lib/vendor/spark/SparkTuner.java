@@ -1,10 +1,10 @@
 package org.bitbuckets.lib.vendor.spark;
 
 import com.revrobotics.SparkMaxPIDController;
-import org.bitbuckets.lib.CanLoop;
+import org.bitbuckets.lib.HasLoop;
 import org.bitbuckets.lib.tune.IValueTuner;
 
-public class SparkTuner implements CanLoop {
+public class SparkTuner implements HasLoop {
 
     final IValueTuner<Double> pTuner;
     final IValueTuner<Double> iTuner;

@@ -11,6 +11,7 @@ import org.bitbuckets.auto.AutoSubsystem;
 import org.bitbuckets.drive.balance.ClosedLoopsControl;
 import org.bitbuckets.drive.controlsds.DriveControl;
 import org.bitbuckets.drive.holo.HoloControl;
+import org.bitbuckets.lib.HasLoop;
 import org.bitbuckets.lib.log.IDebuggable;
 import org.bitbuckets.lib.tune.IValueTuner;
 import org.bitbuckets.odometry.IOdometryControl;
@@ -23,7 +24,7 @@ import java.util.Optional;
  * tags: high priority
  * TODO this is becoming a sort of god class, some of this logic has to break out into smaller subsystems
  */
-public class DriveSubsystem {
+public class DriveSubsystem implements HasLoop {
 
     final DriveInput input;
 
@@ -59,7 +60,7 @@ public class DriveSubsystem {
 
     Optional<Pose3d> visionTarget;
 
-    public void runLoop() {
+    public void loop() {
         switch (state) {
             case UNINITIALIZED:
                 if (autoSubsystem.state() == AutoFSM.AUTO_RUN) {

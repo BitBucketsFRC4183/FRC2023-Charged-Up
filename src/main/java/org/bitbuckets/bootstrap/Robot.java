@@ -2,7 +2,7 @@ package org.bitbuckets.bootstrap;
 
 import com.revrobotics.REVPhysicsSim;
 import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Threads;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -10,7 +10,7 @@ import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.log.IConsole;
 import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.lib.log.LogRecord;
-import org.bitbuckets.lib.log.Process;
+import org.bitbuckets.lib.Process;
 import org.bitbuckets.lib.log.ProcessConsole;
 
 import java.util.HashMap;
@@ -28,7 +28,6 @@ public class Robot extends TimedRobot {
     final ISetup<Void> buildRobot;
 
     IProcess builtProcess;
-    IConsole builtRootConsole;
 
     public Robot(ISetup<Void> buildRobot) {
         this.buildRobot = buildRobot;
@@ -37,8 +36,10 @@ public class Robot extends TimedRobot {
     @Override
     public void robotInit() {
         try {
-            builtProcess = Process.root();
+            rootTable = NetworkTableInstance.getDefault().getTable("");
+            builtProcess = Process.root(rootTable);
             buildRobot.build(builtProcess);
+
         } catch (Exception e) {
             DriverStation.reportError(e.getLocalizedMessage(), e.getStackTrace());
         }
@@ -60,15 +61,21 @@ public class Robot extends TimedRobot {
 
             String consolePost;
             if (record.exception == null) {
+                var opt = record.key.getAsLastTwoPath();
+                String use = opt.orElseGet(record.key::getTail);
+
                 consolePost = format(
                         "[%s]: %s",
-                        record.key.getAsLastTwoPath(),
+                        use,
                         record.info
                 );
             } else {
+                var opt = record.key.getAsLastTwoPath();
+                String use = opt.orElseGet(record.key::getTail);
+
                 consolePost = format(
                         "[%s] ERROR: %s (%s:%s)",
-                        record.key.getAsLastTwoPath(),
+                        use,
                         record.exception.getLocalizedMessage(),
                         record.exception.getStackTrace()[0].getMethodName(),
                         record.exception.getStackTrace()[0].getLineNumber()
@@ -84,12 +91,6 @@ public class Robot extends TimedRobot {
         if (report.length() > 0) {
             rootTable.getEntry("mattlib/console").setString(report.toString());
         }
-
-        thisIsBad.forEach((a,b) -> {
-            if (b.length() > 0) {
-                rootTable.getEntry("mattlib/" + a).setString(b.toString());
-            }
-        });
 
 
 

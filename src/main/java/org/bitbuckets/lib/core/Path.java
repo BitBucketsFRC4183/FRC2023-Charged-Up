@@ -1,5 +1,6 @@
 package org.bitbuckets.lib.core;
 
+import edu.wpi.first.math.system.plant.DCMotor;
 import org.bitbuckets.lib.control.ProfiledPIDCalculator;
 
 import java.io.File;
@@ -33,8 +34,12 @@ public class Path {
     public String getAsFlatTablePath() {
         StringBuilder builder = new StringBuilder();
 
-        for (String string : pathComposition) {
-            builder.append(string).append("-");
+        for (int i = 0; i < pathComposition.length; i++) {
+            if (i == pathComposition.length - 1) {
+                builder.append(pathComposition[i]);
+            } else {
+                builder.append(pathComposition[i]).append("-");
+            }
         }
 
         return builder.toString();
@@ -67,12 +72,18 @@ public class Path {
     }
 
     public Path append(String next) {
+        if (next == null) throw new IllegalStateException("what");
+
+        if (pathComposition.length == 0) {
+            return new Path(new String[] {next} );
+        }
+
         String[] toReturnArray = new String[pathComposition.length + 1];
         for (int i = 0; i < pathComposition.length; i++) {
             toReturnArray[i] = pathComposition[i];
         }
 
-        toReturnArray[pathComposition.length - 1] = next;
+        toReturnArray[pathComposition.length] = next;
 
         return new Path(toReturnArray);
     }

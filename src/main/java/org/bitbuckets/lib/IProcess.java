@@ -30,8 +30,8 @@ public interface IProcess {
     //IActionProfiler generateProfiler(String key);
     //IActionProfiler generateStartupProfiler(String key);
 
-    void registerLogLoop(CanLogLoop loop);
-    void registerLogicLoop(CanLoop loop);
+    void registerLogLoop(HasLogLoop loop);
+    void registerLogicLoop(HasLoop loop);
 
     void run();
 

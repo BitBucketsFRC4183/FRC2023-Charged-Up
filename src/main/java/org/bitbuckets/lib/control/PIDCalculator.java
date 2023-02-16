@@ -1,11 +1,10 @@
 package org.bitbuckets.lib.control;
 
 import edu.wpi.first.math.controller.PIDController;
-import org.bitbuckets.lib.CanLoop;
-import org.bitbuckets.lib.DontUseIncubating;
+import org.bitbuckets.lib.HasLoop;
 import org.bitbuckets.lib.tune.IValueTuner;
 
-public class PIDCalculator implements IPIDCalculator, CanLoop {
+public class PIDCalculator implements IPIDCalculator, HasLoop {
 
     final PIDController controller;
     final IValueTuner<Double> p;
