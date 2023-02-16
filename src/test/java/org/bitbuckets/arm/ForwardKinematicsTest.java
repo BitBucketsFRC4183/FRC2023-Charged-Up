@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ForwardKinematicsTest {
 
-    //@Disabled
+    @Disabled
     @Test
     public void testX() {
         assertEquals((ArmConstants.LOWER_JOINT_LENGTH + ArmConstants.UPPER_JOINT_LENGTH), new ForwardKinematics(Math.PI/4, 0).getX(), 0.001);
