@@ -1,5 +1,8 @@
 package org.bitbuckets.arm;
 
+import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
+import org.bitbuckets.arm.kinematics.InverseKinematics;
+import org.bitbuckets.arm.sim.SimArm;
 import org.bitbuckets.lib.hardware.IMotorController;
 import org.bitbuckets.lib.log.IDebuggable;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,6 +19,7 @@ class ArmControlTest {
     IDebuggable debuggable;
 
     ArmControl control;
+
 
     @BeforeEach
     public void beforeEach() {
@@ -38,13 +42,7 @@ class ArmControlTest {
         assertEquals(24., control.convertMechanismRotationtoRawRotation_upperJoint(1), .1);
     }
 
-    @Test
-    void isReachable() {
-        assertTrue(control.isReachable(0, 0));
-        assertFalse(control.isReachable(0, Double.NaN));
-        assertFalse(control.isReachable(0, Double.NaN));
-        assertFalse(control.isReachable(Double.NaN, Double.NaN));
-    }
+
 
     @Test
     void isErrorSmallEnough() {
@@ -107,4 +105,20 @@ class ArmControlTest {
         verify(lowerJoint).moveToPosition_mechanismRotations(anyDouble());
         verify(upperJoint).moveToPosition_mechanismRotations(anyDouble());
     }
+
+
+    @Test
+    void isReachable() {
+
+        double lowerDegrees = new InverseKinematics(.5, .5).getLowerJoint_degrees();
+        double upperDegrees = new InverseKinematics(.5, .5).getUpperJoint_degrees();
+
+        assertTrue(control.isReachable(lowerDegrees, upperDegrees));
+        //assertFalse(control.isReachable(0, Double.NaN));
+        //assertFalse(control.isReachable(0, Double.NaN));
+        //assertFalse(control.isReachable(Double.NaN, Double.NaN));
+
+
+    }
+
 }

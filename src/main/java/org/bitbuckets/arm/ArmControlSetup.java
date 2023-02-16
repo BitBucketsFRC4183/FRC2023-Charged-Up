@@ -2,7 +2,11 @@ package org.bitbuckets.arm;
 
 import com.revrobotics.CANSparkMax;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj.util.Color8Bit;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.hardware.IMotorController;
 import org.bitbuckets.lib.log.IDebuggable;
@@ -14,15 +18,14 @@ public class ArmControlSetup implements ISetup<ArmControl> {
 
     // Lower Device ID = 9
     // Upper Device ID = 3
-    final ISetup<IMotorController> lowerJoint;
     final ISetup<IMotorController> lowerJoint1;
+    final ISetup<IMotorController> lowerJoint2;
     final ISetup<IMotorController> upperJoint;
 
-
-    public ArmControlSetup(ISetup<IMotorController> lowerJoint, ISetup<IMotorController> lowerJoint1, SparkSetup sparkSetup) {
-        this.lowerJoint = lowerJoint;
+    public ArmControlSetup(ISetup<IMotorController> lowerJoint1, ISetup<IMotorController> lowerJoint2, ISetup<IMotorController> upperJoint) {
         this.lowerJoint1 = lowerJoint1;
-        this.upperJoint = sparkSetup;
+        this.lowerJoint2 = lowerJoint2;
+        this.upperJoint = upperJoint;
 
     }
 
@@ -37,35 +40,43 @@ public class ArmControlSetup implements ISetup<ArmControl> {
         var lowerSpark = lower.rawAccess(CANSparkMax.class);
         var upperSpark = upper.rawAccess(CANSparkMax.class);
 
-        lowerSpark.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, true);
-        lowerSpark.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, true);
-        lowerSpark1.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, true);
-        lowerSpark1.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, true);
-        upperSpark.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, true);
-        upperSpark.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, true);
+        if (self.isReal())
+        {
+            var lowerSpark1 = lower1.rawAccess(CANSparkMax.class);
+            var lowerSpark2 = lower2.rawAccess(CANSparkMax.class);
+            var upperSpark = upper.rawAccess(CANSparkMax.class);
 
-        lowerSpark.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, (float) 27.3);
-        lowerSpark.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, (float) -13.69);
-        lowerSpark1.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, (float) 27.3);
-        lowerSpark1.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, (float) -13.69);
+            lowerSpark1.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, false);
+            lowerSpark1.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, false);
 
-        upperSpark.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, (float) 25.0);
-        upperSpark.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, (float) -90.0);
+            lowerSpark2.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, false);
+            lowerSpark2.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, false);
 
-        lowerSpark1.follow(lowerSpark);
+            upperSpark.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, false);
+            upperSpark.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, false);
+
+
+            lowerSpark1.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, (float) 27.3);
+            lowerSpark1.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, (float) -13.69);
+
+            lowerSpark2.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, (float) 27.3);
+            lowerSpark2.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, (float) -13.69);
+
+            upperSpark.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, (float) 25.0);
+            upperSpark.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, (float) -90.0);
+
+            lowerSpark1.follow(lowerSpark2);
+        }
 
         IDebuggable debug = self.getDebuggable();
 
         return new ArmControl(
-                lower,
-                lower1, upper,
+                lower1,
+                lower2,
+                upper,
                 debug
-
         );
     }
 
-    private static MechanismRoot2d getUpperPivot(Mechanism2d mech) {
-        return mech.getRoot("upperPivot", 1.5, 1);
-    }
 }
 
