@@ -17,14 +17,11 @@ public interface ArmConstants {
     double LOWER_ARM_GEAR_RATIO = 1.0 / ((5.0 * 4.0 * 3.0) * (12. / 26.)); // encoder rotations to mechanism rotations; 130 encoder rotations = 1 mechanism rotation
     double UPPER_ARM_GEAR_RATIO = 1.0 / ((5.0 * 4.0 * 3.0) * (12. / 30.)); // encoder rotations to mechanism rotations; 130 encoder rotations = 1 mechanism rotation
 
-    double A = ((5.0 * 4.0 * 3.0));
     //change these
     double LOWER_JOINT_LENGTH = 0.6605;
     double UPPER_JOINT_LENGTH = 0.6731;
     double UPPER_JOINT_WIDTH = 0.0254; //mainly for arm sim
     double LOWER_JOINT_WIDTH = 0.0508; //mainly for arm sim
-
-    double ass = 13.69 * LOWER_ARM_GEAR_RATIO;
 
     double LOWER_ARM_FORWARD_LIMIT_MECHANISM = 0.98; //rotations
     double LOWER_ARM_FORWARD_LIMIT_ENCODER = LOWER_ARM_FORWARD_LIMIT_MECHANISM / LOWER_ARM_GEAR_RATIO;
@@ -63,7 +60,7 @@ public interface ArmConstants {
     PIDConfig LOWER_PID = new PIDConfig(0.3, 0, 0, 0);
     PIDConfig UPPER_PID = new PIDConfig(0.3, 0, 0, 0);
 
-    PIDConfig LOWER_SIMPID = new PIDConfig(1.0, 0, 0, 0);
+    PIDConfig LOWER_SIMPID = new PIDConfig(50.0, 0, 0, 0);
     PIDConfig UPPER_SIMPID = new PIDConfig(5.0, 0, 0, 0);
 
     double SIM_OFFSET = 0.25;

@@ -56,8 +56,17 @@ public class VisionControl implements IVisionControl {
 
 
 
+    public boolean isTargTrue() {
+        return visionPoseEstimator().isPresent();
+
+    }
+
+
+
     public Optional<PhotonCalculationResult> visionPoseEstimator() {
         PhotonPipelineResult result = photonCamera.getLatestResult();
+
+        boolean isTargetTrue = result.hasTargets();
         if (!result.hasTargets()) return Optional.empty();
         PhotonTrackedTarget aprilTagTarget = result.getBestTarget();
 
@@ -66,6 +75,7 @@ public class VisionControl implements IVisionControl {
 
         debuggable.log("tag-id", tagID);
         debuggable.log("transform-to-tag-from-origin", new Pose3d().transformBy(transformToTag));
+
 
 
         //Pose3d robotPose = PhotonUtils.estimateFieldToRobotAprilTag(tagPose, VisionConstants.aprilTags.get(tagID), robotToCamera);
@@ -106,9 +116,11 @@ public class VisionControl implements IVisionControl {
         Pose2d tagPossiblePose2d = tagPossiblePose3d.toPose2d();
 
         Rotation2d targetYaw = PhotonUtils.getYawToPose(currentEstimatedPose2d, goalPose.toPose2d());
+        Rotation2d robotYaw = currentEstimatedPose2d.getRotation();
+        debuggable.log("robot-rotation", robotYaw.getDegrees());
 
         SmartDashboard.putString("targetYaw", targetYaw.toString());
-        return Optional.of(new PhotonCalculationResult(estimatedFieldRobotPose, goalPose, translationToTag, targetYaw, targetYaw.getRadians()));
+        return Optional.of(new PhotonCalculationResult(estimatedFieldRobotPose, goalPose, translationToTag, targetYaw, targetYaw.getRadians(), isTargetTrue));
 
     }
 }
