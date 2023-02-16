@@ -158,7 +158,7 @@ public class Process implements IProcess {
 
         Path childPath = selfPath.append(key);
         NetworkTable childTable = table.getSubTable(key);
-        NetworkTable childMode = childTable.getInstance().getTable("mattlib/").getSubTable( childPath.getAsTablePath() + "mode");
+        NetworkTable childMode = childTable.getInstance().getTable("mattlib/").getSubTable( childPath.getAsFlatTablePath() + "-mode");
 
         //setup metadata in ShuffleBoard
 
