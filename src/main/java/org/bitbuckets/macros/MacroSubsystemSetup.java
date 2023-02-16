@@ -34,7 +34,7 @@ public class MacroSubsystemSetup implements ISetup<MacroSubsystem> {
                 new SparkSetup(10, ArmConstants.UPPER_CONFIG, ArmConstants.UPPER_PID)
         );
 
-        DriveControlSetup driveControlSetup = new DriveControlSetup()
+        DriveControlSetup driveControlSetup = new DriveControlSetup();
 
         ArmControl armControl = armControlSetup.build(self.addChild("arm-control"));
 
