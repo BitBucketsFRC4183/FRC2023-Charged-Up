@@ -1,6 +1,6 @@
 package org.bitbuckets.RGB;
 
 public enum RgbFSM {
-    ENABLED,
+    A, B,
     DISABLED
 }
