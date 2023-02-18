@@ -14,23 +14,29 @@ public interface ArmConstants {
     // Final gear different for each arm; 12:26 for lower and 12:30 for upper
 
     //converts encoder rotations -> mechanism rotations (0.036)
-    double LOWER_ARM_GEAR_RATIO = 1.0 / ((5.0 * 4.0 * 3.0) * (12. / 26.)); // encoder rotations to mechanism rotations; 130 encoder rotations = 1 mechanism rotation
-    double UPPER_ARM_GEAR_RATIO = 1.0 / ((5.0 * 4.0 * 3.0) * (12. / 30.)); // encoder rotations to mechanism rotations; 130 encoder rotations = 1 mechanism rotation
+    double LOWER_ARM_GEAR_RATIO = 1.0 / ((5.0 * 4.0 * 3.0) * (12. / 26.));
+    double UPPER_ARM_GEAR_RATIO = 1.0 / ((5.0 * 4.0 * 3.0) * (12. / 30.));
 
-    //change these
+
     double LOWER_JOINT_LENGTH = 0.6605;
     double UPPER_JOINT_LENGTH = 0.6731;
-    double UPPER_JOINT_WIDTH = 0.0254; //mainly for arm sim
-    double LOWER_JOINT_WIDTH = 0.0508; //mainly for arm sim
 
-    double LOWER_ARM_FORWARD_LIMIT_MECHANISM = 0.98; //rotations
-    double LOWER_ARM_FORWARD_LIMIT_ENCODER = LOWER_ARM_FORWARD_LIMIT_MECHANISM / LOWER_ARM_GEAR_RATIO;
+    //mainly for arm sim
+    double UPPER_JOINT_WIDTH = 0.0254;
+    double LOWER_JOINT_WIDTH = 0.0508;
+
+    //in rotations
+    double LOWER_ARM_FORWARD_LIMIT_MECHANISM = 0.98;
     double LOWER_ARM_REVERSE_LIMIT_MECHANISM = -0.494361111111;
+
+    double LOWER_ARM_FORWARD_LIMIT_ENCODER = LOWER_ARM_FORWARD_LIMIT_MECHANISM / LOWER_ARM_GEAR_RATIO;
     double LOWER_ARM_REVERSE_LIMIT_ENCODER = LOWER_ARM_REVERSE_LIMIT_MECHANISM / LOWER_ARM_GEAR_RATIO;
 
+    //in rotations as well
     double UPPER_ARM_FORWARD_LIMIT_MECHANISM = 1.041;
-    double UPPER_ARM_FORWARD_LIMIT_ENCODER = UPPER_ARM_FORWARD_LIMIT_MECHANISM / UPPER_ARM_GEAR_RATIO;
     double UPPER_ARM_REVERSE_LIMIT_MECHANISM = -3.75;
+
+    double UPPER_ARM_FORWARD_LIMIT_ENCODER = UPPER_ARM_FORWARD_LIMIT_MECHANISM / UPPER_ARM_GEAR_RATIO;
     double UPPER_ARM_REVERSE_LIMIT_ENCODER = UPPER_ARM_REVERSE_LIMIT_MECHANISM / UPPER_ARM_GEAR_RATIO;
 
     MotorConfig LOWER_CONFIG = new MotorConfig(
@@ -99,6 +105,7 @@ public interface ArmConstants {
 
     // Neo Brushless Motor Relative Encoder: 42 counts per revolution
 
+    //all the numbers below are made up, not actual numbers we will use for competition
     double STORAGE_X = 0.3;
     double STORAGE_Y = 0.3;
 
