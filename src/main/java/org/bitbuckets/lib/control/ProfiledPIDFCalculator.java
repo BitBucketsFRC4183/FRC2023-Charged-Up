@@ -2,6 +2,7 @@ package org.bitbuckets.lib.control;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.util.Units;
 import org.bitbuckets.lib.log.Debuggable;
 import org.bitbuckets.lib.tune.IValueTuner;
 
@@ -31,9 +32,9 @@ public class ProfiledPIDFCalculator implements Runnable, IPIDCalculator {
         }
 
 
-        debuggable.log("pos-setpoint", profiledPIDController.getSetpoint().position);
+        debuggable.log("pos-setpoint", Units.radiansToDegrees(profiledPIDController.getSetpoint().position));
         debuggable.log("pos-error", profiledPIDController.getPositionError());
-        debuggable.log("goal",profiledPIDController.getGoal().toString());
+        debuggable.log("goal", profiledPIDController.getGoal().toString());
     }
 
     @Override
