@@ -33,7 +33,7 @@ public class AutoControl implements IAutoControl {
                 eventMap.put(name, marker.timeSeconds);
             }
         }
-
+    
         odometryControl.setPos(tj.getInitialState().holonomicRotation, swerveModulePositions, tj.getInitialState().poseMeters);
         AutoPathInstance instance = new AutoPathInstance(tj, eventMap, trajectoryTime, whichOne);
 
