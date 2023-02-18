@@ -24,10 +24,10 @@ public class ArmInput {
 
     /**
      * Quick Buttons and Axis reference for Arm Controls
-     * (X) While held start stowing to default
+     * (X) tap to go in storage position (default during teleop)
      * (B) To stop all arm motors
      * (Right Trigger) Tap to grab with arm - clamp down
-     * (Left trigger) tap to grab with arm - release clamp
+     * (Left trigger) Tap to grab with arm - release clamp
      * Dpad up – tap to score high
      * Dpad down – tap to score middle
      * Dpad right – tap for arm to go to load zone and intake GP
