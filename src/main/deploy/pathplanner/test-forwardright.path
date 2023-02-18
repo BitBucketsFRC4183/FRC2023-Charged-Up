@@ -45,5 +45,15 @@
       }
     }
   ],
-  "markers": []
+  "maxVelocity": 2.0,
+  "maxAcceleration": 1.5,
+  "isReversed": null,
+  "markers": [
+    {
+      "position": 0.5233309659090912,
+      "names": [
+        "armMove"
+      ]
+    }
+  ]
 }
