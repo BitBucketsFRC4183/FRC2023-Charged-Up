@@ -10,14 +10,12 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
-import org.bitbuckets.arm.sim.ArmConfig;
 import org.bitbuckets.arm.sim.SimArmSetup;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.lib.hardware.IMotorController;
 import org.bitbuckets.lib.log.Debuggable;
 import org.bitbuckets.lib.util.MockingUtil;
-import org.bitbuckets.lib.vendor.sim.dc.DCSimSetup;
 import org.bitbuckets.lib.vendor.spark.SparkSetup;
 
 public class ArmSubsystemSetup implements ISetup<ArmSubsystem> {
@@ -91,7 +89,7 @@ public class ArmSubsystemSetup implements ISetup<ArmSubsystem> {
 
         GripperControl gripperControl = gripperControlSetup.build(self.addChild("gripper-control"));
 
-        return new ArmSubsystem(armInput, armControl, gripperControl, debuggable);
+        return new ArmSubsystem(armInput, armControl, gripperControl, gripperInput, debuggable);
 
     }
 }
