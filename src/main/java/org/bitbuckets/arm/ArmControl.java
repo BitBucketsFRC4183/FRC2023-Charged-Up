@@ -23,6 +23,15 @@ public class ArmControl {
 
     // How do set up IMotorController and IEncoder so that lowerJoint == lowerEncoder
 
+    /**
+    Constructor for ArmControl, requires three IMotorController (two lower and one upper), Debuggable, and two IPIDCalculator (one for upper, one for lower)
+    @param lowerJoint1 IMotorController on 1st lower joint on arm
+     @param lowerJoint2 IMotorController on 2nd lower joint on arm
+     @param upperJoint IMotorController on upper joint on arm
+     @param debuggable Debuggable for troubleshooting issues; must be initialized or the debug will not show up in AdvantageScope
+     @param  lowerJointPID IPIDCalculator for both lower joints that takes in measurement (current position of lower arm) and setpoint to determine a voltage based on pid
+     @param upperJointPID IPIDCalculator for upper joint that takes in measurement (current position of lower arm) and setpoint to determine a voltage based on pid
+     **/
     public ArmControl(IMotorController lowerJoint1, IMotorController lowerJoint2, IMotorController upperJoint, Debuggable debuggable, IPIDCalculator lowerJointPID, IPIDCalculator upperJointPID) {
         this.lowerJoint1 = lowerJoint1;
         this.lowerJoint2 = lowerJoint2;
