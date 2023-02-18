@@ -131,7 +131,7 @@ public class Process implements IProcess {
                 childContainer,
                 ProcessMode.class,
                 ProcessMode.LOG_COMPETITION,
-                e -> forceTo(ProcessMode.valueOf(e.valueData.value.getString()))
+                e -> forceTo(ProcessMode.LOG_COMPETITION)
         );
 
 
