@@ -128,7 +128,7 @@ public class Process implements IProcess {
 
         //setup tuner that can change values internally
         EnumTuner<ProcessMode> childModeTuner = new EnumTuner<>(
-                childContainer.getLayout("mode", BuiltInLayouts.kList),
+                childContainer,
                 ProcessMode.class,
                 ProcessMode.LOG_COMPETITION,
                 e -> forceTo(ProcessMode.valueOf(e.valueData.value.getString()))

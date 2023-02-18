@@ -16,28 +16,26 @@ import java.util.function.Consumer;
 
 
 
-public class EnumTuner<T extends Enum<T>> implements IForceSendTuner<T>, Consumer<NetworkTableEvent> {
+//oops
+public class EnumTuner<T extends Enum<T>> implements IForceSendTuner<T>, Runnable{
 
     final Class<T> enumType;
-    final AtomicReference<AtomicRecord<T>> cachedValue;
     final GenericEntry entry;
-    final Consumer<NetworkTableEvent> passTo;
+    final Consumer<NetworkTableValue> passTo;
 
-    public EnumTuner(ShuffleboardContainer subtable, Class<T> enumType, T defaultValue, Consumer<NetworkTableEvent> passTo) {
-        this.cachedValue = new AtomicReference<>(new AtomicRecord<T>(defaultValue, false));
+    public EnumTuner(ShuffleboardContainer subtable, Class<T> enumType, T defaultValue, Consumer<NetworkTableValue> passTo) {
         this.passTo = passTo;
         this.enumType = enumType;
 
-        //setup shuffleboard support
-        subtable.add(".controllable", true);
-        subtable.add(".name", UUID.randomUUID().toString());
-        subtable.add(".type", "String Chooser");
-        subtable.add(".instance", 0);
-        subtable.add("default", defaultValue.name());
+
+        SendableChooser<T> chooser = new SendableChooser<>();
+        chooser.setDefaultOption(enumType.getName(), defaultValue);
+
+
 
         List<String> toBuild = new ArrayList<>();
         for (T enumInstance : enumType.getEnumConstants()) {
-            toBuild.add((enumInstance).name());
+            chooser.addOption(enumInstance.name(), enumInstance);
         }
 
         this.entry = subtable.add("selected", defaultValue.name()).getEntry();
@@ -91,5 +89,13 @@ public class EnumTuner<T extends Enum<T>> implements IForceSendTuner<T>, Consume
     public void forceToValue(T value) {
         this.cachedValue.set(new AtomicRecord<>(value, true));
         entry.setString(value.name());
+    }
+
+    @Override
+    public void run() {
+        if (entry.readQueue().length > 0) {
+            //updated
+            passTo.accept(entry.get());
+        }
     }
 }
