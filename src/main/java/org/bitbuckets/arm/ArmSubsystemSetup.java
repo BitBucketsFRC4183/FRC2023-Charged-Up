@@ -35,7 +35,7 @@ public class ArmSubsystemSetup implements ISetup<ArmSubsystem> {
 
         if (self.isReal()) {
             lowerArm1 = new SparkSetup(9, ArmConstants.LOWER_CONFIG, ArmConstants.LOWER_PID);
-            lowerArm2 = new SparkSetup(10, ArmConstants.LOWER_CONFIG1, ArmConstants.LOWER_PID);
+            lowerArm2 = new SparkSetup(10, ArmConstants.LOWER_CONFIG_FOLLOWER, ArmConstants.LOWER_PID);
             upperArm = new SparkSetup(11, ArmConstants.UPPER_CONFIG, ArmConstants.UPPER_PID);
 
         } else {

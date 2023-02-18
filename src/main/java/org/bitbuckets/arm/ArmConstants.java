@@ -50,7 +50,7 @@ public interface ArmConstants {
             false,
             Optional.empty()
     );
-    MotorConfig LOWER_CONFIG1 = new MotorConfig(
+    MotorConfig LOWER_CONFIG_FOLLOWER = new MotorConfig(
             ArmConstants.LOWER_ARM_GEAR_RATIO,
             1,
             1,
