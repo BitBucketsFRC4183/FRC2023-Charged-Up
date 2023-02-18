@@ -1,6 +1,7 @@
 package org.bitbuckets.arm;
 
 import edu.wpi.first.wpilibj.Joystick;
+import org.bitbuckets.gripper.GripperConstants;
 import org.bitbuckets.gripper.GripperControl;
 import org.bitbuckets.gripper.GripperControlSetup;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
@@ -16,6 +17,7 @@ import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.lib.hardware.IMotorController;
 import org.bitbuckets.lib.log.Debuggable;
 import org.bitbuckets.lib.util.MockingUtil;
+import org.bitbuckets.lib.vendor.sim.dc.DCSimSetup;
 import org.bitbuckets.lib.vendor.spark.SparkSetup;
 
 public class ArmSubsystemSetup implements ISetup<ArmSubsystem> {
@@ -35,11 +37,13 @@ public class ArmSubsystemSetup implements ISetup<ArmSubsystem> {
         ISetup<IMotorController> lowerArm1;
         ISetup<IMotorController> lowerArm2;
         ISetup<IMotorController> upperArm;
+        ISetup<IMotorController> gripperJoint;
 
         if (self.isReal()) {
             lowerArm1 = new SparkSetup(9, ArmConstants.LOWER_CONFIG, ArmConstants.LOWER_PID);
             lowerArm2 = new SparkSetup(11, ArmConstants.LOWER_CONFIG, ArmConstants.LOWER_PID);
             upperArm = new SparkSetup(10, ArmConstants.UPPER_CONFIG, ArmConstants.UPPER_PID);
+            gripperJoint = new SparkSetup(12, GripperConstants.GRIPPER_CONFIG, GripperConstants.GRIPPER_PID);
 
         } else {
 
@@ -69,6 +73,7 @@ public class ArmSubsystemSetup implements ISetup<ArmSubsystem> {
                     ArmConstants.UPPER_SIMPID,
                     simUpper
             );
+            gripperJoint = MockingUtil.noops(IMotorController.class);
 
         }
 
@@ -78,14 +83,13 @@ public class ArmSubsystemSetup implements ISetup<ArmSubsystem> {
                 upperArm
         );
 
+        GripperControlSetup gripperControlSetup = new GripperControlSetup(gripperJoint);
+
         Debuggable debuggable = self.generateDebugger();
         ArmControl armControl = armControlSetup.build(self.addChild("arm-control"));
         ArmInput armInput = new ArmInput(new Joystick(1), self.generateDebugger());
-<<<<<<< HEAD
-        GripperControl gripperControl = GripperControlSetup.build(self.addChild("gripper-control"));
-        Debuggable debuggable = self.generateDebugger();
-=======
->>>>>>> main
+
+        GripperControl gripperControl = gripperControlSetup.build(self.addChild("gripper-control"));
 
         return new ArmSubsystem(armInput, armControl, gripperControl, debuggable);
 
