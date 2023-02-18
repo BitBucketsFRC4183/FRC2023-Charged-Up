@@ -85,7 +85,7 @@ public interface ArmConstants {
             false
     );
     //change with accurate numbers
-    double FFUPPER_ARM_MASS = UPPER_ARM.armMass + grabberMass;
+
 
     double LOWER_MOI = 0.37294290018;
 
@@ -103,6 +103,8 @@ public interface ArmConstants {
     double GRABBER_LENGTH = 0.1524;
 
     double FFUPPER_ARM_LENGTH = UPPER_JOINT_LENGTH + GRABBER_LENGTH;
+
+    double GRABBER_MASS = 0;
 
 
     // Feel free to change to make arms faster/slower for input
@@ -137,15 +139,18 @@ public interface ArmConstants {
 
 
     //wrist + elbow for ff purposes
-    double  elbowCgRadius =
-            (UPPER_CONFIG.cgRadius * UPPER_ARM.armMass)
-                    + (UPPER_ARM.lengthMeters + config.wrist().cgRadius()) * config.wrist().mass()
-            / (UPPER_ARM.armMass + config.wrist().mass());
-    double elbowMoi =
-            UPPER_ARM.armMass * Math.pow(UPPER_CGRADIUS - elbowCgRadius, 2.0)
-                    + config.wrist().mass()
-                    * Math.pow(
-                    UPPER_ARM.lengthMeters + config.wrist().cgRadius() - elbowCgRadius, 2.0);
+
+          //  double  elbowCgRadius =
+          //  (UPPER_CONFIG.cgRadius * UPPER_ARM.armMass)
+            //        + (UPPER_ARM.lengthMeters + config.wrist().cgRadius()) * config.wrist().mass()
+            // / (UPPER_ARM.armMass + config.wrist().mass());
+   // double elbowMoi =
+   //         UPPER_ARM.armMass * Math.pow(UPPER_CGRADIUS - elbowCgRadius, 2.0)
+      //              + config.wrist().mass()
+       //             * Math.pow(
+         //           UPPER_ARM.lengthMeters + config.wrist().cgRadius() - elbowCgRadius, 2.0);
+
+    double FFUPPER_ARM_MASS = UPPER_ARM.armMass + GRABBER_MASS;
 
 
 }
