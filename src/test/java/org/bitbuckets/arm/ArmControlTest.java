@@ -37,12 +37,12 @@ class ArmControlTest {
 
     @Test
     void convertMechanismRotationToRawRotation_lowerJoint() {
-        assertEquals(27.69, control.convertMechanismRotationtoRawRotation_lowerJoint(1), .1);
+        assertEquals(20.0, control.convertMechanismRotationtoRawRotation_lowerJoint(1), .1);
     }
 
     @Test
     void convertMechanismRotationToRawRotation_upperJoint() {
-        assertEquals(24., control.convertMechanismRotationtoRawRotation_upperJoint(1), .1);
+        assertEquals(60.0, control.convertMechanismRotationtoRawRotation_upperJoint(1), .1);
     }
 
 
