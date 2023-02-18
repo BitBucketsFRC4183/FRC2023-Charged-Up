@@ -1,5 +1,6 @@
 package org.bitbuckets.drive.holo;
 
+import com.pathplanner.lib.PathPlannerTrajectory;
 import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -76,7 +77,7 @@ public class HoloControl {
         return controller.calculate(
                 odometryControl.estimateFusedPose2d(),
                 state,
-                state.poseMeters.getRotation()
+                state.holonomicRotation
         );
     }
 }
