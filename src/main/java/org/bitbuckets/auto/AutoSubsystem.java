@@ -59,7 +59,12 @@ public class AutoSubsystem {
 
     public void runLoop() {
 
-        debug.log("path-pose",samplePathPlannerState().get().poseMeters);
+        var opt = samplePathPlannerState();
+
+        if (opt.isPresent()) {
+            debug.log("path-pose",opt.get().poseMeters);
+        }
+
 
         switch (state) {
             case DISABLED:
