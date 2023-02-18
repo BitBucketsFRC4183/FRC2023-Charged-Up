@@ -23,7 +23,9 @@ public class ProfiledPIDFCalculator implements Runnable, IPIDCalculator {
         if (tuner.hasUpdated()) {
             double[] out = tuner.consumeValue();
 
-            profiledPIDController.setPID(out[0], out[1], out[2]);
+            profiledPIDController.setPID(out[0],
+                    out[1],
+                    out[2]);
             profiledPIDController.setConstraints(new TrapezoidProfile.Constraints(out[3], out[4]));
         }
 
