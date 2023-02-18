@@ -58,6 +58,9 @@ public class AutoSubsystem {
     int iteration = 0;
 
     public void runLoop() {
+
+        debug.log("path-pose",samplePathPlannerState().get().poseMeters);
+
         switch (state) {
             case DISABLED:
                 if (DriverStation.isAutonomousEnabled()) {
