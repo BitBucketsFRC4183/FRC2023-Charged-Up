@@ -4,14 +4,18 @@ import org.bitbuckets.lib.log.Debuggable;
 
 public class ArmSubsystem {
 
-    //make motors
-
     final ArmInput armInput;
     final ArmControl armControl;
     final Debuggable debuggable;
 
+
+    // state holds the current state of the FSM that the arm is in, with the default state being manual
     ArmFSM state = ArmFSM.MANUAL;
+
+    // nextState holds the next state that the arm should go to AFTER it has completed the current actions commanded by state
+    // default of nextState is manual, but changes when operator presses button that causes the arm to independently move to a new position
     ArmFSM nextState = ArmFSM.MANUAL;
+
 
     public ArmSubsystem(ArmInput armInput, ArmControl armControl, Debuggable debuggable) {
         this.armInput = armInput;
@@ -19,26 +23,27 @@ public class ArmSubsystem {
         this.debuggable = debuggable;
     }
 
-
-    //private double CONTROL_JOINT_OUTPUT = 0.1;
-
-    //calculated gearRatio
-    //private double gearRatio = (5 * 4 * 3) / (12. / 30.);
-
-
+    // Holds the ArmFSM
     public void teleopPeriodic() {
 
+        // Checks if calibration button on operator controller is pressed to reset encoder position of all motors to 0
         if (armInput.isCalibratedPressed()) {
             armControl.calibrateLowerArm();
             armControl.calibrateUpperArm();
             System.out.println("Arms calibrated!");
         }
+
+        // Switches the current state to manual mode if enable manual mode is pressed on operator controller
         if (armInput.isDisablePositionControlPressed()) {
             state = ArmFSM.MANUAL;
         }
 
+        // Arm finite state machine that dictates which case of commands the arm should follow based on its state
+        // the state changes the nextState
         switch (state) {
+            //
             case MANUAL:
+
                 armControl.manuallyMoveLowerArm(armInput.getLowerArm_PercentOutput());
                 armControl.manuallyMoveUpperArm(armInput.getUpperArm_PercentOutput());
 
