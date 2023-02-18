@@ -1,6 +1,8 @@
 package org.bitbuckets.robot;
 
 import com.ctre.phoenix.sensors.WPI_PigeonIMU;
+import org.bitbuckets.RGB.RgbSubsystem;
+import org.bitbuckets.RGB.RgbSubsystemSetup;
 import org.bitbuckets.arm.ArmSubsystem;
 import org.bitbuckets.arm.ArmSubsystemSetup;
 import org.bitbuckets.auto.AutoSubsystem;
@@ -52,6 +54,10 @@ public class RobotSetup implements ISetup<RobotContainer> {
         MacroSubsystem macroSubsystem = new MacroSubsystemSetup(false)
                 .build(self.addChild("macro-subsystem"));
 
+        RgbSubsystem rgbSubsystem = new RgbSubsystemSetup(true)
+                .build(self.addChild("rgb-subsystem"));
+
+
         /**
          * Register the crasher runnable if
          */
@@ -60,7 +66,7 @@ public class RobotSetup implements ISetup<RobotContainer> {
         }
 
 
-        return new RobotContainer(driveSubsystem, armSubsystem, elevatorSubsystem, autoSubsystem, macroSubsystem);
+        return new RobotContainer(driveSubsystem, armSubsystem, elevatorSubsystem, autoSubsystem, macroSubsystem, rgbSubsystem);
     }
 
 
