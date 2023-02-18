@@ -2,7 +2,8 @@ package org.bitbuckets.auto;
 
 import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.lib.ISetup;
-import org.bitbuckets.lib.log.IDebuggable;
+import org.bitbuckets.lib.ITuneAs;
+import org.bitbuckets.lib.debug.IDebuggable;
 import org.bitbuckets.lib.tune.IValueTuner;
 import org.bitbuckets.lib.util.MockingUtil;
 
@@ -25,14 +26,10 @@ public class AutoSubsystemSetup implements ISetup<AutoSubsystem> {
 
 
         IAutoControl autoControl = self.childSetup("auto-control", new AutoControlSetup());
-        IValueTuner<AutoPath> pathTuner = self.generateTuner(AutoPath.class, "path", AutoPath.NONE);
+        IValueTuner<AutoPath> pathTuner = self.generateTuner(ITuneAs.ENUM_INPUT(AutoPath.class), "path", AutoPath.NONE);
         IDebuggable debuggable = self.getDebuggable();
-        AutoSubsystem subsystem = new AutoSubsystem(pathTuner, autoControl, debuggable);
 
-
-        self.registerLogLoop(subsystem::logLoop);
-
-        return subsystem;
+        return new AutoSubsystem(pathTuner, autoControl, debuggable);
     }
 
 

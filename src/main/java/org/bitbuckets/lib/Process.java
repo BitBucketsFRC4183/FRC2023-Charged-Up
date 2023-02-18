@@ -1,14 +1,23 @@
 package org.bitbuckets.lib;
 
 import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardContainer;
 import org.bitbuckets.lib.core.Path;
-import org.bitbuckets.lib.log.*;
+import org.bitbuckets.lib.debug.IDebuggable;
+import org.bitbuckets.lib.debug.NoopsDebuggable;
+import org.bitbuckets.lib.debug.ShuffleDebuggable;
+import org.bitbuckets.lib.log.IConsole;
+import org.bitbuckets.lib.log.ILoggable;
+import org.bitbuckets.lib.log.NoopsConsole;
+import org.bitbuckets.lib.log.ProcessConsole;
 import org.bitbuckets.lib.tune.EnumTuner;
 import org.bitbuckets.lib.tune.IForceSendTuner;
 import org.bitbuckets.lib.tune.IValueTuner;
-import org.bitbuckets.lib.tune.ModernTuner;
+import org.bitbuckets.lib.tune.NoopsTuner;
+import org.bitbuckets.lib.util.HasLogLoop;
+import org.bitbuckets.lib.util.HasLoop;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,22 +25,22 @@ import java.util.List;
 public class Process implements IProcess {
 
     final List<Process> children = new ArrayList<>();
-
     final List<HasLoop> runLogic = new ArrayList<>();
     final List<HasLogLoop> runLogging = new ArrayList<>();
 
-    final NetworkTable table;
+    final ShuffleboardContainer table;
     final Path selfPath;
     final IForceSendTuner<ProcessMode> selfMode;
     final IConsole selfConsole;
     final IDebuggable selfDbg;
 
-    public Process(NetworkTable table, Path selfPath, IConsole selfConsole, IForceSendTuner<ProcessMode> selfMode, IDebuggable selfDbg) {
+    public Process(ShuffleboardContainer table, Path selfPath, IConsole selfConsole, IForceSendTuner<ProcessMode> selfMode, IDebuggable selfDbg) {
         this.table = table;
         this.selfPath = selfPath;
         this.selfConsole = selfConsole;
         this.selfMode = selfMode;
         this.selfDbg = selfDbg;
+
     }
 
     @Override
@@ -49,54 +58,15 @@ public class Process implements IProcess {
         return selfDbg;
     }
 
-    <T extends Enum<T>, A> IValueTuner<T> gen(NetworkTable sub, Class<A> tuneDT, A dtNotTune) {
-        return new EnumTuner<>(sub, (Class<T>) tuneDT, (T) dtNotTune, a -> {});
+    @Override
+    public <T> IValueTuner<T> generateTuner(ITuneAs<T> tuneDataType, String key, T dataWhenNotTuning) {
+        return tuneDataType.generate(key, table, dataWhenNotTuning, selfMode, null);
     }
 
-    @Override
-    public <T> IValueTuner<T> generateTuner(Class<T> tuneDataType, String key, T dataWhenNotTuning) {
-        if (tuneDataType == Enum.class) {
-            NetworkTable sub = table.getSubTable("tune-" + key);
-
-            IValueTuner<?> s =  gen(sub, tuneDataType, dataWhenNotTuning);
-            return (IValueTuner<T>) s;
-        } else {
-            NetworkTableEntry entry = table.getEntry("tune-" + key);
-
-            return new ModernTuner<>(entry, selfMode, dataWhenNotTuning);
-        }
-    }
 
     @Override
-    public <T> ILoggable<T> generateLogger(Class<T> logDataType, String key) {
-        NetworkTableEntry sub = table.getEntry("log-" + key);
-        ILoggable<T> log = null;
-
-        if (logDataType == Double.class) {
-            log = a -> sub.setDouble((Double) a);
-            sub.setDouble(0.0);
-        }
-
-        if (logDataType == Boolean.class) {
-            log = a -> sub.setBoolean((Boolean) a);
-            sub.setBoolean(false);
-        }
-
-        if (logDataType == String.class) {
-            log = a -> sub.setString((String) a);
-            sub.setString("default string");
-        }
-
-        if (logDataType.isEnum()) {
-            log = a -> sub.setString(a.toString());
-            sub.setString("default enum");
-        }
-
-        if (log != null) {
-            return log;
-        }
-
-        throw new UnsupportedOperationException("bad data type");
+    public <T> ILoggable<T> generateLogger(ILogAs<T> logDataType, String key) {
+        return logDataType.generate(key,table);
     }
 
     @Override
@@ -122,17 +92,14 @@ public class Process implements IProcess {
         }
 
         //run own logic loops
-
         for (HasLoop hasLoop : runLogic) {
             hasLoop.loop();
         }
 
         //If allowed to, run logging loop
-
         if (currentLevel <= ProcessMode.LOG_PROFILING.level) {
             for (HasLogLoop hasLogLoop : runLogging) {
                 hasLogLoop.logLoop();
-                System.out.println("AAAAA");
             }
         }
 
@@ -147,26 +114,21 @@ public class Process implements IProcess {
         }
     }
 
-    @Override
-    public IProcess child(String key) {
-
-        throw new UnsupportedOperationException();
-    }
 
     @Override
     public <T> T childSetup(String key, ISetup<T> setup) {
-
         Path childPath = selfPath.append(key);
-        NetworkTable childTable = table.getSubTable(key);
-        NetworkTable childMode = childTable.getInstance().getTable("mattlib/").getSubTable( childPath.getAsFlatTablePath() + "-mode");
-
-        //setup metadata in ShuffleBoard
-
-
+        ShuffleboardContainer childContainer;
+        if (childPath.length() == 1) { //if this is directly branching off the root, it should go in a tab
+            childContainer = Shuffleboard.getTab(key);
+        } else {
+            //base this off relation
+            childContainer = table.getLayout(key, BuiltInLayouts.kGrid); //TODO make nesting look better, don't stack 1 billion components inside eachother
+        }
 
         //setup tuner that can change values internally
         EnumTuner<ProcessMode> childModeTuner = new EnumTuner<>(
-                childMode,
+                childContainer.getLayout("mode", BuiltInLayouts.kList),
                 ProcessMode.class,
                 ProcessMode.LOG_COMPETITION,
                 e -> forceTo(ProcessMode.valueOf(e.valueData.value.getString()))
@@ -176,9 +138,9 @@ public class Process implements IProcess {
 
         //setup console for writing data to
         IConsole childConsole = new ProcessConsole(childModeTuner, childPath);
-        IDebuggable childDebuggable = new NetworkDebuggable(childTable, childModeTuner);
+        IDebuggable childDebuggable = new ShuffleDebuggable(childContainer, childModeTuner);
 
-        Process child = new Process(childTable, childPath, childConsole, childModeTuner, childDebuggable);
+        Process child = new Process(childContainer, childPath, childConsole, childModeTuner, childDebuggable);
         children.add(child);
 
         var p = setup.build(child);
@@ -199,14 +161,15 @@ public class Process implements IProcess {
         return setup.build(this);
     }
 
-    public static Process root(NetworkTable root) {
-        NetworkTable childMode = NetworkTableInstance.getDefault().getTable("mattlib").getSubTable("root" + "-set-mode");
+
+    public static Process root() {
+        //TODO
 
         return new Process(
-                root,
+                null,
                 new Path(new String[0]),
                 new NoopsConsole(),
-                new EnumTuner<>(childMode, ProcessMode.class, ProcessMode.LOG_COMPETITION, a-> {}),
+                new NoopsTuner(),
                 new NoopsDebuggable());
     }
 }

@@ -1,4 +1,4 @@
-package org.bitbuckets.lib;
+package org.bitbuckets.lib.util;
 
 import java.io.Serializable;
 

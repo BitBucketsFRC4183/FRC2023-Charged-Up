@@ -5,7 +5,6 @@ import com.revrobotics.CANSparkMaxLowLevel;
 import com.revrobotics.SparkMaxPIDController;
 import edu.wpi.first.hal.HAL;
 import org.bitbuckets.lib.hardware.MotorConfig;
-import org.bitbuckets.lib.hardware.PIDIndex;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -15,7 +14,6 @@ import java.util.Optional;
 
 class SparkRelativeMotorControllerTest {
 
-    static double[] IGNORE = PIDIndex.CONSTANTS(0,0,0,0,0);
     MotorConfig test = new MotorConfig(0.5, 1, 1, false, false, 20, false, false, Optional.empty());
 
 

@@ -1,7 +1,7 @@
 package org.bitbuckets.elevator;
 
 import org.bitbuckets.auto.AutoSubsystem;
-import org.bitbuckets.lib.log.IDebuggable;
+import org.bitbuckets.lib.debug.IDebuggable;
 
 public class ElevatorSubsystem {
     final ElevatorControl elevatorControl;

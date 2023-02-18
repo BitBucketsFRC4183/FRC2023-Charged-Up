@@ -3,6 +3,7 @@ package org.bitbuckets.lib.control;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.lib.ISetup;
+import org.bitbuckets.lib.ITuneAs;
 import org.bitbuckets.lib.tune.IValueTuner;
 
 public class ProfiledPIDFSetup implements ISetup<IPIDCalculator> {
@@ -18,11 +19,11 @@ public class ProfiledPIDFSetup implements ISetup<IPIDCalculator> {
     @Override
     public IPIDCalculator build(IProcess self) {
 
-        IValueTuner<Double> pTune = self.generateTuner(Double.class, "p", pidConfig.kP);
-        IValueTuner<Double> iTune = self.generateTuner(Double.class, "i", pidConfig.kI);
-        IValueTuner<Double> dTune = self.generateTuner(Double.class, "d", pidConfig.kD);
-        IValueTuner<Double> kVTune = self.generateTuner(Double.class, "kV", profileConfig.kV);
-        IValueTuner<Double> kATune = self.generateTuner(Double.class, "kA", profileConfig.kA);
+        IValueTuner<Double> pTune = self.generateTuner(ITuneAs.DOUBLE_INPUT, "p", pidConfig.kP);
+        IValueTuner<Double> iTune = self.generateTuner(ITuneAs.DOUBLE_INPUT, "i", pidConfig.kI);
+        IValueTuner<Double> dTune = self.generateTuner(ITuneAs.DOUBLE_INPUT, "d", pidConfig.kD);
+        IValueTuner<Double> kVTune = self.generateTuner(ITuneAs.DOUBLE_INPUT, "kV", profileConfig.kV);
+        IValueTuner<Double> kATune = self.generateTuner(ITuneAs.DOUBLE_INPUT, "kA", profileConfig.kA);
 
         double p = pTune.readValue();
         double i = iTune.readValue();

@@ -2,7 +2,7 @@ package org.bitbuckets.lib.control;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import org.bitbuckets.lib.HasLoop;
+import org.bitbuckets.lib.util.HasLoop;
 import org.bitbuckets.lib.tune.IValueTuner;
 
 public class ProfiledPIDFCalculator implements HasLoop, IPIDCalculator {

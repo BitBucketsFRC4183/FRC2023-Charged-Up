@@ -8,7 +8,7 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.lib.ISetup;
-import org.bitbuckets.lib.log.IDebuggable;
+import org.bitbuckets.lib.debug.IDebuggable;
 import org.bitbuckets.lib.util.MockingUtil;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;

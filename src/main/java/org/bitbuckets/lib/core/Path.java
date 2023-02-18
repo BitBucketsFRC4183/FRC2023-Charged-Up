@@ -1,5 +1,7 @@
 package org.bitbuckets.lib.core;
 
+import edu.wpi.first.wpilibj.motorcontrol.Spark;
+
 import java.util.Optional;
 
 /**
@@ -82,6 +84,10 @@ public class Path {
         toReturnArray[pathComposition.length] = next;
 
         return new Path(toReturnArray);
+    }
+
+    public int length() {
+        return pathComposition.length;
     }
 
 

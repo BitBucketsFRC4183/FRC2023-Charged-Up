@@ -3,6 +3,7 @@ package org.bitbuckets.lib.control;
 import edu.wpi.first.math.controller.PIDController;
 import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.lib.ISetup;
+import org.bitbuckets.lib.ITuneAs;
 import org.bitbuckets.lib.tune.IValueTuner;
 
 public class PIDCalculatorSetup implements ISetup<IPIDCalculator> {
@@ -19,9 +20,9 @@ public class PIDCalculatorSetup implements ISetup<IPIDCalculator> {
 
     @Override
     public IPIDCalculator build(IProcess self) {
-        IValueTuner<Double> p = self.generateTuner(Double.class, "p", pidConfig.kP);
-        IValueTuner<Double> i = self.generateTuner(Double.class, "i", pidConfig.kI);
-        IValueTuner<Double> d = self.generateTuner(Double.class, "d", pidConfig.kD);
+        IValueTuner<Double> p = self.generateTuner(ITuneAs.DOUBLE_INPUT, "p", pidConfig.kP);
+        IValueTuner<Double> i = self.generateTuner(ITuneAs.DOUBLE_INPUT, "i", pidConfig.kI);
+        IValueTuner<Double> d = self.generateTuner(ITuneAs.DOUBLE_INPUT, "d", pidConfig.kD);
 
         double pVal = p.readValue();
         double iVal = i.readValue();

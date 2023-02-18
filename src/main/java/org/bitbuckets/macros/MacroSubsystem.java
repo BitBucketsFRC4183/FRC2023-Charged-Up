@@ -1,6 +1,6 @@
 package org.bitbuckets.macros;
 
-import org.bitbuckets.lib.log.IDebuggable;
+import org.bitbuckets.lib.debug.IDebuggable;
 
 public class MacroSubsystem {
 

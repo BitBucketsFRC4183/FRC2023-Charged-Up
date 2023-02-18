@@ -2,7 +2,7 @@ package org.bitbuckets.arm;
 
 import org.bitbuckets.arm.kinematics.InverseKinematics;
 import org.bitbuckets.lib.hardware.IMotorController;
-import org.bitbuckets.lib.log.IDebuggable;
+import org.bitbuckets.lib.debug.IDebuggable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

@@ -9,8 +9,8 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import org.bitbuckets.drive.DriveConstants;
 import org.bitbuckets.drive.IDriveControl;
 import org.bitbuckets.drive.controlsds.sds.ISwerveModule;
-import org.bitbuckets.lib.HasLogLoop;
-import org.bitbuckets.lib.log.IDebuggable;
+import org.bitbuckets.lib.util.HasLogLoop;
+import org.bitbuckets.lib.debug.IDebuggable;
 
 import java.util.List;
 
