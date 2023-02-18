@@ -27,7 +27,8 @@ import org.bitbuckets.odometry.IOdometryControl;
 import org.bitbuckets.odometry.PidgeonOdometryControlSetup;
 import org.bitbuckets.vision.IVisionControl;
 
-public class DriveSubsystemSetup implements ISetup<DriveSubsystem> {
+public class
+DriveSubsystemSetup implements ISetup<DriveSubsystem> {
 
     final boolean driveEnabled;
     final boolean isSimulated;

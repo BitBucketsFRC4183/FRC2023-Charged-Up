@@ -2,15 +2,15 @@
   "waypoints": [
     {
       "anchorPoint": {
-        "x": 3.586607713661391,
-        "y": 0.5031996112711845
+        "x": 2.248553584102611,
+        "y": 2.8752162731918776
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.196841645876856,
-        "y": 0.5031996112711843
+        "x": 4.353106202143394,
+        "y": 2.8772648792042377
       },
-      "holonomicAngle": 180.0,
+      "holonomicAngle": 0,
       "isReversal": false,
       "velOverride": null,
       "isLocked": false,
@@ -24,22 +24,22 @@
     },
     {
       "anchorPoint": {
-        "x": 1.8951545499797815,
-        "y": 0.45734109906262355
+        "x": 6.0,
+        "y": 2.9371247663393762
       },
       "prevControl": {
-        "x": 2.5617160180189678,
-        "y": 0.45734109906262355
+        "x": 3.390039244745915,
+        "y": 2.9017466724169556
       },
       "nextControl": {
-        "x": 2.5617160180189678,
-        "y": 0.45734109906262355
+        "x": 6.8007091673874935,
+        "y": 2.9479784023840376
       },
-      "holonomicAngle": 179.8419808395773,
-      "isReversal": true,
+      "holonomicAngle": 0,
+      "isReversal": false,
       "velOverride": null,
       "isLocked": false,
-      "isStopPoint": true,
+      "isStopPoint": false,
       "stopEvent": {
         "names": [],
         "executionBehavior": "parallel",
@@ -49,15 +49,15 @@
     },
     {
       "anchorPoint": {
-        "x": 3.8555160202497056,
-        "y": 2.4165976268150446
+        "x": 4.0,
+        "y": 2.88
       },
       "prevControl": {
-        "x": 2.234798884535106,
-        "y": 2.7041082907849403
+        "x": 3.0,
+        "y": 2.88
       },
       "nextControl": null,
-      "holonomicAngle": 180.0,
+      "holonomicAngle": 0,
       "isReversal": false,
       "velOverride": null,
       "isLocked": false,
@@ -70,15 +70,8 @@
       }
     }
   ],
-  "maxVelocity": 3.0,
-  "maxAcceleration": 3.0,
+  "maxVelocity": 2.0,
+  "maxAcceleration": 1.5,
   "isReversed": null,
-  "markers": [
-    {
-      "position": 1.550299627130681,
-      "names": [
-        "slowDownBalance"
-      ]
-    }
-  ]
+  "markers": []
 }
