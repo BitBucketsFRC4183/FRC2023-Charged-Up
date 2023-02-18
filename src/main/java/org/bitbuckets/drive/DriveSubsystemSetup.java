@@ -13,7 +13,8 @@ import org.bitbuckets.drive.holo.HoloControl;
 import org.bitbuckets.drive.holo.HoloControlSetup;
 import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.lib.ISetup;
-import org.bitbuckets.lib.log.IDebuggable;
+import org.bitbuckets.lib.ITuneAs;
+import org.bitbuckets.lib.debug.IDebuggable;
 import org.bitbuckets.lib.tune.IValueTuner;
 import org.bitbuckets.lib.util.MockingUtil;
 import org.bitbuckets.lib.vendor.ctre.CANCoderAbsoluteEncoderSetup;
@@ -65,7 +66,7 @@ public class DriveSubsystemSetup implements ISetup<DriveSubsystem> {
         HoloControl holoControl = self.childSetup("holo-control", new HoloControlSetup(driveControl, visionControl, odometryControl));
 
         IValueTuner<DriveSubsystem.OrientationChooser> orientationTuner = self
-                .generateTuner(DriveSubsystem.OrientationChooser.class, "set-orientation", DriveSubsystem.OrientationChooser.FIELD_ORIENTED);
+                .generateTuner(ITuneAs.ENUM_INPUT(DriveSubsystem.OrientationChooser.class), "set-orientation", DriveSubsystem.OrientationChooser.FIELD_ORIENTED);
         IDebuggable debuggable = self.getDebuggable();
 
         return new DriveSubsystem(

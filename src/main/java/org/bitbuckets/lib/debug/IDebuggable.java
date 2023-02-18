@@ -1,4 +1,4 @@
-package org.bitbuckets.lib.log;
+package org.bitbuckets.lib.debug;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;

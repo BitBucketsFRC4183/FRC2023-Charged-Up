@@ -1,5 +1,7 @@
 package org.bitbuckets.lib;
 
+import org.bitbuckets.lib.util.HasLoop;
+
 /**
  * Designed to kill the robot
  */

@@ -1,7 +1,9 @@
 package org.bitbuckets.lib.tune;
 
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableEvent;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import org.bitbuckets.lib.ProcessMode;
 
 import java.util.EnumSet;
@@ -14,18 +16,18 @@ import java.util.function.Consumer;
  */
 public class ModernTuner<T> implements IValueTuner<T>, Consumer<NetworkTableEvent>, Runnable {
 
-    final NetworkTableEntry entry;
+    final GenericEntry entry;
     final IValueTuner<ProcessMode> processMode;
     final T defaultData;
     final AtomicReference<AtomicRecord<T>> cachedValue;
 
-    public ModernTuner(NetworkTableEntry entry, IValueTuner<ProcessMode> processMode, T defaultData) {
+    public ModernTuner(GenericEntry entry, IValueTuner<ProcessMode> processMode, T defaultData) {
         this.entry = entry;
         this.processMode = processMode;
         this.defaultData = defaultData;
         this.cachedValue = new AtomicReference<>(new AtomicRecord<>(defaultData, false));
 
-        entry.getInstance().addListener(entry, EnumSet.of(NetworkTableEvent.Kind.kValueRemote), this);
+        NetworkTableInstance.getDefault().addListener(entry, EnumSet.of(NetworkTableEvent.Kind.kValueRemote), this);
     }
 
     @Override

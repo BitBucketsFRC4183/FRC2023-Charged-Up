@@ -4,7 +4,7 @@ import com.revrobotics.CANSparkMax;
 import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.hardware.IMotorController;
-import org.bitbuckets.lib.log.IDebuggable;
+import org.bitbuckets.lib.debug.IDebuggable;
 
 
 public class ArmControlSetup implements ISetup<ArmControl> {

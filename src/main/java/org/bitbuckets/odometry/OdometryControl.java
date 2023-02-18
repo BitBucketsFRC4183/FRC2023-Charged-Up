@@ -14,7 +14,7 @@ import edu.wpi.first.math.numbers.N7;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
 import org.bitbuckets.drive.IDriveControl;
-import org.bitbuckets.lib.log.IDebuggable;
+import org.bitbuckets.lib.debug.IDebuggable;
 import org.bitbuckets.vision.IVisionControl;
 
 import java.util.Optional;

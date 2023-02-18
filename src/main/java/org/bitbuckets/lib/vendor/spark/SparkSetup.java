@@ -3,8 +3,10 @@ package org.bitbuckets.lib.vendor.spark;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 import com.revrobotics.SparkMaxLimitSwitch;
+import org.bitbuckets.lib.ILogAs;
 import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.lib.ISetup;
+import org.bitbuckets.lib.ITuneAs;
 import org.bitbuckets.lib.control.PIDConfig;
 import org.bitbuckets.lib.hardware.IMotorController;
 import org.bitbuckets.lib.hardware.MotorConfig;
@@ -87,9 +89,9 @@ public class SparkSetup implements ISetup<IMotorController> {
         if (pidConfig.kP == 0 && pidConfig.kI == 0 && pidConfig.kD == 0) {
             console.sendInfo("using tuneable pid!");
 
-            IValueTuner<Double> p = self.generateTuner(Double.class, "p", pidConfig.kP);
-            IValueTuner<Double> i = self.generateTuner(Double.class, "i", pidConfig.kI);
-            IValueTuner<Double> d = self.generateTuner(Double.class, "d", pidConfig.kD);
+            IValueTuner<Double> p = self.generateTuner(ITuneAs.DOUBLE_INPUT, "p", pidConfig.kP);
+            IValueTuner<Double> i = self.generateTuner(ITuneAs.DOUBLE_INPUT, "i", pidConfig.kI);
+            IValueTuner<Double> d = self.generateTuner(ITuneAs.DOUBLE_INPUT, "d", pidConfig.kD);
             var pidController = spark.getPIDController();
             SparkTuner sparkTuner = new SparkTuner(p, i, d, pidController);
             pidController.setP(p.consumeValue());
@@ -107,24 +109,24 @@ public class SparkSetup implements ISetup<IMotorController> {
         SparkRelativeMotorController ctrl = new SparkRelativeMotorController(motorConfig, spark);
         OnboardPidLogger onboardPidLogger = new OnboardPidLogger(
                 ctrl,
-                self.generateLogger(Double.class, "pos-setpoint-mechanism-rotations"),
-                self.generateLogger(Double.class, "encoder-mechanism-rotations"),
-                self.generateLogger(Double.class, "error-mechanism-rotations"),
-                self.generateLogger(LastControlMode.class, "last-control-mode")
+                self.generateLogger(ILogAs.DOUBLE, "pos-setpoint-mechanism-rotations"),
+                self.generateLogger(ILogAs.DOUBLE, "encoder-mechanism-rotations"),
+                self.generateLogger(ILogAs.DOUBLE, "error-mechanism-rotations"),
+                self.generateLogger(ILogAs.ENUM(LastControlMode.class), "last-control-mode")
         );
 
         self.registerLogLoop(onboardPidLogger);
 
         if (forwardSwitch != null) {
             LimitSwitchLogger loggingAspect = new LimitSwitchLogger(
-                    self.generateLogger(Boolean.class,"forward-hard-switch-pressed"),
+                    self.generateLogger(ILogAs.BOOLEAN,"forward-hard-switch-pressed"),
                     forwardSwitch
             );
             self.registerLogLoop(loggingAspect);
         }
         if (reverseSwitch != null) {
             LimitSwitchLogger loggingAspect = new LimitSwitchLogger(
-                    self.generateLogger(Boolean.class,"reverse-hard-switch-pressed"),
+                    self.generateLogger(ILogAs.BOOLEAN,"reverse-hard-switch-pressed"),
                     reverseSwitch
             );
             self.registerLogLoop(loggingAspect);

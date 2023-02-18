@@ -1,11 +1,14 @@
 package org.bitbuckets.lib;
 
 import edu.wpi.first.hal.HALUtil;
+import edu.wpi.first.util.sendable.Sendable;
 import org.bitbuckets.lib.core.Path;
 import org.bitbuckets.lib.log.IConsole;
-import org.bitbuckets.lib.log.IDebuggable;
+import org.bitbuckets.lib.debug.IDebuggable;
 import org.bitbuckets.lib.log.ILoggable;
 import org.bitbuckets.lib.tune.IValueTuner;
+import org.bitbuckets.lib.util.HasLogLoop;
+import org.bitbuckets.lib.util.HasLoop;
 
 public interface IProcess {
 
@@ -15,16 +18,15 @@ public interface IProcess {
 
     Path getSelfPath();
 
-    @Deprecated
-    IProcess child(String key);
     <T> T childSetup(String key, ISetup<T> setup);
     <T> T inlineSetup(ISetup<T> setup);
 
     IConsole getAssociatedConsole();
     IDebuggable getDebuggable();
 
-    <T> IValueTuner<T> generateTuner(Class<T> tuneDataType, String key, T dataWhenNotTuning);
-    <T> ILoggable<T> generateLogger(Class<T> logDataType, String key);
+    <T> IValueTuner<T> generateTuner(ITuneAs<T> tuneDataType, String key, T dataWhenNotTuning);
+    <T> ILoggable<T> generateLogger(ILogAs<T> logDataType, String key);
+    //void generateSendableHook(Sendable sendable);
 
 
     //IActionProfiler generateProfiler(String key);

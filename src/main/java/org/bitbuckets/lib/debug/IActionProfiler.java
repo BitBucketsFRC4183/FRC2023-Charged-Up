@@ -1,4 +1,4 @@
-package org.bitbuckets.lib.log;
+package org.bitbuckets.lib.debug;
 
 public interface IActionProfiler {
 

@@ -1,7 +1,7 @@
 package org.bitbuckets.lib.vendor.spark;
 
 import com.revrobotics.SparkMaxLimitSwitch;
-import org.bitbuckets.lib.HasLogLoop;
+import org.bitbuckets.lib.util.HasLogLoop;
 import org.bitbuckets.lib.log.ILoggable;
 
 public class LimitSwitchLogger implements HasLogLoop {

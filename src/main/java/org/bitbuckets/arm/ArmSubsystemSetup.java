@@ -11,7 +11,7 @@ import org.bitbuckets.arm.sim.SimArmSetup;
 import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.hardware.IMotorController;
-import org.bitbuckets.lib.log.IDebuggable;
+import org.bitbuckets.lib.debug.IDebuggable;
 import org.bitbuckets.lib.util.MockingUtil;
 import org.bitbuckets.lib.vendor.spark.SparkSetup;
 

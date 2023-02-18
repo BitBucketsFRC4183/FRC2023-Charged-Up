@@ -2,7 +2,7 @@ package org.bitbuckets.elevator;
 
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import org.bitbuckets.lib.hardware.IMotorController;
-import org.bitbuckets.lib.log.IDebuggable;
+import org.bitbuckets.lib.debug.IDebuggable;
 
 public class ElevatorControl {
 

@@ -1,7 +1,7 @@
 package org.bitbuckets.lib.vendor.ctre;
 
 import com.ctre.phoenix.sensors.WPI_CANCoder;
-import org.bitbuckets.lib.HasLogLoop;
+import org.bitbuckets.lib.util.HasLogLoop;
 import org.bitbuckets.lib.hardware.IAbsoluteEncoder;
 import org.bitbuckets.lib.log.ILoggable;
 

@@ -1,6 +1,7 @@
 package org.bitbuckets.lib.vendor.thrifty;
 
 import edu.wpi.first.wpilibj.AnalogInput;
+import org.bitbuckets.lib.ILogAs;
 import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.hardware.IAbsoluteEncoder;
@@ -22,9 +23,9 @@ public class ThriftyEncoderSetup implements ISetup<IAbsoluteEncoder> {
 
         AnalogInput input = new AnalogInput(channel);
         
-        ILoggable<Double> raw = self.generateLogger(Double.class, "raw-rads");
-        ILoggable<Double> abs = self.generateLogger(Double.class, "abs-rads");
-        ILoggable<Double> volt = self.generateLogger(Double.class, "voltage");
+        ILoggable<Double> raw = self.generateLogger(ILogAs.DOUBLE, "raw-rads");
+        ILoggable<Double> abs = self.generateLogger(ILogAs.DOUBLE, "abs-rads");
+        ILoggable<Double> volt = self.generateLogger(ILogAs.DOUBLE, "voltage");
 
         return new ThriftyEncoder(input, offset_radians, raw, abs, volt);
     }

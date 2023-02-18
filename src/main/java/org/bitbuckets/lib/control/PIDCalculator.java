@@ -1,7 +1,7 @@
 package org.bitbuckets.lib.control;
 
 import edu.wpi.first.math.controller.PIDController;
-import org.bitbuckets.lib.HasLoop;
+import org.bitbuckets.lib.util.HasLoop;
 import org.bitbuckets.lib.tune.IValueTuner;
 
 public class PIDCalculator implements IPIDCalculator, HasLoop {

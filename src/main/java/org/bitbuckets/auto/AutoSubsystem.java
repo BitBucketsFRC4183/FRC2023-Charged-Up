@@ -3,9 +3,9 @@ package org.bitbuckets.auto;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import edu.wpi.first.wpilibj.DriverStation;
 import org.bitbuckets.drive.IDriveControl;
-import org.bitbuckets.lib.HasLogLoop;
-import org.bitbuckets.lib.HasLoop;
-import org.bitbuckets.lib.log.IDebuggable;
+import org.bitbuckets.lib.util.HasLogLoop;
+import org.bitbuckets.lib.util.HasLoop;
+import org.bitbuckets.lib.debug.IDebuggable;
 import org.bitbuckets.lib.tune.IValueTuner;
 import org.bitbuckets.odometry.IOdometryControl;
 

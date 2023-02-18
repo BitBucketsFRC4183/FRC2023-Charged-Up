@@ -1,68 +1,63 @@
 package org.bitbuckets.lib.tune;
 
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTableEvent;
+import edu.wpi.first.networktables.*;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardContainer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
+
+
 
 public class EnumTuner<T extends Enum<T>> implements IForceSendTuner<T>, Consumer<NetworkTableEvent> {
 
     final Class<T> enumType;
     final AtomicReference<AtomicRecord<T>> cachedValue;
-    final NetworkTableEntry entry;
+    final GenericEntry entry;
     final Consumer<NetworkTableEvent> passTo;
 
-    static {
-        SendableChooser<String> ass = new SendableChooser<>();
-        ass.setDefaultOption("anal", "oo");
-        ass.addOption("butt", "butt");
-        SmartDashboard.putData(ass);
-
-    }
-
-
-
-    int i = 0;
-
-    public EnumTuner(NetworkTable subtable, Class<T> enumType, T defaultValue, Consumer<NetworkTableEvent> passTo) {
-
-
-
+    public EnumTuner(ShuffleboardContainer subtable, Class<T> enumType, T defaultValue, Consumer<NetworkTableEvent> passTo) {
+        this.cachedValue = new AtomicReference<>(new AtomicRecord<T>(defaultValue, false));
         this.passTo = passTo;
+        this.enumType = enumType;
+
         //setup shuffleboard support
-        subtable.getEntry(".controllable").setBoolean(true);
-        subtable.getEntry(".name").setString(subtable.getPath());
-        subtable.getEntry(".type").setString("String Chooser");
-        subtable.getEntry(".instance").setInteger(0);
-        subtable.getEntry("default").setString((defaultValue).name());
+        subtable.add(".controllable", true);
+        subtable.add(".name", UUID.randomUUID().toString());
+        subtable.add(".type", "String Chooser");
+        subtable.add(".instance", 0);
+        subtable.add("default", defaultValue.name());
 
         List<String> toBuild = new ArrayList<>();
         for (T enumInstance : enumType.getEnumConstants()) {
             toBuild.add((enumInstance).name());
         }
 
-        subtable.getEntry("options").setStringArray(toBuild.toArray(String[]::new));
-        this.entry = subtable.getEntry("selected");
-        this.entry.setString(defaultValue.name());
-        subtable.getEntry("active").setString(defaultValue.name());
+        this.entry = subtable.add("selected", defaultValue.name()).getEntry();
+        subtable.add("options", toBuild.toArray(String[]::new));
+        subtable.addString("active", this::readName);
 
-        this.enumType = enumType;
-        this.cachedValue = new AtomicReference<>(new AtomicRecord<T>(defaultValue, false));
 
-        entry.getInstance().addListener(entry, EnumSet.of(NetworkTableEvent.Kind.kValueRemote), this);
-        entry.getInstance().addListener(entry, EnumSet.of(NetworkTableEvent.Kind.kValueRemote), passTo);
+
+
+        NetworkTableInstance.getDefault().addListener(entry, EnumSet.of(NetworkTableEvent.Kind.kValueRemote), this);
+        NetworkTableInstance.getDefault().addListener(entry, EnumSet.of(NetworkTableEvent.Kind.kValueRemote), passTo);
     }
 
     @Override
     public T readValue() {
         return cachedValue.get().cachedPointer;
+    }
+
+    String readName() {
+        return cachedValue.get().cachedPointer.name();
     }
 
     @Override

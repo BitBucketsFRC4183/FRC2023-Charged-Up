@@ -10,7 +10,7 @@ import org.bitbuckets.drive.DriveConstants;
 import org.bitbuckets.drive.IDriveControl;
 import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.lib.ISetup;
-import org.bitbuckets.lib.log.IDebuggable;
+import org.bitbuckets.lib.debug.IDebuggable;
 import org.bitbuckets.vision.IVisionControl;
 
 
