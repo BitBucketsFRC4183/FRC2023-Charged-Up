@@ -7,6 +7,7 @@ import com.ctre.phoenix.sensors.WPI_CANCoder;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.lib.hardware.IAbsoluteEncoder;
+import org.bitbuckets.lib.log.ILoggable;
 
 public class CANCoderAbsoluteEncoderSetup implements ISetup<IAbsoluteEncoder> {
     final int canId;
@@ -36,6 +37,10 @@ public class CANCoderAbsoluteEncoderSetup implements ISetup<IAbsoluteEncoder> {
         CtreUtils.checkCtreError(encoder.configAllSettings(config, 250), "Failed to configure CANCoder");
         CtreUtils.checkCtreError(encoder.setStatusFramePeriod(CANCoderStatusFrame.SensorData, periodMilliseconds, 250), "Failed to configure CANCoder update rate");
 
-        return new CANCoderAbsoluteEncoder(encoder);
+        ILoggable<double[]> data = self.generateDoubleLoggers("Raw-Angle-Degrees", "Angle-Degrees");
+        var absoluteEncoder = new CANCoderAbsoluteEncoder(encoder, data);
+        self.registerLoop(absoluteEncoder, 100, "cancoder-log-loop");
+
+        return absoluteEncoder;
     }
 }

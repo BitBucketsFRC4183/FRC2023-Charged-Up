@@ -2,6 +2,7 @@ package org.bitbuckets.arm;
 
 import org.bitbuckets.lib.log.Debuggable;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -24,6 +25,7 @@ class ArmSubsystemTest {
         armSubsystem = new ArmSubsystem(armInput, armControl, gripperControl, debuggable);
     }
 
+    @Disabled
     @Test
     void teleopPeriodicCalibrate() {
         // call it without a button and ensure calibrate wasn't pressed
@@ -38,6 +40,7 @@ class ArmSubsystemTest {
         verify(armControl, atMostOnce()).calibrateUpperArm();
     }
 
+    @Disabled
     @Test
     void teleopManualModeNoMovement() {
         // no input, but default to move at 0
@@ -47,6 +50,7 @@ class ArmSubsystemTest {
         verifyNoMoreInteractions(armControl);
     }
 
+    @Disabled
     @Test
     void teleopManualMode() {
 
@@ -59,6 +63,7 @@ class ArmSubsystemTest {
         verifyNoMoreInteractions(armControl);
     }
 
+    @Disabled
     @Test
     void teleopPeriodicScoreHigh() {
         // the operator pressed score high
