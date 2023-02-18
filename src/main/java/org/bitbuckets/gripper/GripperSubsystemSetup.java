@@ -19,7 +19,6 @@ public class GripperSubsystemSetup implements ISetup<GripperSubsystem> {
             return MockingUtil.buddy(GripperSubsystem.class);
         }
         GripperControlSetup gripperControlSetup = new GripperControlSetup(new SparkSetup(12, GripperConstants.GRIPPER_CONFIG, GripperConstants.GRIPPER_PID));
-
         GripperControl gripperControl = gripperControlSetup.build(self.addChild("gripper-control"));
 
         return new GripperSubsystem(gripperControl);

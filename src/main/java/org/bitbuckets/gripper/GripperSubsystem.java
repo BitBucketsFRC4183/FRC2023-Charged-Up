@@ -21,9 +21,7 @@ public class GripperSubsystem {
                 if((armState == ArmFSM.SCORE_LOW) || (armState == ArmFSM.SCORE_MID) || (armState == ArmFSM.SCORE_HIGH)){
                     gripperControl.openGripper();
                 }
-
             case CLOSE:
-
                 gripperControl.closeGripper();
         }
     }
