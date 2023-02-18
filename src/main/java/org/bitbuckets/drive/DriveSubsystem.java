@@ -204,8 +204,7 @@ public class DriveSubsystem {
 
             debuggable.log("degree-off-engaged", error);
         } else {
-            driveControl.stopSticky();
-            
+            driveControl.stop90degrees();
 
         }
 
