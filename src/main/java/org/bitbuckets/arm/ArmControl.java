@@ -108,7 +108,11 @@ public class ArmControl {
         }
     }
 
-    // may change delta later
+    /**
+     * Looks at lowerJoint error and upperJoint error to determine whether or not the command has been completed
+     * @param delta difference between error and position until funciton returns true
+     * may change delta later
+     */
     public boolean isErrorSmallEnough(double delta) {
         debuggable.log("lowerJoint Error", Math.abs(lowerJoint1.getError_mechanismRotations()));
         debuggable.log("upperJoint Error", Math.abs(Math.abs(upperJoint.getError_mechanismRotations())));

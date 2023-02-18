@@ -68,10 +68,12 @@ public class ArmSubsystem {
                 }
                 break;
 
-            //if C is pressed in sim (on keyboard)
+            //goes into this case if C is pressed in sim (on keyboard)
+            // Storage is the case that commands the arm to go into storage position, or the position the arm is not actively scoring or intaking pieces
+            // uses InverseKinematics to dictate the positions the arm should move to in order to achieve the storage coords
             case STORAGE:
 
-                //if X is pressed in sim (on keyboard)
+                //goes into this if statement if X is pressed in sim (on keyboard)
                 /**
                  * ONLY USEFUL FOR SIM (hopefully lol)
                  * basically, when looking at the next if statement, the error before the arm exits the current state is some number
@@ -87,6 +89,7 @@ public class ArmSubsystem {
                 }
                 break;
 
+            // Prepare is the case that commands the arm to go backwards to avoid any obstacles when changing between any scoring mode and storage and vice versa
             case PREPARE:
                 armControl.prepareArm();
                 if (armControl.isErrorSmallEnough(.1) || armInput.isStopPidPressed()){
