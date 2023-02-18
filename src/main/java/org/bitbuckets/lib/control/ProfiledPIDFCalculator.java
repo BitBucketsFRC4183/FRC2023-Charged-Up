@@ -17,11 +17,9 @@ public class ProfiledPIDFCalculator implements Runnable, IPIDCalculator {
         this.debuggable = debuggable;
     }
 
-    double cachedF = 0;
-
     @Override
     public void run() {
-
+        debuggable.log("logged", true);
 
         if (tuner.hasUpdated()) {
             double[] out = tuner.consumeValue();
