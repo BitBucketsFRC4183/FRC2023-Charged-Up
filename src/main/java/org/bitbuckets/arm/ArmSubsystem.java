@@ -72,6 +72,12 @@ public class ArmSubsystem {
             case STORAGE:
 
                 //if X is pressed in sim (on keyboard)
+                /**
+                 * ONLY USEFUL FOR SIM (hopefully lol)
+                 * basically, when looking at the next if statement, the error before the arm exits the current state is some number
+                 * however, for small errors, the sim never thinks the error is small enough, hence it never exits the state
+                 * this function allows the user to press a button to tell the sim to go to manual
+                 */
                 if (armInput.isStopPidPressed()) {
                     state = ArmFSM.MANUAL;
                 }
