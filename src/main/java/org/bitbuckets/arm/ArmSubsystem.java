@@ -87,10 +87,7 @@ public class ArmSubsystem {
                 armControl.storeArm();
                 gripperState = GripperFSM.CLOSE;
                 gripperControl.closeGripper();
-                if (!armInput.isStoragePressed()) {
-=======
                 if (armControl.isErrorSmallEnough(.1)) {
->>>>>>> main
                     state = ArmFSM.MANUAL;
                 }
                 break;
