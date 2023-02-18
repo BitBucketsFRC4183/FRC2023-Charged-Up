@@ -1,12 +1,12 @@
 package org.bitbuckets.drive.holo;
 
+import com.pathplanner.lib.PathPlannerTrajectory;
 import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import org.bitbuckets.drive.controlsds.DriveControl;
 import org.bitbuckets.lib.log.Debuggable;
@@ -66,11 +66,11 @@ public class HoloControl {
     return speed;
     }
 
-    public ChassisSpeeds calculatePose2DFromState(Trajectory.State state) {
+    public ChassisSpeeds calculatePose2DFromState(PathPlannerTrajectory.PathPlannerState state) {
         return controller.calculate(
                 odometryControl.estimateFusedPose2d(),
                 state,
-                state.poseMeters.getRotation()
+                state.holonomicRotation
         );
     }
 }
