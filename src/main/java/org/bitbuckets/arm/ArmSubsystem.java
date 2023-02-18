@@ -1,7 +1,6 @@
 package org.bitbuckets.arm;
 
 import org.bitbuckets.gripper.GripperControl;
-import org.bitbuckets.gripper.GripperFSM;
 import org.bitbuckets.gripper.GripperInput;
 import org.bitbuckets.lib.log.Debuggable;
 
@@ -18,7 +17,6 @@ public class ArmSubsystem {
 
     ArmFSM state = ArmFSM.MANUAL;
     ArmFSM nextState = ArmFSM.MANUAL;
-    GripperFSM gripperState = GripperFSM.MANUAL;
 
     public ArmSubsystem(ArmInput armInput, ArmControl armControl, GripperControl gripperControl, GripperInput gripperInput, Debuggable debuggable) {
         this.armInput = armInput;
@@ -63,23 +61,19 @@ public class ArmSubsystem {
                 } else if (armInput.isHumanIntakePressed()) {
                     state = ArmFSM.PREPARE;
                     nextState = ArmFSM.HUMAN_INTAKE;
-                    gripperState = GripperFSM.OPEN;
                     gripperControl.openGripper();
                 } else if (armInput.isScoreMidPressed()) {
                     debuggable.log("line 55", true);
                     state = ArmFSM.PREPARE;
                     nextState = ArmFSM.SCORE_MID;
-                    gripperState = GripperFSM.OPEN;
                     gripperControl.openGripper();
                 } else if (armInput.isScoreHighPressed()) {
                     state = ArmFSM.PREPARE;
                     nextState = ArmFSM.SCORE_HIGH;
-                    gripperState = GripperFSM.OPEN;
                     gripperControl.openGripper();
                 } else if (armInput.isScoreLowPressed()) {
                     state = ArmFSM.PREPARE;
                     nextState = ArmFSM.SCORE_LOW;
-                    gripperState = GripperFSM.OPEN;
                     gripperControl.openGripper();
                 }
                 break;
@@ -92,7 +86,6 @@ public class ArmSubsystem {
                     state = ArmFSM.MANUAL;
                 }
                 armControl.storeArm();
-                gripperState = GripperFSM.CLOSE;
                 gripperControl.closeGripper();
                 if (armControl.isErrorSmallEnough(.1)) {
                     state = ArmFSM.MANUAL;
@@ -103,7 +96,6 @@ public class ArmSubsystem {
                 armControl.prepareArm();
                 if (armControl.isErrorSmallEnough(.1) || armInput.isStopPidPressed()){
                     state = nextState;
-                    gripperState = GripperFSM.OPEN;
                     gripperControl.openGripper();
                 }
 
@@ -111,7 +103,6 @@ public class ArmSubsystem {
 
             case HUMAN_INTAKE:
                 armControl.humanIntake();
-                    gripperState = GripperFSM.OPEN;
                 if (armControl.isErrorSmallEnough(.1) || armInput.isStopPidPressed()) {
                     gripperControl.openGripper();
                     state = ArmFSM.MANUAL;
@@ -121,7 +112,6 @@ public class ArmSubsystem {
 
             case SCORE_LOW:
                 armControl.scoreLow();
-                    gripperState = GripperFSM.OPEN;
                 if (armControl.isErrorSmallEnough(0.1) || armInput.isStopPidPressed()) {
                     gripperControl.openGripper();
                     state = ArmFSM.MANUAL;
@@ -131,7 +121,6 @@ public class ArmSubsystem {
 
             case SCORE_MID:
                 armControl.scoreMid();
-                    gripperState = GripperFSM.OPEN;
                 if (armControl.isErrorSmallEnough(.1) || armInput.isStopPidPressed()) {
                     gripperControl.openGripper();
                     state = ArmFSM.MANUAL;
@@ -141,7 +130,6 @@ public class ArmSubsystem {
 
             case SCORE_HIGH:
                 armControl.scoreHigh();
-                    gripperState = GripperFSM.OPEN;
                 if (armControl.isErrorSmallEnough(.1) || armInput.isStopPidPressed()) {
                     gripperControl.openGripper();
                     state = ArmFSM.MANUAL;
