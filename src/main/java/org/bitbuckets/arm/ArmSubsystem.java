@@ -2,6 +2,7 @@ package org.bitbuckets.arm;
 
 import org.bitbuckets.gripper.GripperControl;
 import org.bitbuckets.gripper.GripperFSM;
+import org.bitbuckets.gripper.GripperInput;
 import org.bitbuckets.lib.log.Debuggable;
 
 public class ArmSubsystem {
@@ -12,16 +13,18 @@ public class ArmSubsystem {
     final ArmControl armControl;
 
     final GripperControl gripperControl;
+    final GripperInput gripperInput;
     final Debuggable debuggable;
 
     ArmFSM state = ArmFSM.MANUAL;
     ArmFSM nextState = ArmFSM.MANUAL;
     GripperFSM gripperState = GripperFSM.MANUAL;
 
-    public ArmSubsystem(ArmInput armInput, ArmControl armControl, GripperControl gripperControl, Debuggable debuggable) {
+    public ArmSubsystem(ArmInput armInput, ArmControl armControl, GripperControl gripperControl, GripperInput gripperInput, Debuggable debuggable) {
         this.armInput = armInput;
         this.armControl = armControl;
         this.gripperControl = gripperControl;
+        this.gripperInput = gripperInput;
         this.debuggable = debuggable;
     }
 
@@ -47,7 +50,11 @@ public class ArmSubsystem {
             case MANUAL:
                 armControl.manuallyMoveLowerArm(armInput.getLowerArm_PercentOutput());
                 armControl.manuallyMoveUpperArm(armInput.getUpperArm_PercentOutput());
-                gripperControl.closeGripper();
+                if (gripperInput.ifGripperPressed()) {
+                    gripperControl.openGripper();
+                } else {
+                    gripperControl.closeGripper();
+                }
 
                 debuggable.log("line 49", true);
 
