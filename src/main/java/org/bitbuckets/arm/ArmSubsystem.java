@@ -9,14 +9,16 @@ public class ArmSubsystem {
     final ArmInput armInput;
     final ArmControl armControl;
     final Debuggable debuggable;
+    final AutoSubsystem autoSubsystem;
 
     ArmFSM state = ArmFSM.MANUAL;
     ArmFSM nextState = ArmFSM.MANUAL;
 
-    public ArmSubsystem(ArmInput armInput, ArmControl armControl, Debuggable debuggable) {
+    public ArmSubsystem(ArmInput armInput, ArmControl armControl, Debuggable debuggable, AutoSubsystem autoSubsystem) {
         this.armInput = armInput;
         this.armControl = armControl;
         this.debuggable = debuggable;
+        this.autoSubsystem = autoSubsystem;
     }
 
 
@@ -25,6 +27,52 @@ public class ArmSubsystem {
     //calculated gearRatio
     //private double gearRatio = (5 * 4 * 3) / (12. / 30.);
 
+
+    public void loop() {
+        switch (autoSubsystem.state()) {
+            case AUTO_RUN:
+                autoPeriodic();
+            case TELEOP:
+                teleopPeriodic();
+        }
+    }
+
+    public void autoPeriodic() {
+        if (autoSubsystem.sampleHasEventStarted("go-to-storage"))
+        {
+            state = ArmFSM.STORAGE;
+        }
+        if (autoSubsystem.sampleHasEventStarted("go-to-prepare"))
+        {
+            state = ArmFSM.PREPARE;
+        }
+        if (autoSubsystem.sampleHasEventStarted("score-high"))
+        {
+            state = ArmFSM.SCORE_HIGH;
+        }
+        if (autoSubsystem.sampleHasEventStarted("go-to-human-intake")) {
+            state = ArmFSM.HUMAN_INTAKE;
+        }
+        if (autoSubsystem.sampleHasEventStarted("pick-up-game-piece")) {
+            state = ArmFSM.GROUND_INTAKE;
+        }
+        switch (state) {
+            case STORAGE:
+                armControl.storeArm();
+                break;
+            case PREPARE:
+                armControl.prepareArm();
+                break;
+            case SCORE_HIGH:
+                armControl.scoreHigh();
+                break;
+            case HUMAN_INTAKE:
+                armControl.humanIntake();
+                break;
+            case GROUND_INTAKE:
+                armControl.intakeGround();
+        }
+    }
 
     public void teleopPeriodic() {
 
@@ -114,6 +162,7 @@ public class ArmSubsystem {
         }
         debuggable.log("state", state);
     }
+
 
 
 }
