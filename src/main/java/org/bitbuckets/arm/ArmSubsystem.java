@@ -7,7 +7,6 @@ public class ArmSubsystem {
 
     //make motors
 
-
     final ArmInput armInput;
     final ArmControl armControl;
 
@@ -38,9 +37,9 @@ public class ArmSubsystem {
             armControl.calibrateUpperArm();
             System.out.println("Arms calibrated!");
         }
-        //if (armInput.isDisablePositionControlPressed()) {
-        //    state = ArmFSM.MANUAL;
-        //}
+        if (armInput.isDisablePositionControlPressed()) {
+            state = ArmFSM.MANUAL;
+        }
 
         switch (state) {
             case MANUAL:
@@ -68,25 +67,36 @@ public class ArmSubsystem {
                 }
                 break;
 
+            //if C is pressed in sim (on keyboard)
             case STORAGE:
+
+                //if X is pressed in sim (on keyboard)
+                if (armInput.isStopPidPressed()) {
+                    state = ArmFSM.MANUAL;
+                }
                 armControl.storeArm();
+<<<<<<< HEAD
                 gripperControl.closeGripper();
                 if (!armInput.isStoragePressed()) {
+=======
+                if (armControl.isErrorSmallEnough(.1)) {
+>>>>>>> main
                     state = ArmFSM.MANUAL;
                 }
                 break;
 
             case PREPARE:
                 armControl.prepareArm();
-                if (armControl.isErrorSmallEnough(3.69)) {
+                if (armControl.isErrorSmallEnough(.1) || armInput.isStopPidPressed()){
                     state = nextState;
                     gripperControl.openGripper();
                 }
+
                 break;
 
             case HUMAN_INTAKE:
                 armControl.humanIntake();
-                if (armControl.isErrorSmallEnough(3.69)) {
+                if (armControl.isErrorSmallEnough(.1) || armInput.isStopPidPressed()) {
                     gripperControl.openGripper();
                     state = ArmFSM.MANUAL;
 
@@ -95,7 +105,7 @@ public class ArmSubsystem {
 
             case SCORE_LOW:
                 armControl.scoreLow();
-                if (armControl.isErrorSmallEnough(3.69)) {
+                if (armControl.isErrorSmallEnough(0.1) || armInput.isStopPidPressed()) {
                     gripperControl.openGripper();
                     state = ArmFSM.MANUAL;
 
@@ -104,7 +114,7 @@ public class ArmSubsystem {
 
             case SCORE_MID:
                 armControl.scoreMid();
-                if (armControl.isErrorSmallEnough(3.69)) {
+                if (armControl.isErrorSmallEnough(.1) || armInput.isStopPidPressed()) {
                     gripperControl.openGripper();
                     state = ArmFSM.MANUAL;
 
@@ -113,7 +123,7 @@ public class ArmSubsystem {
 
             case SCORE_HIGH:
                 armControl.scoreHigh();
-                if (armControl.isErrorSmallEnough(3.69)) {
+                if (armControl.isErrorSmallEnough(.1) || armInput.isStopPidPressed()) {
                     gripperControl.openGripper();
                     state = ArmFSM.MANUAL;
 

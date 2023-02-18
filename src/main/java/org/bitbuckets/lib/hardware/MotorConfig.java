@@ -11,8 +11,8 @@ public class MotorConfig {
     public final boolean shouldBreakOnNoCommand;
     public final double currentLimit;
 
-    public final boolean isForwardLimitEnabled;
-    public final boolean isBackwardLimitEnabled;
+    public final boolean isForwardHardLimitEnabled;
+    public final boolean isBackwardHardLimitEnabled;
 
     @Deprecated
     public final Optional<Integer> following;
@@ -24,19 +24,19 @@ public class MotorConfig {
      * @param isInverted                 whether motor is inverted
      * @param shouldBreakOnNoCommand     true if the motor should resist change when not commanded, false if not
      * @param currentLimit               limit of current
-     * @param isForwardLimitEnabled
-     * @param isBackwardLimitEnabled
+     * @param isForwardHardLimitEnabled
+     * @param isBackwardHardLimitEnabled
      * @param following                  possible CAN id to follow.
      */
-    public MotorConfig(double encoderToMechanismCoefficient, double timeCoefficient, double rotationToMeterCoefficient, boolean isInverted, boolean shouldBreakOnNoCommand, double currentLimit, boolean isForwardLimitEnabled, boolean isBackwardLimitEnabled, @Deprecated Optional<Integer> following) {
+    public MotorConfig(double encoderToMechanismCoefficient, double timeCoefficient, double rotationToMeterCoefficient, boolean isInverted, boolean shouldBreakOnNoCommand, double currentLimit, boolean isForwardHardLimitEnabled, boolean isBackwardHardLimitEnabled, @Deprecated Optional<Integer> following) {
         this.encoderToMechanismCoefficient = encoderToMechanismCoefficient;
         this.timeCoefficient = timeCoefficient;
         this.rotationToMeterCoefficient = rotationToMeterCoefficient;
         this.isInverted = isInverted;
         this.shouldBreakOnNoCommand = shouldBreakOnNoCommand;
         this.currentLimit = currentLimit;
-        this.isForwardLimitEnabled = isForwardLimitEnabled;
-        this.isBackwardLimitEnabled = isBackwardLimitEnabled;
+        this.isForwardHardLimitEnabled = isForwardHardLimitEnabled;
+        this.isBackwardHardLimitEnabled = isBackwardHardLimitEnabled;
         this.following = following;
     }
 
