@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import org.bitbuckets.arm.sim.SimArmSetup;
+import org.bitbuckets.gripper.GripperInput;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.lib.hardware.IMotorController;
@@ -88,6 +89,7 @@ public class ArmSubsystemSetup implements ISetup<ArmSubsystem> {
         ArmInput armInput = new ArmInput(new Joystick(1), self.generateDebugger());
 
         GripperControl gripperControl = gripperControlSetup.build(self.addChild("gripper-control"));
+        GripperInput gripperInput = new GripperInput(new Joystick(1));
 
         return new ArmSubsystem(armInput, armControl, gripperControl, gripperInput, debuggable);
 

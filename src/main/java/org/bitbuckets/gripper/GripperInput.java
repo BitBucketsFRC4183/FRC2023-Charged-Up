@@ -7,11 +7,8 @@ public class GripperInput {
 
     final Joystick operatorControl;
 
-    GripperFSM gripperState;
-
-    public GripperInput(Joystick operatorControl, GripperFSM gripperState) {
+    public GripperInput(Joystick operatorControl) {
         this.operatorControl = operatorControl;
-        this.gripperState = gripperState;
     }
 
     public boolean ifGripperPressed() {

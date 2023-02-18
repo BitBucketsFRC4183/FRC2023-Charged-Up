@@ -1,5 +1,7 @@
 package org.bitbuckets.arm;
 
+import org.bitbuckets.gripper.GripperControl;
+import org.bitbuckets.gripper.GripperInput;
 import org.bitbuckets.lib.log.Debuggable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -12,9 +14,11 @@ class ArmSubsystemTest {
 
     ArmInput armInput;
     ArmControl armControl;
+    ArmSubsystem armSubsystem;
+    GripperControl gripperControl;
+    GripperInput gripperInput;
     Debuggable debuggable;
 
-    ArmSubsystem armSubsystem;
 
     @BeforeEach
     public void beforeEach() {
