@@ -124,5 +124,7 @@ public interface ArmConstants {
     double HIGH_NODE_X = 0.8;
     double HIGH_NODE_Y = 0.8;
 
+    double INTAKE_GROUND_X = 0.1;
+    double INTAKE_GROUND_Y = 0.1;
 
 }

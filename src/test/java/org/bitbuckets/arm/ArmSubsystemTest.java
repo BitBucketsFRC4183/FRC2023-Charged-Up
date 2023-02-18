@@ -14,6 +14,7 @@ class ArmSubsystemTest {
     ArmInput armInput;
     ArmControl armControl;
     Debuggable debuggable;
+    AutoSubsystem autoSubsystem;
 
     ArmSubsystem armSubsystem;
 
