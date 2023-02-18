@@ -16,12 +16,15 @@ import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.lib.log.Debuggable;
 import org.bitbuckets.lib.tune.IValueTuner;
 import org.bitbuckets.lib.util.MockingUtil;
+import org.bitbuckets.lib.vendor.ctre.CANCoderAbsoluteEncoderSetup;
+import org.bitbuckets.lib.vendor.ctre.TalonDriveMotorSetup;
+import org.bitbuckets.lib.vendor.ctre.TalonSteerMotorSetup;
 import org.bitbuckets.lib.vendor.sim.dc.DCSimSetup;
 import org.bitbuckets.lib.vendor.spark.SparkDriveMotorSetup;
 import org.bitbuckets.lib.vendor.spark.SparkSteerMotorSetup;
 import org.bitbuckets.lib.vendor.thrifty.ThriftyEncoderSetup;
 import org.bitbuckets.odometry.IOdometryControl;
-import org.bitbuckets.odometry.OdometryControlSetup;
+import org.bitbuckets.odometry.PidgeonOdometryControlSetup;
 import org.bitbuckets.vision.IVisionControl;
 
 public class DriveSubsystemSetup implements ISetup<DriveSubsystem> {
@@ -57,7 +60,7 @@ public class DriveSubsystemSetup implements ISetup<DriveSubsystem> {
         }
         autoSubsystem.setDriveControl(driveControl);
 
-        IOdometryControl odometryControl = new OdometryControlSetup(driveControl, visionControl, 5)
+        IOdometryControl odometryControl = new PidgeonOdometryControlSetup(driveControl, visionControl, 5)
                 .build(self.addChild("odo-control"));
         autoSubsystem.setOdometryControl(odometryControl);
 
@@ -150,6 +153,71 @@ public class DriveSubsystemSetup implements ISetup<DriveSubsystem> {
         ).build(path.addChild("drive-control"));
 
         return driveControl;
+    }
+
+
+    DriveControl buildTalonDriveControl(ProcessPath path) {
+
+        int frontLeftModuleDriveMotor_ID = 1;
+        int frontLeftModuleSteerMotor_ID = 2;
+        int frontLeftModuleSteerEncoder_ID = 9;
+
+        int frontRightModuleDriveMotor_ID = 7;
+        int frontRightModuleSteerMotor_ID = 8;
+        int frontRightModuleSteerEncoder_ID = 12;
+
+        int backLeftModuleDriveMotor_ID = 5;
+        int backLeftModuleSteerMotor_ID = 6;
+        int backLeftModuleSteerEncoder_ID = 11;
+
+        int backRightModuleDriveMotor_ID = 3;
+        int backRightModuleSteerMotor_ID = 4;
+        int backRightModuleSteerEncoder_ID = 10;
+
+        double frontLeftModuleSteerOffset = -Math.toRadians(51.6); // set front left steer offset
+
+        double frontRightModuleSteerOffset = -Math.toRadians(146.7 - 180); // set front right steer offset
+
+        double backLeftModuleSteerOffset = -Math.toRadians(254.9 + 180); // set back left steer offset
+
+        double backRightModuleSteerOffset = -Math.toRadians(66.7); // set back right steer offset
+
+        double sensorPositionCoefficient = 2.0 * Math.PI / 2048 * DriveConstants.MK4_L2.getSteerReduction();
+
+        return new DriveControlSetup(
+                new SwerveModuleSetup(
+                        new DriveControllerSetup(new TalonDriveMotorSetup(frontLeftModuleDriveMotor_ID, DriveConstants.MK4_L2)),
+                        new SteerControllerSetup(
+                                new TalonSteerMotorSetup(frontLeftModuleSteerMotor_ID, DriveConstants.MK4_L2),
+                                new CANCoderAbsoluteEncoderSetup(frontLeftModuleSteerEncoder_ID, frontLeftModuleSteerOffset),
+                                sensorPositionCoefficient
+                        )
+                ),
+                new SwerveModuleSetup(
+                        new DriveControllerSetup(new TalonDriveMotorSetup(frontRightModuleDriveMotor_ID, DriveConstants.MK4_L2)),
+                        new SteerControllerSetup(
+                                new TalonSteerMotorSetup(frontRightModuleSteerMotor_ID, DriveConstants.MK4_L2),
+                                new CANCoderAbsoluteEncoderSetup(frontRightModuleSteerEncoder_ID, frontRightModuleSteerOffset),
+                                sensorPositionCoefficient
+                        )
+                ),
+                new SwerveModuleSetup(
+                        new DriveControllerSetup(new TalonDriveMotorSetup(backLeftModuleDriveMotor_ID, DriveConstants.MK4_L2)),
+                        new SteerControllerSetup(
+                                new TalonSteerMotorSetup(backLeftModuleSteerMotor_ID, DriveConstants.MK4_L2),
+                                new CANCoderAbsoluteEncoderSetup(backLeftModuleSteerEncoder_ID, backLeftModuleSteerOffset),
+                                sensorPositionCoefficient
+                        )
+                ),
+                new SwerveModuleSetup(
+                        new DriveControllerSetup(new TalonDriveMotorSetup(backRightModuleDriveMotor_ID, DriveConstants.MK4_L2)),
+                        new SteerControllerSetup(
+                                new TalonSteerMotorSetup(backRightModuleSteerMotor_ID, DriveConstants.MK4_L2),
+                                new CANCoderAbsoluteEncoderSetup(backRightModuleSteerEncoder_ID, backRightModuleSteerOffset),
+                                sensorPositionCoefficient
+                        )
+                )
+        ).build(path.addChild("drive-control"));
     }
 
 }
