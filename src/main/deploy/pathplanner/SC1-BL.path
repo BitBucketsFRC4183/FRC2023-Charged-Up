@@ -2,13 +2,13 @@
   "waypoints": [
     {
       "anchorPoint": {
-        "x": 4.545873141835802,
-        "y": 0.866544940175383
+        "x": 4.4,
+        "y": 0.45
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.3187717313612795,
-        "y": 0.9989296480329072
+        "x": 3.1728985895254778,
+        "y": 0.5823847078575242
       },
       "holonomicAngle": 0,
       "isReversal": false,
@@ -24,16 +24,16 @@
     },
     {
       "anchorPoint": {
-        "x": 1.6577083376741624,
-        "y": 1.056706498802537
+        "x": 1.7771739615744857,
+        "y": 0.45
       },
       "prevControl": {
-        "x": 2.7044110067630935,
-        "y": 0.9806688759970397
+        "x": 2.8238766306634178,
+        "y": 0.3739623771945027
       },
       "nextControl": {
-        "x": 2.7044110067630935,
-        "y": 0.9806688759970397
+        "x": 2.8238766306634178,
+        "y": 0.3739623771945027
       },
       "holonomicAngle": 179.8419808395773,
       "isReversal": true,
@@ -41,7 +41,9 @@
       "isLocked": false,
       "isStopPoint": true,
       "stopEvent": {
-        "names": [],
+        "names": [
+          "moveArm"
+        ],
         "executionBehavior": "parallel",
         "waitBehavior": "none",
         "waitTime": 0
@@ -50,11 +52,11 @@
     {
       "anchorPoint": {
         "x": 3.8555160202497056,
-        "y": 2.4165976268150446
+        "y": 2.0
       },
       "prevControl": {
         "x": 2.234798884535106,
-        "y": 2.7041082907849403
+        "y": 2.2875106639698957
       },
       "nextControl": null,
       "holonomicAngle": 180.0,
@@ -63,15 +65,24 @@
       "isLocked": false,
       "isStopPoint": false,
       "stopEvent": {
-        "names": [],
+        "names": [
+          "autoBalance"
+        ],
         "executionBehavior": "parallel",
         "waitBehavior": "none",
         "waitTime": 0
       }
     }
   ],
-  "maxVelocity": 3.0,
-  "maxAcceleration": 3.0,
+  "maxVelocity": 2.0,
+  "maxAcceleration": 1.5,
   "isReversed": null,
-  "markers": []
+  "markers": [
+    {
+      "position": 1.465378639914773,
+      "names": [
+        "slowDownBalance"
+      ]
+    }
+  ]
 }
