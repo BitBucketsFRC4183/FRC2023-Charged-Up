@@ -1,17 +1,13 @@
 package org.bitbuckets.arm;
 
 import com.revrobotics.CANSparkMax;
-import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.util.Color;
-import edu.wpi.first.wpilibj.util.Color8Bit;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
+import org.bitbuckets.lib.control.IPIDCalculator;
+import org.bitbuckets.lib.control.ProfiledPIDFCalculator;
+import org.bitbuckets.lib.control.ProfiledPIDFSetup;
 import org.bitbuckets.lib.hardware.IMotorController;
 import org.bitbuckets.lib.log.Debuggable;
-import org.bitbuckets.lib.vendor.spark.SparkSetup;
 
 
 public class ArmControlSetup implements ISetup<ArmControl> {
@@ -36,6 +32,12 @@ public class ArmControlSetup implements ISetup<ArmControl> {
         var lower1 = lowerJoint1.build(self.addChild("lower-joint-1"));
         var lower2 = lowerJoint2.build(self.addChild("lower-joint-2"));
         var upper = upperJoint.build(self.addChild("upper-joint"));
+
+        ProfiledPIDFSetup lowerJointSetupPID = new ProfiledPIDFSetup();
+        IPIDCalculator lowerJointPID = lowerJointSetupPID.build(self.addChild("lowerJointPID"));
+        ProfiledPIDFSetup upperJointSetupPID = new ProfiledPIDFSetup();
+        IPIDCalculator upperJointPID = upperJointSetupPID.build(self.addChild("upperJointPID"));
+
 
         if (self.isReal())
         {
@@ -71,8 +73,9 @@ public class ArmControlSetup implements ISetup<ArmControl> {
                 lower1,
                 lower2,
                 upper,
-                debug
-        );
+                debug,
+                lowerJointPID,
+                upperJointPID);
     }
 
 }
