@@ -26,7 +26,6 @@ import java.util.Optional;
 public class DriveSubsystem {
 
     final DriveInput input;
-
     final AutoSubsystem autoSubsystem;
     final IOdometryControl odometryControl;
     final ClosedLoopsControl closedLoopsControl;
