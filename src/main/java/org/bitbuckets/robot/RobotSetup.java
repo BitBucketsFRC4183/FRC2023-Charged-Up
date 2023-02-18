@@ -32,6 +32,9 @@ public class RobotSetup implements ISetup<RobotContainer> {
     @Override
     public RobotContainer build(ProcessPath self) {
 
+        RgbSubsystem rgbSubsystem = new RgbSubsystemSetup(true)
+                .build(self.addChild("rgb-subsystem"));
+        
         AutoSubsystem autoSubsystem = new AutoSubsystemSetup(false)
                 .build(self.addChild("auto-subsystem"));
 
@@ -53,9 +56,6 @@ public class RobotSetup implements ISetup<RobotContainer> {
 
         MacroSubsystem macroSubsystem = new MacroSubsystemSetup(false)
                 .build(self.addChild("macro-subsystem"));
-
-        RgbSubsystem rgbSubsystem = new RgbSubsystemSetup(true)
-                .build(self.addChild("rgb-subsystem"));
 
 
         /**
