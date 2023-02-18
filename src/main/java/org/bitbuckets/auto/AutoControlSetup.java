@@ -29,7 +29,7 @@ public class AutoControlSetup implements ISetup<IAutoControl> {
             PathPlannerTrajectory trajectory8 = PathPlanner.loadPath("SC9-CL4-BL", new PathConstraints(4.0, 3.0));
             PathPlannerTrajectory trajectory9 = PathPlanner.loadPath("SC9-CL4-SC7-BL", new PathConstraints(4.0, 3.0));
             traj = new PathPlannerTrajectory[]{
-                    trajectory, trajectory1, trajectory2, trajectory3, trajectory4, trajectory5, trajectory6
+                    trajectory, trajectory1, trajectory2, trajectory3, trajectory4, trajectory5, trajectory6, trajectory7, trajectory8, trajectory9
             };
         } catch (Exception e) {
             load.markErrored(e);
