@@ -1,6 +1,8 @@
 package org.bitbuckets.robot;
 
 import com.ctre.phoenix.sensors.WPI_PigeonIMU;
+import org.bitbuckets.RGB.RgbSubsystem;
+import org.bitbuckets.RGB.RgbSubsystemSetup;
 import org.bitbuckets.arm.ArmSubsystem;
 import org.bitbuckets.arm.ArmSubsystemSetup;
 import org.bitbuckets.auto.AutoSubsystem;
@@ -30,10 +32,13 @@ public class RobotSetup implements ISetup<RobotContainer> {
     @Override
     public RobotContainer build(ProcessPath self) {
 
-        AutoSubsystem autoSubsystem = new AutoSubsystemSetup(false)
+        RgbSubsystem rgbSubsystem = new RgbSubsystemSetup(false)
+                .build(self.addChild("rgb-subsystem"));
+
+        AutoSubsystem autoSubsystem = new AutoSubsystemSetup(true)
                 .build(self.addChild("auto-subsystem"));
 
-        IVisionControl visionControl = new VisionControlSetup(false)
+        IVisionControl visionControl = new VisionControlSetup(true)
                 .build(self.addChild("vision-control"));
 
         ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystemSetup(false, autoSubsystem)
@@ -43,7 +48,7 @@ public class RobotSetup implements ISetup<RobotContainer> {
                 .build(self.addChild("arm-subsystem"));
 
         DriveSubsystem driveSubsystem = new DriveSubsystemSetup(
-                false,
+                true,
                 false,
                 autoSubsystem,
                 visionControl
@@ -51,6 +56,7 @@ public class RobotSetup implements ISetup<RobotContainer> {
 
         MacroSubsystem macroSubsystem = new MacroSubsystemSetup(false)
                 .build(self.addChild("macro-subsystem"));
+
 
         /**
          * Register the crasher runnable if
@@ -60,7 +66,7 @@ public class RobotSetup implements ISetup<RobotContainer> {
         }
 
 
-        return new RobotContainer(driveSubsystem, armSubsystem, elevatorSubsystem, autoSubsystem, macroSubsystem);
+        return new RobotContainer(driveSubsystem, armSubsystem, elevatorSubsystem, autoSubsystem, macroSubsystem, rgbSubsystem);
     }
 
 
