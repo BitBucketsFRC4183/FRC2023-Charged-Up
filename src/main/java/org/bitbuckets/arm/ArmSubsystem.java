@@ -1,5 +1,6 @@
 package org.bitbuckets.arm;
 
+import org.bitbuckets.gripper.GripperControl;
 import org.bitbuckets.lib.log.Debuggable;
 
 public class ArmSubsystem {
@@ -9,14 +10,17 @@ public class ArmSubsystem {
 
     final ArmInput armInput;
     final ArmControl armControl;
+
+    final GripperControl gripperControl;
     final Debuggable debuggable;
 
     ArmFSM state = ArmFSM.MANUAL;
     ArmFSM nextState = ArmFSM.MANUAL;
 
-    public ArmSubsystem(ArmInput armInput, ArmControl armControl, Debuggable debuggable) {
+    public ArmSubsystem(ArmInput armInput, ArmControl armControl, GripperControl gripperControl, Debuggable debuggable) {
         this.armInput = armInput;
         this.armControl = armControl;
+        this.gripperControl = gripperControl;
         this.debuggable = debuggable;
     }
 
@@ -66,6 +70,7 @@ public class ArmSubsystem {
 
             case STORAGE:
                 armControl.storeArm();
+                gripperControl.closeGripper();
                 if (!armInput.isStoragePressed()) {
                     state = ArmFSM.MANUAL;
                 }
@@ -75,34 +80,43 @@ public class ArmSubsystem {
                 armControl.prepareArm();
                 if (armControl.isErrorSmallEnough(3.69)) {
                     state = nextState;
+                    gripperControl.openGripper();
                 }
                 break;
 
             case HUMAN_INTAKE:
                 armControl.humanIntake();
                 if (armControl.isErrorSmallEnough(3.69)) {
+                    gripperControl.openGripper();
                     state = ArmFSM.MANUAL;
+
                 }
                 break;
 
             case SCORE_LOW:
                 armControl.scoreLow();
                 if (armControl.isErrorSmallEnough(3.69)) {
+                    gripperControl.openGripper();
                     state = ArmFSM.MANUAL;
+
                 }
                 break;
 
             case SCORE_MID:
                 armControl.scoreMid();
                 if (armControl.isErrorSmallEnough(3.69)) {
+                    gripperControl.openGripper();
                     state = ArmFSM.MANUAL;
+
                 }
                 break;
 
             case SCORE_HIGH:
                 armControl.scoreHigh();
                 if (armControl.isErrorSmallEnough(3.69)) {
+                    gripperControl.openGripper();
                     state = ArmFSM.MANUAL;
+
                 }
                 break;
         }

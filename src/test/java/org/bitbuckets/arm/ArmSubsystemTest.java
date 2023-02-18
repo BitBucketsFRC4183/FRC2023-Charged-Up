@@ -21,7 +21,7 @@ class ArmSubsystemTest {
         armControl = mock(ArmControl.class);
         debuggable = mock(Debuggable.class);
 
-        armSubsystem = new ArmSubsystem(armInput, armControl, debuggable);
+        armSubsystem = new ArmSubsystem(armInput, armControl, gripperControl, debuggable);
     }
 
     @Test
