@@ -27,6 +27,8 @@ public interface ArmConstants {
     double UPPER_JOINT_WIDTH = 0.0254;
     double LOWER_JOINT_WIDTH = 0.0508;
 
+    double UPPER_JOINT_LENGTH = 0.6731;
+
     //in rotations
     double LOWER_ARM_FORWARD_LIMIT_MECHANISM = 0.98;
     double LOWER_ARM_REVERSE_LIMIT_MECHANISM = -0.494361111111;
