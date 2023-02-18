@@ -19,6 +19,7 @@ public class RobotContainer {
     final ElevatorSubsystem elevatorSubsystem;
     final AutoSubsystem autoSubsystem;
     final MacroSubsystem macroSubsystem;
+    final RgbSubsystem rgbSubsystem;
 
     public RobotContainer(DriveSubsystem driveSubsystem, ArmSubsystem armSubsystem, ElevatorSubsystem elevatorSubsystem, AutoSubsystem autoSubsystem, MacroSubsystem macroSubsystem, RgbSubsystem rgbSubsystem) {
         this.driveSubsystem = driveSubsystem;
@@ -26,6 +27,7 @@ public class RobotContainer {
         this.elevatorSubsystem = elevatorSubsystem;
         this.autoSubsystem = autoSubsystem;
         this.macroSubsystem = macroSubsystem;
+        this.rgbSubsystem = rgbSubsystem;
     }
 
 
@@ -33,6 +35,7 @@ public class RobotContainer {
         autoSubsystem.runLoop();
         driveSubsystem.runLoop();
         elevatorSubsystem.robotPeriodic();
+        rgbSubsystem.robotPeriodic();
     }
 
 
@@ -44,6 +47,7 @@ public class RobotContainer {
         elevatorSubsystem.teleopPeriodic();
         armSubsystem.teleopPeriodic();
         macroSubsystem.teleopPeriodic();
+
 
     }
 
