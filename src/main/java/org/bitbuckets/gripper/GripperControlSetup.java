@@ -15,9 +15,9 @@ public class GripperControlSetup implements ISetup<GripperControl> {
 
     @Override
     public GripperControl build(ProcessPath self) {
-        IValueTuner<Double> setPointTuner = self.generateValueTuner("gripper-set-point", 0.);
+        IValueTuner<Double> setPointTuner = self.generateValueTuner("gripper-set-point", 0.0);
         var gripper = gripperJoint.build(self.addChild("gripper"));
 
-        return new GripperControl(setPointTuner, gripper);
+        return new GripperControl(self.generateDebugger(), setPointTuner, gripper);
     }
 }

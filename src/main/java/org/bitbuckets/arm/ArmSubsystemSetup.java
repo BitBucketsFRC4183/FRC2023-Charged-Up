@@ -1,5 +1,6 @@
 package org.bitbuckets.arm;
 
+import edu.wpi.first.math.Matrix;
 import edu.wpi.first.wpilibj.Joystick;
 import org.bitbuckets.gripper.GripperConstants;
 import org.bitbuckets.gripper.GripperControl;
@@ -17,7 +18,10 @@ import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.lib.hardware.IMotorController;
 import org.bitbuckets.lib.log.Debuggable;
 import org.bitbuckets.lib.util.MockingUtil;
+import org.bitbuckets.lib.vendor.sim.dc.DCMotorConfig;
+import org.bitbuckets.lib.vendor.sim.dc.DCSimSetup;
 import org.bitbuckets.lib.vendor.spark.SparkSetup;
+import org.ejml.simple.SimpleMatrix;
 
 public class ArmSubsystemSetup implements ISetup<ArmSubsystem> {
 
@@ -72,7 +76,7 @@ public class ArmSubsystemSetup implements ISetup<ArmSubsystem> {
                     ArmConstants.UPPER_SIMPID,
                     simUpper
             );
-            gripperJoint = MockingUtil.noops(IMotorController.class);
+            gripperJoint = new DCSimSetup(GripperConstants.GRIPPER_CONFIG, GripperConstants.DC_GRIPPER_CONFIG, GripperConstants.GRIPPER_PID);
 
         }
 
