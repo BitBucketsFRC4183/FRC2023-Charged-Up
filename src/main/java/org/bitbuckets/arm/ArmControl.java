@@ -269,6 +269,22 @@ public class ArmControl {
 
         }
     }
+    public void intakeGround(){
+        InverseKinematics intakeGround = new InverseKinematics(ArmConstants.INTAKE_GROUND_X, ArmConstants.INTAKE_GROUND_Y);
+        double lowerAngle_degrees = intakeGround.getLowerJoint_degrees();
+        double upperAngle_degrees = intakeGround.getUpperJoint_degrees();
+
+        debuggable.log("lower-kinematics", lowerAngle_degrees);
+        debuggable.log("upper-kinematics", upperAngle_degrees);
+
+        if (isReachable(lowerAngle_degrees, upperAngle_degrees)) {
+
+            lowerJoint1.moveAtVoltage(lowerJointPID.calculateNext(lowerJoint1.getMechanismPositionAccum_rot(), convertDegreesToRotation(lowerAngle_degrees)));
+            upperJoint.moveAtVoltage(upperJointPID.calculateNext(upperJoint.getMechanismPositionAccum_rot(), convertDegreesToRotation(upperAngle_degrees)));
+
+        }
+
+    }
 }
 
 
