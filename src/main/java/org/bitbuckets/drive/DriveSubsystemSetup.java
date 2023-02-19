@@ -63,6 +63,7 @@ DriveSubsystemSetup implements ISetup<DriveSubsystem> {
 
         IOdometryControl odometryControl = new PidgeonOdometryControlSetup(driveControl, visionControl, 5)
                 .build(self.addChild("odo-control"));
+
         autoSubsystem.setOdometryControl(odometryControl);
 
         HoloControl holoControl = new HoloControlSetup(driveControl, visionControl, odometryControl)
