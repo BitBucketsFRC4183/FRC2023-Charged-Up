@@ -87,6 +87,10 @@ public class DriveSubsystem {
                 Optional<PathPlannerTrajectory.PathPlannerState> opt = autoSubsystem.samplePathPlannerState();
                 if (opt.isPresent()) {
                     ChassisSpeeds targetSpeeds = holoControl.calculatePose2DFromState(opt.get());
+                    targetSpeeds.vxMetersPerSecond = -targetSpeeds.vxMetersPerSecond;
+                    targetSpeeds.vyMetersPerSecond = -targetSpeeds.vyMetersPerSecond;
+                    targetSpeeds.omegaRadiansPerSecond = -targetSpeeds.omegaRadiansPerSecond;
+
                     driveControl.drive(targetSpeeds);
                 }
                 break;
@@ -142,6 +146,10 @@ public class DriveSubsystem {
     void teleopVision() {
         if (visionTarget.isPresent()) {
             ChassisSpeeds speeds = holoControl.calculatePose2D(visionTarget.get().toPose2d(), 1, visionTarget.get().toPose2d().getRotation());
+            speeds.vxMetersPerSecond = -speeds.vxMetersPerSecond;
+            speeds.vyMetersPerSecond = -speeds.vyMetersPerSecond;
+            speeds.omegaRadiansPerSecond = -speeds.omegaRadiansPerSecond;
+
 
             driveControl.drive(speeds);
         } else {

@@ -50,7 +50,7 @@ public class PidgeonOdometryControl implements IOdometryControl {
         //Todo: re add when vision is fixed
         Optional<Pose3d> res = visionControl.estimateVisionRobotPose();
 
-        if (res.isPresent()) {
+        if (res != null && res.isPresent()) {
             Pose2d realPose = res.get().toPose2d();
             swerveDrivePoseEstimator.addVisionMeasurement(realPose, epoch, visionMeasurementStdDevs);
 
@@ -78,7 +78,7 @@ public class PidgeonOdometryControl implements IOdometryControl {
 
     @Override
     public Rotation2d getRotation2d() {
-        return Rotation2d.fromDegrees(pigeonIMU.getYaw());
+        return pigeonIMU.getRotation2d();
     }
 
     @Override
