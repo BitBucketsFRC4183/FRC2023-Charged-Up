@@ -22,6 +22,8 @@ public class PIDCalculator implements IPIDCalculator, Runnable {
     @Override
     public void run() {
 
+
+
         if (tuner.hasUpdated()) {
             double[] pidArray = tuner.consumeValue();
 
