@@ -118,7 +118,7 @@ public class DriveSubsystem {
                     state = DriveFSM.TELEOP_NORMAL;
                     break;
                 }
-                teleopBalancing();
+                balance();
                 break;
 
             case TELEOP_VISION:
@@ -142,7 +142,7 @@ public class DriveSubsystem {
 
     void autoPeriodic() {
         if (autoSubsystem.sampleHasEventStarted("auto-balance")) {
-            teleopBalancing();
+            balance();
         }
     }
 
@@ -196,7 +196,7 @@ public class DriveSubsystem {
 
     }
 
-    void teleopBalancing() {
+    void balance() {
 
         //This is bad and should be shifted somewhere else
         double BalanceDeadband_deg = Preferences.getDouble(DriveConstants.autoBalanceDeadbandDegKey, DriveConstants.BalanceDeadbandDeg);
