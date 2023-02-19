@@ -3,25 +3,24 @@ package org.bitbuckets.auto;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import edu.wpi.first.wpilibj.DriverStation;
 import org.bitbuckets.drive.IDriveControl;
-import org.bitbuckets.lib.util.HasLogLoop;
-import org.bitbuckets.lib.util.HasLoop;
-import org.bitbuckets.lib.debug.IDebuggable;
+import org.bitbuckets.lib.log.Debuggable;
 import org.bitbuckets.lib.tune.IValueTuner;
 import org.bitbuckets.odometry.IOdometryControl;
 
 import java.util.Optional;
 
-public class AutoSubsystem implements HasLoop, HasLogLoop {
+public class AutoSubsystem {
 
     final IValueTuner<AutoPath> pathToUse;
     final IAutoControl autoControl;
-    final IDebuggable debug;
+    final Debuggable debug;
 
 
     IDriveControl driveControl;
+
     IOdometryControl odometryControl;
 
-    public AutoSubsystem(IValueTuner<AutoPath> pathToUse, IAutoControl autoControl, IDebuggable debug) {
+    public AutoSubsystem(IValueTuner<AutoPath> pathToUse, IAutoControl autoControl, Debuggable debug) {
         this.pathToUse = pathToUse;
         this.autoControl = autoControl;
         this.debug = debug;
@@ -37,6 +36,7 @@ public class AutoSubsystem implements HasLoop, HasLogLoop {
 
     public boolean sampleHasEventStarted(String event) {
         if (instance == null) {
+            debug.out("Waiting...");
             return false; //Doesn't exist yet. Should log this.
         }
 
@@ -57,8 +57,16 @@ public class AutoSubsystem implements HasLoop, HasLogLoop {
 
     int iteration = 0;
 
-    @Override
-    public void loop() {
+    public void runLoop() {
+
+        var opt = samplePathPlannerState();
+
+        if (opt.isPresent()) {
+            debug.log("path-pose", opt.get().poseMeters);
+            debug.log("path-holonomic-rotation", opt.get().holonomicRotation.getDegrees());
+        }
+
+
         switch (state) {
             case DISABLED:
                 if (DriverStation.isAutonomousEnabled()) {
@@ -119,8 +127,7 @@ public class AutoSubsystem implements HasLoop, HasLogLoop {
 
     }
 
-    @Override
-    public void logLoop() {
+    void logLoop() {
         debug.log("current-state", state);
         debug.log("actual-path", toUseLogOnly);
         debug.log("dashboard-path", pathToUse.readValue());

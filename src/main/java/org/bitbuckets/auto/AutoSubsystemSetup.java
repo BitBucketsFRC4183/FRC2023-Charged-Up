@@ -1,9 +1,10 @@
 package org.bitbuckets.auto;
 
-import org.bitbuckets.lib.IProcess;
+import edu.wpi.first.wpilibj.Joystick;
 import org.bitbuckets.lib.ISetup;
-import org.bitbuckets.lib.ITuneAs;
-import org.bitbuckets.lib.debug.IDebuggable;
+import org.bitbuckets.lib.ProcessPath;
+import org.bitbuckets.lib.StartupProfiler;
+import org.bitbuckets.lib.log.Debuggable;
 import org.bitbuckets.lib.tune.IValueTuner;
 import org.bitbuckets.lib.util.MockingUtil;
 
@@ -21,15 +22,23 @@ public class AutoSubsystemSetup implements ISetup<AutoSubsystem> {
     }
 
     @Override
-    public AutoSubsystem build(IProcess self) {
+    public AutoSubsystem build(ProcessPath self) {
         if (!enabled) return MockingUtil.buddy(AutoSubsystem.class);
 
+        StartupProfiler p = self.generateSetupProfiler("some-ass");
 
-        IAutoControl autoControl = self.childSetup("auto-control", new AutoControlSetup());
-        IValueTuner<AutoPath> pathTuner = self.generateTuner(ITuneAs.ENUM_INPUT(AutoPath.class), "path", AutoPath.NONE);
-        IDebuggable debuggable = self.getDebuggable();
+        p.markProcessing();
+        p.markErrored(new IllegalStateException("the robot exploded"));
 
-        return new AutoSubsystem(pathTuner, autoControl, debuggable);
+        IAutoControl autoControl = new AutoControlSetup().build(self.addChild("auto-control"));
+        IValueTuner<AutoPath> pathTuner = self.generateEnumTuner("path", AutoPath.class, AutoPath.NONE);
+        Debuggable debuggable = self.generateDebugger();
+        AutoSubsystem subsystem = new AutoSubsystem(pathTuner, autoControl, debuggable);
+
+
+        self.registerLogLoop(subsystem::logLoop);
+
+        return subsystem;
     }
 
 

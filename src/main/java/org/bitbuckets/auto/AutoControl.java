@@ -17,6 +17,10 @@ public class AutoControl implements IAutoControl {
 
     @Override
     public AutoPathInstance generateAndStartPath(AutoPath whichOne, SwerveModulePosition[] swerveModulePositions, IOdometryControl odometryControl) {
+        if (whichOne == AutoPath.NONE) {
+            return new AutoPathInstance(new PathPlannerTrajectory(), new HashMap<>(), 0, whichOne);
+        }
+
         var tj = trajectories[whichOne.index];
         double trajectoryTime = tj.getTotalTimeSeconds();
         Map<String, Double> eventMap = new HashMap<>();
@@ -29,7 +33,7 @@ public class AutoControl implements IAutoControl {
                 eventMap.put(name, marker.timeSeconds);
             }
         }
-
+    
         odometryControl.setPos(tj.getInitialState().holonomicRotation, swerveModulePositions, tj.getInitialState().poseMeters);
         AutoPathInstance instance = new AutoPathInstance(tj, eventMap, trajectoryTime, whichOne);
 

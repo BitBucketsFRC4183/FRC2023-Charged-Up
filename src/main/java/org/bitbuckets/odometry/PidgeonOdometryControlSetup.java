@@ -8,13 +8,14 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import org.bitbuckets.drive.DriveConstants;
 import org.bitbuckets.drive.IDriveControl;
-import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.lib.ISetup;
-import org.bitbuckets.lib.debug.IDebuggable;
+import org.bitbuckets.lib.ProcessPath;
+import org.bitbuckets.lib.StartupProfiler;
+import org.bitbuckets.lib.log.Debuggable;
 import org.bitbuckets.vision.IVisionControl;
 
 
-public class OdometryControlSetup implements ISetup<IOdometryControl> {
+public class PidgeonOdometryControlSetup implements ISetup<IOdometryControl> {
 
 
     final IDriveControl control;
@@ -22,15 +23,15 @@ public class OdometryControlSetup implements ISetup<IOdometryControl> {
 
     final int pidgeonId;
 
-    public OdometryControlSetup(IDriveControl control, IVisionControl visionControl, int pidgeonId1) {
+    public PidgeonOdometryControlSetup(IDriveControl control, IVisionControl visionControl, int pidgeonId1) {
         this.control = control;
         this.visionControl = visionControl;
         this.pidgeonId = pidgeonId1;
     }
 
     @Override
-    public IOdometryControl build(IProcess self) {
-
+    public IOdometryControl build(ProcessPath self) {
+        StartupProfiler initializePidgeon = self.generateSetupProfiler("init-pidgeon");
         SwerveDrivePoseEstimator estimator = new SwerveDrivePoseEstimator(
                 DriveConstants.KINEMATICS,
                 Rotation2d.fromDegrees(0),
@@ -43,13 +44,15 @@ public class OdometryControlSetup implements ISetup<IOdometryControl> {
                 new Pose2d()
         );
 
+        initializePidgeon.markProcessing();
         WPI_Pigeon2 pigeonIMU = new WPI_Pigeon2(pidgeonId);
         pigeonIMU.configFactoryDefault();
-        pigeonIMU.configMountPose(Pigeon2.AxisDirection.NegativeX, Pigeon2.AxisDirection.PositiveZ);
+        pigeonIMU.configMountPose(Pigeon2.AxisDirection.PositiveY, Pigeon2.AxisDirection.PositiveZ);
+        initializePidgeon.markCompleted();
 
-        IDebuggable debug = self.getDebuggable();
+        Debuggable debug = self.generateDebugger();
 
-        OdometryControl odometryControl = new OdometryControl(
+        PidgeonOdometryControl odometryControl = new PidgeonOdometryControl(
                 debug,
                 control,
                 visionControl,
