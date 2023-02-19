@@ -58,6 +58,15 @@ public class AutoSubsystem {
     int iteration = 0;
 
     public void runLoop() {
+
+        var opt = samplePathPlannerState();
+
+        if (opt.isPresent()) {
+            debug.log("path-pose", opt.get().poseMeters);
+            debug.log("path-holonomic-rotation", opt.get().holonomicRotation.getDegrees());
+        }
+
+
         switch (state) {
             case DISABLED:
                 if (DriverStation.isAutonomousEnabled()) {
