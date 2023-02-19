@@ -21,7 +21,7 @@ public class ArmSubsystem {
     ArmFSM state = ArmFSM.DEFAULT; // Placeholder, default state
     ArmFSM nextState = ArmFSM.DEFAULT;
 
-    public ArmSubsystem(ArmInput armInput, ArmControl armControl, GripperControl gripperControl, GripperInput gripperInput, Debuggable debuggable) {
+    public ArmSubsystem(ArmInput armInput, ArmControl armControl, GripperControl gripperControl, GripperInput gripperInput, Debuggable debuggable, AutoSubsystem autoSubsystem) {
         this.armInput = armInput;
         this.armControl = armControl;
         this.gripperControl = gripperControl;
