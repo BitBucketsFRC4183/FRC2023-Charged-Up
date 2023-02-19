@@ -61,20 +61,16 @@ public class ArmSubsystem {
                 } else if (armInput.isHumanIntakePressed()) {
                     state = ArmFSM.PREPARE;
                     nextState = ArmFSM.HUMAN_INTAKE;
-                    gripperControl.openGripper();
                 } else if (armInput.isScoreMidPressed()) {
                     debuggable.log("line 55", true);
                     state = ArmFSM.PREPARE;
                     nextState = ArmFSM.SCORE_MID;
-                    gripperControl.openGripper();
                 } else if (armInput.isScoreHighPressed()) {
                     state = ArmFSM.PREPARE;
                     nextState = ArmFSM.SCORE_HIGH;
-                    gripperControl.openGripper();
                 } else if (armInput.isScoreLowPressed()) {
                     state = ArmFSM.PREPARE;
                     nextState = ArmFSM.SCORE_LOW;
-                    gripperControl.openGripper();
                 }
                 break;
 
@@ -113,7 +109,6 @@ public class ArmSubsystem {
             case SCORE_LOW:
                 armControl.scoreLow();
                 if (armControl.isErrorSmallEnough(0.1) || armInput.isStopPidPressed()) {
-                    gripperControl.openGripper();
                     state = ArmFSM.MANUAL;
 
                 }
@@ -122,7 +117,6 @@ public class ArmSubsystem {
             case SCORE_MID:
                 armControl.scoreMid();
                 if (armControl.isErrorSmallEnough(.1) || armInput.isStopPidPressed()) {
-                    gripperControl.openGripper();
                     state = ArmFSM.MANUAL;
 
                 }
@@ -131,7 +125,6 @@ public class ArmSubsystem {
             case SCORE_HIGH:
                 armControl.scoreHigh();
                 if (armControl.isErrorSmallEnough(.1) || armInput.isStopPidPressed()) {
-                    gripperControl.openGripper();
                     state = ArmFSM.MANUAL;
 
                 }
