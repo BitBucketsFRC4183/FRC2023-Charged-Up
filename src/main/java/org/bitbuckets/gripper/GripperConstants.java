@@ -15,4 +15,7 @@ public interface GripperConstants {
     DCMotorConfig DC_GRIPPER_CONFIG = new DCMotorConfig(0.01, new Matrix<>(SimpleMatrix.identity(0)));
     PIDConfig GRIPPER_PID = new PIDConfig(1,0,0,0);
 
+    //Need to get this value, (0.1) is wrong
+    Double MOTOR_TO_GRIPPER_ROTATIONS = 1.;
+
 }
