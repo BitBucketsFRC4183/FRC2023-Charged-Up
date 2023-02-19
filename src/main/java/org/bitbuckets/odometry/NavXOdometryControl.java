@@ -48,7 +48,7 @@ public class NavXOdometryControl implements IOdometryControl {
         //Todo: re add when vision is fixed
         Optional<Pose3d> res = visionControl.estimateVisionRobotPose();
 
-        if (res.isPresent()) {
+        if (res != null && res.isPresent()) {
             Pose2d realPose = res.get().toPose2d();
             swerveDrivePoseEstimator.addVisionMeasurement(realPose, epoch, visionMeasurementStdDevs);
 
@@ -68,7 +68,7 @@ public class NavXOdometryControl implements IOdometryControl {
 
     @Override
     public Rotation2d getRotation2d() {
-        return Rotation2d.fromDegrees(navigator.getYaw());
+        return navigator.getRotation2d();
     }
 
     @Override
@@ -91,6 +91,7 @@ public class NavXOdometryControl implements IOdometryControl {
         debuggable.log("pitch", navigator.getPitch());
         debuggable.log("roll", navigator.getRoll());
         debuggable.log("rate", navigator.getRate());
+        debuggable.log("angle", navigator.getAngle());
         debuggable.log("fused-pose", estimateFusedPose2d());
     }
 

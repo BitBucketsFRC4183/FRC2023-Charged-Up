@@ -3,33 +3,36 @@ package org.bitbuckets.lib.vendor.ctre;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import org.bitbuckets.lib.hardware.IMotorController;
+import org.bitbuckets.lib.hardware.MotorConfig;
 
 @Deprecated
 public class TalonRelativeMotorController implements IMotorController, Runnable {
     final WPI_TalonFX motor;
+    final MotorConfig motorConfig;
 
-    TalonRelativeMotorController(WPI_TalonFX motor) {
+    TalonRelativeMotorController(WPI_TalonFX motor, MotorConfig motorConfig) {
         this.motor = motor;
+        this.motorConfig = motorConfig;
     }
 
     @Override
     public double getMechanismFactor() {
-        return 0;
+        return motorConfig.encoderToMechanismCoefficient;
     }
 
     @Override
     public double getRotationsToMetersFactor() {
-        return 0;
+        return motorConfig.rotationToMeterCoefficient;
     }
 
     @Override
     public double getRawToRotationsFactor() {
-        return 0;
+        return 1; //Sparks units are in rotations
     }
 
     @Override
     public double getTimeFactor() {
-        return 0;
+        return motorConfig.timeCoefficient;
     }
 
     @Override
@@ -49,7 +52,10 @@ public class TalonRelativeMotorController implements IMotorController, Runnable 
 
     @Override
     public void forceOffset_mechanismRotations(double offsetUnits_mechanismRotations) {
+        double mechanismToEncoderCoefficient = (1.0 / motorConfig.encoderToMechanismCoefficient);
+        double offsetUnits_encoderRotations = offsetUnits_mechanismRotations * mechanismToEncoderCoefficient;
 
+        forceOffset(offsetUnits_encoderRotations);
     }
 
     @Override

@@ -10,6 +10,9 @@ import org.bitbuckets.drive.controlsds.sds.SwerveModuleConfiguration;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.lib.hardware.IMotorController;
+import org.bitbuckets.lib.hardware.MotorConfig;
+
+import java.util.Optional;
 
 import static org.bitbuckets.lib.vendor.ctre.CtreUtils.checkCtreError;
 
@@ -68,6 +71,16 @@ public class TalonSteerMotorSetup implements ISetup<IMotorController> {
                 "Failed to configure Falcon status frame period"
         );
 
-        return new TalonRelativeMotorController(motor);
+        return new TalonRelativeMotorController(motor, new MotorConfig(
+                moduleConfiguration.getSteerReduction(),
+                10,
+                moduleConfiguration.getWheelDiameter() * Math.PI,
+                moduleConfiguration.isSteerInverted(),
+                true,
+                moduleConfiguration.getSteerCurrentLimit(),
+                false,
+                false,
+                Optional.empty()
+        ));
     }
 }

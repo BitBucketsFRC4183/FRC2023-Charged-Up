@@ -24,7 +24,7 @@ import org.bitbuckets.lib.vendor.spark.SparkDriveMotorSetup;
 import org.bitbuckets.lib.vendor.spark.SparkSteerMotorSetup;
 import org.bitbuckets.lib.vendor.thrifty.ThriftyEncoderSetup;
 import org.bitbuckets.odometry.IOdometryControl;
-import org.bitbuckets.odometry.PidgeonOdometryControlSetup;
+import org.bitbuckets.odometry.NavXOdometryControlSetup;
 import org.bitbuckets.vision.IVisionControl;
 
 public class
@@ -57,11 +57,14 @@ DriveSubsystemSetup implements ISetup<DriveSubsystem> {
         if (isSimulated) {
             driveControl = buildSimDriveControl(self);
         } else {
-            driveControl = buildNeoDriveControl(self); //or use talons, when they work}
+//            driveControl = buildNeoDriveControl(self); //or use talons, when they work}
+            driveControl = buildTalonDriveControl(self);
         }
         autoSubsystem.setDriveControl(driveControl);
 
-        IOdometryControl odometryControl = new PidgeonOdometryControlSetup(driveControl, visionControl, 5)
+//        IOdometryControl odometryControl = new PidgeonOdometryControlSetup(driveControl, visionControl, 5)
+//                .build(self.addChild("odo-control"));
+        IOdometryControl odometryControl = new NavXOdometryControlSetup(driveControl, visionControl)
                 .build(self.addChild("odo-control"));
 
         autoSubsystem.setOdometryControl(odometryControl);

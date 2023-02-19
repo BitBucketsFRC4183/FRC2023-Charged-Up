@@ -38,17 +38,17 @@ public class RobotSetup implements ISetup<RobotContainer> {
         AutoSubsystem autoSubsystem = new AutoSubsystemSetup(true)
                 .build(self.addChild("auto-subsystem"));
 
-        IVisionControl visionControl = new VisionControlSetup(true)
+        IVisionControl visionControl = new VisionControlSetup(false)
                 .build(self.addChild("vision-control"));
 
         ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystemSetup(false, autoSubsystem)
                 .build(self.addChild("elevator-subsystem"));
 
-        ArmSubsystem armSubsystem = new ArmSubsystemSetup(true)
+        ArmSubsystem armSubsystem = new ArmSubsystemSetup(false)
                 .build(self.addChild("arm-subsystem"));
 
         DriveSubsystem driveSubsystem = new DriveSubsystemSetup(
-                false,
+                true,
                 false,
                 autoSubsystem,
                 visionControl

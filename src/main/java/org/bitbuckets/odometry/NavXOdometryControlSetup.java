@@ -21,13 +21,9 @@ public class NavXOdometryControlSetup implements ISetup<IOdometryControl> {
     final IDriveControl control;
     final IVisionControl visionControl;
 
-    final int AHRSId;
-
-    public NavXOdometryControlSetup(IDriveControl control, IVisionControl visionControl, int AHRSId) {
+    public NavXOdometryControlSetup(IDriveControl control, IVisionControl visionControl) {
         this.control = control;
         this.visionControl = visionControl;
-        this.AHRSId = AHRSId;
-
     }
 
     @Override
@@ -46,7 +42,7 @@ public class NavXOdometryControlSetup implements ISetup<IOdometryControl> {
         );
 
         initializeNavX.markProcessing();
-        AHRS navXGyro = new AHRS(SPI.Port.kMXP);
+        AHRS navXGyro = new AHRS(SPI.Port.kMXP, (byte) 200);
         initializeNavX.markCompleted();
 
         Debuggable debug = self.generateDebugger();
