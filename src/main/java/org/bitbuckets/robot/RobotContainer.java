@@ -36,6 +36,7 @@ public class RobotContainer {
         driveSubsystem.runLoop();
         elevatorSubsystem.robotPeriodic();
         rgbSubsystem.robotPeriodic();
+        armSubsystem.runLoop();
     }
 
 

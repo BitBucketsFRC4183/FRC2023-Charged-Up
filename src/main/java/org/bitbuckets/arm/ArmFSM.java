@@ -2,7 +2,11 @@ package org.bitbuckets.arm;
 
 public enum ArmFSM {
 
-    MANUAL,
+    DEFAULT,
+
+    TELEOP,
+
+    AUTO_PATHFINDING,
 
     STORAGE,
 
