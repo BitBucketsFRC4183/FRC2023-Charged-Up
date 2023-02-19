@@ -99,7 +99,7 @@ public class ArmSubsystemSetup implements ISetup<ArmSubsystem> {
         GripperControl gripperControl = gripperControlSetup.build(self.addChild("gripper-control"));
         GripperInput gripperInput = new GripperInput(new Joystick(1));
 
-        return new ArmSubsystem(armInput, armControl, gripperControl, gripperInput, debuggable);
+        return new ArmSubsystem(armInput, armControl, gripperControl, gripperInput, debuggable, autoSubsystem);
 
     }
 }
