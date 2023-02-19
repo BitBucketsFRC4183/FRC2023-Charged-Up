@@ -55,7 +55,17 @@ public interface ArmConstants {
             false,
             Optional.empty()
     );
-
+    MotorConfig LOWER_CONFIG_FOLLOWER = new MotorConfig(
+            ArmConstants.LOWER_ARM_GEAR_RATIO,
+            1,
+            1,
+            true,
+            true,
+            20.0,
+            false,
+            false,
+            Optional.empty()
+    );
     MotorConfig UPPER_CONFIG = new MotorConfig(
             ArmConstants.UPPER_ARM_GEAR_RATIO,
             1,
@@ -101,7 +111,6 @@ public interface ArmConstants {
     double UPPER_MOI = 0.08;
 
     double UPPER_CGRADIUS = 0.4318;
-
 
 
 
