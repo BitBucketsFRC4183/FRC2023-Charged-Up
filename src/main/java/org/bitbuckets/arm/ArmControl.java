@@ -283,6 +283,22 @@ public class ArmControl {
         }
 
     }
+
+    public void testSimStraightForward(){
+        InverseKinematics straightUp = new InverseKinematics(ArmConstants.LOWER_JOINT_LENGTH + ArmConstants.UPPER_JOINT_LENGTH, 0);
+        double lowerAngle_degrees = straightUp.getLowerJoint_degrees();
+        double upperAngle_degrees = straightUp.getUpperJoint_degrees();
+
+        debuggable.log("lower-kinematics", lowerAngle_degrees);
+        debuggable.log("upper-kinematics", upperAngle_degrees);
+
+        if (isReachable(lowerAngle_degrees, upperAngle_degrees)) {
+
+            lowerJoint1.moveAtVoltage(lowerJointPID.calculateNext(lowerJoint1.getMechanismPositionAccum_rot(), convertDegreesToRotation(lowerAngle_degrees)));
+            upperJoint.moveAtVoltage(upperJointPID.calculateNext(upperJoint.getMechanismPositionAccum_rot(), convertDegreesToRotation(upperAngle_degrees)));
+
+        }
+    }
 }
 
 
