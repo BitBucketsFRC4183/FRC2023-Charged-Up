@@ -46,7 +46,6 @@ class ArmControlTest {
     }
 
 
-
     @Test
     void isErrorSmallEnough() {
         when(lowerJoint.getError_mechanismRotations()).thenReturn(1d);
@@ -55,10 +54,10 @@ class ArmControlTest {
         assertTrue(control.isErrorSmallEnough(2));
 
         // Should work
-//        when(lowerJoint.getError_mechanismRotations()).thenReturn(-1d);
-//        when(upperJoint.getError_mechanismRotations()).thenReturn(-1d);
-//        assertFalse(control.isErrorSmallEnough(.1));
-//        assertTrue(control.isErrorSmallEnough(2));
+        when(lowerJoint.getError_mechanismRotations()).thenReturn(-1d);
+        when(upperJoint.getError_mechanismRotations()).thenReturn(-1d);
+        assertFalse(control.isErrorSmallEnough(.1));
+        assertTrue(control.isErrorSmallEnough(2));
     }
 
     @Test
