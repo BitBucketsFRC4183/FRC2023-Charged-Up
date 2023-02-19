@@ -28,6 +28,7 @@ public interface ArmConstants {
     double LOWER_JOINT_WIDTH = 0.0508;
 
     double UPPER_JOINT_LENGTH = 0.6731;
+    double LOWER_JOINT_LENGTH = 0.6605;
 
     //in rotations
     double LOWER_ARM_FORWARD_LIMIT_MECHANISM = 0.98;
@@ -76,16 +77,16 @@ public interface ArmConstants {
     double SIM_OFFSET = 0.25;
 
     ArmConfig LOWER_ARM = new ArmConfig(
-            Units.inchesToMeters(27),
-            4,
+            0.686,
+            1.036005,
             Units.rotationsToRadians(LOWER_ARM_FORWARD_LIMIT_MECHANISM),
             Units.rotationsToRadians(LOWER_ARM_REVERSE_LIMIT_MECHANISM),
             true
     );
 
     ArmConfig UPPER_ARM = new ArmConfig(
-            Units.inchesToMeters(38.5),
-            10,
+            0.84,
+            1.036005,
             Units.rotationsToRadians(UPPER_ARM_FORWARD_LIMIT_MECHANISM),
             Units.rotationsToRadians(UPPER_ARM_REVERSE_LIMIT_MECHANISM),
             false
@@ -93,13 +94,13 @@ public interface ArmConstants {
     //change with accurate numbers
 
 
-    double LOWER_MOI = 0.37294290018;
+    double LOWER_MOI = 0.08;
 
-    double LOWER_CGRADIUS = 0.24384;
+    double LOWER_CGRADIUS = 0.4318;
 
-    double UPPER_MOI = 0.45913405717;
+    double UPPER_MOI = 0.08;
 
-    double UPPER_CGRADIUS = 0.2794;
+    double UPPER_CGRADIUS = 0.4318;
 
 
 
