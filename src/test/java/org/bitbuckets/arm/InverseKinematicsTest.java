@@ -1,7 +1,6 @@
 package org.bitbuckets.arm;
 
 import org.bitbuckets.arm.kinematics.InverseKinematics;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -31,7 +30,6 @@ class InverseKinematicsTest {
         assertNotEquals(Double.NaN, new InverseKinematics(ArmConstants.LOW_NODE_X, ArmConstants.LOW_NODE_Y).getUpperJoint_degrees());
     }
 
-    @Disabled
     @Test
     void zeroAngle() {
         // 0,0 angle is straight out away from the robot
@@ -44,7 +42,6 @@ class InverseKinematicsTest {
         assertEquals(0, new InverseKinematics(ArmConstants.LOWER_JOINT_LENGTH + ArmConstants.UPPER_JOINT_LENGTH, 0).getUpperJoint_degrees());
     }
 
-    @Disabled
     @Test
     void straightUp() {
         // if the arm is straight up, the lower joint is -90º and the upper joint is 0º
@@ -56,7 +53,6 @@ class InverseKinematicsTest {
         assertEquals(0, new InverseKinematics(0, ArmConstants.LOWER_JOINT_LENGTH + ArmConstants.UPPER_JOINT_LENGTH).getUpperJoint_degrees());
     }
 
-    @Disabled
     @Test
     void straightOut() {
         // if the arm is straight out at a 45º angle, the lower joint is -45º and the upper joint is 0º
@@ -66,7 +62,7 @@ class InverseKinematicsTest {
         // ========== <- robot base
         var totalArmLength = ArmConstants.LOWER_JOINT_LENGTH + ArmConstants.UPPER_JOINT_LENGTH;
         assertEquals(-45, new InverseKinematics(totalArmLength / Math.sqrt(2), totalArmLength / Math.sqrt(2)).getLowerJoint_degrees());
-        assertEquals(0, new InverseKinematics(totalArmLength / Math.sqrt(2), totalArmLength / Math.sqrt(2)).getUpperJoint_degrees());
+        assertEquals(0, new InverseKinematics(totalArmLength / Math.sqrt(2), totalArmLength / Math.sqrt(2)).getUpperJoint_degrees(), .01);
     }
 
 }
