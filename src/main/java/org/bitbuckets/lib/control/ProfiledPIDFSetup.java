@@ -1,37 +1,36 @@
 package org.bitbuckets.lib.control;
 
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.lib.ISetup;
-import org.bitbuckets.lib.ITuneAs;
+import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.lib.tune.IValueTuner;
 
 public class ProfiledPIDFSetup implements ISetup<IPIDCalculator> {
 
     final PIDConfig pidConfig;
-    final ProfileConfig profileConfig;
+    final TrapezoidProfile.Constraints profile;
 
-    public ProfiledPIDFSetup(PIDConfig pidConfig, ProfileConfig profileConfig) {
+    public ProfiledPIDFSetup(PIDConfig pidConfig, TrapezoidProfile.Constraints profile) {
         this.pidConfig = pidConfig;
-        this.profileConfig = profileConfig;
+        this.profile = profile;
     }
 
     @Override
-    public IPIDCalculator build(IProcess self) {
+    public IPIDCalculator build(ProcessPath self) {
 
-        IValueTuner<Double> pTune = self.generateTuner(ITuneAs.DOUBLE_INPUT, "p", pidConfig.kP);
-        IValueTuner<Double> iTune = self.generateTuner(ITuneAs.DOUBLE_INPUT, "i", pidConfig.kI);
-        IValueTuner<Double> dTune = self.generateTuner(ITuneAs.DOUBLE_INPUT, "d", pidConfig.kD);
-        IValueTuner<Double> kVTune = self.generateTuner(ITuneAs.DOUBLE_INPUT, "kV", profileConfig.kV);
-        IValueTuner<Double> kATune = self.generateTuner(ITuneAs.DOUBLE_INPUT, "kA", profileConfig.kA);
+        IValueTuner<double[]> tunerForAllValues = self.generateMultiTuner(
+                new String[]{"p", "i", "d", "kV", "kA"},
+                new double[]{pidConfig.kP, pidConfig.kI, pidConfig.kD, profile.maxVelocity, profile.maxAcceleration}
+        );
 
-        double p = pTune.readValue();
-        double i = iTune.readValue();
-        double d = dTune.readValue();
-        double kV = kVTune.readValue();
-        double kA = kATune.readValue();
+        double[] initial = tunerForAllValues.readValue();
 
-        ProfiledPIDFController controller = new ProfiledPIDFController(p,i,d,0, new TrapezoidProfile.Constraints(kV, kA));
-        return new ProfiledPIDFCalculator(controller, pTune, iTune, dTune, kVTune, kATune);
+        //TODO make this use arjun ff
+
+        ProfiledPIDFController controller = new ProfiledPIDFController(initial[0], initial[1], initial[2], 0, new TrapezoidProfile.Constraints(initial[3], initial[4]));
+
+        var l = new ProfiledPIDFCalculator(controller, tunerForAllValues, self.generateDebugger());
+        self.registerLogLoop(l);
+        return l;
     }
 }

@@ -174,7 +174,7 @@ public class DriveSubsystem implements HasLoop {
                     driveControl.stopSticky();
                 } else {
                     driveControl.drive(
-                            ChassisSpeeds.fromFieldRelativeSpeeds(xOutput, yOutput, rotationOutput, odometryControl.getRotation2d())
+                            ChassisSpeeds.fromFieldRelativeSpeeds(yOutput, xOutput, rotationOutput, odometryControl.getRotation2d())
                     );
                 }
                 break;
@@ -199,7 +199,7 @@ public class DriveSubsystem implements HasLoop {
             double output = closedLoopsControl.calculateBalanceOutput(Roll_deg, 0);
             driveControl.drive(new ChassisSpeeds(output, 0.0, 0.0));
         } else {
-            driveControl.stopSticky();
+            driveControl.stop90degrees();
 
         }
     }

@@ -5,8 +5,12 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import org.bitbuckets.drive.controlsds.DriveControl;
-import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.lib.ISetup;
+import org.bitbuckets.lib.ProcessPath;
+import org.bitbuckets.lib.control.IPIDCalculator;
+import org.bitbuckets.lib.control.PIDCalculatorSetup;
+import org.bitbuckets.lib.control.PIDConfig;
+import org.bitbuckets.lib.control.ProfiledPIDFSetup;
 import org.bitbuckets.odometry.IOdometryControl;
 import org.bitbuckets.vision.IVisionControl;
 
@@ -23,21 +27,23 @@ public class HoloControlSetup implements ISetup<HoloControl> {
     }
 
     @Override
-    public HoloControl build(IProcess self) {
+    public HoloControl build(ProcessPath self) {
+
+        IPIDCalculator x = new PIDCalculatorSetup(new PIDConfig(1.2, 0, 0, 0))
+                .build(self.addChild("x-control"));
+
+        IPIDCalculator y = new PIDCalculatorSetup(new PIDConfig(1.2, 0, 0, 0))
+                .build(self.addChild("y-control"));
+
+        IPIDCalculator theta = new ProfiledPIDFSetup(new PIDConfig(1, 0, 0, 0), new TrapezoidProfile.Constraints(1, 1)).build(self.addChild("theta-control"));
 
         //TODO find constants
         HolonomicDriveController holonomicDriveController = new HolonomicDriveController(
-                new PIDController(
-                        1.5, 0, 0
-                ),
-                new PIDController(
-                        1.5, 0, 0
-                ),
-                new ProfiledPIDController(
-                        3, 0, 0, new TrapezoidProfile.Constraints(drive.getMaxAngularVelocity()/20, drive.getMaxAngularVelocity() * 10)
-                )
+                x.rawAccess(PIDController.class),
+                y.rawAccess(PIDController.class),
+                theta.rawAccess(ProfiledPIDController.class)
         );
-        var debuggable = self.getDebuggable();
+        var debuggable = self.generateDebugger();
 
 
         return new HoloControl(

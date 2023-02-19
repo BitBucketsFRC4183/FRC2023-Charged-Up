@@ -1,21 +1,17 @@
 package org.bitbuckets.lib.control;
 
 import edu.wpi.first.math.controller.PIDController;
-import org.bitbuckets.lib.util.HasLoop;
+import org.bitbuckets.lib.DontUseIncubating;
 import org.bitbuckets.lib.tune.IValueTuner;
 
-public class PIDCalculator implements IPIDCalculator, HasLoop {
+public class PIDCalculator implements IPIDCalculator, Runnable {
 
     final PIDController controller;
-    final IValueTuner<Double> p;
-    final IValueTuner<Double> i;
-    final IValueTuner<Double> d;
+    final IValueTuner<double[]> tuner;
 
-    public PIDCalculator(PIDController controller, IValueTuner<Double> p, IValueTuner<Double> i, IValueTuner<Double> d) {
+    public PIDCalculator(PIDController controller, IValueTuner<double[]> tuner) {
         this.controller = controller;
-        this.p = p;
-        this.i = i;
-        this.d = d;
+        this.tuner = tuner;
     }
 
     @Override
@@ -24,16 +20,17 @@ public class PIDCalculator implements IPIDCalculator, HasLoop {
     }
 
     @Override
-    public void loop() {
+    public void run() {
 
-        if (p.hasUpdated()) {
-            controller.setP(p.consumeValue());
-        }
-        if (i.hasUpdated()) {
-            controller.setI(i.consumeValue());
-        }
-        if (d.hasUpdated()) {
-            controller.setD(d.consumeValue());
+
+
+        if (tuner.hasUpdated()) {
+            double[] pidArray = tuner.consumeValue();
+
+            controller.setP(pidArray[PIDConfig.P]);
+            controller.setI(pidArray[PIDConfig.I]);
+            controller.setD(pidArray[PIDConfig.D]);
+            controller.setD(pidArray[PIDConfig.F]);
         }
     }
 
