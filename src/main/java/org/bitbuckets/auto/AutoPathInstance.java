@@ -28,6 +28,9 @@ public class AutoPathInstance implements HasLifecycle {
      * @return whether it has happened yet
      */
     public boolean sampleHasEventStarted(String eventName) {
+        if (type == AutoPath.NONE) {
+            return false;
+        }
         double secondsNow = timer.get();
 
         if (eventToTimeMap.get(eventName) == null) return false;
@@ -36,6 +39,9 @@ public class AutoPathInstance implements HasLifecycle {
     }
 
     public PathPlannerTrajectory.PathPlannerState sampleSpeeds() {
+        if (type == AutoPath.NONE) {
+            return new PathPlannerTrajectory.PathPlannerState();
+        }
         double secondsNow = timer.get();
 
         return (PathPlannerTrajectory.PathPlannerState) trajectory.sample(secondsNow);
