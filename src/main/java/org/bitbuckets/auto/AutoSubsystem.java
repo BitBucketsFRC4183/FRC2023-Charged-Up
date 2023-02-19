@@ -62,7 +62,8 @@ public class AutoSubsystem {
         var opt = samplePathPlannerState();
 
         if (opt.isPresent()) {
-            debug.log("path-pose",opt.get().poseMeters);
+            debug.log("path-pose", opt.get().poseMeters);
+            debug.log("path-holonomic-rotation", opt.get().holonomicRotation.getDegrees());
         }
 
 
