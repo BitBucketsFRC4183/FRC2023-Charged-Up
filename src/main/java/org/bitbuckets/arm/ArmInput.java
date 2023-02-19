@@ -56,21 +56,6 @@ Right Joystick to control upper joint on arm
         return -armDeadband(operatorControl.getRawAxis(0));
     }
 
-    //for picking up cones
-//    public double getIsClampReleased() {
-//        return armDeadband(operatorControl.getRawAxis(XboxController.Axis.kLeftTrigger.value));
-//    }
-//
-//    public double getIsClampHeld() {
-//        return armDeadband(operatorControl.getRawAxis(XboxController.Axis.kRightTrigger.value));
-//    }
-
-    /*
-    public double isStopAllMotorsPressed(){
-        return operatorControl.getRawButtonPressed(XboxController.Button.kB.value);
-    }
-     */
-
     public boolean isStoragePressed() {
         return operatorControl.getRawButton(XboxController.Button.kX.value);
     }
