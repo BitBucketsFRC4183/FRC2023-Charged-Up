@@ -12,8 +12,8 @@ public class ArmSubsystem {
     final Debuggable debuggable;
     final AutoSubsystem autoSubsystem;
 
-    ArmFSM state = ArmFSM.MANUAL;
-    ArmFSM nextState = ArmFSM.MANUAL;
+    ArmFSM state = ArmFSM.DEFAULT; // Placeholder, default state
+    ArmFSM nextState = ArmFSM.DEFAULT;
 
     public ArmSubsystem(ArmInput armInput, ArmControl armControl, Debuggable debuggable, AutoSubsystem autoSubsystem) {
         this.armInput = armInput;
@@ -82,11 +82,11 @@ public class ArmSubsystem {
             System.out.println("Arms calibrated!");
         }
         if (armInput.isDisablePositionControlPressed()) {
-            state = ArmFSM.MANUAL;
+            state = ArmFSM.TELEOP;
         }
 
         switch (state) {
-            case MANUAL:
+            case TELEOP:
                 armControl.manuallyMoveLowerArm(armInput.getLowerArm_PercentOutput());
                 armControl.manuallyMoveUpperArm(armInput.getUpperArm_PercentOutput());
 
@@ -116,11 +116,11 @@ public class ArmSubsystem {
 
                 //if X is pressed in sim (on keyboard)
                 if (armInput.isStopPidPressed()) {
-                    state = ArmFSM.MANUAL;
+                    state = ArmFSM.TELEOP;
                 }
                 armControl.storeArm();
                 if (armControl.isErrorSmallEnough(.1)) {
-                    state = ArmFSM.MANUAL;
+                    state = ArmFSM.TELEOP;
                 }
                 break;
 
@@ -135,14 +135,14 @@ public class ArmSubsystem {
             case HUMAN_INTAKE:
                 armControl.humanIntake();
                 if (armControl.isErrorSmallEnough(.1) || armInput.isStopPidPressed()) {
-                    state = ArmFSM.MANUAL;
+                    state = ArmFSM.TELEOP;
                 }
                 break;
 
             case SCORE_LOW:
                 armControl.scoreLow();
                 if (armControl.isErrorSmallEnough(0.1) || armInput.isStopPidPressed()) {
-                    state = ArmFSM.MANUAL;
+                    state = ArmFSM.TELEOP;
                 }
                 break;
 
