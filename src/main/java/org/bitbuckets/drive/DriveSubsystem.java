@@ -89,6 +89,7 @@ public class DriveSubsystem {
                     ChassisSpeeds targetSpeeds = holoControl.calculatePose2DFromState(opt.get());
                     driveControl.drive(targetSpeeds);
                 }
+                autoPeriodic();
                 break;
 
             case TELEOP_NORMAL:
@@ -137,6 +138,12 @@ public class DriveSubsystem {
                 break;
         }
         debuggable.log("state", state.toString());
+    }
+
+    void autoPeriodic() {
+        if (autoSubsystem.sampleHasEventStarted("auto-balance")) {
+            teleopBalancing();
+        }
     }
 
     void teleopVision() {
@@ -202,7 +209,6 @@ public class DriveSubsystem {
 
         }
     }
-
 
     void teleopAutoheading() {
         double IMU_Yaw = Math.toRadians(odometryControl.getYaw_deg());//Math.toRadians(-350);
