@@ -18,8 +18,8 @@ public interface ArmConstants {
     double UPPER_ARM_GEAR_RATIO = 1.0 / ((5.0 * 4.0 * 3.0) * (12. / 30.));
 
 
-    double LOWER_JOINT_LENGTH = 0.6605;
-    double UPPER_JOINT_LENGTH = 0.6731;
+    double LOWER_JOINT_LENGTH = 0.66;
+    double UPPER_JOINT_LENGTH = 0.67;
 
     //mainly for arm sim
     double UPPER_JOINT_WIDTH = 0.0254;
