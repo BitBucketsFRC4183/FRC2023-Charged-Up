@@ -87,6 +87,10 @@ public class DriveSubsystem {
                 Optional<PathPlannerTrajectory.PathPlannerState> opt = autoSubsystem.samplePathPlannerState();
                 if (opt.isPresent()) {
                     ChassisSpeeds targetSpeeds = holoControl.calculatePose2DFromState(opt.get());
+                    targetSpeeds.vxMetersPerSecond = -targetSpeeds.vxMetersPerSecond;
+                    targetSpeeds.vyMetersPerSecond = -targetSpeeds.vyMetersPerSecond;
+                    targetSpeeds.omegaRadiansPerSecond = -targetSpeeds.omegaRadiansPerSecond;
+
                     driveControl.drive(targetSpeeds);
                 }
                 break;
