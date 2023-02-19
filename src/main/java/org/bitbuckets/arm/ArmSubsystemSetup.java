@@ -44,8 +44,8 @@ public class ArmSubsystemSetup implements ISetup<ArmSubsystem> {
 
         if (self.isReal()) {
             lowerArm1 = new SparkSetup(9, ArmConstants.LOWER_CONFIG, ArmConstants.LOWER_PID);
-            lowerArm2 = new SparkSetup(11, ArmConstants.LOWER_CONFIG, ArmConstants.LOWER_PID);
-            upperArm = new SparkSetup(10, ArmConstants.UPPER_CONFIG, ArmConstants.UPPER_PID);
+            lowerArm2 = new SparkSetup(10, ArmConstants.LOWER_CONFIG_FOLLOWER, ArmConstants.LOWER_PID);
+            upperArm = new SparkSetup(11, ArmConstants.UPPER_CONFIG, ArmConstants.UPPER_PID);
             gripperJoint = new SparkSetup(12, GripperConstants.GRIPPER_CONFIG, GripperConstants.GRIPPER_PID);
 
         } else {
@@ -55,12 +55,12 @@ public class ArmSubsystemSetup implements ISetup<ArmSubsystem> {
             MechanismRoot2d root = mech.getRoot("base", 1.5, 0);
 
             MechanismLigament2d simLower = root.append(new MechanismLigament2d("lower-arm-sim", ArmConstants.LOWER_JOINT_LENGTH, 90, ArmConstants.LOWER_JOINT_WIDTH * 300, new Color8Bit(Color.kWhite)));
-            MechanismLigament2d simUpper  =
+            MechanismLigament2d simUpper =
                     simLower.append(
                             new MechanismLigament2d("upper-arm-sim", ArmConstants.UPPER_JOINT_LENGTH + ArmConstants.GRABBER_LENGTH, 90, ArmConstants.UPPER_JOINT_WIDTH * 300, new Color8Bit(Color.kPurple)));
 
 
-            SmartDashboard.putData("sim-arm",mech);
+            SmartDashboard.putData("sim-arm", mech);
 
             lowerArm1 = new SimArmSetup(
                     ArmConstants.LOWER_CONFIG,

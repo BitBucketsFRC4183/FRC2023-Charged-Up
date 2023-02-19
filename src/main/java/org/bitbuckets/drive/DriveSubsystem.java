@@ -172,7 +172,7 @@ public class DriveSubsystem {
                     driveControl.stopSticky();
                 } else {
                     driveControl.drive(
-                            ChassisSpeeds.fromFieldRelativeSpeeds(xOutput, yOutput, rotationOutput, odometryControl.getRotation2d())
+                            ChassisSpeeds.fromFieldRelativeSpeeds(yOutput, xOutput, rotationOutput, odometryControl.getRotation2d())
                     );
                 }
                 break;
