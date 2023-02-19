@@ -5,15 +5,18 @@ public enum AutoPath {
     //creating auto enums, each corresponds to a space in the PathPlannerTrajectory array,
     //which is used for calling different paths from PathPlanner
     //each of these paths calls from a diff path in IB's pathplanner
-    NONE(0),
-    AUTO_TEST_PATH_ONE(1),
-    AUTO_PATH_TWO(2),
-    AUTO_PATH_THREE(3),
-    AUTO_PATH_FOUR(4),
-    AUTO_PATH_FIVE(5),
-    AUTO_PATH_SIX(6),
-    AUTO_PATH_SEVEN(7);
+    NONE(-1),
 
+    test_forwardright(0),
+    taxi_right(1),
+    taxi_left(2),
+    taxi_middle_dock(3),
+    taxi_middle_dock_alt(4),
+    SC1_CL1_BL(5),
+    SC1_CL1_SC3_BL(6),
+    SC2_BL(7),
+    SC9_CL4_BL(8),
+    SC9_CL4_SC7_BL(9);
     //creates an index to be used for calling each enum as a member of the PathPlannerTrajectory array
     int index;
 
