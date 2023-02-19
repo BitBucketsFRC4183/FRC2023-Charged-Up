@@ -1,5 +1,6 @@
 package org.bitbuckets.arm;
 
+import org.bitbuckets.auto.AutoFSM;
 import org.bitbuckets.auto.AutoSubsystem;
 import org.bitbuckets.lib.log.Debuggable;
 
@@ -29,51 +30,76 @@ public class ArmSubsystem {
     //private double gearRatio = (5 * 4 * 3) / (12. / 30.);
 
 
-    public void loop() {
-        switch (autoSubsystem.state()) {
-            case AUTO_RUN:
+    public void runLoop() {
+        switch (state) {
+            case DEFAULT:
+                if (autoSubsystem.state() == AutoFSM.AUTO_RUN) {
+                    state = ArmFSM.AUTO_PATHFINDING;
+                    break;
+                }
+                if (autoSubsystem.state() == AutoFSM.TELEOP) {
+                    state = ArmFSM.TELEOP;
+                    break;
+                }
+                break;
+
+            case AUTO_PATHFINDING:
+
+                if (autoSubsystem.state() == AutoFSM.TELEOP || autoSubsystem.state() == AutoFSM.AUTO_ENDED) {
+                    state = ArmFSM.TELEOP;
+                    break;
+                }
                 autoPeriodic();
+                break;
+
             case TELEOP:
+                if (autoSubsystem.state() == AutoFSM.AUTO_RUN) {
+                    state = ArmFSM.AUTO_PATHFINDING;
+                    break;
+                }
                 teleopPeriodic();
+                break;
+
         }
+        debuggable.log("state", state.toString());
+
     }
 
-    public void autoPeriodic() {
-        if (autoSubsystem.sampleHasEventStarted("go-to-storage"))
-        {
-            state = ArmFSM.STORAGE;
+        public void autoPeriodic() {
+            if (autoSubsystem.sampleHasEventStarted("go-to-storage")) {
+                state = ArmFSM.STORAGE;
+            }
+            if (autoSubsystem.sampleHasEventStarted("go-to-prepare")) {
+                state = ArmFSM.PREPARE;
+            }
+            if (autoSubsystem.sampleHasEventStarted("score-high")) {
+                state = ArmFSM.SCORE_HIGH;
+            }
+            if (autoSubsystem.sampleHasEventStarted("go-to-human-intake")) {
+                state = ArmFSM.HUMAN_INTAKE;
+            }
+            if (autoSubsystem.sampleHasEventStarted("pick-up-game-piece")) {
+                state = ArmFSM.GROUND_INTAKE;
+            }
+            switch (state) {
+                case STORAGE:
+                    armControl.storeArm();
+                    break;
+                case PREPARE:
+                    armControl.prepareArm();
+                    break;
+                case SCORE_HIGH:
+                    armControl.scoreHigh();
+                    break;
+                case HUMAN_INTAKE:
+                    armControl.humanIntake();
+                    break;
+                case GROUND_INTAKE:
+                    armControl.intakeGround();
+            }
+            debuggable.log("state", state.toString());
+
         }
-        if (autoSubsystem.sampleHasEventStarted("go-to-prepare"))
-        {
-            state = ArmFSM.PREPARE;
-        }
-        if (autoSubsystem.sampleHasEventStarted("score-high"))
-        {
-            state = ArmFSM.SCORE_HIGH;
-        }
-        if (autoSubsystem.sampleHasEventStarted("go-to-human-intake")) {
-            state = ArmFSM.HUMAN_INTAKE;
-        }
-        if (autoSubsystem.sampleHasEventStarted("pick-up-game-piece")) {
-            state = ArmFSM.GROUND_INTAKE;
-        }
-        switch (state) {
-            case STORAGE:
-                armControl.storeArm();
-                break;
-            case PREPARE:
-                armControl.prepareArm();
-                break;
-            case SCORE_HIGH:
-                armControl.scoreHigh();
-                break;
-            case HUMAN_INTAKE:
-                armControl.humanIntake();
-                break;
-            case GROUND_INTAKE:
-                armControl.intakeGround();
-        }
-    }
 
     public void teleopPeriodic() {
         if (armInput.isCalibratedPressed()) {
@@ -126,7 +152,7 @@ public class ArmSubsystem {
 
             case PREPARE:
                 armControl.prepareArm();
-                if (armControl.isErrorSmallEnough(.1) || armInput.isStopPidPressed()){
+                if (armControl.isErrorSmallEnough(.1) || armInput.isStopPidPressed()) {
                     state = nextState;
                 }
 
@@ -148,21 +174,23 @@ public class ArmSubsystem {
 
             case SCORE_MID:
                 armControl.scoreMid();
-                if (armControl.isErrorSmallEnough(.1) || armInput.isStopPidPressed()){
-                    state = ArmFSM.MANUAL;
+                if (armControl.isErrorSmallEnough(.1) || armInput.isStopPidPressed()) {
+                    state = ArmFSM.TELEOP;
                 }
                 break;
 
             case SCORE_HIGH:
                 armControl.scoreHigh();
-                if (armControl.isErrorSmallEnough(.1) || armInput.isStopPidPressed()){
-                    state = ArmFSM.MANUAL;
+                if (armControl.isErrorSmallEnough(.1) || armInput.isStopPidPressed()) {
+                    state = ArmFSM.TELEOP;
                 }
                 break;
         }
-        debuggable.log("state", state);
+        debuggable.log("state", state.toString());
+
     }
 
 
-
 }
+
+
