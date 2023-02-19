@@ -20,7 +20,6 @@ public class SimArmSetup implements ISetup<IMotorController> {
     final ArmConfig armConfig;
     final PIDConfig pidConfig;
     final MechanismLigament2d mechanismLigament2d;
-
     public SimArmSetup(MotorConfig config, ArmConfig armConfig, PIDConfig pidConfig, MechanismLigament2d mechanismLigament2d) {
         this.config = config;
         this.armConfig = armConfig;
@@ -55,6 +54,7 @@ public class SimArmSetup implements ISetup<IMotorController> {
         SimArm arm = new SimArm(self.generateDebugger(), mechanismLigament2d, config, sim, pidController);
 
         self.registerSimLoop(arm::runSimulationLoop, "simulate-arm");
+
 
         return arm;
     }

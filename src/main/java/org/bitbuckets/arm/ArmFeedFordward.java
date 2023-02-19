@@ -7,14 +7,13 @@ import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.Vector;
-import edu.wpi.first.math.numbers.N1;
-import edu.wpi.first.math.numbers.N2;
-import edu.wpi.first.math.numbers.N3;
-import edu.wpi.first.math.numbers.N4;
+import edu.wpi.first.math.numbers.*;
 import edu.wpi.first.math.system.NumericalIntegration;
 import edu.wpi.first.math.system.plant.DCMotor;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.hardware.IMotorController;
+
+import java.util.concurrent.atomic.AtomicReference;
 
 
 public class ArmFeedFordward {
@@ -23,46 +22,32 @@ public class ArmFeedFordward {
 
 
     private static final double g = 9.80665;
-     final ISetup<IMotorController> lowerArm;
-     final ISetup<IMotorController> upperArm;
 
 
 
 
-
-
-
-
-
-
-
-    public ArmFeedFordward(ISetup<IMotorController> lowerArm, ISetup<IMotorController> upperArm) {
-        this.lowerArm = lowerArm;
-        this.upperArm = upperArm;
-    }
-
-    static double getVoltageNowUpper(double torque, double velocity) {
+    public static double getVoltageNowUpper(double torque, double velocity) {
         return DCMotor.getNeo550(1).getVoltage(torque, velocity);
 
     }
 
-    static double getVoltageNowLower(double torque, double velocity) {
+    public static double getVoltageNowLower(double torque, double velocity) {
         return DCMotor.getNeo550(2).getVoltage(torque, velocity);
     }
 
-    static double getCurrentNowUpper(double velocity, double voltage) {
+    public double getCurrentNowUpper(double velocity, double voltage) {
           return DCMotor.getNeo550(1).getCurrent(velocity, voltage);
     }
 
-    static double getCurrentNowLower(double velocity, double voltage) {
+    public double getCurrentNowLower(double velocity, double voltage) {
           return DCMotor.getNeo550(2).getCurrent(velocity, voltage);
     }
 
-    static double getTorqueNowUpper(double current) {
+    public static double getTorqueNowUpper(double current) {
           return DCMotor.getNeo550(1).getTorque(current);
     }
 
-    static double getTorqueNowLower(double current) {
+    public static double getTorqueNowLower(double current) {
           return DCMotor.getNeo550(2).getTorque(current);
     }
 
@@ -110,8 +95,11 @@ public class ArmFeedFordward {
      * @param dt The step length in seconds.
      * @return The new state of the arm as (position_0, position_1, velocity_0, velocity_1)
      */
-    public Vector<N4> simulate(Vector<N4> state, Vector<N2> voltage, double dt) {
-        return new Vector<>(
+    public Vector<N6> simulate(Vector<N4> state, Vector<N2> voltage, double dt) {
+
+        AtomicReference<Vector<N2>> dont = new AtomicReference<>();
+
+        Vector<N4> integrated = new Vector<>(
                 NumericalIntegration.rkdp(
                         (Matrix<N4, N1> x, Matrix<N2, N1> u) -> {
                             // x = current state, u = voltages, return = state derivatives
@@ -166,11 +154,13 @@ public class ArmFeedFordward {
                             }
 
                             // Calculate acceleration
-                            var acceleration =
+                             var acceleration =
                                     M(position)
                                             .inv()
                                             .times(
                                                     torque.minus(C(position, velocity).times(velocity)).minus(Tg(position)));
+
+                            dont.setOpaque(VecBuilder.fill(acceleration.get(0,0), acceleration.get(1,0)));
 
                             // Return state vector
                             return new MatBuilder<>(Nat.N4(), Nat.N1())
@@ -179,11 +169,31 @@ public class ArmFeedFordward {
                                             velocity.get(1, 0),
                                             acceleration.get(0, 0),
                                             acceleration.get(1, 0));
+
                         },
+
                         state,
                         voltage,
                         dt));
+
+        double oo = integrated.get(0,0);
+        double io = integrated.get(1,0);
+        double uo = integrated.get(2, 0);
+        double yo = integrated.get(3, 0);
+
+
+
+
+
+        double di = dont.get().get(0,0);
+        double dii = dont.get().get(1, 0);
+
+
+
+            return VecBuilder.fill(oo, io, uo, yo, di, dii);
+
     }
+
 
     private Matrix<N2, N2> M(Vector<N2> position) {
         var M = new Matrix<>(N2.instance, N2.instance);
