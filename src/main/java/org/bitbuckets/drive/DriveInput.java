@@ -43,7 +43,7 @@ public class DriveInput {
      * @units m/s
      */
     public double getInputY() {
-        return y.calculate(driveDeadband(joystick.getRawAxis(1)));
+        return -y.calculate(driveDeadband(joystick.getRawAxis(1)));
     }
 
     /**
@@ -51,7 +51,7 @@ public class DriveInput {
      * @units unknown
      */
     public double getInputRot() {
-        return driveDeadband(joystick.getRawAxis(XboxController.Axis.kRightX.value));
+        return driveDeadband(joystick.getRawAxis(4));
     }
 
     /**

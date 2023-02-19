@@ -2,13 +2,13 @@
   "waypoints": [
     {
       "anchorPoint": {
-        "x": 1.9101833991292765,
-        "y": 4.446994512668495
+        "x": 1.8,
+        "y": 0.4696617291183801
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.4307378807086173,
-        "y": 4.45697614386494
+        "x": 2.6277224518451856,
+        "y": 0.4614038807341939
       },
       "holonomicAngle": 180.0,
       "isReversal": false,
@@ -24,24 +24,26 @@
     },
     {
       "anchorPoint": {
-        "x": 6.344611285929386,
-        "y": 4.585739322208354
+        "x": 6.348145833498698,
+        "y": 0.8873236583007456
       },
       "prevControl": {
-        "x": 3.9784495961678554,
-        "y": 4.445241282843677
+        "x": 6.840207378833269,
+        "y": 0.9194385564199729
       },
       "nextControl": {
-        "x": 6.6490111488361645,
-        "y": 4.60381398891703
+        "x": 5.856084288164127,
+        "y": 0.8552087601815181
       },
-      "holonomicAngle": 0.0,
+      "holonomicAngle": 0,
       "isReversal": false,
       "velOverride": null,
       "isLocked": false,
       "isStopPoint": true,
       "stopEvent": {
-        "names": [],
+        "names": [
+          "collect"
+        ],
         "executionBehavior": "parallel",
         "waitBehavior": "none",
         "waitTime": 0
@@ -49,26 +51,44 @@
     },
     {
       "anchorPoint": {
-        "x": 1.899071002650469,
-        "y": 3.879026876814604
+        "x": 1.6945039654782001,
+        "y": 1.6373753107206734
       },
       "prevControl": {
-        "x": 3.6014082352057937,
-        "y": 4.588090099872691
+        "x": 1.3391360587924086,
+        "y": 0.9044137983295496
       },
       "nextControl": null,
-      "holonomicAngle": -180.0,
+      "holonomicAngle": 180.0,
       "isReversal": false,
       "velOverride": null,
       "isLocked": false,
       "isStopPoint": false,
       "stopEvent": {
-        "names": [],
+        "names": [
+          "moveArmAgain"
+        ],
         "executionBehavior": "parallel",
         "waitBehavior": "none",
         "waitTime": 0
       }
     }
   ],
-  "markers": []
+  "maxVelocity": 2.0,
+  "maxAcceleration": 1.5,
+  "isReversed": null,
+  "markers": [
+    {
+      "position": 0.0,
+      "names": [
+        "moveArm"
+      ]
+    },
+    {
+      "position": 0.0,
+      "names": [
+        "collect"
+      ]
+    }
+  ]
 }

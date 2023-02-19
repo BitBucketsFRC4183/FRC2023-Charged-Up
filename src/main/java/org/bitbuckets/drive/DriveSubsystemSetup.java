@@ -27,7 +27,8 @@ import org.bitbuckets.odometry.IOdometryControl;
 import org.bitbuckets.odometry.PidgeonOdometryControlSetup;
 import org.bitbuckets.vision.IVisionControl;
 
-public class DriveSubsystemSetup implements ISetup<DriveSubsystem> {
+public class
+DriveSubsystemSetup implements ISetup<DriveSubsystem> {
 
     final boolean driveEnabled;
     final boolean isSimulated;
@@ -62,6 +63,7 @@ public class DriveSubsystemSetup implements ISetup<DriveSubsystem> {
 
         IOdometryControl odometryControl = new PidgeonOdometryControlSetup(driveControl, visionControl, 5)
                 .build(self.addChild("odo-control"));
+
         autoSubsystem.setOdometryControl(odometryControl);
 
         HoloControl holoControl = new HoloControlSetup(driveControl, visionControl, odometryControl)
