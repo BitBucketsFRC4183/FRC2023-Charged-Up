@@ -1,6 +1,5 @@
 package org.bitbuckets.robot;
 
-import com.ctre.phoenix.sensors.WPI_PigeonIMU;
 import org.bitbuckets.RGB.RgbSubsystem;
 import org.bitbuckets.RGB.RgbSubsystemSetup;
 import org.bitbuckets.arm.ArmSubsystem;
@@ -22,8 +21,6 @@ public class RobotSetup implements ISetup<RobotContainer> {
 
     final RobotStateControl robotStateControl;
 
-    WPI_PigeonIMU pigeonIMU;
-
     public RobotSetup(RobotStateControl robotStateControl) {
         this.robotStateControl = robotStateControl;
     }
@@ -44,7 +41,7 @@ public class RobotSetup implements ISetup<RobotContainer> {
         ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystemSetup(false, autoSubsystem)
                 .build(self.addChild("elevator-subsystem"));
 
-        ArmSubsystem armSubsystem = new ArmSubsystemSetup(false)
+        ArmSubsystem armSubsystem = new ArmSubsystemSetup(true)
                 .build(self.addChild("arm-subsystem"));
 
         DriveSubsystem driveSubsystem = new DriveSubsystemSetup(
