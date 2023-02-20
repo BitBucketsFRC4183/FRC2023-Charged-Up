@@ -1,7 +1,10 @@
 package org.bitbuckets.arm;
 
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import org.bitbuckets.arm.sim.ArmConfig;
+import org.bitbuckets.lib.ISetup;
+import org.bitbuckets.lib.control.IPIDCalculator;
 import org.bitbuckets.lib.control.PIDConfig;
 import org.bitbuckets.lib.hardware.MotorConfig;
 
@@ -78,6 +81,9 @@ public interface ArmConstants {
 
     PIDConfig LOWER_SIMPID = new PIDConfig(50.0, 0, 0, 0);
     PIDConfig UPPER_SIMPID = new PIDConfig(5.0, 0, 0, 0);
+
+    TrapezoidProfile.Constraints LOWER_CONSTRAINT = new TrapezoidProfile.Constraints(2,2);
+    TrapezoidProfile.Constraints UPPER_CONSTRAINTS = new TrapezoidProfile.Constraints(2,2);
 
     double SIM_OFFSET = 0.25;
 

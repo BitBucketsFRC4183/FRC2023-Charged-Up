@@ -3,20 +3,20 @@ package org.bitbuckets.arm;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
-import org.bitbuckets.lib.log.Debuggable;
+import org.bitbuckets.lib.debug.IDebuggable;
 
 
 public class ArmInput {
 
     final Joystick operatorControl;
-    final Debuggable debug;
+    final IDebuggable debug;
 
     /**
      * Arm input, has a ton of functions for buttons and axis.
      * @param operatorControl
      * @param debug
      */
-    public ArmInput(Joystick operatorControl, Debuggable debug) {
+    public ArmInput(Joystick operatorControl, IDebuggable debug) {
         this.operatorControl = operatorControl;
         this.debug = debug;
     }

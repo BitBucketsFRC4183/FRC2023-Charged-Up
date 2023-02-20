@@ -3,38 +3,43 @@ package org.bitbuckets.lib.control;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
-import org.bitbuckets.lib.log.Debuggable;
 import org.bitbuckets.lib.tune.IValueTuner;
 
 public class ProfiledPIDFCalculator implements Runnable, IPIDCalculator {
 
     final ProfiledPIDController profiledPIDController;
-    final IValueTuner<double[]> tuner;
-    final Debuggable debuggable;
+    final IValueTuner<Double> p;
+    final IValueTuner<Double> i;
+    final IValueTuner<Double> d;
+    final IValueTuner<Double> kV;
+    final IValueTuner<Double> kA;
 
-    public ProfiledPIDFCalculator(ProfiledPIDController profiledPIDController, IValueTuner<double[]> tuner, Debuggable debuggable) {
+    public ProfiledPIDFCalculator(ProfiledPIDController profiledPIDController, IValueTuner<Double> p, IValueTuner<Double> i, IValueTuner<Double> d, IValueTuner<Double> kV, IValueTuner<Double> kA) {
         this.profiledPIDController = profiledPIDController;
-        this.tuner = tuner;
-        this.debuggable = debuggable;
+        this.p = p;
+        this.i = i;
+        this.d = d;
+        this.kV = kV;
+        this.kA = kA;
     }
 
     @Override
     public void run() {
-        debuggable.log("logged", true);
+        if (p.hasUpdated()) {
+            profiledPIDController.setP(p.consumeValue());
+        }
 
-        if (tuner.hasUpdated()) {
-            double[] out = tuner.consumeValue();
-
-            profiledPIDController.setPID(out[0],
-                    out[1],
-                    out[2]);
-            profiledPIDController.setConstraints(new TrapezoidProfile.Constraints(out[3], out[4]));
+        if (i.hasUpdated()) {
+            profiledPIDController.setI(i.consumeValue());
+        }
+        if (d.hasUpdated()) {
+            profiledPIDController.setD(d.consumeValue());
+        }
+        if (kV.hasUpdated() || kA.hasUpdated()) {
+            profiledPIDController.setConstraints(new TrapezoidProfile.Constraints(kV.consumeValue(), kA.consumeValue()));
         }
 
 
-        debuggable.log("pos-setpoint", Units.radiansToDegrees(profiledPIDController.getSetpoint().position));
-        debuggable.log("pos-error", profiledPIDController.getPositionError());
-        debuggable.log("goal", profiledPIDController.getGoal().toString());
     }
 
     @Override

@@ -8,7 +8,7 @@ public class PIDConfig {
     public final double kP;
     public final double kI;
     public final double kD;
-    @Deprecated //isn't used currently
+    @Deprecated //THIS DOESNT DO ANYTHING
     public final double kF;
 
     /**

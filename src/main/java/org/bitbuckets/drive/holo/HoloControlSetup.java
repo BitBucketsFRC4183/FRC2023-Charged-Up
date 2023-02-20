@@ -7,8 +7,8 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import org.bitbuckets.drive.controlsds.DriveControl;
+import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.lib.ISetup;
-import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.lib.control.IPIDCalculator;
 import org.bitbuckets.lib.control.PIDCalculatorSetup;
 import org.bitbuckets.lib.control.PIDConfig;
@@ -28,16 +28,17 @@ public class HoloControlSetup implements ISetup<HoloControl> {
         this.odo = odo;
     }
 
+    PIDConfig X_PID = new PIDConfig(1.2,0,0,0);
+    PIDConfig Y_PID = new PIDConfig(1.2,0,0,0);
+    PIDConfig THETA_PID = new PIDConfig(1,0,0,0);
+    TrapezoidProfile.Constraints THETA_CONSTRAINTS = new TrapezoidProfile.Constraints(1,1);
+
     @Override
-    public HoloControl build(ProcessPath self) {
+    public HoloControl build(IProcess self) {
 
-        IPIDCalculator x = new PIDCalculatorSetup(new PIDConfig(1.2, 0, 0, 0))
-                .build(self.addChild("x-control"));
-
-        IPIDCalculator y = new PIDCalculatorSetup(new PIDConfig(1.2, 0, 0, 0))
-                .build(self.addChild("y-control"));
-
-        IPIDCalculator theta = new ProfiledPIDFSetup(new PIDConfig(1, 0, 0, 0), new TrapezoidProfile.Constraints(1, 1)).build(self.addChild("theta-control"));
+        IPIDCalculator x = self.childSetup("x-pid", new PIDCalculatorSetup(X_PID));
+        IPIDCalculator y = self.childSetup("y-pid", new PIDCalculatorSetup(Y_PID));
+        IPIDCalculator theta = self.childSetup("theta-pid", new ProfiledPIDFSetup(THETA_PID, THETA_CONSTRAINTS));
 
         //TODO find constants
         HolonomicDriveController holonomicDriveController = new HolonomicDriveController(
@@ -48,7 +49,6 @@ public class HoloControlSetup implements ISetup<HoloControl> {
         holonomicDriveController.setTolerance(
                 new Pose2d(0.1, 0.1, Rotation2d.fromDegrees(1))
         );
-        var debuggable = self.generateDebugger();
 
 
         return new HoloControl(
@@ -56,6 +56,6 @@ public class HoloControlSetup implements ISetup<HoloControl> {
                 visionControl,
                 odo,
                 holonomicDriveController,
-                debuggable);
+                self.getDebuggable());
     }
 }

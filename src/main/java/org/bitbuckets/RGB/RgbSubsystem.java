@@ -5,7 +5,7 @@ import com.ctre.phoenix.led.CANdle;
 import com.ctre.phoenix.led.CANdleFaults;
 import com.ctre.phoenix.led.LarsonAnimation;
 import com.ctre.phoenix.led.RainbowAnimation;
-import org.bitbuckets.lib.log.Debuggable;
+import org.bitbuckets.lib.debug.IDebuggable;
 
 public class RgbSubsystem {
 
@@ -16,9 +16,9 @@ public class RgbSubsystem {
     final RgbInput rgbInput;
 
 
-    final Debuggable debuggable;
+    final IDebuggable debuggable;
 
-    public RgbSubsystem(CANdle candle, RgbInput rgbInput, Debuggable debuggable) {
+    public RgbSubsystem(CANdle candle, RgbInput rgbInput, IDebuggable debuggable) {
         this.candle = candle;
         this.rgbInput = rgbInput;
         this.debuggable = debuggable;
