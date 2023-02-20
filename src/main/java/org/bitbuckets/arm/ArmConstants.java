@@ -118,9 +118,9 @@ public interface ArmConstants {
     //
     // the numbers below are made up, not actual numbers we will use for competition
     double STORAGE_X = 0.3;
-    double STORAGE_Y = -0.3;
+    double STORAGE_Y = -0.1;
 
-    double PREPARE_X = -0.2;
+    double PREPARE_X = 0.1;
     double PREPARE_Y = 0.6;
 
     double HUMAN_INTAKE_X = 0.5;
