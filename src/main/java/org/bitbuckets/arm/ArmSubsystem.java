@@ -1,5 +1,7 @@
 package org.bitbuckets.arm;
 
+import org.bitbuckets.auto.AutoFSM;
+import org.bitbuckets.auto.AutoSubsystem;
 import org.bitbuckets.lib.log.Debuggable;
 
 public class ArmSubsystem {
@@ -9,14 +11,15 @@ public class ArmSubsystem {
     final ArmInput armInput;
     final ArmControl armControl;
     final Debuggable debuggable;
-
+    final AutoSubsystem autoSubsystem;
     ArmFSM state = ArmFSM.MANUAL;
     ArmFSM nextState = ArmFSM.MANUAL;
 
-    public ArmSubsystem(ArmInput armInput, ArmControl armControl, Debuggable debuggable) {
+    public ArmSubsystem(ArmInput armInput, ArmControl armControl, Debuggable debuggable, AutoSubsystem autoSubsystem) {
         this.armInput = armInput;
         this.armControl = armControl;
         this.debuggable = debuggable;
+        this.autoSubsystem = autoSubsystem;
     }
 
 
@@ -26,7 +29,13 @@ public class ArmSubsystem {
     //private double gearRatio = (5 * 4 * 3) / (12. / 30.);
 
 
+    AutoFSM lastRobotState;
+
     public void teleopPeriodic() {
+
+        if (autoSubsystem.state() == AutoFSM.TELEOP && lastRobotState == AutoFSM.AUTO_ENDED) {
+            armControl.robotIsOn();
+        }
 
         if (armInput.isCalibratedPressed()) {
             armControl.calibrateLowerArm();
@@ -78,7 +87,7 @@ public class ArmSubsystem {
 
             case PREPARE:
                 armControl.prepareArm();
-                if (armControl.isErrorSmallEnough(.1) || armInput.isStopPidPressed()){
+                if (armControl.isErrorSmallEnough(.1) || armInput.isStopPidPressed()) {
                     state = nextState;
                 }
 
@@ -100,14 +109,14 @@ public class ArmSubsystem {
 
             case SCORE_MID:
                 armControl.scoreMid();
-                if (armControl.isErrorSmallEnough(.1) || armInput.isStopPidPressed()){
+                if (armControl.isErrorSmallEnough(.1) || armInput.isStopPidPressed()) {
                     state = ArmFSM.MANUAL;
                 }
                 break;
 
             case SCORE_HIGH:
                 armControl.scoreHigh();
-                if (armControl.isErrorSmallEnough(.1) || armInput.isStopPidPressed()){
+                if (armControl.isErrorSmallEnough(.1) || armInput.isStopPidPressed()) {
                     state = ArmFSM.MANUAL;
                 }
                 break;

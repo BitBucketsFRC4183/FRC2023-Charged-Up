@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import org.bitbuckets.arm.sim.SimArmSetup;
+import org.bitbuckets.auto.AutoSubsystem;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.lib.hardware.IMotorController;
@@ -15,9 +16,11 @@ import org.bitbuckets.lib.log.Debuggable;
 import org.bitbuckets.lib.util.MockingUtil;
 import org.bitbuckets.lib.vendor.spark.SparkSetup;
 
+
 public class ArmSubsystemSetup implements ISetup<ArmSubsystem> {
 
     final boolean isEnabled;
+    AutoSubsystem autoSubsystem;
 
     public ArmSubsystemSetup(boolean isEnabled) {
         this.isEnabled = isEnabled;
@@ -79,7 +82,7 @@ public class ArmSubsystemSetup implements ISetup<ArmSubsystem> {
         ArmControl armControl = armControlSetup.build(self.addChild("arm-control"));
         ArmInput armInput = new ArmInput(new Joystick(1), self.generateDebugger());
 
-        return new ArmSubsystem(armInput, armControl, debuggable);
+        return new ArmSubsystem(armInput, armControl, debuggable, autoSubsystem);
 
     }
 }

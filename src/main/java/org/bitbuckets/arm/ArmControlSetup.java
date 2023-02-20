@@ -44,7 +44,7 @@ public class ArmControlSetup implements ISetup<ArmControl> {
             var lowerSpark1 = lower1.rawAccess(CANSparkMax.class);
             var lowerSpark2 = lower2.rawAccess(CANSparkMax.class);
             var upperSpark = upper.rawAccess(CANSparkMax.class);
-    
+
             lowerSpark1.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, true);
             lowerSpark1.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, true);
 
@@ -60,6 +60,8 @@ public class ArmControlSetup implements ISetup<ArmControl> {
             upperSpark.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, (float) -90.0);
 
             lowerSpark2.follow(lowerSpark1, true);
+
+
         }
 
         Debuggable debug = self.generateDebugger();
@@ -71,6 +73,7 @@ public class ArmControlSetup implements ISetup<ArmControl> {
                 debug,
                 lowerJointPID,
                 upperJointPID);
+
     }
 
 }

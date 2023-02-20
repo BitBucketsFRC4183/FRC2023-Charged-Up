@@ -17,6 +17,7 @@ public class ArmControl {
     final IPIDCalculator lowerJointPID;
     final IPIDCalculator upperJointPID;
 
+
     //final IPIDCalculator ffLowerArmCalculator;
     //final IPIDCalculator ffUpperArmCalculator;
 
@@ -31,6 +32,12 @@ public class ArmControl {
         this.lowerJointPID = lowerJointPID;
         this.upperJointPID = upperJointPID;
     }
+
+    public void robotIsOn() {
+        calibrateUpperArm();
+        calibrateLowerArm();
+    }
+
 
     public void calibrateLowerArm() {
         lowerJoint1.forceOffset(convertMechanismRotationtoRawRotation_lowerJoint(convertDegreesToRotation(0)));
@@ -83,6 +90,7 @@ public class ArmControl {
 
     // may change delta later
     public boolean isErrorSmallEnough(double delta) {
+
         debuggable.log("lowerJoint Error", Math.abs(lowerJoint1.getError_mechanismRotations()));
         debuggable.log("upperJoint Error", Math.abs(Math.abs(upperJoint.getError_mechanismRotations())));
 
