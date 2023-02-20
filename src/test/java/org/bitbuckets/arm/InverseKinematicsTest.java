@@ -65,4 +65,16 @@ class InverseKinematicsTest {
         assertEquals(0, new InverseKinematics(totalArmLength / Math.sqrt(2), totalArmLength / Math.sqrt(2)).getUpperJoint_degrees(), .01);
     }
 
+    @Test
+    void testStorage() {
+        // if the arm is straight out at a 45º angle, the lower joint is -45º and the upper joint is 0º
+        //       -
+        //     -
+        //   -
+        // ========== <- robot base
+        var totalArmLength = ArmConstants.LOWER_JOINT_LENGTH + ArmConstants.UPPER_JOINT_LENGTH;
+        assertEquals(117.7, new InverseKinematics(ArmConstants.STORAGE_X, ArmConstants.STORAGE_Y).getLowerJoint_degrees(), .1);
+        assertEquals(142, new InverseKinematics(ArmConstants.STORAGE_X, ArmConstants.STORAGE_Y).getUpperJoint_degrees(), .01);
+    }
+
 }

@@ -1,5 +1,6 @@
 package org.bitbuckets.arm;
 
+import edu.wpi.first.math.geometry.Translation2d;
 import org.bitbuckets.arm.kinematics.InverseKinematics;
 import org.bitbuckets.lib.control.IPIDCalculator;
 import org.bitbuckets.lib.hardware.IMotorController;
@@ -10,22 +11,15 @@ public class ArmControl {
 
 
     final IMotorController lowerJoint1;
-    final IMotorController lowerJoint2;
+
     final IMotorController upperJoint;
     final Debuggable debuggable;
 
     final IPIDCalculator lowerJointPID;
     final IPIDCalculator upperJointPID;
 
-    //final IPIDCalculator ffLowerArmCalculator;
-    //final IPIDCalculator ffUpperArmCalculator;
-
-
-    // How do set up IMotorController and IEncoder so that lowerJoint == lowerEncoder
-
-    public ArmControl(IMotorController lowerJoint1, IMotorController lowerJoint2, IMotorController upperJoint, Debuggable debuggable, IPIDCalculator lowerJointPID, IPIDCalculator upperJointPID) {
+    public ArmControl(IMotorController lowerJoint1, IMotorController upperJoint, Debuggable debuggable, IPIDCalculator lowerJointPID, IPIDCalculator upperJointPID) {
         this.lowerJoint1 = lowerJoint1;
-        this.lowerJoint2 = lowerJoint2;
         this.upperJoint = upperJoint;
         this.debuggable = debuggable;
         this.lowerJointPID = lowerJointPID;
@@ -34,7 +28,6 @@ public class ArmControl {
 
     public void calibrateLowerArm() {
         lowerJoint1.forceOffset(convertMechanismRotationtoRawRotation_lowerJoint(convertDegreesToRotation(0)));
-        lowerJoint2.forceOffset(convertMechanismRotationtoRawRotation_lowerJoint(convertDegreesToRotation(0)));
     }
 
     public void calibrateUpperArm() {
@@ -83,24 +76,23 @@ public class ArmControl {
 
     // may change delta later
     public boolean isErrorSmallEnough(double delta) {
-        debuggable.log("lowerJoint Error", Math.abs(lowerJoint1.getError_mechanismRotations()));
-        debuggable.log("upperJoint Error", Math.abs(Math.abs(upperJoint.getError_mechanismRotations())));
+        return false;
 
-        return Math.abs(lowerJoint1.getError_mechanismRotations()) < delta && Math.abs(upperJoint.getError_mechanismRotations()) < delta;
+        //debuggable.log("lowerJoint Error", Math.abs(lowerJoint1.getError_mechanismRotations()));
+        //debuggable.log("upperJoint Error", Math.abs(Math.abs(upperJoint.getError_mechanismRotations())));
+
+        //return Math.abs(lowerJoint1.getError_mechanismRotations()) < delta && Math.abs(upperJoint.getError_mechanismRotations()) < delta;
     }
 
 
     // Make sure to change/tune lowerAngle_degrees and upperAngle_degrees for each position
     public void stopArmMotors() {
         lowerJoint1.moveAtPercent(0);
-        lowerJoint2.moveAtPercent(0);
         upperJoint.moveAtPercent(0);
     }
 
     public void goToCalibrationPosition() {
-
         lowerJoint1.moveToPosition_mechanismRotations(0);
-        lowerJoint2.moveToPosition_mechanismRotations(0);
         upperJoint.moveToPosition_mechanismRotations(0);
     }
 
@@ -157,6 +149,12 @@ public class ArmControl {
         }
 
           */
+    }
+
+    public void moveToSetpointOnly(double lowerAngle_degrees, double upperAngle_degrees) {
+        lowerJoint1.moveAtVoltage(lowerJointPID.calculateNext(lowerJoint1.getMechanismPositionAccum_rot(), convertDegreesToRotation(lowerAngle_degrees)));
+        upperJoint.moveAtVoltage(upperJointPID.calculateNext(upperJoint.getMechanismPositionAccum_rot(), convertDegreesToRotation(upperAngle_degrees)));
+
     }
 
     public void prepareArm() {
@@ -281,6 +279,15 @@ public class ArmControl {
             upperJoint.moveAtVoltage(upperJointPID.calculateNext(upperJoint.getMechanismPositionAccum_rot(), convertDegreesToRotation(upperAngle_degrees)));
 
         }
+
+    }
+
+    public void moveTo(Translation2d translation2d) {
+        var kinematics = new InverseKinematics(translation2d.getX(), translation2d.getY());
+
+        double lower = kinematics.getLowerJoint_degrees();
+        double upper = kinematics.getUpperJoint_degrees();
+
 
     }
 }

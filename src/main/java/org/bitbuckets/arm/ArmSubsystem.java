@@ -134,8 +134,17 @@ public class ArmSubsystem {
                 } else if (armInput.isScoreLowPressed()) {
                     state = ArmFSM.PREPARE;
                     nextState = ArmFSM.SCORE_LOW;
+                } else if (armInput.isDebugDegreesPressed()) {
+                    state = ArmFSM.DEBUG_TO_DEGREES;
                 }
                 break;
+
+            case DEBUG_TO_DEGREES:
+                if (armInput.isStopPidPressed()) {
+                    state = ArmFSM.TELEOP;
+                }
+
+                armControl.moveToSetpointOnly(45,45);
 
             //if C is pressed in sim (on keyboard)
             case STORAGE:

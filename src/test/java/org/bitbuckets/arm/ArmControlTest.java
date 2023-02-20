@@ -31,7 +31,7 @@ class ArmControlTest {
         lowerJointPID = mock(IPIDCalculator.class);
         upperJointPID = mock(IPIDCalculator.class);
 
-        control = new ArmControl(lowerJoint, lowerJoint1, upperJoint, debuggable, lowerJointPID, upperJointPID);
+        control = new ArmControl(lowerJoint, upperJoint, debuggable, lowerJointPID, upperJointPID);
     }
 
 

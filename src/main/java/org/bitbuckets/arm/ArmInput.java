@@ -75,6 +75,10 @@ Right Joystick to control upper joint on arm
         return operatorControl.getRawButton(XboxController.Button.kX.value);
     }
 
+    public boolean isDebugDegreesPressed() {
+        return operatorControl.getRawButtonPressed(XboxController.Button.kY.value);
+    }
+
     // checks if operator wants to move arms to intake for human player station (by pressing RIGHT DPAD)
     public boolean isHumanIntakePressed() {
         int pressed = operatorControl.getPOV();

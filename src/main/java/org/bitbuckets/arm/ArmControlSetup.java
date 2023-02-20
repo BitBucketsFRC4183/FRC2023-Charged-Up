@@ -45,7 +45,7 @@ public class ArmControlSetup implements ISetup<ArmControl> {
             var lowerSpark2 = lower2.rawAccess(CANSparkMax.class);
             var upperSpark = upper.rawAccess(CANSparkMax.class);
     
-            lowerSpark1.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, true);
+            /*lowerSpark1.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, true);
             lowerSpark1.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, true);
 
 
@@ -57,7 +57,7 @@ public class ArmControlSetup implements ISetup<ArmControl> {
             lowerSpark1.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, (float) -13.69);
 
             upperSpark.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, (float) 25.0);
-            upperSpark.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, (float) -90.0);
+            upperSpark.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, (float) -90.0);*/
 
             lowerSpark2.follow(lowerSpark1, true);
         }
@@ -66,7 +66,6 @@ public class ArmControlSetup implements ISetup<ArmControl> {
 
         return new ArmControl(
                 lower1,
-                lower2,
                 upper,
                 debug,
                 lowerJointPID,
