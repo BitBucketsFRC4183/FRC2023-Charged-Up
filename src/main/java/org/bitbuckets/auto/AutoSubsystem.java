@@ -30,8 +30,14 @@ public class AutoSubsystem {
 
     AutoFSM state = AutoFSM.DISABLED;
 
+    AutoFSM lastState = AutoFSM.DISABLED;
+
     public AutoFSM state() {
         return state;
+    }
+
+    public AutoFSM lastRobotState() {
+        return lastState;
     }
 
     public boolean sampleHasEventStarted(String event) {
@@ -64,10 +70,13 @@ public class AutoSubsystem {
         if (opt.isPresent()) {
             debug.log("path-pose", opt.get().poseMeters);
             debug.log("path-holonomic-rotation", opt.get().holonomicRotation.getDegrees());
+
+            lastState = state;
         }
 
 
         switch (state) {
+
             case DISABLED:
                 if (DriverStation.isAutonomousEnabled()) {
                     transitionToAutoRun();
@@ -113,6 +122,7 @@ public class AutoSubsystem {
                 }
                 break;
         }
+        AutoFSM lastRobotState = state;
     }
 
     AutoPath toUseLogOnly = AutoPath.NONE;

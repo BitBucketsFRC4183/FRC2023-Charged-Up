@@ -27,12 +27,10 @@ public class ArmSubsystem {
     }
 
     // Holds the ArmFSM
-    AutoFSM lastRobotState;
-
     public void teleopPeriodic() {
 
         // Checks if calibration button on operator controller is pressed to reset encoder position of all motors to 0
-        if (autoSubsystem.state() == AutoFSM.AUTO_RUN && lastRobotState == AutoFSM.DISABLED) {
+        if (autoSubsystem.state() == AutoFSM.AUTO_RUN && autoSubsystem.lastRobotState() == AutoFSM.DISABLED) {
             armControl.robotIsOn();
         }
 
