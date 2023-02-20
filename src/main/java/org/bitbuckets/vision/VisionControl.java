@@ -36,6 +36,8 @@ public class VisionControl implements IVisionControl {
     public void logLoop() {
         debuggable.log("a", "a");
 
+
+
         var opt = estimateVisionTargetPose();
         opt.ifPresent(pose3d -> debuggable.log("target-pose", opt.get()));
         var op2 = estimateVisionRobotPose();
@@ -96,6 +98,7 @@ public class VisionControl implements IVisionControl {
 
         // Transform the tag's pose to set our goal
         Pose3d goalPose = tagPose.transformBy(VisionConstants2.TAG_TO_GOAL);
+        debuggable.log("goal-pose", goalPose);
         // This is new target data, so recalculate the goal
         double range = PhotonUtils.calculateDistanceToTargetMeters(
                 VisionConstants2.CAMERA_HEIGHT,
