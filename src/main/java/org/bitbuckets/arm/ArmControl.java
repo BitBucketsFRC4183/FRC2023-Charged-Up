@@ -49,7 +49,6 @@ public class ArmControl {
 //        lowerJoint.getPIDController().setReference(lowerRotation, CANSparkMax.ControlType.kPosition);
         //test if lower arm moves with outputs
         lowerJoint1.moveAtPercent(percentOutput * ArmConstants.CONTROL_JOINT_OUTPUT);
-        lowerJoint2.moveAtPercent(percentOutput * ArmConstants.CONTROL_JOINT_OUTPUT);
     }
 
 
@@ -141,13 +140,12 @@ public class ArmControl {
         double upperAngle_degrees = store.getUpperJoint_degrees();
 
 
-
-
         debuggable.log("lower-kinematics", convertDegreesToRotation(lowerAngle_degrees));
         debuggable.log("upper-kinematics", convertDegreesToRotation(upperAngle_degrees));
 
         //finding NaN errors
         if (isReachable(lowerAngle_degrees, upperAngle_degrees)) {
+            debuggable.log("voltage", upperJointPID.calculateNext(upperJoint.getMechanismPositionAccum_rot(), convertDegreesToRotation(upperAngle_degrees)));
             lowerJoint1.moveAtVoltage(lowerJointPID.calculateNext(lowerJoint1.getMechanismPositionAccum_rot(), convertDegreesToRotation(lowerAngle_degrees)));
             upperJoint.moveAtVoltage(upperJointPID.calculateNext(upperJoint.getMechanismPositionAccum_rot(), convertDegreesToRotation(upperAngle_degrees)));
 
