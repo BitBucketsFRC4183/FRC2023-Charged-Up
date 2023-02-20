@@ -61,8 +61,14 @@ class InverseKinematicsTest {
         //   -
         // ========== <- robot base
         var totalArmLength = ArmConstants.LOWER_JOINT_LENGTH + ArmConstants.UPPER_JOINT_LENGTH;
-        assertEquals(-45, new InverseKinematics(totalArmLength / Math.sqrt(2), totalArmLength / Math.sqrt(2)).getLowerJoint_degrees());
+        assertEquals(-45, new InverseKinematics(totalArmLength / Math.sqrt(2), totalArmLength / Math.sqrt(2)).getLowerJoint_degrees(), 0.01);
         assertEquals(0, new InverseKinematics(totalArmLength / Math.sqrt(2), totalArmLength / Math.sqrt(2)).getUpperJoint_degrees(), .01);
+    }
+
+    @Test
+    void scoreLow(){
+        assertNotEquals(Double.NaN, new InverseKinematics(ArmConstants.LOW_NODE_X, ArmConstants.LOW_NODE_Y).getLowerJoint_degrees()); //around 20.7487985 degrees
+        assertNotEquals(Double.NaN, new InverseKinematics(ArmConstants.LOW_NODE_X, ArmConstants.LOW_NODE_Y).getUpperJoint_degrees()); //around 129.6641176 degrees
     }
 
 }
