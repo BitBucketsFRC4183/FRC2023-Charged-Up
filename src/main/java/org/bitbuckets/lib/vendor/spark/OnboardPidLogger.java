@@ -29,6 +29,6 @@ public class OnboardPidLogger implements HasLogLoop {
         encoderReadout_mechanismRotations.log( motorController.getMechanismPositionAccum_rot() );
         error_mechanismRotations.log( motorController.getError_mechanismRotations());
 
-        lastControlMode.log( motorController.lastControlMode );
+        lastControlMode.log(motorController.lastControlMode);
     }
 }
