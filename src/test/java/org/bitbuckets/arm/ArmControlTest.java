@@ -2,8 +2,8 @@ package org.bitbuckets.arm;
 
 import org.bitbuckets.arm.kinematics.InverseKinematics;
 import org.bitbuckets.lib.control.IPIDCalculator;
+import org.bitbuckets.lib.debug.IDebuggable;
 import org.bitbuckets.lib.hardware.IMotorController;
-import org.bitbuckets.lib.log.Debuggable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -15,7 +15,7 @@ class ArmControlTest {
     IMotorController lowerJoint;
     IMotorController lowerJoint1;
     IMotorController upperJoint;
-    Debuggable debuggable;
+    IDebuggable debuggable;
     IPIDCalculator lowerJointPID;
     IPIDCalculator upperJointPID;
 
@@ -27,7 +27,7 @@ class ArmControlTest {
         lowerJoint = mock(IMotorController.class);
         lowerJoint1 = mock(IMotorController.class);
         upperJoint = mock(IMotorController.class);
-        debuggable = mock(Debuggable.class);
+        debuggable = mock(IDebuggable.class);
         lowerJointPID = mock(IPIDCalculator.class);
         upperJointPID = mock(IPIDCalculator.class);
 

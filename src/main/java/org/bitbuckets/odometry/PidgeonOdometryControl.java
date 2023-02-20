@@ -14,21 +14,21 @@ import edu.wpi.first.math.numbers.N7;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
 import org.bitbuckets.drive.IDriveControl;
-import org.bitbuckets.lib.log.Debuggable;
+import org.bitbuckets.lib.debug.IDebuggable;
 import org.bitbuckets.vision.IVisionControl;
 
 import java.util.Optional;
 
 public class PidgeonOdometryControl implements IOdometryControl {
 
-    final Debuggable debuggable;
+    final IDebuggable debuggable;
     final IDriveControl driveControl;
     final IVisionControl visionControl;
     final WPI_Pigeon2 pigeonIMU;
     final SwerveDrivePoseEstimator swerveDrivePoseEstimator;
 
 
-    public PidgeonOdometryControl(Debuggable debuggable, IDriveControl driveControl, IVisionControl visionControl, WPI_Pigeon2 pigeonIMU, SwerveDrivePoseEstimator swerveDrivePoseEstimator) {
+    public PidgeonOdometryControl(IDebuggable debuggable, IDriveControl driveControl, IVisionControl visionControl, WPI_Pigeon2 pigeonIMU, SwerveDrivePoseEstimator swerveDrivePoseEstimator) {
         this.debuggable = debuggable;
         this.driveControl = driveControl;
         this.pigeonIMU = pigeonIMU;

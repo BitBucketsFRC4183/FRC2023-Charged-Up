@@ -3,7 +3,7 @@ package org.bitbuckets.auto;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import edu.wpi.first.wpilibj.DriverStation;
 import org.bitbuckets.drive.IDriveControl;
-import org.bitbuckets.lib.log.Debuggable;
+import org.bitbuckets.lib.debug.IDebuggable;
 import org.bitbuckets.lib.tune.IValueTuner;
 import org.bitbuckets.odometry.IOdometryControl;
 
@@ -13,14 +13,14 @@ public class AutoSubsystem {
 
     final IValueTuner<AutoPath> pathToUse;
     final IAutoControl autoControl;
-    final Debuggable debug;
+    final IDebuggable debug;
 
 
     IDriveControl driveControl;
 
     IOdometryControl odometryControl;
 
-    public AutoSubsystem(IValueTuner<AutoPath> pathToUse, IAutoControl autoControl, Debuggable debug) {
+    public AutoSubsystem(IValueTuner<AutoPath> pathToUse, IAutoControl autoControl, IDebuggable debug) {
         this.pathToUse = pathToUse;
         this.autoControl = autoControl;
         this.debug = debug;
@@ -36,7 +36,6 @@ public class AutoSubsystem {
 
     public boolean sampleHasEventStarted(String event) {
         if (instance == null) {
-            debug.out("Waiting...");
             return false; //Doesn't exist yet. Should log this.
         }
 

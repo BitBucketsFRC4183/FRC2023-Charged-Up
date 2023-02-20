@@ -29,6 +29,7 @@ public interface ITuneAs<T> {
         return tuneable;
     };
 
+
     //?????????
     static <E extends Enum<E>> ITuneAs<E> ENUM_INPUT(Class<E> enumType) {
         return (k,c,d,s,dg) -> new EnumTuner<>(c.getLayout(k),enumType, d, a -> {});

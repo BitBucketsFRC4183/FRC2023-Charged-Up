@@ -8,10 +8,8 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.wpilibj.SPI;
 import org.bitbuckets.drive.DriveConstants;
 import org.bitbuckets.drive.IDriveControl;
+import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.lib.ISetup;
-import org.bitbuckets.lib.ProcessPath;
-import org.bitbuckets.lib.StartupProfiler;
-import org.bitbuckets.lib.log.Debuggable;
 import org.bitbuckets.vision.IVisionControl;
 
 
@@ -31,8 +29,7 @@ public class NavXOdometryControlSetup implements ISetup<IOdometryControl> {
     }
 
     @Override
-    public IOdometryControl build(ProcessPath self) {
-        StartupProfiler initializeNavX = self.generateSetupProfiler("init-NavX");
+    public IOdometryControl build(IProcess self) {
         SwerveDrivePoseEstimator estimator = new SwerveDrivePoseEstimator(
                 DriveConstants.KINEMATICS,
                 Rotation2d.fromDegrees(0),
@@ -45,25 +42,16 @@ public class NavXOdometryControlSetup implements ISetup<IOdometryControl> {
                 new Pose2d()
         );
 
-        initializeNavX.markProcessing();
         AHRS navXGyro = new AHRS(SPI.Port.kMXP);
-        initializeNavX.markCompleted();
 
-        Debuggable debug = self.generateDebugger();
 
-        NavXOdometryControl odometryControl = new NavXOdometryControl(
-                debug,
+        return new NavXOdometryControl(
+                self.getDebuggable(),
                 control,
                 estimator,
                 navXGyro,
                 visionControl
         );
-
-        self.registerLogLoop(odometryControl::logLoop);
-        self.registerLogicLoop(odometryControl::updateOdometryLoop);
-
-
-        return odometryControl;
     }
 }
 

@@ -2,8 +2,8 @@ package org.bitbuckets.arm;
 
 import org.bitbuckets.arm.kinematics.InverseKinematics;
 import org.bitbuckets.lib.control.IPIDCalculator;
+import org.bitbuckets.lib.debug.IDebuggable;
 import org.bitbuckets.lib.hardware.IMotorController;
-import org.bitbuckets.lib.log.Debuggable;
 
 
 public class ArmControl {
@@ -12,7 +12,7 @@ public class ArmControl {
     final IMotorController lowerJoint1;
     final IMotorController lowerJoint2;
     final IMotorController upperJoint;
-    final Debuggable debuggable;
+    final IDebuggable debuggable;
 
     final IPIDCalculator lowerJointPID;
     final IPIDCalculator upperJointPID;
@@ -32,7 +32,7 @@ public class ArmControl {
      @param  lowerJointPID IPIDCalculator for both lower joints that takes in measurement (current position of lower arm) and setpoint to determine a voltage based on pid
      @param upperJointPID IPIDCalculator for upper joint that takes in measurement (current position of lower arm) and setpoint to determine a voltage based on pid
      **/
-    public ArmControl(IMotorController lowerJoint1, IMotorController lowerJoint2, IMotorController upperJoint, Debuggable debuggable, IPIDCalculator lowerJointPID, IPIDCalculator upperJointPID) {
+    public ArmControl(IMotorController lowerJoint1, IMotorController lowerJoint2, IMotorController upperJoint, IDebuggable debuggable, IPIDCalculator lowerJointPID, IPIDCalculator upperJointPID) {
         this.lowerJoint1 = lowerJoint1;
         this.lowerJoint2 = lowerJoint2;
         this.upperJoint = upperJoint;

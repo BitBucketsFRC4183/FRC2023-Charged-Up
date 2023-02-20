@@ -8,10 +8,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import org.bitbuckets.drive.DriveConstants;
 import org.bitbuckets.drive.IDriveControl;
+import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.lib.ISetup;
-import org.bitbuckets.lib.ProcessPath;
-import org.bitbuckets.lib.StartupProfiler;
-import org.bitbuckets.lib.log.Debuggable;
 import org.bitbuckets.vision.IVisionControl;
 
 
@@ -30,8 +28,8 @@ public class PidgeonOdometryControlSetup implements ISetup<IOdometryControl> {
     }
 
     @Override
-    public IOdometryControl build(ProcessPath self) {
-        StartupProfiler initializePidgeon = self.generateSetupProfiler("init-pidgeon");
+    public IOdometryControl build(IProcess self) {
+
         SwerveDrivePoseEstimator estimator = new SwerveDrivePoseEstimator(
                 DriveConstants.KINEMATICS,
                 Rotation2d.fromDegrees(0),
@@ -44,16 +42,12 @@ public class PidgeonOdometryControlSetup implements ISetup<IOdometryControl> {
                 new Pose2d()
         );
 
-        initializePidgeon.markProcessing();
         WPI_Pigeon2 pigeonIMU = new WPI_Pigeon2(pidgeonId);
         pigeonIMU.configFactoryDefault();
         pigeonIMU.configMountPose(Pigeon2.AxisDirection.PositiveY, Pigeon2.AxisDirection.PositiveZ);
-        initializePidgeon.markCompleted();
-
-        Debuggable debug = self.generateDebugger();
 
         PidgeonOdometryControl odometryControl = new PidgeonOdometryControl(
-                debug,
+                self.getDebuggable(),
                 control,
                 visionControl,
                 pigeonIMU,

@@ -11,9 +11,9 @@ import org.bitbuckets.drive.controlsds.sds.SteerControllerSetup;
 import org.bitbuckets.drive.controlsds.sds.SwerveModuleSetup;
 import org.bitbuckets.drive.holo.HoloControl;
 import org.bitbuckets.drive.holo.HoloControlSetup;
+import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.lib.ISetup;
-import org.bitbuckets.lib.ProcessPath;
-import org.bitbuckets.lib.log.Debuggable;
+import org.bitbuckets.lib.ITuneAs;
 import org.bitbuckets.lib.tune.IValueTuner;
 import org.bitbuckets.lib.util.MockingUtil;
 import org.bitbuckets.lib.vendor.ctre.CANCoderAbsoluteEncoderSetup;
@@ -27,8 +27,7 @@ import org.bitbuckets.odometry.IOdometryControl;
 import org.bitbuckets.odometry.PidgeonOdometryControlSetup;
 import org.bitbuckets.vision.IVisionControl;
 
-public class
-DriveSubsystemSetup implements ISetup<DriveSubsystem> {
+public class DriveSubsystemSetup implements ISetup<DriveSubsystem> {
 
     final boolean driveEnabled;
     final boolean isSimulated;
@@ -44,14 +43,13 @@ DriveSubsystemSetup implements ISetup<DriveSubsystem> {
     }
 
     @Override
-    public DriveSubsystem build(ProcessPath self) {
+    public DriveSubsystem build(IProcess self) {
         if (!driveEnabled) {
             return MockingUtil.buddy(DriveSubsystem.class);
         }
 
         DriveInput input = new DriveInput(new Joystick(0));
-        ClosedLoopsControl closedLoopsControl = new ClosedLoopsSetup()
-                .build(self.addChild("axis-control"));
+        ClosedLoopsControl closedLoopsControl = self.childSetup("closed-loop", new ClosedLoopsSetup());
 
         DriveControl driveControl;
         if (isSimulated) {
@@ -61,17 +59,14 @@ DriveSubsystemSetup implements ISetup<DriveSubsystem> {
         }
         autoSubsystem.setDriveControl(driveControl);
 
-        IOdometryControl odometryControl = new PidgeonOdometryControlSetup(driveControl, visionControl, 5)
-                .build(self.addChild("odo-control"));
+        IOdometryControl odometryControl = self.childSetup("pidgeon-control", new PidgeonOdometryControlSetup(driveControl, visionControl, 5));
 
         autoSubsystem.setOdometryControl(odometryControl);
 
-        HoloControl holoControl = new HoloControlSetup(driveControl, visionControl, odometryControl)
-                .build(self.addChild("holo-control"));
-
+        HoloControl holoControl = self.childSetup("holo-control", new HoloControlSetup(driveControl, visionControl, odometryControl))
+;
         IValueTuner<DriveSubsystem.OrientationChooser> orientationTuner = self
-                .generateEnumTuner("set-orientation", DriveSubsystem.OrientationChooser.class, DriveSubsystem.OrientationChooser.FIELD_ORIENTED);
-        Debuggable debuggable = self.generateDebugger();
+                .generateTuner(ITuneAs.ENUM_INPUT(DriveSubsystem.OrientationChooser.class), "set-orientation", DriveSubsystem.OrientationChooser.FIELD_ORIENTED);
 
         return new DriveSubsystem(
                 input,
@@ -82,18 +77,18 @@ DriveSubsystemSetup implements ISetup<DriveSubsystem> {
                 holoControl,
                 visionControl,
                 orientationTuner,
-                debuggable
+                self.getDebuggable()
 
         );
 
     }
 
 
-    DriveControl buildNeoDriveControl(ProcessPath path) {
+    DriveControl buildNeoDriveControl(IProcess path) {
         // used to configure the spark motor in SparkSetup
 
 
-        DriveControl driveControl = new DriveControlSetup(
+        var driveControl = new DriveControlSetup(
                 new SwerveModuleSetup(
                         new DriveControllerSetup(new SparkDriveMotorSetup(DriveConstants.FRONT_LEFT_DRIVE_ID, DriveConstants.DRIVE_CONFIG, DriveConstants.MK4I_L2)),
                         new SteerControllerSetup(
@@ -118,16 +113,16 @@ DriveSubsystemSetup implements ISetup<DriveSubsystem> {
                                 new SparkSteerMotorSetup(DriveConstants.BACK_RIGHT_STEER_ID, DriveConstants.STEER_CONFIG, DriveConstants.STEER_PID, DriveConstants.MK4I_L2),
                                 new ThriftyEncoderSetup(DriveConstants.BACK_RIGHT_ENCODER_CHANNEL, DriveConstants.BACK_RIGHT_OFFSET))
                 )
-        ).build(path.addChild("drive-control"));
+        );
 
-        return driveControl;
+        return path.inlineSetup(driveControl);
     }
 
-    DriveControl buildSimDriveControl(ProcessPath path) {
+    DriveControl buildSimDriveControl(IProcess path) {
         // used to configure the spark motor in SparkSetup
 
 
-        DriveControl driveControl = new DriveControlSetup(
+        var driveControl = new DriveControlSetup(
                 new SwerveModuleSetup(
                         new DriveControllerSetup(new DCSimSetup(DriveConstants.DRIVE_CONFIG, DriveConstants.DRIVE_MOTOR, DriveConstants.DRIVE_PID)),
                         new SteerControllerSetup(
@@ -152,13 +147,13 @@ DriveSubsystemSetup implements ISetup<DriveSubsystem> {
                                 new DCSimSetup(DriveConstants.STEER_CONFIG, DriveConstants.STEER_MOTOR, DriveConstants.STEER_PID),
                                 new ThriftyEncoderSetup(DriveConstants.BACK_RIGHT_ENCODER_CHANNEL, DriveConstants.BACK_RIGHT_OFFSET))
                 )
-        ).build(path.addChild("drive-control"));
+        );
 
-        return driveControl;
+        return path.inlineSetup(driveControl);
     }
 
 
-    DriveControl buildTalonDriveControl(ProcessPath path) {
+    DriveControl buildTalonDriveControl(IProcess path) {
 
         int frontLeftModuleDriveMotor_ID = 1;
         int frontLeftModuleSteerMotor_ID = 2;
@@ -186,7 +181,7 @@ DriveSubsystemSetup implements ISetup<DriveSubsystem> {
 
         double sensorPositionCoefficient = 2.0 * Math.PI / 2048 * DriveConstants.MK4_L2.getSteerReduction();
 
-        return new DriveControlSetup(
+        var l = new DriveControlSetup(
                 new SwerveModuleSetup(
                         new DriveControllerSetup(new TalonDriveMotorSetup(frontLeftModuleDriveMotor_ID, DriveConstants.MK4_L2)),
                         new SteerControllerSetup(
@@ -219,7 +214,9 @@ DriveSubsystemSetup implements ISetup<DriveSubsystem> {
                                 sensorPositionCoefficient
                         )
                 )
-        ).build(path.addChild("drive-control"));
+        );
+
+        return path.inlineSetup(l);
     }
 
 }
