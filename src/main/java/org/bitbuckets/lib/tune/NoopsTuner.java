@@ -2,6 +2,8 @@ package org.bitbuckets.lib.tune;
 
 import org.bitbuckets.lib.ProcessMode;
 
+import java.util.function.Consumer;
+
 public class NoopsTuner implements IForceSendTuner<ProcessMode> {
     //todo make a root tuner
 
@@ -23,6 +25,11 @@ public class NoopsTuner implements IForceSendTuner<ProcessMode> {
     @Override
     public boolean hasUpdated() {
         return false;
+    }
+
+    @Override
+    public void bind(Consumer<ProcessMode> data) {
+
     }
 }
 

@@ -59,13 +59,13 @@ public class Process implements IProcess {
 
     @Override
     public <T> IValueTuner<T> generateTuner(ITuneAs<T> tuneDataType, String key, T dataWhenNotTuning) {
-        return tuneDataType.generate(key, table, dataWhenNotTuning, selfMode, null);
+        return tuneDataType.generate(key, table, dataWhenNotTuning, selfMode);
     }
 
 
     @Override
     public <T> ILoggable<T> generateLogger(ILogAs<T> logDataType, String key) {
-        return logDataType.generate(key,table);
+        return logDataType.generate(key,table, selfMode);
     }
 
     @Override
@@ -160,10 +160,10 @@ public class Process implements IProcess {
                         "changer",
                         childContainer,
                         ProcessMode.LOG_COMPETITION,
-                        selfMode,
-                        e -> forceTo(ProcessMode.valueOf(e.valueData.value.getString()))
+                        selfMode
                 );
 
+        childMode.bind(this::forceTo);
 
         //setup console for writing data to
         IConsole childConsole = new ProcessConsole(childMode, childPath);
@@ -201,7 +201,6 @@ public class Process implements IProcess {
                         "changer",
                         Shuffleboard.getTab("mattlib"),
                         ProcessMode.LOG_COMPETITION,
-                        null,
                         null
                 );
 

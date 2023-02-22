@@ -5,33 +5,31 @@ import edu.wpi.first.networktables.NetworkTableEvent;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardContainer;
 import org.bitbuckets.lib.tune.IValueTuner;
-import org.bitbuckets.lib.tune.ModernTuner;
-import org.bitbuckets.lib.tune.SuperiorEnumTuner;
+import org.bitbuckets.lib.tune.ValueTuner;
+import org.bitbuckets.lib.tune.EnumTuner;
 
 import java.util.Arrays;
 import java.util.EnumSet;
-import java.util.function.Consumer;
 
 public interface ITuneAs<T> {
 
     EnumSet<NetworkTableEvent.Kind> REMOTE = EnumSet.of(NetworkTableEvent.Kind.kValueRemote);
-    IValueTuner<T> generate(String key, ShuffleboardContainer container, T data, IValueTuner<ProcessMode> self, Consumer<NetworkTableEvent> delegate);
+    IValueTuner<T> generate(String key, ShuffleboardContainer container, T data, IValueTuner<ProcessMode> self);
 
-    ITuneAs<Double> DOUBLE_INPUT = (k,c,d,s,dg) -> {
+    ITuneAs<Double> DOUBLE_INPUT = (k,c,d,s) -> {
 
         var entry = c.add(k, d).getEntry();
-        var tuneable = new ModernTuner<>(entry, s, d);
+        var tuneable = new ValueTuner<>(entry, s, d);
         NetworkTableInstance.getDefault().addListener(entry, REMOTE, tuneable);
-        if (dg != null) {
-            NetworkTableInstance.getDefault().addListener(entry, REMOTE, dg);
-        }
 
         return tuneable;
     };
 
 
+
+
     static <E extends Enum<E>> ITuneAs<E> ENUM_INPUT(Class<E> enumType) {
-        return (k,c,d,s,dg) -> {
+        return (k,c,d,s) -> {
             var e = c.add(".dbg", false).getEntry();
             NetworkTable hack = e.getTopic().getInstance().getTable(e.getTopic().getName().replaceAll("/.dbg", "/" + k));
 
@@ -47,12 +45,9 @@ public interface ITuneAs<T> {
             selected.setString(d.name());
             active.setString(d.name());
 
-            var init = new SuperiorEnumTuner<>(enumType, d, selected, active);
+            var init = new EnumTuner<>(enumType, d, selected, active);
 
             NetworkTableInstance.getDefault().addListener(selected, REMOTE, init);
-            if (dg != null) {
-                NetworkTableInstance.getDefault().addListener(selected, REMOTE, dg);
-            }
 
             return init;
         };
