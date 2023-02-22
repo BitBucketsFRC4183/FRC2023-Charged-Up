@@ -8,7 +8,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Preferences;
 import org.bitbuckets.auto.AutoFSM;
 import org.bitbuckets.auto.AutoSubsystem;
-import org.bitbuckets.drive.balance.ClosedLoopsControl;
+import org.bitbuckets.drive.balance.BalanceControl;
 import org.bitbuckets.drive.controlsds.DriveControl;
 import org.bitbuckets.drive.holo.HoloControl;
 import org.bitbuckets.lib.util.HasLoop;
@@ -30,7 +30,7 @@ public class DriveSubsystem implements HasLoop {
 
     final AutoSubsystem autoSubsystem;
     final IOdometryControl odometryControl;
-    final ClosedLoopsControl closedLoopsControl;
+    final BalanceControl balanceControl;
     final DriveControl driveControl;
     final HoloControl holoControl;
     final IVisionControl visionControl;
@@ -44,10 +44,10 @@ public class DriveSubsystem implements HasLoop {
     }
 
 
-    public DriveSubsystem(DriveInput input, IOdometryControl odometryControl, ClosedLoopsControl closedLoopsControl, DriveControl driveControl, AutoSubsystem autoSubsystem, HoloControl holoControl, IVisionControl visionControl, IValueTuner<OrientationChooser> orientation, IDebuggable debuggable) {
+    public DriveSubsystem(DriveInput input, IOdometryControl odometryControl, BalanceControl balanceControl, DriveControl driveControl, AutoSubsystem autoSubsystem, HoloControl holoControl, IVisionControl visionControl, IValueTuner<OrientationChooser> orientation, IDebuggable debuggable) {
         this.input = input;
         this.odometryControl = odometryControl;
-        this.closedLoopsControl = closedLoopsControl;
+        this.balanceControl = balanceControl;
         this.driveControl = driveControl;
         this.autoSubsystem = autoSubsystem;
         this.visionControl = visionControl;
@@ -204,7 +204,7 @@ public class DriveSubsystem implements HasLoop {
         double BalanceDeadband_deg = Preferences.getDouble(DriveConstants.autoBalanceDeadbandDegKey, DriveConstants.BalanceDeadbandDeg);
         double Roll_deg = odometryControl.getRoll_deg();
         if (Math.abs(Roll_deg) > BalanceDeadband_deg) {
-            double output = closedLoopsControl.calculateBalanceOutput(Roll_deg, 0);
+            double output = balanceControl.calculateBalanceOutput(Roll_deg, 0);
             driveControl.drive(new ChassisSpeeds(output, 0.0, 0.0));
         } else {
             driveControl.stop90degrees();
@@ -220,7 +220,7 @@ public class DriveSubsystem implements HasLoop {
         double setpoint = Math.toRadians(0);
         double error = setpoint - IMU_Yaw;
 
-        double rotationOutputOrient = closedLoopsControl.calculateRotOutputRad(
+        double rotationOutputOrient = balanceControl.calculateRotOutputRad(
                 IMU_Yaw,
                 setpoint
         );

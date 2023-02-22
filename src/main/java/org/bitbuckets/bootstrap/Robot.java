@@ -1,11 +1,13 @@
 package org.bitbuckets.bootstrap;
 
 import com.revrobotics.REVPhysicsSim;
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Threads;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.Process;
@@ -88,7 +90,10 @@ public class Robot extends TimedRobot {
 
 
         if (report.length() > 0) {
-            rootTable.getEntry("mattlib/console").setString(report.toString());
+            if (e == null) {
+                e = Shuffleboard.getTab("mattlib").add("console", report.toString()).getEntry();
+            }
+            e.setString(report.toString());
         }
 
 
@@ -100,6 +105,8 @@ public class Robot extends TimedRobot {
     public void simulationPeriodic() {
         REVPhysicsSim.getInstance().run();
     }
+
+    static GenericEntry e;
 
 
 }

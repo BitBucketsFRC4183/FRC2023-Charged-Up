@@ -25,12 +25,8 @@ public class AutoSubsystemSetup implements ISetup<AutoSubsystem> {
 
         IAutoControl autoControl = self.childSetup("auto-control", new AutoControlSetup());
         IValueTuner<AutoPath> pathTuner = self.generateTuner(ITuneAs.ENUM_INPUT(AutoPath.class), "auto-path", AutoPath.NONE);
-        AutoSubsystem subsystem = new AutoSubsystem(pathTuner, autoControl, self.getDebuggable());
 
-
-        self.registerLogLoop(subsystem::logLoop);
-
-        return subsystem;
+        return new AutoSubsystem(pathTuner, autoControl, self.getDebuggable());
     }
 
 

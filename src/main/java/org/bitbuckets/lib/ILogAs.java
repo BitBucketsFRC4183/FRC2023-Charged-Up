@@ -20,7 +20,7 @@ public interface ILogAs<T> {
     };
 
     ILogAs<Double> DOUBLE = (key,con) -> {
-        var e = con.add(key, 0.0).getEntry();
+        var e = con.add(key, 0.0).withWidget(BuiltInWidgets.kTextView).getEntry();
 
         return e::setDouble;
     };

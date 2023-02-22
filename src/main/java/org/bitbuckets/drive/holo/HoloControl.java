@@ -2,15 +2,11 @@ package org.bitbuckets.drive.holo;
 
 import com.pathplanner.lib.PathPlannerTrajectory;
 import edu.wpi.first.math.controller.HolonomicDriveController;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import org.bitbuckets.drive.controlsds.DriveControl;
 import org.bitbuckets.lib.debug.IDebuggable;
-
 import org.bitbuckets.odometry.IOdometryControl;
 import org.bitbuckets.vision.IVisionControl;
 
@@ -20,7 +16,7 @@ public class HoloControl {
 
     final IVisionControl visionControl;
     final IOdometryControl odometryControl;
-    HolonomicDriveController controller;
+    final HolonomicDriveController controller;
 
     final IDebuggable debuggable;
 

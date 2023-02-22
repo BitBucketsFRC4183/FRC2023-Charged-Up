@@ -3,13 +3,13 @@ package org.bitbuckets.drive.balance;
 import edu.wpi.first.math.controller.PIDController;
 import org.bitbuckets.lib.control.ProfiledPIDFController;
 
-public class ClosedLoopsControl {
+public class BalanceControl {
 
     final PIDController balanceController;
     final ProfiledPIDFController rotController;
 
 
-    ClosedLoopsControl(PIDController balanceController, ProfiledPIDFController rotController) {
+    BalanceControl(PIDController balanceController, ProfiledPIDFController rotController) {
         this.balanceController = balanceController;
         this.rotController = rotController;
     }

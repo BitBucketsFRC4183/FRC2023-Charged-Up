@@ -37,7 +37,6 @@ public class ShuffleDebuggable implements IDebuggable {
 
 
         EXECUTOR.execute(() -> {
-            container.add(key, number);
             cache.computeIfAbsent(key, k -> container.add(k, number).getEntry()).setDouble(number);
         });
     }

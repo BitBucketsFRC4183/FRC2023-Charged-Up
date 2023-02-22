@@ -14,7 +14,6 @@ public class SplitterSetup<T> implements ISetup<T> {
 
     @Override
     public T build(IProcess self) {
-
         if (self.isReal()) {
             return real.build(self);
         } else {

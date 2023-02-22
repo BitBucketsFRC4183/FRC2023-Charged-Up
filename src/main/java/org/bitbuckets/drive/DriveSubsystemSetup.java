@@ -2,8 +2,8 @@ package org.bitbuckets.drive;
 
 import edu.wpi.first.wpilibj.Joystick;
 import org.bitbuckets.auto.AutoSubsystem;
-import org.bitbuckets.drive.balance.ClosedLoopsControl;
-import org.bitbuckets.drive.balance.ClosedLoopsSetup;
+import org.bitbuckets.drive.balance.BalanceControl;
+import org.bitbuckets.drive.balance.BalanceSetup;
 import org.bitbuckets.drive.controlsds.DriveControl;
 import org.bitbuckets.drive.controlsds.DriveControlSetup;
 import org.bitbuckets.drive.controlsds.sds.DriveControllerSetup;
@@ -49,7 +49,7 @@ public class DriveSubsystemSetup implements ISetup<DriveSubsystem> {
         }
 
         DriveInput input = new DriveInput(new Joystick(0));
-        ClosedLoopsControl closedLoopsControl = self.childSetup("closed-loop", new ClosedLoopsSetup());
+        BalanceControl balanceControl = self.childSetup("closed-loop", new BalanceSetup());
 
         DriveControl driveControl;
         if (isSimulated) {
@@ -71,7 +71,7 @@ public class DriveSubsystemSetup implements ISetup<DriveSubsystem> {
         return new DriveSubsystem(
                 input,
                 odometryControl,
-                closedLoopsControl,
+                balanceControl,
                 driveControl,
                 autoSubsystem,
                 holoControl,
