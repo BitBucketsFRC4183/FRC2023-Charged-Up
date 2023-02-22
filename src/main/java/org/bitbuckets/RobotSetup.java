@@ -25,7 +25,7 @@ public class RobotSetup implements ISetup<Void> {
         ArmSubsystem armSubsystem = self.childSetup("arm-system", new ArmSubsystemSetup(true));
 
         DriveSubsystemSetup driveSubsystem = new DriveSubsystemSetup(
-                false,
+                true,
                 false,
                 autoSubsystem,
                 visionControl
