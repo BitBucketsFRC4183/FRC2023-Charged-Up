@@ -24,27 +24,4 @@ public interface ISetup<T> {
     T build(IProcess self);
 
 
-    /**
-     * TODO make this default behavior because sometimes you want the same object in multiple places (dumb)
-     *
-     * @param delegate
-     * @param <T>
-     * @return
-     */
-    static <T> ISetup<T> caching(ISetup<T> delegate) {
-        return new ISetup<>() {
-
-            T cached = null;
-
-            @Override
-            public T build(IProcess self) {
-                if (cached != null) {
-                    return cached;
-                }
-
-                return cached = delegate.build(self);
-            }
-        };
-    }
-
 }

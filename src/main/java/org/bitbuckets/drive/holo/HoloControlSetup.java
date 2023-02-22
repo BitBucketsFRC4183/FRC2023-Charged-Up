@@ -40,7 +40,6 @@ public class HoloControlSetup implements ISetup<HoloControl> {
         IPIDCalculator y = self.childSetup("y-pid", new PIDCalculatorSetup(Y_PID));
         IPIDCalculator theta = self.childSetup("theta-pid", new ProfiledPIDFSetup(THETA_PID, THETA_CONSTRAINTS));
 
-        //TODO find constants
         HolonomicDriveController holonomicDriveController = new HolonomicDriveController(
                 x.rawAccess(PIDController.class),
                 y.rawAccess(PIDController.class),

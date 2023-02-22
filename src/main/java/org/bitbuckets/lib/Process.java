@@ -1,6 +1,5 @@
 package org.bitbuckets.lib;
 
-import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardContainer;
@@ -12,7 +11,6 @@ import org.bitbuckets.lib.log.IConsole;
 import org.bitbuckets.lib.log.ILoggable;
 import org.bitbuckets.lib.log.NoopsConsole;
 import org.bitbuckets.lib.log.ProcessConsole;
-import org.bitbuckets.lib.tune.EnumTuner;
 import org.bitbuckets.lib.tune.IForceSendTuner;
 import org.bitbuckets.lib.tune.IValueTuner;
 import org.bitbuckets.lib.tune.NoopsTuner;
@@ -21,6 +19,7 @@ import org.bitbuckets.lib.util.HasLoop;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class Process implements IProcess {
 
@@ -105,8 +104,9 @@ public class Process implements IProcess {
 
     }
 
-    public void forceTo(ProcessMode mode) {
+    public synchronized void forceTo(ProcessMode mode) {
         for (Process process : children) {
+            System.out.println("changed "+ mode.name());
             process.selfConsole.sendInfo("changed mode to: " + mode.name());
             process.selfMode.forceToValue(mode);
 
@@ -115,32 +115,61 @@ public class Process implements IProcess {
     }
 
 
+    @SuppressWarnings("unchecked")
     @Override
     public <T> T childSetup(String key, ISetup<T> setup) {
-        Path childPath = selfPath.append(key);
+        System.out.println(this.children.size());
+
+        var childPath = selfPath.append(key);
+        //todo less sloppy
         ShuffleboardContainer childContainer;
         if (childPath.length() == 1) { //if this is directly branching off the root, it should go in a tab
             childContainer = Shuffleboard.getTab(key);
+        } else if (childPath.length() == 2 || childPath.length() == 3) {
+
+            int size = this.children.size();
+            int length = 0;
+            int width = 0;
+
+            if (size == 1 || size == 2 || size == 3) {
+                length = 1;
+                width = 3;
+            }
+
+            if (size == 4 || size == 5 || size == 6) {
+                length = 2;
+                width = 3;
+            }
+
+            if (size == 7 || size == 8 || size == 9) {
+                length = 3;
+                width = 3;
+            }
+
+            childContainer = table.getLayout(key, BuiltInLayouts.kGrid).withSize(5, 5);//.withProperties(Map.of("number of columns", width, "number of rows", length));
+
+
         } else {
-            //base this off relation
-            childContainer = table.getLayout(key, BuiltInLayouts.kGrid); //TODO make nesting look better, don't stack 1 billion components inside eachother
+            childContainer = table.getLayout(key, BuiltInLayouts.kList);
+
+
         }
 
-        //setup tuner that can change values internally
-        EnumTuner<ProcessMode> childModeTuner = new EnumTuner<>(
-                childContainer,
-                ProcessMode.class,
-                ProcessMode.LOG_COMPETITION,
-                e -> forceTo(ProcessMode.LOG_COMPETITION)
-        );
-
+        IForceSendTuner<ProcessMode> childMode = (IForceSendTuner<ProcessMode>) ITuneAs.ENUM_INPUT(ProcessMode.class)
+                .generate(
+                        "changer",
+                        childContainer,
+                        ProcessMode.LOG_COMPETITION,
+                        selfMode,
+                        e -> forceTo(ProcessMode.valueOf(e.valueData.value.getString()))
+                );
 
 
         //setup console for writing data to
-        IConsole childConsole = new ProcessConsole(childModeTuner, childPath);
-        IDebuggable childDebuggable = new ShuffleDebuggable(childContainer, childModeTuner);
+        IConsole childConsole = new ProcessConsole(childMode, childPath);
+        IDebuggable childDebuggable = new ShuffleDebuggable(childContainer, childMode);
 
-        Process child = new Process(childContainer, childPath, childConsole, childModeTuner, childDebuggable);
+        Process child = new Process(childContainer, childPath, childConsole, childMode, childDebuggable);
         children.add(child);
 
         var p = setup.build(child);
@@ -162,14 +191,25 @@ public class Process implements IProcess {
     }
 
 
+
+
     public static Process root() {
         //TODO
+
+        var tuner = (IForceSendTuner<ProcessMode>) ITuneAs.ENUM_INPUT(ProcessMode.class)
+                .generate(
+                        "changer",
+                        Shuffleboard.getTab("mattlib"),
+                        ProcessMode.LOG_COMPETITION,
+                        null,
+                        null
+                );
 
         return new Process(
                 null,
                 new Path(new String[0]),
                 new NoopsConsole(),
-                new NoopsTuner(),
+                tuner,
                 new NoopsDebuggable());
     }
 }

@@ -14,7 +14,7 @@ import java.util.function.Consumer;
  * This tuner will simply return default data if not in tuning mode
  * @param <T>
  */
-public class ModernTuner<T> implements IValueTuner<T>, Consumer<NetworkTableEvent>, Runnable {
+public class ModernTuner<T> implements IValueTuner<T>, Consumer<NetworkTableEvent> {
 
     final GenericEntry entry;
     final IValueTuner<ProcessMode> processMode;
@@ -26,8 +26,6 @@ public class ModernTuner<T> implements IValueTuner<T>, Consumer<NetworkTableEven
         this.processMode = processMode;
         this.defaultData = defaultData;
         this.cachedValue = new AtomicReference<>(new AtomicRecord<>(defaultData, false));
-
-        NetworkTableInstance.getDefault().addListener(entry, EnumSet.of(NetworkTableEvent.Kind.kValueRemote), this);
     }
 
     @Override
@@ -45,7 +43,7 @@ public class ModernTuner<T> implements IValueTuner<T>, Consumer<NetworkTableEven
             return defaultData;
         }
 
-        AtomicRecord<T> nowStale = cachedValue.getAndUpdate(record -> {
+        AtomicRecord<T> newVal = cachedValue.updateAndGet(record -> {
             if (record.hasUpdated) {
                 return new AtomicRecord<>(record.cachedPointer, false);
             }
@@ -53,7 +51,7 @@ public class ModernTuner<T> implements IValueTuner<T>, Consumer<NetworkTableEven
             return record; //avoid CAS operation to save loops
         });
 
-        return nowStale.cachedPointer;
+        return newVal.cachedPointer;
     }
 
     @Override
@@ -67,17 +65,14 @@ public class ModernTuner<T> implements IValueTuner<T>, Consumer<NetworkTableEven
 
     @Override
     public void accept(NetworkTableEvent networkTableEvent) {
-        if (processMode.readValue().level > ProcessMode.TUNE.level) return;
+        if (processMode.readValue().level > ProcessMode.TUNE.level) {
+            entry.setValue(defaultData);
+            return;
+        }
 
         Object newObject = networkTableEvent.valueData.value.getValue();
 
         cachedValue.set(new AtomicRecord<>((T) newObject, true));
     }
 
-    @Override
-    public void run() {
-        if (processMode.readValue().level > ProcessMode.TUNE.level) {
-            entry.setValue(defaultData);
-        }
-    }
 }
