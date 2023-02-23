@@ -4,6 +4,7 @@ import edu.wpi.first.math.util.Units;
 import org.bitbuckets.arm.sim.ArmConfig;
 import org.bitbuckets.lib.control.PIDConfig;
 import org.bitbuckets.lib.hardware.MotorConfig;
+import org.bitbuckets.lib.log.Debuggable;
 
 import java.util.Optional;
 
@@ -18,12 +19,17 @@ public interface ArmConstants {
     double UPPER_ARM_GEAR_RATIO = 1.0 / ((5.0 * 4.0 * 3.0) * (16. / 16.));
 
 
+
     double LOWER_JOINT_LENGTH = 0.66;
     double UPPER_JOINT_LENGTH = 0.67;
+
 
     //mainly for arm sim
     double UPPER_JOINT_WIDTH = 0.0254;
     double LOWER_JOINT_WIDTH = 0.0508;
+
+    double UPPER_JOINT_LENGTH = 0.6731;
+    double LOWER_JOINT_LENGTH = 0.6605;
 
     //in rotations
     double LOWER_ARM_FORWARD_LIMIT_MECHANISM = 0.98;
@@ -76,30 +82,46 @@ public interface ArmConstants {
     PIDConfig LOWER_PID = new PIDConfig(0.3, 0, 0, 0);
     PIDConfig UPPER_PID = new PIDConfig(0.3, 0, 0, 0);
 
-    PIDConfig LOWER_SIMPID = new PIDConfig(50.0, 0, 0, 0);
+    PIDConfig LOWER_SIMPID = new PIDConfig(1.0, 0, 0, 0);
     PIDConfig UPPER_SIMPID = new PIDConfig(5.0, 0, 0, 0);
 
     double SIM_OFFSET = 0.25;
 
     ArmConfig LOWER_ARM = new ArmConfig(
-            Units.inchesToMeters(27),
-            4,
+            0.686,
+            1.036005,
             Units.rotationsToRadians(LOWER_ARM_FORWARD_LIMIT_MECHANISM),
             Units.rotationsToRadians(LOWER_ARM_REVERSE_LIMIT_MECHANISM),
             true
     );
 
     ArmConfig UPPER_ARM = new ArmConfig(
-            Units.inchesToMeters(38.5),
-            10,
+            0.84,
+            1.036005,
             Units.rotationsToRadians(UPPER_ARM_FORWARD_LIMIT_MECHANISM),
             Units.rotationsToRadians(UPPER_ARM_REVERSE_LIMIT_MECHANISM),
             false
     );
+    //change with accurate numbers
+
+
+    double LOWER_MOI = 0.08;
+
+    double LOWER_CGRADIUS = 0.4318;
+
+    double UPPER_MOI = 0.08;
+
+    double UPPER_CGRADIUS = 0.4318;
+
+
 
 
     // will most likely change
     double GRABBER_LENGTH = 0.1524;
+
+    double FFUPPER_ARM_LENGTH = UPPER_JOINT_LENGTH + GRABBER_LENGTH;
+
+    double GRABBER_MASS = 0;
 
 
     // Feel free to change to make arms faster/slower for input
@@ -137,5 +159,20 @@ public interface ArmConstants {
 
     double INTAKE_GROUND_X = 0.1;
     double INTAKE_GROUND_Y = 0.1;
+
+    //wrist + elbow for ff purposes
+
+          //  double  elbowCgRadius =
+          //  (UPPER_CONFIG.cgRadius * UPPER_ARM.armMass)
+            //        + (UPPER_ARM.lengthMeters + config.wrist().cgRadius()) * config.wrist().mass()
+            // / (UPPER_ARM.armMass + config.wrist().mass());
+   // double elbowMoi =
+   //         UPPER_ARM.armMass * Math.pow(UPPER_CGRADIUS - elbowCgRadius, 2.0)
+      //              + config.wrist().mass()
+       //             * Math.pow(
+         //           UPPER_ARM.lengthMeters + config.wrist().cgRadius() - elbowCgRadius, 2.0);
+
+    double FFUPPER_ARM_MASS = UPPER_ARM.armMass + GRABBER_MASS;
+
 
 }
