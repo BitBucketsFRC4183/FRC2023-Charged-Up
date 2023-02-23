@@ -52,9 +52,8 @@ public class AutoPathInstance implements HasLifecycle {
             }
         }
 
-        throw new IllegalStateException("what");
+        return new Results(0, 0);
     }
-
 
 
     /**
@@ -71,7 +70,6 @@ public class AutoPathInstance implements HasLifecycle {
 
         return secondsNow > eventToTimeMap.get(eventName);
     }
-
 
 
     public PathPlannerTrajectory.PathPlannerState sampleSpeeds() {

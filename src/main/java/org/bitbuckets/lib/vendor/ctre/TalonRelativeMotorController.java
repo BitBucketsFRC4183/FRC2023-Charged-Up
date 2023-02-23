@@ -10,6 +10,8 @@ public class TalonRelativeMotorController implements IMotorController, Runnable 
     final WPI_TalonFX motor;
     final MotorConfig motorConfig;
 
+    ControlMode lastControlMode = ControlMode.PercentOutput;
+
     TalonRelativeMotorController(WPI_TalonFX motor, MotorConfig motorConfig) {
         this.motor = motor;
         this.motorConfig = motorConfig;
@@ -58,19 +60,26 @@ public class TalonRelativeMotorController implements IMotorController, Runnable 
         forceOffset(offsetUnits_encoderRotations);
     }
 
+
+    // We are only using talons for drive on appa, but we use voltage comp for drive, so this
+    // throws a bunch of errors
     @Override
     public void moveAtVoltage(double voltage) {
-        motor.setVoltage(voltage);
+        motor.set(ControlMode.PercentOutput, voltage / 12);
+        lastControlMode = ControlMode.PercentOutput;
     }
 
     @Override
     public void moveAtPercent(double percent) {
         motor.set(ControlMode.PercentOutput, percent);
+        lastControlMode = ControlMode.PercentOutput;
+
     }
 
     @Override
     public void moveToPosition(double position_encoderRotations) {
         motor.set(ControlMode.Position, position_encoderRotations);
+        lastControlMode = ControlMode.Position;
     }
 
     @Override
@@ -81,11 +90,16 @@ public class TalonRelativeMotorController implements IMotorController, Runnable 
     @Override
     public void moveAtVelocity(double velocity_encoderMetersPerSecond) {
         motor.set(ControlMode.Velocity, velocity_encoderMetersPerSecond);
+        lastControlMode = ControlMode.Velocity;
     }
 
     @Override
     public double getSetpoint_mechanismRotations() {
-        return motor.getClosedLoopTarget();
+        if (lastControlMode == ControlMode.Position || lastControlMode == ControlMode.MotionMagic) {
+            return motor.getClosedLoopTarget();
+        } else {
+            return 0;
+        }
     }
 
     @Override
