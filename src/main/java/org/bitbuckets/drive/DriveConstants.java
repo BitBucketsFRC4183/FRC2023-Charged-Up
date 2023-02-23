@@ -49,8 +49,8 @@ public interface DriveConstants {
             Optional.empty()
     );
 
-    PIDConfig DRIVE_PID = new PIDConfig(0, 0, 0, 0);
-    PIDConfig STEER_PID = new PIDConfig(1, 0, 0.1, 0);
+    PIDConfig DRIVE_PID = new PIDConfig(0, 0, 0, 0, continuousMin, continuousMax);
+    PIDConfig STEER_PID = new PIDConfig(1, 0, 0.1, 0, continuousMin, continuousMax);
 
     DCMotorConfig DRIVE_MOTOR = new DCMotorConfig(0.025, Matrix.mat(Nat.N1(), Nat.N1()).fill(0));
     DCMotorConfig STEER_MOTOR = new DCMotorConfig(0.005, Matrix.mat(Nat.N1(), Nat.N1()).fill(0));

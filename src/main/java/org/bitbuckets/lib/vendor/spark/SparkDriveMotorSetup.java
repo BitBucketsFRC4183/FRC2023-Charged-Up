@@ -20,7 +20,7 @@ public class SparkDriveMotorSetup extends SparkSetup {
     double nominalVoltage = 12;
 
     public SparkDriveMotorSetup(int canId, MotorConfig motorConfig, SwerveModuleConfiguration swerveModuleConfiguration) {
-        super(canId, motorConfig, new PIDConfig(0, 0, 0, 0));
+        super(canId, motorConfig, new PIDConfig(0, 0, 0, 0, continuousMin, continuousMax));
         this.swerveModuleConfiguration = swerveModuleConfiguration;
     }
 

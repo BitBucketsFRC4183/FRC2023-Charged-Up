@@ -28,9 +28,9 @@ public class HoloControlSetup implements ISetup<HoloControl> {
         this.odo = odo;
     }
 
-    PIDConfig X_PID = new PIDConfig(1.2,0,0,0);
-    PIDConfig Y_PID = new PIDConfig(1.2,0,0,0);
-    PIDConfig THETA_PID = new PIDConfig(1,0,0,0);
+    PIDConfig X_PID = new PIDConfig(1.2,0,0,0, continuousMin, continuousMax);
+    PIDConfig Y_PID = new PIDConfig(1.2,0,0,0, continuousMin, continuousMax);
+    PIDConfig THETA_PID = new PIDConfig(1,0,0,0, continuousMin, continuousMax);
     TrapezoidProfile.Constraints THETA_CONSTRAINTS = new TrapezoidProfile.Constraints(1,1);
 
     @Override
