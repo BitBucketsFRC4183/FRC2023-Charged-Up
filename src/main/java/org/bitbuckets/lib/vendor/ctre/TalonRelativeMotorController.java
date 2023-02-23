@@ -27,7 +27,7 @@ public class TalonRelativeMotorController implements IMotorController, Runnable 
 
     @Override
     public double getRawToRotationsFactor() {
-        return 1; //Sparks units are in rotations
+        return 1 / 2048.; //Sparks units are in rotations
     }
 
     @Override

@@ -23,6 +23,15 @@ public class ArmControl {
 
     // How do set up IMotorController and IEncoder so that lowerJoint == lowerEncoder
 
+    /**
+    Constructor for ArmControl, requires three IMotorController (two lower and one upper), Debuggable, and two IPIDCalculator (one for upper, one for lower)
+    @param lowerJoint1 IMotorController on 1st lower joint on arm
+     @param lowerJoint2 IMotorController on 2nd lower joint on arm
+     @param upperJoint IMotorController on upper joint on arm
+     @param debuggable Debuggable for troubleshooting issues; must be initialized or the debug will not show up in AdvantageScope
+     @param  lowerJointPID IPIDCalculator for both lower joints that takes in measurement (current position of lower arm) and setpoint to determine a voltage based on pid
+     @param upperJointPID IPIDCalculator for upper joint that takes in measurement (current position of lower arm) and setpoint to determine a voltage based on pid
+     **/
     public ArmControl(IMotorController lowerJoint1, IMotorController lowerJoint2, IMotorController upperJoint, Debuggable debuggable, IPIDCalculator lowerJointPID, IPIDCalculator upperJointPID) {
         this.lowerJoint1 = lowerJoint1;
         this.lowerJoint2 = lowerJoint2;
@@ -32,15 +41,28 @@ public class ArmControl {
         this.upperJointPID = upperJointPID;
     }
 
+    /**
+     * Resets the both lower motors to position 0 on the encoder; new start point
+     * Will stay here to give arm its relativity until AbsoluteEncoders are in use
+     */
     public void calibrateLowerArm() {
         lowerJoint1.forceOffset(convertMechanismRotationtoRawRotation_lowerJoint(convertDegreesToRotation(0)));
         lowerJoint2.forceOffset(convertMechanismRotationtoRawRotation_lowerJoint(convertDegreesToRotation(0)));
     }
 
+    /**
+     * Resets the upper motor to position 0 on the encoder; new start point
+     * Will stay here to give arm its relativity until AbsoluteEncoders are in use
+     */
     public void calibrateUpperArm() {
         upperJoint.forceOffset(convertMechanismRotationtoRawRotation_upperJoint(convertDegreesToRotation(0)));
     }
 
+    /**
+     * Moves both lower arm motors based on a percent output by the input of the controller
+     * Lower CONTROL_JOINT_OUTPUT in ArmConstants to lower speed at which arm moves
+     * @param percentOutput ranges from -1 to 1 based on how much the joystick is pushed
+     */
     public void manuallyMoveLowerArm(double percentOutput) {
 
 //        double lowerRotation = gearRatio * percentOutput / 360;
@@ -49,7 +71,11 @@ public class ArmControl {
         lowerJoint1.moveAtPercent(percentOutput * ArmConstants.CONTROL_JOINT_OUTPUT);
     }
 
-
+    /**
+     * Moves upper arm motor based on a percent output by the input of the controller
+     * Lower CONTROL_JOINT_OUTPUT in ArmConstants to lower speed at which arm moves
+     * @param percentOutput ranges from -1 to 1 based on how much the joystick is pushed
+     */
     public void manuallyMoveUpperArm(double percentOutput) {
         upperJoint.moveAtPercent(percentOutput * ArmConstants.CONTROL_JOINT_OUTPUT);
     }
@@ -81,7 +107,11 @@ public class ArmControl {
         }
     }
 
-    // may change delta later
+    /**
+     * Looks at lowerJoint error and upperJoint error to determine whether or not the command has been completed
+     * @param delta difference between error and position until funciton returns true
+     * may change delta later
+     */
     public boolean isErrorSmallEnough(double delta) {
         debuggable.log("lowerJoint Error", Math.abs(lowerJoint1.getError_mechanismRotations()));
         debuggable.log("upperJoint Error", Math.abs(Math.abs(upperJoint.getError_mechanismRotations())));
