@@ -17,8 +17,6 @@ class MotorControllerTest {
     @Test
     void zeroShouldReturnZero() {
         IMotorController motorController = Mockito.mock(IMotorController.class);
-        Mockito.when(motorController.getPositionRaw()).thenReturn(0.0);
-        Mockito.when(motorController.getVelocityRaw()).thenReturn(0.0);
         Mockito.when(motorController.getTimeFactor()).thenReturn(1.0);
         Mockito.when(motorController.getRawToRotationsFactor()).thenReturn((1.0 / 2048.0));
         Mockito.when(motorController.getMechanismFactor()).thenReturn(1.0);

@@ -16,4 +16,10 @@ public interface IPIDCalculator extends IRaw {
      */
     double calculateNext(double measurement, double setpoint);
 
+    /**
+     * Gets the last error of the PID algorithm
+     * @return error
+     */
+    double lastError();
+
 }

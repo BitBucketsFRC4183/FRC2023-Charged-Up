@@ -5,8 +5,6 @@ import org.bitbuckets.arm.ArmSubsystemSetup;
 import org.bitbuckets.auto.AutoSubsystem;
 import org.bitbuckets.auto.AutoSubsystemSetup;
 import org.bitbuckets.drive.DriveSubsystemSetup;
-import org.bitbuckets.elevator.ElevatorSubsystem;
-import org.bitbuckets.elevator.ElevatorSubsystemSetup;
 import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.SimulatorKiller;
@@ -21,8 +19,7 @@ public class RobotSetup implements ISetup<Void> {
 
         AutoSubsystem autoSubsystem = self.childSetup("auto-system", new AutoSubsystemSetup(false));
         IVisionControl visionControl = self.childSetup("vision-system", new VisionControlSetup(false));
-        ElevatorSubsystem elevatorSubsystem = self.childSetup("elevator-system", new ElevatorSubsystemSetup(false, autoSubsystem));
-        ArmSubsystem armSubsystem = self.childSetup("arm-system", new ArmSubsystemSetup(true));
+        ArmSubsystem armSubsystem = self.childSetup("arm-system", new ArmSubsystemSetup(autoSubsystem, true));
 
         DriveSubsystemSetup driveSubsystem = new DriveSubsystemSetup(
                 true,

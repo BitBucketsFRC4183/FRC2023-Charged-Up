@@ -1,13 +1,10 @@
 package org.bitbuckets.arm;
 
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.controller.ArmFeedforward;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import org.bitbuckets.arm.kinematics.InverseKinematics;
 import org.bitbuckets.lib.control.IPIDCalculator;
+import org.bitbuckets.lib.debug.IDebuggable;
 import org.bitbuckets.lib.hardware.IMotorController;
-import org.bitbuckets.lib.log.Debuggable;
 
 
 public class ArmControl {
@@ -16,27 +13,12 @@ public class ArmControl {
     final IMotorController lowerJoint1;
 
     final IMotorController upperJoint;
-    final Debuggable debuggable;
+    final IDebuggable debuggable;
 
     final IPIDCalculator lowerJointPID;
     final IPIDCalculator upperJointPID;
 
-    public ArmControl(IMotorController lowerJoint1, IMotorController upperJoint, Debuggable debuggable, IPIDCalculator lowerJointPID, IPIDCalculator upperJointPID) {
-    //final IPIDCalculator ffLowerArmCalculator;
-    //final IPIDCalculator ffUpperArmCalculator;
-
-
-    // How do set up IMotorController and IEncoder so that lowerJoint == lowerEncoder
-
-    /**
-    Constructor for ArmControl, requires three IMotorController (two lower and one upper), Debuggable, and two IPIDCalculator (one for upper, one for lower)
-    @param lowerJoint1 IMotorController on 1st lower joint on arm
-     @param lowerJoint2 IMotorController on 2nd lower joint on arm
-     @param upperJoint IMotorController on upper joint on arm
-     @param debuggable Debuggable for troubleshooting issues; must be initialized or the debug will not show up in AdvantageScope
-     @param  lowerJointPID IPIDCalculator for both lower joints that takes in measurement (current position of lower arm) and setpoint to determine a voltage based on pid
-     @param upperJointPID IPIDCalculator for upper joint that takes in measurement (current position of lower arm) and setpoint to determine a voltage based on pid
-     **/
+    public ArmControl(IMotorController lowerJoint1, IMotorController upperJoint, IDebuggable debuggable, IPIDCalculator lowerJointPID, IPIDCalculator upperJointPID) {
         this.lowerJoint1 = lowerJoint1;
         this.upperJoint = upperJoint;
         this.debuggable = debuggable;
@@ -115,12 +97,7 @@ public class ArmControl {
      * may change delta later
      */
     public boolean isErrorSmallEnough(double delta) {
-        return false;
-
-        //debuggable.log("lowerJoint Error", Math.abs(lowerJoint1.getError_mechanismRotations()));
-        //debuggable.log("upperJoint Error", Math.abs(Math.abs(upperJoint.getError_mechanismRotations())));
-
-        //return Math.abs(lowerJoint1.getError_mechanismRotations()) < delta && Math.abs(upperJoint.getError_mechanismRotations()) < delta;
+        return Math.abs(lowerJointPID.lastError()) < delta && Math.abs(upperJointPID.lastError()) < delta;
     }
 
 

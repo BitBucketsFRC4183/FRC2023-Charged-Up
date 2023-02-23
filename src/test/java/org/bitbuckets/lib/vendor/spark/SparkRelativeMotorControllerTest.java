@@ -14,7 +14,19 @@ import java.util.Optional;
 
 class SparkRelativeMotorControllerTest {
 
-    MotorConfig test = new MotorConfig(0.5, 1, 1, false, false, 20, false, false, Optional.empty());
+    MotorConfig test = new MotorConfig(
+            0.5,
+            1,
+            1,
+            false,
+            false,
+            20,
+            Optional.empty(),
+            Optional.empty(),
+            false,
+            false,
+            Optional.empty()
+    );
 
 
     @Test

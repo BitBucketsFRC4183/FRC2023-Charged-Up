@@ -1,10 +1,10 @@
 package org.bitbuckets.lib.control;
 
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import org.bitbuckets.lib.ILogAs;
 import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ITuneAs;
-import org.bitbuckets.lib.tune.IValueTuner;
 
 public class ProfiledPIDFSetup implements ISetup<IPIDCalculator> {
 
@@ -18,21 +18,17 @@ public class ProfiledPIDFSetup implements ISetup<IPIDCalculator> {
 
     @Override
     public IPIDCalculator build(IProcess self) {
+        return new ProfiledPIDFCalculator(
+                new ProfiledPIDFController(pidConfig.kP, pidConfig.kI, pidConfig.kD, pidConfig.kF, profile),
+                self.generateTuner(ITuneAs.DOUBLE_INPUT, "proportional", pidConfig.kP),
+                self.generateTuner(ITuneAs.DOUBLE_INPUT, "integral", pidConfig.kI),
+                self.generateTuner(ITuneAs.DOUBLE_INPUT, "derivative", pidConfig.kD),
+                self.generateTuner(ITuneAs.DOUBLE_INPUT, "max-velocity", profile.maxVelocity),
+                self.generateTuner(ITuneAs.DOUBLE_INPUT, "max-accel", profile.maxAcceleration),
+                self.generateLogger(ILogAs.DOUBLE, "last-setpoint"),
+                self.generateLogger(ILogAs.DOUBLE, "last-actual"),
+                self.generateLogger(ILogAs.DOUBLE, "last-output")
 
-        var p = self.generateTuner(ITuneAs.DOUBLE_INPUT, "p", pidConfig.kP);
-        var i = self.generateTuner(ITuneAs.DOUBLE_INPUT, "i", pidConfig.kI);
-        var d = self.generateTuner(ITuneAs.DOUBLE_INPUT, "d", pidConfig.kD);
-        var kV = self.generateTuner(ITuneAs.DOUBLE_INPUT, "kV", profile.maxVelocity);
-        var kA = self.generateTuner(ITuneAs.DOUBLE_INPUT, "kA", profile.maxAcceleration);
-
-        ProfiledPIDFController controller = new ProfiledPIDFController(
-                p.readValue(),
-                i.readValue(),
-                d.readValue(),
-                0,
-                new TrapezoidProfile.Constraints(kV.readValue(), kA.readValue())
         );
-
-        return new ProfiledPIDFCalculator(controller, p,i,d,kV,kA);
     }
 }
