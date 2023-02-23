@@ -5,8 +5,6 @@ import edu.wpi.first.math.controller.PIDController;
 import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.control.IPIDCalculator;
-import org.bitbuckets.lib.control.PIDCalculatorSetup;
-import org.bitbuckets.lib.control.PIDConfig;
 import org.bitbuckets.lib.hardware.IMotorController;
 
 
