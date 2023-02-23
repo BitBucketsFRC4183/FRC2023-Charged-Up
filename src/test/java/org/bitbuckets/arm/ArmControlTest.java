@@ -31,18 +31,18 @@ class ArmControlTest {
         lowerJointPID = mock(IPIDCalculator.class);
         upperJointPID = mock(IPIDCalculator.class);
 
-        control = new ArmControl(lowerJoint, upperJoint, debuggable, lowerJointPID, upperJointPID);
+        control = new ArmControl(lowerJoint, lowerJoint1, upperJoint, debuggable, lowerJointPID, upperJointPID);
     }
 
 
     @Test
     void convertMechanismRotationToRawRotation_lowerJoint() {
-        assertEquals(20.0, control.convertMechanismRotationtoRawRotation_lowerJoint(1), .1);
+        assertEquals(27.69, control.convertMechanismRotationtoRawRotation_lowerJoint(1), .1);
     }
 
     @Test
     void convertMechanismRotationToRawRotation_upperJoint() {
-        assertEquals(60.0, control.convertMechanismRotationtoRawRotation_upperJoint(1), .1);
+        assertEquals(24., control.convertMechanismRotationtoRawRotation_upperJoint(1), .1);
     }
 
 

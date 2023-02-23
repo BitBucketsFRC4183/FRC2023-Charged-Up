@@ -1,6 +1,7 @@
 package org.bitbuckets.lib.control;
 
 import edu.wpi.first.math.controller.PIDController;
+import org.bitbuckets.lib.DontUseIncubating;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.lib.log.LoggingConstants;
@@ -35,7 +36,7 @@ public class PIDCalculatorSetup implements ISetup<IPIDCalculator> {
 
         PIDCalculator pid = new PIDCalculator(
                 use,
-                self.generateDebugger(), pidf
+                pidf
         );
 
         self.registerLoop(pid, LoggingConstants.TUNING_PERIOD, "tuning-loop");

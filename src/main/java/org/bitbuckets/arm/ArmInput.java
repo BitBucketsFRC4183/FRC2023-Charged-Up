@@ -52,12 +52,12 @@ public class ArmInput {
 
     public double getLowerArm_PercentOutput() {
 
-        return armDeadband(operatorControl.getRawAxis(XboxController.Axis.kLeftY.value)) * 0.5; //TODO remove 0.5 because iw as using it for testing in order to not explode robot
+        return armDeadband(operatorControl.getRawAxis(XboxController.Axis.kLeftY.value));
     }
 
     public double getUpperArm_PercentOutput() {
 
-        return -armDeadband(operatorControl.getRawAxis(XboxController.Axis.kLeftX.value)) * 0.5;
+        return -armDeadband(operatorControl.getRawAxis(5));
     }
 
     //for picking up cones
@@ -77,10 +77,6 @@ public class ArmInput {
 
     public boolean isStoragePressed() {
         return operatorControl.getRawButton(XboxController.Button.kX.value);
-    }
-
-    public boolean isDebugDegreesPressed() {
-        return operatorControl.getRawButtonPressed(XboxController.Button.kY.value);
     }
 
     // checks if operator wants to move arms to intake for human player station (by pressing RIGHT DPAD)

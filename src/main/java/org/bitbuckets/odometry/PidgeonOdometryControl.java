@@ -49,7 +49,6 @@ public class PidgeonOdometryControl implements IOdometryControl {
 
         //Todo: re add when vision is fixed
         Optional<Pose3d> res = visionControl.estimateVisionRobotPose();
-        if (res == null) return;
 
         if (res != null && res.isPresent()) {
             Pose2d realPose = res.get().toPose2d();
