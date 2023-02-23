@@ -6,8 +6,6 @@ import org.bitbuckets.lib.log.Debuggable;
 
 public class ArmSubsystem {
 
-    //make motors
-
     final ArmInput armInput;
     final ArmControl armControl;
     final Debuggable debuggable;
@@ -17,6 +15,16 @@ public class ArmSubsystem {
     ArmFSM nextState = ArmFSM.DEFAULT;
 
     public ArmSubsystem(ArmInput armInput, ArmControl armControl, Debuggable debuggable, AutoSubsystem autoSubsystem) {
+
+
+    // state holds the current state of the FSM that the arm is in, with the default state being manual
+    ArmFSM state = ArmFSM.MANUAL;
+
+    // nextState holds the next state that the arm should go to AFTER it has completed the current actions commanded by state
+    // default of nextState is manual, but changes when operator presses button that causes the arm to independently move to a new position
+    ArmFSM nextState = ArmFSM.MANUAL;
+
+
         this.armInput = armInput;
         this.armControl = armControl;
         this.debuggable = debuggable;
@@ -104,17 +112,23 @@ public class ArmSubsystem {
 
 
     public void teleopPeriodic() {
+
         if (armInput.isCalibratedPressed()) {
             armControl.calibrateLowerArm();
             armControl.calibrateUpperArm();
             System.out.println("Arms calibrated!");
         }
+
+        // Switches the current state to manual mode if enable manual mode is pressed on operator controller
         if (armInput.isDisablePositionControlPressed()) {
             state = ArmFSM.TELEOP;
         }
 
+        // Arm finite state machine that dictates which case of commands the arm should follow based on its state
+        // the state changes the nextState
         switch (state) {
             case TELEOP:
+
                 armControl.manuallyMoveLowerArm(armInput.getLowerArm_PercentOutput());
                 armControl.manuallyMoveUpperArm(armInput.getUpperArm_PercentOutput());
 
@@ -162,7 +176,13 @@ public class ArmSubsystem {
             //if C is pressed in sim (on keyboard)
             case STORAGE:
 
-                //if X is pressed in sim (on keyboard)
+                //goes into this if statement if X is pressed in sim (on keyboard)
+                /**
+                 * ONLY USEFUL FOR SIM (hopefully lol)
+                 * basically, when looking at the next if statement, the error before the arm exits the current state is some number
+                 * however, for small errors, the sim never thinks the error is small enough, hence it never exits the state
+                 * this function allows the user to press a button to tell the sim to go to manual
+                 */
                 if (armInput.isStopPidPressed()) {
                     state = ArmFSM.TELEOP;
                     break;
@@ -174,6 +194,7 @@ public class ArmSubsystem {
                 }
                 break;
 
+            // Prepare is the case that commands the arm to go backwards to avoid any obstacles when changing between any scoring mode and storage and vice versa
             case PREPARE:
                 armControl.prepareArm();
                 if (armControl.isErrorSmallEnough(.1) || armInput.isStopPidPressed()) {
