@@ -5,8 +5,8 @@ import org.bitbuckets.arm.ArmConstants;
 
 
 public class ForwardKinematics {
-    final double theta1;
-    final double theta2;
+    final double theta1_degrees;
+    final double theta2_degrees;
 
     /**
      * Parameters must be in radians
@@ -14,12 +14,12 @@ public class ForwardKinematics {
      * The position assumes a regular x-y coordinate system, with the origin at the base
      * of the arm.
      *
-     * @param theta1 angle of first joint
-     * @param theta2 angle of second joint
+     * @param theta1_degrees angle of first joint
+     * @param theta2_degrees angle of second joint
      */
-    public ForwardKinematics(double theta1, double theta2) {
-        this.theta1 = theta1;
-        this.theta2 = theta2;
+    public ForwardKinematics(double theta1_degrees, double theta2_degrees) {
+        this.theta1_degrees = theta1_degrees;
+        this.theta2_degrees = theta2_degrees;
     }
 
 
@@ -29,9 +29,9 @@ public class ForwardKinematics {
      */
     public double getX() {
 
-        double z = Math.sqrt(Math.pow(ArmConstants.LOWER_JOINT_LENGTH, 2.0) + Math.pow(ArmConstants.UPPER_JOINT_LENGTH, 2.0) + (2.0 * ArmConstants.LOWER_JOINT_LENGTH * ArmConstants.UPPER_JOINT_LENGTH * Math.cos(theta2)));
-        double beta = Math.acos((Math.pow(z, 2.0) + Math.pow(ArmConstants.LOWER_JOINT_LENGTH, 2.0) - Math.pow(ArmConstants.UPPER_JOINT_LENGTH, 2.0)) / (2.0 * ArmConstants.LOWER_JOINT_LENGTH * z));
-        double x = z * Math.cos(theta1 - beta);
+        double z = Math.sqrt(Math.pow(ArmConstants.LOWER_JOINT_LENGTH, 2.0) + Math.pow(ArmConstants.UPPER_JOINT_LENGTH, 2.0) + (2.0 * ArmConstants.LOWER_JOINT_LENGTH * ArmConstants.UPPER_JOINT_LENGTH * Math.cos(theta2_degrees * Math.PI/180)));
+        double beta_degrees = (180 / Math.PI) * (Math.acos((Math.pow(z, 2.0) + Math.pow(ArmConstants.LOWER_JOINT_LENGTH, 2.0) - Math.pow(ArmConstants.UPPER_JOINT_LENGTH, 2.0)) / (2.0 * ArmConstants.LOWER_JOINT_LENGTH * z)));
+        double x = z * Math.cos((Math.PI / 180) * (theta1_degrees - beta_degrees));
 
         return x;
     }
@@ -42,11 +42,12 @@ public class ForwardKinematics {
      */
     public double getY() {
 
-        double z = Math.sqrt(Math.pow(ArmConstants.LOWER_JOINT_LENGTH, 2.0) + Math.pow(ArmConstants.UPPER_JOINT_LENGTH, 2.0) + (2.0 * ArmConstants.LOWER_JOINT_LENGTH * ArmConstants.UPPER_JOINT_LENGTH * Math.cos(theta2)));
-        double beta = Math.acos((Math.pow(z, 2.0) + Math.pow(ArmConstants.LOWER_JOINT_LENGTH, 2.0) - Math.pow(ArmConstants.UPPER_JOINT_LENGTH, 2.0)) / (2.0 * ArmConstants.LOWER_JOINT_LENGTH * z));
-        double y = z * Math.sin(theta1 - beta);
+        double z = Math.sqrt(Math.pow(ArmConstants.LOWER_JOINT_LENGTH, 2.0) + Math.pow(ArmConstants.UPPER_JOINT_LENGTH, 2.0) + (2.0 * ArmConstants.LOWER_JOINT_LENGTH * ArmConstants.UPPER_JOINT_LENGTH * Math.cos(theta2_degrees * Math.PI/180)));
+        double beta_degrees = (180 / Math.PI) * (Math.acos((Math.pow(z, 2.0) + Math.pow(ArmConstants.LOWER_JOINT_LENGTH, 2.0) - Math.pow(ArmConstants.UPPER_JOINT_LENGTH, 2.0)) / (2.0 * ArmConstants.LOWER_JOINT_LENGTH * z)));
+        double y = z * Math.sin((Math.PI / 180) * (theta1_degrees - beta_degrees));
 
         return y;
+
     }
 }
 

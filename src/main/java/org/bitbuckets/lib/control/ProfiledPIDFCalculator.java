@@ -39,7 +39,7 @@ public class ProfiledPIDFCalculator implements Runnable, IPIDCalculator {
 
     @Override
     public double calculateNext(double measurement, double setpoint) {
-        return profiledPIDController.calculate(measurement, setpoint);
+        return profiledPIDController.calculate(measurement, setpoint) * 12;
     }
 
     @Override

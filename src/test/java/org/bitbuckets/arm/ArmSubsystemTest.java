@@ -1,8 +1,8 @@
 package org.bitbuckets.arm;
 
+import org.bitbuckets.auto.AutoSubsystem;
 import org.bitbuckets.lib.log.Debuggable;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -13,6 +13,7 @@ class ArmSubsystemTest {
     ArmInput armInput;
     ArmControl armControl;
     Debuggable debuggable;
+    AutoSubsystem autoSubsystem;
 
     ArmSubsystem armSubsystem;
 
@@ -21,11 +22,11 @@ class ArmSubsystemTest {
         armInput = mock(ArmInput.class);
         armControl = mock(ArmControl.class);
         debuggable = mock(Debuggable.class);
+        autoSubsystem = mock(AutoSubsystem.class);
 
-        armSubsystem = new ArmSubsystem(armInput, armControl, debuggable);
+        armSubsystem = new ArmSubsystem(armInput, armControl, debuggable, autoSubsystem);
     }
 
-    @Disabled
     @Test
     void teleopPeriodicCalibrate() {
         // call it without a button and ensure calibrate wasn't pressed
@@ -40,7 +41,6 @@ class ArmSubsystemTest {
         verify(armControl, atMostOnce()).calibrateUpperArm();
     }
 
-    @Disabled
     @Test
     void teleopManualModeNoMovement() {
         // no input, but default to move at 0
@@ -50,7 +50,6 @@ class ArmSubsystemTest {
         verifyNoMoreInteractions(armControl);
     }
 
-    @Disabled
     @Test
     void teleopManualMode() {
 
@@ -63,7 +62,6 @@ class ArmSubsystemTest {
         verifyNoMoreInteractions(armControl);
     }
 
-    @Disabled
     @Test
     void teleopPeriodicScoreHigh() {
         // the operator pressed score high
