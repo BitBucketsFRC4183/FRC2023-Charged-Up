@@ -153,7 +153,7 @@ public class ArmSubsystem {
                     break;
                 }
 
-                armControl.moveToSetpointOnly(0.20, 0.11);
+                armControl.moveToSetpointOnly(0.25, 0.12);
 
 
                 break;
