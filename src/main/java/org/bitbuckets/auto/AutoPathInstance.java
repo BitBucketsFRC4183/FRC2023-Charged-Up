@@ -4,23 +4,57 @@ import com.pathplanner.lib.PathPlannerTrajectory;
 import edu.wpi.first.wpilibj.Timer;
 import org.bitbuckets.lib.util.HasLifecycle;
 
+import java.util.List;
 import java.util.Map;
 
 public class AutoPathInstance implements HasLifecycle {
 
-    final PathPlannerTrajectory trajectory;
+    final List<PathPlannerTrajectory> multiTrajectory;
     final Map<String, Double> eventToTimeMap;
-    final double pathTime_seconds;
+    final List<Record> records; //needs to be inserted highest back
     final AutoPath type;
 
-    AutoPathInstance(PathPlannerTrajectory trajectory, Map<String, Double> eventToTimeMap, double pathTime_seconds, AutoPath type) {
-        this.trajectory = trajectory;
+    static class Record {
+        final double timestamp;
+        final int index;
+
+        public Record(double timestamp, int index) {
+            this.timestamp = timestamp;
+            this.index = index;
+        }
+    }
+
+    class Results {
+        final int index;
+        final double timestamp;
+
+        public Results(int index, double timestamp) {
+            this.index = index;
+            this.timestamp = timestamp;
+        }
+    }
+
+    public AutoPathInstance(List<PathPlannerTrajectory> multiTrajectory, Map<String, Double> eventToTimeMap, List<Record> records, AutoPath type) {
+        this.multiTrajectory = multiTrajectory;
         this.eventToTimeMap = eventToTimeMap;
-        this.pathTime_seconds = pathTime_seconds;
+        this.records = records;
         this.type = type;
     }
 
-    final Timer timer = new Timer();
+    //this is dumb
+
+    Timer totalPathTimer = new Timer();
+
+    public Results lastTimestampStamp(double currentTime) {
+        for (Record record : records) { //latest timestamp must come first
+            if (currentTime > record.timestamp) {
+                return new Results(record.index, record.timestamp);
+            }
+        }
+
+        throw new IllegalStateException("what");
+    }
+
 
 
     /**
@@ -31,34 +65,42 @@ public class AutoPathInstance implements HasLifecycle {
         if (type == AutoPath.NONE) {
             return false;
         }
-        double secondsNow = timer.get();
 
+        double secondsNow = totalPathTimer.get();
         if (eventToTimeMap.get(eventName) == null) return false;
 
         return secondsNow > eventToTimeMap.get(eventName);
     }
 
+
+
     public PathPlannerTrajectory.PathPlannerState sampleSpeeds() {
         if (type == AutoPath.NONE) {
             return new PathPlannerTrajectory.PathPlannerState();
         }
-        double secondsNow = timer.get();
 
-        return (PathPlannerTrajectory.PathPlannerState) trajectory.sample(secondsNow);
+        double secondsNow = totalPathTimer.get();
+        Results lastTimestamp = lastTimestampStamp(secondsNow);
+        double secondsDelta = secondsNow - lastTimestamp.timestamp;
+
+
+        return (PathPlannerTrajectory.PathPlannerState) multiTrajectory.get(lastTimestamp.index).sample(secondsDelta);
     }
 
     public boolean isDone() {
-        return timer.hasElapsed(pathTime_seconds);
+        return totalPathTimer.hasElapsed(totalPathTimer.get());
     }
 
 
     @Override
     public void start() {
-        timer.start();
+        totalPathTimer.start();
     }
 
     @Override
     public void end() {
-        timer.stop();
+        totalPathTimer.stop();
     }
+
+
 }
