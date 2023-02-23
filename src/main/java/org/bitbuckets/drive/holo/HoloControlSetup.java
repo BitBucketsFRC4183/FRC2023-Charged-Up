@@ -16,6 +16,8 @@ import org.bitbuckets.lib.control.ProfiledPIDFSetup;
 import org.bitbuckets.odometry.IOdometryControl;
 import org.bitbuckets.vision.IVisionControl;
 
+import java.util.Optional;
+
 public class HoloControlSetup implements ISetup<HoloControl> {
 
     final DriveControl drive;
@@ -28,9 +30,9 @@ public class HoloControlSetup implements ISetup<HoloControl> {
         this.odo = odo;
     }
 
-    PIDConfig X_PID = new PIDConfig(1.2,0,0,0, continuousMin, continuousMax);
-    PIDConfig Y_PID = new PIDConfig(1.2,0,0,0, continuousMin, continuousMax);
-    PIDConfig THETA_PID = new PIDConfig(1,0,0,0, continuousMin, continuousMax);
+    PIDConfig X_PID = new PIDConfig(1.2,0,0, Optional.empty(),Optional.empty());
+    PIDConfig Y_PID = new PIDConfig(1.2,0,0,Optional.empty(),Optional.empty());
+    PIDConfig THETA_PID = new PIDConfig(1,0,0,Optional.empty(),Optional.empty());
     TrapezoidProfile.Constraints THETA_CONSTRAINTS = new TrapezoidProfile.Constraints(1,1);
 
     @Override

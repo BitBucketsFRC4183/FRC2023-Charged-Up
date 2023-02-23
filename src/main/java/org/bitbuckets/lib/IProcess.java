@@ -37,4 +37,7 @@ public interface IProcess {
 
     void run();
 
+    //uses for breaking shit
+    int componentQuantity();
+
 }
