@@ -18,11 +18,11 @@ public class ArmSubsystem {
 
 
     // state holds the current state of the FSM that the arm is in, with the default state being manual
-    ArmFSM state = ArmFSM.MANUAL;
+    ArmFSM state = ArmFSM.DEFAULT;
 
     // nextState holds the next state that the arm should go to AFTER it has completed the current actions commanded by state
     // default of nextState is manual, but changes when operator presses button that causes the arm to independently move to a new position
-    ArmFSM nextState = ArmFSM.MANUAL;
+    ArmFSM nextState = ArmFSM.DEFAULT;
 
 
         this.armInput = armInput;
