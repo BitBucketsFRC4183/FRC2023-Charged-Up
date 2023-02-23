@@ -23,9 +23,6 @@ public class ArmFeedFordward {
 
     private static final double g = 9.80665;
 
-
-
-
     public static double getVoltageNowUpper(double torque, double velocity) {
         return DCMotor.getNeo550(1).getVoltage(torque, velocity);
 

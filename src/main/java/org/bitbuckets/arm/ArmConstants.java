@@ -80,11 +80,11 @@ public interface ArmConstants {
             Optional.empty()
     );
 
-    PIDConfig LOWER_PID = new PIDConfig(0.3, 0, 0, 0);
-    PIDConfig UPPER_PID = new PIDConfig(0.3, 0, 0, 0);
+    PIDConfig LOWER_PID = new PIDConfig(0.3, 0, 0, 0, continuousMin, continuousMax);
+    PIDConfig UPPER_PID = new PIDConfig(0.3, 0, 0, 0, continuousMin, continuousMax);
 
-    PIDConfig LOWER_SIMPID = new PIDConfig(1.0, 0, 0, 0);
-    PIDConfig UPPER_SIMPID = new PIDConfig(5.0, 0, 0, 0);
+    PIDConfig LOWER_SIMPID = new PIDConfig(1.0, 0, 0, 0, continuousMin, continuousMax);
+    PIDConfig UPPER_SIMPID = new PIDConfig(5.0, 0, 0, 0, continuousMin, continuousMax);
 
     TrapezoidProfile.Constraints LOWER_CONSTRAINT = new TrapezoidProfile.Constraints(2,2);
     TrapezoidProfile.Constraints UPPER_CONSTRAINTS = new TrapezoidProfile.Constraints(2,2);
