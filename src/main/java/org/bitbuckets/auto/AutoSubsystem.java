@@ -15,7 +15,6 @@ public class AutoSubsystem {
     final IAutoControl autoControl;
     final IDebuggable debug;
 
-
     IDriveControl driveControl;
 
     IOdometryControl odometryControl;

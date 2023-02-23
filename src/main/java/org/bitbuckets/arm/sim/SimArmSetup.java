@@ -18,7 +18,6 @@ public class SimArmSetup implements ISetup<IMotorController> {
     final ArmConfig armConfig;
     final PIDConfig pidConfig;
     final MechanismLigament2d mechanismLigament2d;
-
     public SimArmSetup(MotorConfig config, ArmConfig armConfig, PIDConfig pidConfig, MechanismLigament2d mechanismLigament2d) {
         this.config = config;
         this.armConfig = armConfig;
