@@ -70,6 +70,8 @@ public class ArmControlSetup implements ISetup<ArmControl> {
 
         Debuggable debug = self.generateDebugger();
 
+        //stage a fake change
+
         return new ArmControl(
                 lower1,
                 upper,

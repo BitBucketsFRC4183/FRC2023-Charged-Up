@@ -17,6 +17,7 @@ public class ArmSubsystem {
     ArmFSM nextState = ArmFSM.DEFAULT;
 
     public ArmSubsystem(ArmInput armInput, ArmControl armControl, Debuggable debuggable, AutoSubsystem autoSubsystem) {
+
         this.armInput = armInput;
         this.armControl = armControl;
         this.debuggable = debuggable;
