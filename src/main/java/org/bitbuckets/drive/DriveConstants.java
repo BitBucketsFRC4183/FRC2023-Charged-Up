@@ -66,9 +66,6 @@ public interface DriveConstants {
             new Translation2d(-HALF_WIDTH, -HALF_BASE)
     );
 
-    //TODO divide by 2
-    double SENSOR_UNITS_PER_REVOLUTION = 2048.0;
-
     double TURN_REDUCTION = (15.0 / 32.0) * (10.0 / 60.0);
     double DRIVE_REDUCTION = (14.0 / 50.0) * (27.0 / 17.0) * (15.0 / 45.0);
 
