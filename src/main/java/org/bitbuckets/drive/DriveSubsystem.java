@@ -93,6 +93,7 @@ public class DriveSubsystem {
 
                     driveControl.drive(targetSpeeds);
                 }
+                autoPeriodic();
                 break;
 
             case TELEOP_NORMAL:
@@ -121,7 +122,7 @@ public class DriveSubsystem {
                     state = DriveFSM.TELEOP_NORMAL;
                     break;
                 }
-                teleopBalancing();
+                balance();
                 break;
 
             case TELEOP_VISION:
@@ -141,6 +142,12 @@ public class DriveSubsystem {
                 break;
         }
         debuggable.log("state", state.toString());
+    }
+
+    void autoPeriodic() {
+        if (autoSubsystem.sampleHasEventStarted("auto-balance")) {
+            balance();
+        }
     }
 
     void teleopVision() {
@@ -197,7 +204,7 @@ public class DriveSubsystem {
 
     }
 
-    void teleopBalancing() {
+    void balance() {
 
         //This is bad and should be shifted somewhere else
         double BalanceDeadband_deg = Preferences.getDouble(DriveConstants.autoBalanceDeadbandDegKey, DriveConstants.BalanceDeadbandDeg);
@@ -210,7 +217,6 @@ public class DriveSubsystem {
 
         }
     }
-
 
     void teleopAutoheading() {
         double IMU_Yaw = Math.toRadians(odometryControl.getYaw_deg());//Math.toRadians(-350);
