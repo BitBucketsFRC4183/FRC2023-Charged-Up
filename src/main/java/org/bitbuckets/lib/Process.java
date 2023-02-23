@@ -104,6 +104,18 @@ public class Process implements IProcess {
 
     }
 
+    @Override
+    public int componentQuantity() {
+        int count = children.size();
+
+        for (Process process : children) {
+            count += process.componentQuantity();
+        }
+
+
+        return count;
+    }
+
     public synchronized void forceTo(ProcessMode mode) {
         for (Process process : children) {
             System.out.println("changed "+ mode.name());
@@ -114,10 +126,9 @@ public class Process implements IProcess {
         }
     }
 
-
     @SuppressWarnings("unchecked")
     @Override
-    public <T> T childSetup(String key, ISetup<T> setup) {
+    public <T> T childSetup(String key, ISetup<T> setup)  {
         System.out.println(this.children.size());
 
         var childPath = selfPath.append(key);
@@ -126,27 +137,15 @@ public class Process implements IProcess {
         if (childPath.length() == 1) { //if this is directly branching off the root, it should go in a tab
             childContainer = Shuffleboard.getTab(key);
         } else if (childPath.length() == 2 || childPath.length() == 3) {
-
-            int size = this.children.size();
-            int length = 0;
-            int width = 0;
-
-            if (size == 1 || size == 2 || size == 3) {
-                length = 1;
-                width = 3;
+            int square;
+            double preSquare = Math.sqrt(componentQuantity());
+            if (preSquare == Double.NaN) {
+                square = 1;
+            } else {
+                square = (int) preSquare;
             }
 
-            if (size == 4 || size == 5 || size == 6) {
-                length = 2;
-                width = 3;
-            }
-
-            if (size == 7 || size == 8 || size == 9) {
-                length = 3;
-                width = 3;
-            }
-
-            childContainer = table.getLayout(key, BuiltInLayouts.kGrid).withSize(5, 5);//.withProperties(Map.of("number of columns", width, "number of rows", length));
+            childContainer = table.getLayout(key, BuiltInLayouts.kGrid).withSize(square, square);//.withProperties(Map.of("number of columns", width, "number of rows", length));
 
 
         } else {

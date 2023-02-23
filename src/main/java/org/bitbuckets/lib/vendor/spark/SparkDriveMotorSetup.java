@@ -8,6 +8,8 @@ import org.bitbuckets.lib.control.PIDConfig;
 import org.bitbuckets.lib.hardware.IMotorController;
 import org.bitbuckets.lib.hardware.MotorConfig;
 
+import java.util.Optional;
+
 import static org.bitbuckets.lib.vendor.spark.RevUtils.checkNeoError;
 
 /**
@@ -20,7 +22,7 @@ public class SparkDriveMotorSetup extends SparkSetup {
     double nominalVoltage = 12;
 
     public SparkDriveMotorSetup(int canId, MotorConfig motorConfig, SwerveModuleConfiguration swerveModuleConfiguration) {
-        super(canId, motorConfig, new PIDConfig(0, 0, 0, 0, continuousMin, continuousMax));
+        super(canId, motorConfig, new PIDConfig(0, 0, 0, Optional.empty(), Optional.empty()));
         this.swerveModuleConfiguration = swerveModuleConfiguration;
     }
 

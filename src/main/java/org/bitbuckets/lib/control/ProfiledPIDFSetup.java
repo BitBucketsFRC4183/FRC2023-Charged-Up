@@ -1,5 +1,6 @@
 package org.bitbuckets.lib.control;
 
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import org.bitbuckets.lib.ILogAs;
 import org.bitbuckets.lib.IProcess;
@@ -19,7 +20,7 @@ public class ProfiledPIDFSetup implements ISetup<IPIDCalculator> {
     @Override
     public IPIDCalculator build(IProcess self) {
         return new ProfiledPIDFCalculator(
-                new ProfiledPIDFController(pidConfig.kP, pidConfig.kI, pidConfig.kD, pidConfig.kF, profile),
+                new ProfiledPIDController(pidConfig.kP, pidConfig.kI, pidConfig.kD, profile),
                 self.generateTuner(ITuneAs.DOUBLE_INPUT, "proportional", pidConfig.kP),
                 self.generateTuner(ITuneAs.DOUBLE_INPUT, "integral", pidConfig.kI),
                 self.generateTuner(ITuneAs.DOUBLE_INPUT, "derivative", pidConfig.kD),
