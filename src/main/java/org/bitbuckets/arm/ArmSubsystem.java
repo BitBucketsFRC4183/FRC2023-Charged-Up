@@ -101,6 +101,8 @@ public class ArmSubsystem {
 
         }
 
+
+
     public void teleopPeriodic() {
         if (armInput.isCalibratedPressed()) {
             armControl.calibrateLowerArm();
@@ -120,31 +122,42 @@ public class ArmSubsystem {
 
                 if (armInput.isStoragePressed()) {
                     state = ArmFSM.STORAGE;
+                    break;
                 } else if (armInput.isHumanIntakePressed()) {
                     state = ArmFSM.PREPARE;
                     nextState = ArmFSM.HUMAN_INTAKE;
+                    break;
                 } else if (armInput.isScoreMidPressed()) {
                     debuggable.log("line 55", true);
 
                     state = ArmFSM.PREPARE;
                     nextState = ArmFSM.SCORE_MID;
+                    break;
                 } else if (armInput.isScoreHighPressed()) {
                     state = ArmFSM.PREPARE;
                     nextState = ArmFSM.SCORE_HIGH;
+                    break;
                 } else if (armInput.isScoreLowPressed()) {
                     state = ArmFSM.PREPARE;
                     nextState = ArmFSM.SCORE_LOW;
+                    break;
                 } else if (armInput.isDebugDegreesPressed()) {
                     state = ArmFSM.DEBUG_TO_DEGREES;
+                    break;
                 }
                 break;
 
             case DEBUG_TO_DEGREES:
                 if (armInput.isStopPidPressed()) {
                     state = ArmFSM.TELEOP;
+                    break;
                 }
 
-                armControl.moveToSetpointOnly(45,45);
+                armControl.moveToSetpointOnly(0.20, 0.11);
+
+
+                break;
+
 
             //if C is pressed in sim (on keyboard)
             case STORAGE:
@@ -152,10 +165,12 @@ public class ArmSubsystem {
                 //if X is pressed in sim (on keyboard)
                 if (armInput.isStopPidPressed()) {
                     state = ArmFSM.TELEOP;
+                    break;
                 }
                 armControl.storeArm();
                 if (armControl.isErrorSmallEnough(.1)) {
                     state = ArmFSM.TELEOP;
+                    break;
                 }
                 break;
 
@@ -163,6 +178,7 @@ public class ArmSubsystem {
                 armControl.prepareArm();
                 if (armControl.isErrorSmallEnough(.1) || armInput.isStopPidPressed()) {
                     state = nextState;
+                    break;
                 }
 
                 break;
@@ -171,6 +187,7 @@ public class ArmSubsystem {
                 armControl.humanIntake();
                 if (armControl.isErrorSmallEnough(.1) || armInput.isStopPidPressed()) {
                     state = ArmFSM.TELEOP;
+                    break;
                 }
                 break;
 
@@ -178,6 +195,7 @@ public class ArmSubsystem {
                 armControl.scoreLow();
                 if (armControl.isErrorSmallEnough(0.1) || armInput.isStopPidPressed()) {
                     state = ArmFSM.TELEOP;
+                    break;
                 }
                 break;
 
@@ -185,6 +203,7 @@ public class ArmSubsystem {
                 armControl.scoreMid();
                 if (armControl.isErrorSmallEnough(.1) || armInput.isStopPidPressed()) {
                     state = ArmFSM.TELEOP;
+                    break;
                 }
                 break;
 
@@ -192,10 +211,12 @@ public class ArmSubsystem {
                 armControl.scoreHigh();
                 if (armControl.isErrorSmallEnough(.1) || armInput.isStopPidPressed()) {
                     state = ArmFSM.TELEOP;
+                    break;
                 }
                 break;
         }
         debuggable.log("state", state.toString());
+
 
     }
 

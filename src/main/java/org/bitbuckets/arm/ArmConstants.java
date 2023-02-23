@@ -14,7 +14,7 @@ public interface ArmConstants {
     // Final gear different for each arm; 16:48 for lower and 16:16 for upper
 
     //converts encoder rotations -> mechanism rotations (0.036)
-    double LOWER_ARM_GEAR_RATIO = 1.0 / ((5.0 * 4.0 * 3.0) * (16. / 48.));
+    double LOWER_ARM_GEAR_RATIO = 1.0 / ((5.0 * 4.0 * 3.0) * (48. / 16.));
     double UPPER_ARM_GEAR_RATIO = 1.0 / ((5.0 * 4.0 * 3.0) * (16. / 16.));
 
 

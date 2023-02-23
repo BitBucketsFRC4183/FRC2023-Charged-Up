@@ -1,5 +1,6 @@
 package org.bitbuckets.arm;
 
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Translation2d;
 import org.bitbuckets.arm.kinematics.InverseKinematics;
 import org.bitbuckets.lib.control.IPIDCalculator;
@@ -151,9 +152,10 @@ public class ArmControl {
           */
     }
 
-    public void moveToSetpointOnly(double lowerAngle_degrees, double upperAngle_degrees) {
-        lowerJoint1.moveAtVoltage(lowerJointPID.calculateNext(lowerJoint1.getMechanismPositionAccum_rot(), convertDegreesToRotation(lowerAngle_degrees)));
-        upperJoint.moveAtVoltage(upperJointPID.calculateNext(upperJoint.getMechanismPositionAccum_rot(), convertDegreesToRotation(upperAngle_degrees)));
+    public void moveToSetpointOnly(double lowerRot, double upperRot) {
+
+        lowerJoint1.moveAtVoltage(lowerJointPID.calculateNext(lowerJoint1.getMechanismPositionAccum_rot(),  lowerRot));
+        upperJoint.moveAtVoltage(upperJointPID.calculateNext(upperJoint.getMechanismPositionAccum_rot(), upperRot));
 
     }
 
