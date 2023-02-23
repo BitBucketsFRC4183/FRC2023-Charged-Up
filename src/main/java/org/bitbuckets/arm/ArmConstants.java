@@ -20,9 +20,6 @@ public interface ArmConstants {
 
 
 
-    double LOWER_JOINT_LENGTH = 0.66;
-    double UPPER_JOINT_LENGTH = 0.67;
-
 
     //mainly for arm sim
     double UPPER_JOINT_WIDTH = 0.0254;
