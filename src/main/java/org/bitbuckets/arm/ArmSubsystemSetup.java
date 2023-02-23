@@ -8,6 +8,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import org.bitbuckets.arm.sim.SimArmSetup;
+import org.bitbuckets.auto.AutoSubsystem;
+import org.bitbuckets.auto.AutoSubsystemSetup;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.lib.hardware.IMotorController;
@@ -18,9 +20,11 @@ import org.bitbuckets.lib.vendor.spark.SparkSetup;
 public class ArmSubsystemSetup implements ISetup<ArmSubsystem> {
 
     final boolean isEnabled;
+    AutoSubsystem autoSubsystem;
 
-    public ArmSubsystemSetup(boolean isEnabled) {
+    public ArmSubsystemSetup(boolean isEnabled, AutoSubsystem autoSubsystem) {
         this.isEnabled = isEnabled;
+        this.autoSubsystem = autoSubsystem;
     }
 
     @Override
@@ -42,7 +46,7 @@ public class ArmSubsystemSetup implements ISetup<ArmSubsystem> {
 
             Mechanism2d mech = new Mechanism2d(3, 3);
             // the mechanism root node
-            MechanismRoot2d root = mech.getRoot("base", 1.5, 0);
+            MechanismRoot2d root = mech.getRoot("base", 1.5, 1.5);
 
             MechanismLigament2d simLower = root.append(new MechanismLigament2d("lower-arm-sim", ArmConstants.LOWER_JOINT_LENGTH, 90, ArmConstants.LOWER_JOINT_WIDTH * 300, new Color8Bit(Color.kWhite)));
             MechanismLigament2d simUpper =
@@ -79,7 +83,7 @@ public class ArmSubsystemSetup implements ISetup<ArmSubsystem> {
         ArmControl armControl = armControlSetup.build(self.addChild("arm-control"));
         ArmInput armInput = new ArmInput(new Joystick(1), self.generateDebugger());
 
-        return new ArmSubsystem(armInput, armControl, debuggable);
+        return new ArmSubsystem(armInput, armControl, debuggable, autoSubsystem);
 
     }
 }

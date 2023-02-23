@@ -11,15 +11,15 @@ public interface ArmConstants {
 
     // calculated gearRatio
     // Input to output- 5:1 4:1 3:1
-    // Final gear different for each arm; 12:26 for lower and 12:30 for upper
+    // Final gear different for each arm; 16:48 for lower and 16:16 for upper
 
     //converts encoder rotations -> mechanism rotations (0.036)
-    double LOWER_ARM_GEAR_RATIO = 1.0 / ((5.0 * 4.0 * 3.0) * (12. / 26.));
-    double UPPER_ARM_GEAR_RATIO = 1.0 / ((5.0 * 4.0 * 3.0) * (12. / 30.));
+    double LOWER_ARM_GEAR_RATIO = 1.0 / ((5.0 * 4.0 * 3.0) * (48. / 16.));
+    double UPPER_ARM_GEAR_RATIO = 1.0 / ((5.0 * 4.0 * 3.0) * (16. / 16.));
 
 
-    double LOWER_JOINT_LENGTH = 0.6605;
-    double UPPER_JOINT_LENGTH = 0.6731;
+    double LOWER_JOINT_LENGTH = 0.66;
+    double UPPER_JOINT_LENGTH = 0.67;
 
     //mainly for arm sim
     double UPPER_JOINT_WIDTH = 0.0254;
@@ -118,9 +118,9 @@ public interface ArmConstants {
     //
     // the numbers below are made up, not actual numbers we will use for competition
     double STORAGE_X = 0.3;
-    double STORAGE_Y = 0.3;
+    double STORAGE_Y = -0.1;
 
-    double PREPARE_X = -0.2;
+    double PREPARE_X = 0.1;
     double PREPARE_Y = 0.6;
 
     double HUMAN_INTAKE_X = 0.5;
@@ -135,5 +135,7 @@ public interface ArmConstants {
     double HIGH_NODE_X = 0.8;
     double HIGH_NODE_Y = 0.8;
 
+    double INTAKE_GROUND_X = 0.1;
+    double INTAKE_GROUND_Y = 0.1;
 
 }
