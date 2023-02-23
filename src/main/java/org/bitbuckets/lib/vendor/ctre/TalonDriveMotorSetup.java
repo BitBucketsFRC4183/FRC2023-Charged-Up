@@ -65,7 +65,7 @@ public class TalonDriveMotorSetup implements ISetup<IMotorController> {
         );
 
         var ctrl = new TalonRelativeMotorController(motor, new MotorConfig(
-                sensorPositionCoefficient,
+                moduleConfiguration.getDriveReduction(),
                 10,
                 moduleConfiguration.getWheelDiameter() * Math.PI,
                 moduleConfiguration.isDriveInverted(),
