@@ -1,41 +1,53 @@
 package org.bitbuckets.lib.control;
 
 import edu.wpi.first.math.controller.PIDController;
-import org.bitbuckets.lib.DontUseIncubating;
+import org.bitbuckets.lib.log.Debuggable;
 import org.bitbuckets.lib.tune.IValueTuner;
 
 public class PIDCalculator implements IPIDCalculator, Runnable {
 
     final PIDController controller;
+    final Debuggable debuggable;
+    final IValueTuner<double[]> tuner;
 
-    final IValueTuner<Double> p;
-    final IValueTuner<Double> i;
-    final IValueTuner<Double> d;
-
-    public PIDCalculator(PIDController controller, IValueTuner<Double> p, IValueTuner<Double> i, IValueTuner<Double> d) {
+    public PIDCalculator(PIDController controller, Debuggable debuggable, IValueTuner<double[]> tuner) {
         this.controller = controller;
-        this.p = p;
-        this.i = i;
-        this.d = d;
+        this.debuggable = debuggable;
+        this.tuner = tuner;
     }
+
+    double lastSetpoint = 0;
+    double lastVoltage = 0;
+    double lastMeasure = 0;
 
     @Override
     public double calculateNext(double measurement, double setpoint) {
-        return controller.calculate(measurement, setpoint);
+
+        lastMeasure = measurement;
+        controller.setSetpoint(setpoint);
+        lastSetpoint = setpoint;
+        lastVoltage = controller.calculate(measurement);
+
+
+
+        return lastVoltage * 12;
     }
 
     @Override
     public void run() {
 
-        if (p.hasUpdated()) {
-            controller.setP(p.consumeValue());
-        }
+        debuggable.log("setpoint", controller.getSetpoint());
+        debuggable.log("error", controller.getPositionError());
+        debuggable.log("actual", lastMeasure);
+        debuggable.log("lastOutput", lastVoltage);
 
-        if (i.hasUpdated()) {
-            controller.setI(i.consumeValue());
-        }
-        if (d.hasUpdated()) {
-            controller.setD(d.consumeValue());
+        if (tuner.hasUpdated()) {
+            double[] pidArray = tuner.consumeValue();
+
+            controller.setP(pidArray[PIDConfig.P]);
+            controller.setI(pidArray[PIDConfig.I]);
+            controller.setD(pidArray[PIDConfig.D]);
+            controller.setD(pidArray[PIDConfig.F]);
         }
     }
 
