@@ -28,6 +28,8 @@ public interface DriveConstants {
             true,
             true,
             20,
+            Optional.empty(),
+            Optional.empty(),
             false,
             false,
             Optional.empty()
@@ -40,6 +42,8 @@ public interface DriveConstants {
             true,
             true,
             20,
+            Optional.empty(),
+            Optional.empty(),
             false,
             false,
             Optional.empty()
@@ -116,15 +120,6 @@ public interface DriveConstants {
             (14.0 / 50.0) * (10.0 / 60.0),
             false
     );
-
-    int CAN_TIMEOUT_MS = 250;
-    int STATUS_FRAME_GENERAL_PERIOD_MS = 250;
-    double TICKS_PER_ROTATION = 2048.0;
-
-    double nominalVoltage = 12.0;
-    double driveCurrentLimit = 80.0;
-    double steerCurrentLimit = 20.0;
-
 
     String autoBalanceDeadbandDegKey = "AutoBalance.deadbandDeg";
     double BalanceDeadbandDeg = 6;

@@ -3,11 +3,8 @@ package org.bitbuckets.arm;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import org.bitbuckets.arm.sim.ArmConfig;
-import org.bitbuckets.lib.ISetup;
-import org.bitbuckets.lib.control.IPIDCalculator;
 import org.bitbuckets.lib.control.PIDConfig;
 import org.bitbuckets.lib.hardware.MotorConfig;
-import org.bitbuckets.lib.log.Debuggable;
 
 import java.util.Optional;
 
@@ -20,11 +17,6 @@ public interface ArmConstants {
     //converts encoder rotations -> mechanism rotations (0.036)
     double LOWER_ARM_GEAR_RATIO = 1.0 / ((5.0 * 4.0 * 3.0) * (48. / 16.));
     double UPPER_ARM_GEAR_RATIO = 1.0 / ((5.0 * 4.0 * 3.0) * (16. / 16.));
-
-
-
-    double LOWER_JOINT_LENGTH = 0.66;
-    double UPPER_JOINT_LENGTH = 0.67;
 
 
     //mainly for arm sim
@@ -55,6 +47,8 @@ public interface ArmConstants {
             false,
             true,
             20.0,
+            Optional.empty(),
+            Optional.empty(),
             false,
             false,
             Optional.empty()
@@ -66,6 +60,8 @@ public interface ArmConstants {
             true,
             true,
             20.0,
+            Optional.empty(),
+            Optional.empty(),
             false,
             false,
             Optional.empty()
@@ -77,6 +73,8 @@ public interface ArmConstants {
             true,
             true,
             20.0,
+            Optional.empty(),
+            Optional.empty(),
             false,
             false,
             Optional.empty()
@@ -90,8 +88,6 @@ public interface ArmConstants {
 
     TrapezoidProfile.Constraints LOWER_CONSTRAINT = new TrapezoidProfile.Constraints(2,2);
     TrapezoidProfile.Constraints UPPER_CONSTRAINTS = new TrapezoidProfile.Constraints(2,2);
-
-    double SIM_OFFSET = 0.25;
 
     ArmConfig LOWER_ARM = new ArmConfig(
             0.686,
@@ -112,11 +108,9 @@ public interface ArmConstants {
 
 
     double LOWER_MOI = 0.08;
-
     double LOWER_CGRADIUS = 0.4318;
 
     double UPPER_MOI = 0.08;
-
     double UPPER_CGRADIUS = 0.4318;
 
 
@@ -133,18 +127,7 @@ public interface ArmConstants {
     // Feel free to change to make arms faster/slower for input
     double CONTROL_JOINT_OUTPUT = 1;
 
-    /*
-    Starting Configuration
-    0 = Horizontal
-    lowerJoint = 90
-    upperJoint = 0
-     */
-
-    // Neo Brushless Motor Relative Encoder: 42 counts per revolution
-
-    //all
-    //
-    // the numbers below are made up, not actual numbers we will use for competition
+    //TODO fix these numbers
     double STORAGE_X = 0.3;
     double STORAGE_Y = -0.1;
 

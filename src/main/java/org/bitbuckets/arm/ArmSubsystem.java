@@ -2,29 +2,20 @@ package org.bitbuckets.arm;
 
 import org.bitbuckets.auto.AutoFSM;
 import org.bitbuckets.auto.AutoSubsystem;
-import org.bitbuckets.lib.log.Debuggable;
+import org.bitbuckets.lib.debug.IDebuggable;
+
 
 public class ArmSubsystem {
 
     final ArmInput armInput;
     final ArmControl armControl;
-    final Debuggable debuggable;
+    final IDebuggable debuggable;
     final AutoSubsystem autoSubsystem;
 
     ArmFSM state = ArmFSM.DEFAULT; // Placeholder, default state
     ArmFSM nextState = ArmFSM.DEFAULT;
 
-    public ArmSubsystem(ArmInput armInput, ArmControl armControl, Debuggable debuggable, AutoSubsystem autoSubsystem) {
-
-
-    // state holds the current state of the FSM that the arm is in, with the default state being manual
-    ArmFSM state = ArmFSM.MANUAL;
-
-    // nextState holds the next state that the arm should go to AFTER it has completed the current actions commanded by state
-    // default of nextState is manual, but changes when operator presses button that causes the arm to independently move to a new position
-    ArmFSM nextState = ArmFSM.MANUAL;
-
-
+    public ArmSubsystem(ArmInput armInput, ArmControl armControl, IDebuggable debuggable, AutoSubsystem autoSubsystem) {
         this.armInput = armInput;
         this.armControl = armControl;
         this.debuggable = debuggable;

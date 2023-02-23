@@ -7,9 +7,9 @@ import edu.wpi.first.math.numbers.N6;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import org.bitbuckets.arm.ArmFeedFordward;
 import org.bitbuckets.lib.ISetup;
+import org.bitbuckets.lib.debug.IDebuggable;
 import org.bitbuckets.lib.hardware.IMotorController;
 import org.bitbuckets.lib.hardware.MotorConfig;
-import org.bitbuckets.lib.log.Debuggable;
 
 public class ArmSimNew {
 
@@ -19,10 +19,10 @@ public class ArmSimNew {
     final MotorConfig lowerConfig;
     final ArmFeedFordward armFeedFordward;
 
-    final Debuggable debuggable;
+    final IDebuggable debuggable;
 
 
-    public ArmSimNew(MechanismLigament2d upperLigament, MechanismLigament2d lowerLigament, MotorConfig upperConfig, MotorConfig lowerConfig, ArmFeedFordward armFeedFordward, Debuggable debuggable) {
+    public ArmSimNew(MechanismLigament2d upperLigament, MechanismLigament2d lowerLigament, MotorConfig upperConfig, MotorConfig lowerConfig, ArmFeedFordward armFeedFordward, IDebuggable debuggable) {
         this.upperLigament = upperLigament;
         this.lowerLigament = lowerLigament;
         this.upperConfig = upperConfig;

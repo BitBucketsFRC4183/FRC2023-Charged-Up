@@ -5,6 +5,7 @@ import org.bitbuckets.lib.control.IPIDCalculator;
 import org.bitbuckets.lib.debug.IDebuggable;
 import org.bitbuckets.lib.hardware.IMotorController;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -37,7 +38,7 @@ class ArmControlTest {
 
     @Test
     void convertMechanismRotationToRawRotation_lowerJoint() {
-        assertEquals(20.0, control.convertMechanismRotationtoRawRotation_lowerJoint(1), .1);
+        assertEquals(180.0, control.convertMechanismRotationtoRawRotation_lowerJoint(1), .1);
     }
 
     @Test
@@ -48,14 +49,14 @@ class ArmControlTest {
 
     @Test
     void isErrorSmallEnough() {
-        when(lowerJoint.getError_mechanismRotations()).thenReturn(1d);
-        when(upperJoint.getError_mechanismRotations()).thenReturn(1d);
+        when(upperJointPID.lastError()).thenReturn(1d);
+        when(lowerJointPID.lastError()).thenReturn(1d);
         assertFalse(control.isErrorSmallEnough(.1));
         assertTrue(control.isErrorSmallEnough(2));
 
         // Should work
-        when(lowerJoint.getError_mechanismRotations()).thenReturn(-1d);
-        when(upperJoint.getError_mechanismRotations()).thenReturn(-1d);
+        when(upperJointPID.lastError()).thenReturn(-1d);
+        when(lowerJointPID.lastError()).thenReturn(-1d);
         assertFalse(control.isErrorSmallEnough(.1));
         assertTrue(control.isErrorSmallEnough(2));
     }
