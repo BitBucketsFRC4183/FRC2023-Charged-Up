@@ -1,6 +1,6 @@
 package org.bitbuckets.drive;
 
-import edu.wpi.first.wpilibj.Joystick;
+import org.bitbuckets.OperatorInput;
 import org.bitbuckets.auto.AutoSubsystem;
 import org.bitbuckets.drive.balance.BalanceControl;
 import org.bitbuckets.drive.balance.BalanceSetup;
@@ -32,12 +32,14 @@ public class DriveSubsystemSetup implements ISetup<DriveSubsystem> {
     final boolean driveEnabled;
     final boolean isSimulated;
 
+    final OperatorInput operatorInput;
     final AutoSubsystem autoSubsystem;
     final IVisionControl visionControl;
 
-    public DriveSubsystemSetup(boolean driveEnabled, boolean isSimulated, AutoSubsystem autoSubsystem, IVisionControl visionControl) {
+    public DriveSubsystemSetup(boolean driveEnabled, boolean isSimulated, OperatorInput operatorInput, AutoSubsystem autoSubsystem, IVisionControl visionControl) {
         this.driveEnabled = driveEnabled;
         this.isSimulated = isSimulated;
+        this.operatorInput = operatorInput;
         this.autoSubsystem = autoSubsystem;
         this.visionControl = visionControl;
     }
@@ -48,7 +50,6 @@ public class DriveSubsystemSetup implements ISetup<DriveSubsystem> {
             return MockingUtil.buddy(DriveSubsystem.class);
         }
 
-        DriveInput input = new DriveInput(new Joystick(0));
         BalanceControl balanceControl = self.childSetup("closed-loop", new BalanceSetup());
 
         DriveControl driveControl;
@@ -69,7 +70,7 @@ public class DriveSubsystemSetup implements ISetup<DriveSubsystem> {
                 .generateTuner(ITuneAs.ENUM_INPUT(DriveSubsystem.OrientationChooser.class), "set-orientation", DriveSubsystem.OrientationChooser.FIELD_ORIENTED);
 
         return new DriveSubsystem(
-                input,
+                operatorInput,
                 odometryControl,
                 balanceControl,
                 driveControl,

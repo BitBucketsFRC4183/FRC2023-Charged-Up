@@ -1,12 +1,12 @@
 package org.bitbuckets.arm;
 
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
+import org.bitbuckets.OperatorInput;
 import org.bitbuckets.arm.sim.SimArmSetup;
 import org.bitbuckets.auto.AutoSubsystem;
 import org.bitbuckets.lib.IProcess;
@@ -20,10 +20,12 @@ import org.bitbuckets.lib.vendor.spark.SparkSetup;
 public class ArmSubsystemSetup implements ISetup<ArmSubsystem> {
 
     final AutoSubsystem autoSubsystem;
+    final OperatorInput operatorInput;
     final boolean isEnabled;
 
-    public ArmSubsystemSetup(AutoSubsystem autoSubsystem, boolean isEnabled) {
+    public ArmSubsystemSetup(AutoSubsystem autoSubsystem, OperatorInput operatorInput, boolean isEnabled) {
         this.autoSubsystem = autoSubsystem;
+        this.operatorInput = operatorInput;
         this.isEnabled = isEnabled;
     }
 
@@ -82,9 +84,8 @@ public class ArmSubsystemSetup implements ISetup<ArmSubsystem> {
         );
 
         ArmControl armControl = self.childSetup("arm-control", armControlSetup);
-        ArmInput armInput = new ArmInput(new Joystick(1), self.getDebuggable());
 
-        return new ArmSubsystem(armInput, armControl, self.getDebuggable(), autoSubsystem);
+        return new ArmSubsystem(operatorInput, armControl, self.getDebuggable(), autoSubsystem);
 
     }
 }

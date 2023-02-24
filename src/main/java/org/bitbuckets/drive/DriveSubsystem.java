@@ -6,6 +6,7 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Preferences;
+import org.bitbuckets.OperatorInput;
 import org.bitbuckets.auto.AutoFSM;
 import org.bitbuckets.auto.AutoSubsystem;
 import org.bitbuckets.drive.balance.BalanceControl;
@@ -26,7 +27,7 @@ import java.util.Optional;
  */
 public class DriveSubsystem implements HasLoop {
 
-    final DriveInput input;
+    final OperatorInput input;
 
     final AutoSubsystem autoSubsystem;
     final IOdometryControl odometryControl;
@@ -43,8 +44,7 @@ public class DriveSubsystem implements HasLoop {
         ROBOT_ORIENTED,
     }
 
-
-    public DriveSubsystem(DriveInput input, IOdometryControl odometryControl, BalanceControl balanceControl, DriveControl driveControl, AutoSubsystem autoSubsystem, HoloControl holoControl, IVisionControl visionControl, IValueTuner<OrientationChooser> orientation, IDebuggable debuggable) {
+    public DriveSubsystem(OperatorInput input, IOdometryControl odometryControl, BalanceControl balanceControl, DriveControl driveControl, AutoSubsystem autoSubsystem, HoloControl holoControl, IVisionControl visionControl, IValueTuner<OrientationChooser> orientation, IDebuggable debuggable) {
         this.input = input;
         this.odometryControl = odometryControl;
         this.balanceControl = balanceControl;

@@ -1,10 +1,11 @@
-package org.bitbuckets.RGB;
+package org.bitbuckets.rgb;
 
 import com.ctre.phoenix.ErrorCode;
 import com.ctre.phoenix.led.CANdle;
 import com.ctre.phoenix.led.CANdleFaults;
 import com.ctre.phoenix.led.LarsonAnimation;
 import com.ctre.phoenix.led.RainbowAnimation;
+import org.bitbuckets.OperatorInput;
 import org.bitbuckets.lib.debug.IDebuggable;
 
 public class RgbSubsystem {
@@ -13,12 +14,12 @@ public class RgbSubsystem {
 
     RgbFSM state = RgbFSM.A;
 
-    final RgbInput rgbInput;
+    final OperatorInput rgbInput;
 
 
     final IDebuggable debuggable;
 
-    public RgbSubsystem(CANdle candle, RgbInput rgbInput, IDebuggable debuggable) {
+    public RgbSubsystem(CANdle candle, OperatorInput rgbInput, IDebuggable debuggable) {
         this.candle = candle;
         this.rgbInput = rgbInput;
         this.debuggable = debuggable;
