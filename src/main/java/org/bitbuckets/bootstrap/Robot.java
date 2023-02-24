@@ -13,6 +13,7 @@ import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.Process;
 import org.bitbuckets.lib.log.LogRecord;
 import org.bitbuckets.lib.log.ProcessConsole;
+import org.littletonrobotics.junction.LoggedRobot;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,7 +24,7 @@ import static java.lang.String.format;
  * Launchpoint for the robot (It's like the launchpoint for the robot or something)
  * Has all the bucketlib and advantagekit code in it so don't touch it unless you really need to
  */
-public class Robot extends TimedRobot {
+public class Robot extends LoggedRobot {
 
 
     final ISetup<Void> buildRobot;

@@ -1,5 +1,6 @@
 package org.bitbuckets.arm;
 
+import org.bitbuckets.OperatorInput;
 import org.bitbuckets.auto.AutoFSM;
 import org.bitbuckets.auto.AutoSubsystem;
 import org.bitbuckets.lib.debug.IDebuggable;
@@ -9,7 +10,7 @@ public class ArmSubsystem {
 
     //make motors
 
-    final ArmInput armInput;
+    final OperatorInput armInput;
     final ArmControl armControl;
     final IDebuggable debuggable;
     final AutoSubsystem autoSubsystem;
@@ -17,7 +18,7 @@ public class ArmSubsystem {
     ArmFSM state = ArmFSM.DEFAULT; // Placeholder, default state
     ArmFSM nextState = ArmFSM.DEFAULT;
 
-    public ArmSubsystem(ArmInput armInput, ArmControl armControl, IDebuggable debuggable, AutoSubsystem autoSubsystem) {
+    public ArmSubsystem(OperatorInput armInput, ArmControl armControl, IDebuggable debuggable, AutoSubsystem autoSubsystem) {
         this.armInput = armInput;
         this.armControl = armControl;
         this.debuggable = debuggable;

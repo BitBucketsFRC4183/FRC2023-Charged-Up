@@ -1,4 +1,4 @@
-package org.bitbuckets.RGB;
+package org.bitbuckets.rgb;
 
 public enum RgbFSM {
     A, B,
