@@ -112,8 +112,9 @@ public class ArmSubsystem {
 
         }
 
+
+
     public void teleopPeriodic() {
-        gripperState = GripperFSM.TELEOP;
         if (armInput.isCalibratedPressed()) {
             armControl.calibrateLowerArm();
             armControl.calibrateUpperArm();
@@ -173,6 +174,8 @@ public class ArmSubsystem {
 
 
                 break;
+
+
 
 
             //if C is pressed in sim (on keyboard)

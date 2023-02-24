@@ -48,12 +48,12 @@ Right Joystick to control upper joint on arm
 
     public double getLowerArm_PercentOutput() {
 
-        return armDeadband(operatorControl.getRawAxis(XboxController.Axis.kLeftY.value)) * 0.5; //TODO remove 0.5 because iw as using it for testing in order to not explode robot
+        return armDeadband(operatorControl.getRawAxis(XboxController.Axis.kLeftY.value)); //TODO remove 0.5 because iw as using it for testing in order to not explode robot
     }
 
     public double getUpperArm_PercentOutput() {
 
-        return -armDeadband(operatorControl.getRawAxis(XboxController.Axis.kLeftX.value)) * 0.5;
+        return -armDeadband(operatorControl.getRawAxis(XboxController.Axis.kRightY.value));
     }
 
     public boolean isStoragePressed() {

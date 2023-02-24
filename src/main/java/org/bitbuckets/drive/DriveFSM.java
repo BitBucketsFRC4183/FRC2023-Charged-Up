@@ -15,10 +15,7 @@ public enum DriveFSM {
     TELEOP_VISION,
 
     AUTO_PATHFINDING,
-    AUTO_BALANCING,
-
-    PID_TUNING,
-    AUTO_NORMAL
+    AUTO_BALANCING
 
 
 }
