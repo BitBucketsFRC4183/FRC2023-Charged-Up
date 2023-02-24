@@ -45,7 +45,7 @@ public class ArmSubsystemSetup implements ISetup<ArmSubsystem> {
         ISetup<IMotorController> lowerArm1;
         ISetup<IMotorController> lowerArm2;
         ISetup<IMotorController> upperArm;
-        ISetup<IMotorController> gripperJoint;
+        ISetup<IMotorController> gripperJoint = new SparkSetup(12, GripperConstants.GRIPPER_CONFIG, GripperConstants.GRIPPER_PID);;
 
         if (self.isReal()) {
             lowerArm1 = new SparkSetup(9, ArmConstants.LOWER_CONFIG, ArmConstants.LOWER_PID);
@@ -81,10 +81,11 @@ public class ArmSubsystemSetup implements ISetup<ArmSubsystem> {
                     ArmConstants.UPPER_SIMPID,
                     simUpper
             );
-            gripperJoint = new DCSimSetup(GripperConstants.GRIPPER_CONFIG, GripperConstants.DC_GRIPPER_CONFIG, GripperConstants.GRIPPER_PID);
-
-
-
+            gripperJoint = new DCSimSetup(
+                    GripperConstants.GRIPPER_CONFIG,
+                    GripperConstants.DC_GRIPPER_CONFIG,
+                    GripperConstants.GRIPPER_PID
+            );
         }
 
          else {
@@ -117,7 +118,9 @@ public class ArmSubsystemSetup implements ISetup<ArmSubsystem> {
                 upperArm
         );
 
-        GripperControlSetup gripperControlSetup = new GripperControlSetup(gripperJoint);
+        GripperControlSetup gripperControlSetup = new GripperControlSetup(
+                gripperJoint
+        );
 
         Debuggable debuggable = self.generateDebugger();
 

@@ -19,16 +19,13 @@ public interface ArmConstants {
     double UPPER_ARM_GEAR_RATIO = 1.0 / ((5.0 * 4.0 * 3.0) * (16. / 16.));
 
 
-    double LOWER_JOINT_LENGTH = 0.66;
-    double UPPER_JOINT_LENGTH = 0.67;
+    double LOWER_JOINT_LENGTH = 0.6731;
+    double UPPER_JOINT_LENGTH = 0.6605;
 
 
     //mainly for arm sim
     double UPPER_JOINT_WIDTH = 0.0254;
     double LOWER_JOINT_WIDTH = 0.0508;
-
-    double UPPER_JOINT_LENGTH = 0.6731;
-    double LOWER_JOINT_LENGTH = 0.6605;
 
     //in rotations
     double LOWER_ARM_FORWARD_LIMIT_MECHANISM = 0.98;
