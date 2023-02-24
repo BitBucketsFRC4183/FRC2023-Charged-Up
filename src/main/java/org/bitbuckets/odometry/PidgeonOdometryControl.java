@@ -94,8 +94,7 @@ public class PidgeonOdometryControl implements IOdometryControl {
         double[] data = new double[4];
         pigeonIMU.getAccumGyro(data); //fill data
 
-        double roll = data[0]; //no idea if this works, probably needs to be fixed
-        return roll;
+        return data[0];
 
         //return pigeonIMU.getRoll(); TODO this is broken for some reason.
     }
