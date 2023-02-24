@@ -12,6 +12,6 @@ public class GripperInput {
     }
 
     public boolean ifGripperPressed() {
-        return operatorControl.getRawButton(XboxController.Button.kY.value);
+        return operatorControl.getRawButton(XboxController.Button.kRightBumper.value);
     }
 }

@@ -84,17 +84,18 @@ public class PidgeonOdometryControl implements IOdometryControl {
 
     @Override
     public double getYaw_deg() {
-        return pigeonIMU.getYaw();
+        return Units.radiansToDegrees(pigeonIMU.getYaw());
     }
 
 
     @Override
     public double getRoll_deg() {
-        return pigeonIMU.getRoll();
+        return Units.radiansToDegrees(pigeonIMU.getRoll());
     }
 
     @Override
     public void zero() {
+        pigeonIMU.setYaw(0);
         pigeonIMU.reset();
     }
 

@@ -14,7 +14,7 @@ public class GripperControl {
     }
 
     public void openGripper(){
-        gripper.moveToPosition_mechanismRotations(GripperConstants.MOTOR_TO_GRIPPER_ROTATIONS);
+        gripper.moveToPosition_mechanismRotations(GripperConstants.GRIPPER_SETPOINT_MOTOR_ROTATIONS);
     }
 
     public void closeGripper(){
