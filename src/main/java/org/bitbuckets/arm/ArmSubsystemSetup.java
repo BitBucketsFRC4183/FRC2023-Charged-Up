@@ -39,9 +39,9 @@ public class ArmSubsystemSetup implements ISetup<ArmSubsystem> {
         ISetup<IMotorController> upperArm;
 
         if (self.isReal()) {
-            lowerArm1 = new SparkSetup(9, ArmConstants.LOWER_CONFIG, ArmConstants.LOWER_PID);
-            lowerArm2 = new SparkSetup(10, ArmConstants.LOWER_CONFIG_FOLLOWER, ArmConstants.LOWER_PID);
-            upperArm = new SparkSetup(11, ArmConstants.UPPER_CONFIG, ArmConstants.UPPER_PID);
+            lowerArm1 = new SparkSetup(ArmConstants.LOWER_ARM_1_MOTOR_ID, ArmConstants.LOWER_CONFIG, ArmConstants.LOWER_PID);
+            lowerArm2 = new SparkSetup(ArmConstants.LOWER_ARM_2_MOTOR_ID, ArmConstants.LOWER_CONFIG_FOLLOWER, ArmConstants.LOWER_PID);
+            upperArm = new SparkSetup(ArmConstants.UPPER_ARM_MOTOR_ID, ArmConstants.UPPER_CONFIG, ArmConstants.UPPER_PID);
 
         } else {
            Mechanism2d mech = new Mechanism2d(3, 3);
