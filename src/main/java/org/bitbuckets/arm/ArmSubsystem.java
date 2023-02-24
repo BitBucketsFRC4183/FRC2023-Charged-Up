@@ -119,6 +119,8 @@ public class ArmSubsystem {
                 armControl.manuallyMoveLowerArm(armInput.getLowerArm_PercentOutput());
                 armControl.manuallyMoveUpperArm(armInput.getUpperArm_PercentOutput());
 
+                debuggable.log("lower", armInput.getLowerArm_PercentOutput());
+
                 debuggable.log("line 49", true);
 
                 if (armInput.isStoragePressed()) {
