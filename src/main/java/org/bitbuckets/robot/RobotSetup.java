@@ -45,7 +45,7 @@ public class RobotSetup implements ISetup<RobotContainer> {
                 .build(self.addChild("arm-subsystem"));
 
         DriveSubsystem driveSubsystem = new DriveSubsystemSetup(
-                true,
+                false,
                 false,
                 autoSubsystem,
                 visionControl

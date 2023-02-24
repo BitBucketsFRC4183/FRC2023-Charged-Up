@@ -133,6 +133,8 @@ public class ArmSubsystem {
                     gripperControl.closeGripper();
                 }
 
+                debuggable.log("lower", armInput.getLowerArm_PercentOutput());
+
                 debuggable.log("line 49", true);
 
                 if (armInput.isStoragePressed()) {
