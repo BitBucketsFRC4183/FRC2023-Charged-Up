@@ -26,27 +26,14 @@ public class ArmControl {
         this.upperJointPID = upperJointPID;
     }
 
-    /**
-     * Resets the both lower motors to position 0 on the encoder; new start point
-     * Will stay here to give arm its relativity until AbsoluteEncoders are in use
-     */
     public void calibrateLowerArm() {
         lowerJoint1.forceOffset(convertMechanismRotationtoRawRotation_lowerJoint(convertDegreesToRotation(0)));
     }
 
-    /**
-     * Resets the upper motor to position 0 on the encoder; new start point
-     * Will stay here to give arm its relativity until AbsoluteEncoders are in use
-     */
     public void calibrateUpperArm() {
         upperJoint.forceOffset(convertMechanismRotationtoRawRotation_upperJoint(convertDegreesToRotation(0)));
     }
 
-    /**
-     * Moves both lower arm motors based on a percent output by the input of the controller
-     * Lower CONTROL_JOINT_OUTPUT in ArmConstants to lower speed at which arm moves
-     * @param percentOutput ranges from -1 to 1 based on how much the joystick is pushed
-     */
     public void manuallyMoveLowerArm(double percentOutput) {
 
 //        double lowerRotation = gearRatio * percentOutput / 360;
@@ -55,11 +42,7 @@ public class ArmControl {
         lowerJoint1.moveAtPercent(percentOutput * ArmConstants.CONTROL_JOINT_OUTPUT);
     }
 
-    /**
-     * Moves upper arm motor based on a percent output by the input of the controller
-     * Lower CONTROL_JOINT_OUTPUT in ArmConstants to lower speed at which arm moves
-     * @param percentOutput ranges from -1 to 1 based on how much the joystick is pushed
-     */
+
     public void manuallyMoveUpperArm(double percentOutput) {
         upperJoint.moveAtPercent(percentOutput * ArmConstants.CONTROL_JOINT_OUTPUT);
     }
@@ -91,11 +74,7 @@ public class ArmControl {
         }
     }
 
-    /**
-     * Looks at lowerJoint error and upperJoint error to determine whether or not the command has been completed
-     * @param delta difference between error and position until funciton returns true
-     * may change delta later
-     */
+    // may change delta later
     public boolean isErrorSmallEnough(double delta) {
         return Math.abs(lowerJointPID.lastError()) < delta && Math.abs(upperJointPID.lastError()) < delta;
     }

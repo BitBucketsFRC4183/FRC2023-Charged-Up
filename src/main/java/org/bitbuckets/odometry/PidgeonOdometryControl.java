@@ -90,7 +90,13 @@ public class PidgeonOdometryControl implements IOdometryControl {
 
     @Override
     public double getRoll_deg() {
-        return pigeonIMU.getRoll();
+
+        double[] data = new double[4];
+        pigeonIMU.getAccumGyro(data); //fill data
+
+        return data[0];
+
+        //return pigeonIMU.getRoll(); TODO this is broken for some reason.
     }
 
     @Override

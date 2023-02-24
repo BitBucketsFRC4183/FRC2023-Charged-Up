@@ -22,22 +22,24 @@ public class ArmInput {
     }
 
 
-    /**
-     * Quick Buttons and Axis reference for Arm Controls
-     * (X) tap to go in storage position (default during teleop)
-     * (B) To stop all arm motors
-     * (Right Trigger) Tap to grab with arm - clamp down
-     * (Left trigger) Tap to grab with arm - release clamp
-     * Dpad up – tap to score high
-     * Dpad down – tap to score middle
-     * Dpad right – tap for arm to go to load zone and intake GP
-     * Dpad left – tap to score low
-     * Right bumper – align with scoring zone
-     * Left bumper – align with loading zone
-     * Left Joystick  to control lower joint on arm
-     * Right Joystick to control upper joint on arm
-     */
+    /*
 
+New Documentation for Arm Controls
+
+(X) While held start stowing to default
+(B) To stop all arm motors
+(Right Trigger) Tap to grab with arm - clamp down
+(left trigger) tap to grab with arm - release clamp
+Dpad up – hold to go high
+Dpad down – hold to go middle
+Dpad right – hold to load zone
+Dpad left – score low
+Right bumper – align with scoring zone
+Left bumper – align with loading zone
+Left Joystick  to control lower joint on arm
+Right Joystick to control upper joint on arm
+
+     */
 
 
     public static double armDeadband(double input) {
@@ -48,7 +50,6 @@ public class ArmInput {
 
         return value;
     }
-
 
     public double getLowerArm_PercentOutput() {
 

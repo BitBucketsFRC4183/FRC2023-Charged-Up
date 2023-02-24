@@ -36,13 +36,11 @@ public class SimArmSetup implements ISetup<IMotorController> {
         SingleJointedArmSim sim = new SingleJointedArmSim(
                 DCMotor.getNeo550(2),
                 1.0 / config.encoderToMechanismCoefficient * 10.0, //TODO fix this dumb hack
-                estimateMOI(armConfig.lengthMeters, armConfig.armMass),
                 armConfig.lengthMeters,
                 armConfig.armMinAngle,
                 armConfig.armMaxAngle,
                 armConfig.armMass,
-                armConfig.isGravitySimulated,
-                VecBuilder.fill(0.001)
+                armConfig.isGravitySimulated
         );
 
         PIDController pidController = new PIDController(
