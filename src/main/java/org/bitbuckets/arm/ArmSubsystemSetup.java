@@ -45,7 +45,7 @@ public class ArmSubsystemSetup implements ISetup<ArmSubsystem> {
         ISetup<IMotorController> lowerArm1;
         ISetup<IMotorController> lowerArm2;
         ISetup<IMotorController> upperArm;
-        ISetup<IMotorController> gripperJoint = new SparkSetup(12, GripperConstants.GRIPPER_CONFIG, GripperConstants.GRIPPER_PID);;
+        ISetup<IMotorController> gripperJoint = new SparkSetup(GripperConstants.GRIPPER_MOTOR_ID, GripperConstants.GRIPPER_CONFIG, GripperConstants.GRIPPER_PID);;
 
         if (self.isReal()) {
             lowerArm1 = new SparkSetup(9, ArmConstants.LOWER_CONFIG, ArmConstants.LOWER_PID);

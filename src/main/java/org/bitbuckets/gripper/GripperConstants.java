@@ -10,6 +10,7 @@ import java.util.Optional;
 
 public interface GripperConstants {
 
+    int GRIPPER_MOTOR_ID = 11;
     MotorConfig GRIPPER_CONFIG = new MotorConfig(1, 1, 1, false, true, 10, true, true, Optional.empty());
 
     DCMotorConfig DC_GRIPPER_CONFIG = new DCMotorConfig(0.01, new Matrix<>(SimpleMatrix.identity(0)));
