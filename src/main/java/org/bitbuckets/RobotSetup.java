@@ -23,7 +23,7 @@ public class RobotSetup implements ISetup<Void> {
 
         DriveSubsystemSetup driveSubsystem = new DriveSubsystemSetup(
                 true,
-                false,
+                true,
                 autoSubsystem,
                 visionControl
         );
