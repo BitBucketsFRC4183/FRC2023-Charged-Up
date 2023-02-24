@@ -137,21 +137,41 @@ public class ArmSubsystem {
 
                 if (armInput.isStoragePressed()) {
                     state = ArmFSM.STORAGE;
+                    break;
                 } else if (armInput.isHumanIntakePressed()) {
                     state = ArmFSM.PREPARE;
                     nextState = ArmFSM.HUMAN_INTAKE;
+                    break;
                 } else if (armInput.isScoreMidPressed()) {
                     debuggable.log("line 55", true);
                     state = ArmFSM.PREPARE;
                     nextState = ArmFSM.SCORE_MID;
+                    break;
                 } else if (armInput.isScoreHighPressed()) {
                     state = ArmFSM.PREPARE;
                     nextState = ArmFSM.SCORE_HIGH;
+                    break;
                 } else if (armInput.isScoreLowPressed()) {
                     state = ArmFSM.PREPARE;
                     nextState = ArmFSM.SCORE_LOW;
+                    break;
+                } else if (armInput.isDebugDegreesPressed()) {
+                    state = ArmFSM.DEBUG_TO_DEGREES;
+                    break;
                 }
                 break;
+
+            case DEBUG_TO_DEGREES:
+                if (armInput.isStopPidPressed()) {
+                    state = ArmFSM.TELEOP;
+                    break;
+                }
+
+                armControl.moveToSetpointOnly(0.25, 0.12);
+
+
+                break;
+
 
             //if C is pressed in sim (on keyboard)
             case STORAGE:
