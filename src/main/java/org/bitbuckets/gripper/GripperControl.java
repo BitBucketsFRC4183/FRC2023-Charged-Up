@@ -7,16 +7,14 @@ public class GripperControl {
 
     final Debuggable debuggable;
     final IMotorController gripper;
-    final GripperConstants gripperConstants;
 
-    public GripperControl(Debuggable debuggable, IMotorController gripper, GripperConstants gripperConstants) {
+    public GripperControl(Debuggable debuggable, IMotorController gripper) {
         this.debuggable = debuggable;
         this.gripper = gripper;
-        this.gripperConstants = gripperConstants;
     }
 
     public void openGripper(){
-        gripper.moveToPosition_mechanismRotations(gripperConstants.MOTOR_TO_GRIPPER_ROTATIONS);
+        gripper.moveToPosition_mechanismRotations(GripperConstants.MOTOR_TO_GRIPPER_ROTATIONS);
     }
 
     public void closeGripper(){

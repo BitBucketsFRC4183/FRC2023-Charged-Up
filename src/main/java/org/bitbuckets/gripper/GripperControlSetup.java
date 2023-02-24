@@ -8,7 +8,6 @@ import org.bitbuckets.lib.tune.IValueTuner;
 public class GripperControlSetup implements ISetup<GripperControl> {
 
     final ISetup<IMotorController> gripperJoint;
-    GripperConstants gripperConstants;
 
     public GripperControlSetup(ISetup<IMotorController> gripperJoint) {
         this.gripperJoint = gripperJoint;
@@ -18,6 +17,6 @@ public class GripperControlSetup implements ISetup<GripperControl> {
     public GripperControl build(ProcessPath self) {
         var gripper = gripperJoint.build(self.addChild("gripper"));
 
-        return new GripperControl(self.generateDebugger(), gripper, gripperConstants);
+        return new GripperControl(self.generateDebugger(), gripper);
     }
 }
