@@ -20,6 +20,7 @@ import org.bitbuckets.lib.util.HasLoop;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 public class Process implements IProcess {
 
@@ -33,12 +34,28 @@ public class Process implements IProcess {
     final IConsole selfConsole;
     final IDebuggable selfDbg;
 
+    final ShuffleboardContainer log; //listmode
+    final ShuffleboardContainer dbg;
+    final ShuffleboardContainer tune;
+
     public Process(ShuffleboardContainer table, Path selfPath, IConsole selfConsole, IForceSendTuner<ProcessMode> selfMode, IDebuggable selfDbg) {
         this.table = table;
         this.selfPath = selfPath;
         this.selfConsole = selfConsole;
         this.selfMode = selfMode;
         this.selfDbg = selfDbg;
+
+        if (table != null) {
+            log = table.getLayout("loggables", BuiltInLayouts.kList);
+            dbg = table.getLayout("debuggables", BuiltInLayouts.kList);
+            tune = table.getLayout("tuneables", BuiltInLayouts.kList);
+        } else {
+            log = Shuffleboard.getTab("ERROR");
+            dbg = Shuffleboard.getTab("ERROR");
+            tune = Shuffleboard.getTab("ERROR");
+        }
+
+
 
     }
 
@@ -59,13 +76,13 @@ public class Process implements IProcess {
 
     @Override
     public <T> IValueTuner<T> generateTuner(ITuneAs<T> tuneDataType, String key, T dataWhenNotTuning) {
-        return tuneDataType.generate(key, table, dataWhenNotTuning, selfMode);
+        return tuneDataType.generate(key, tune, dataWhenNotTuning, selfMode);
     }
 
 
     @Override
     public <T> ILoggable<T> generateLogger(ILogAs<T> logDataType, String key) {
-        return logDataType.generate(key,table, selfMode);
+        return logDataType.generate(key,log, selfMode);
     }
 
     @Override
@@ -136,16 +153,9 @@ public class Process implements IProcess {
         ShuffleboardContainer childContainer;
         if (childPath.length() == 1) { //if this is directly branching off the root, it should go in a tab
             childContainer = Shuffleboard.getTab(key);
-        } else if (childPath.length() == 2 || childPath.length() == 3) {
-            int square;
-            double preSquare = Math.sqrt(componentQuantity());
-            if (preSquare == Double.NaN) {
-                square = 1;
-            } else {
-                square = (int) preSquare;
-            }
+        } else if (childPath.length() == 2) {
 
-            childContainer = table.getLayout(key, BuiltInLayouts.kGrid).withSize(square, square);//.withProperties(Map.of("number of columns", width, "number of rows", length));
+            childContainer = table.getLayout(key, BuiltInLayouts.kGrid).withSize(4, 2);//.withProperties(Map.of("number of columns", width, "number of rows", length));
 
 
         } else {
@@ -162,7 +172,9 @@ public class Process implements IProcess {
                         selfMode
                 );
 
-        childMode.bind(this::forceTo);
+
+        LazyConsumer<ProcessMode> weakRefConsumer = new LazyConsumer<>();
+        childMode.bind(weakRefConsumer);
 
         //setup console for writing data to
         IConsole childConsole = new ProcessConsole(childMode, childPath);
@@ -170,6 +182,8 @@ public class Process implements IProcess {
 
         Process child = new Process(childContainer, childPath, childConsole, childMode, childDebuggable);
         children.add(child);
+
+        weakRefConsumer.late(child::forceTo);
 
         var p = setup.build(child);
 
