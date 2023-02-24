@@ -53,64 +53,29 @@ public class ArmSubsystemSetup implements ISetup<ArmSubsystem> {
             upperArm = new SparkSetup(11, ArmConstants.UPPER_CONFIG, ArmConstants.UPPER_PID);
             gripperJoint = new SparkSetup(12, GripperConstants.GRIPPER_CONFIG, GripperConstants.GRIPPER_PID);
 
-        } else if (false) {
+        } else {
+           Mechanism2d mech = new Mechanism2d(3, 3);
+           // the mechanism root node
+           MechanismRoot2d root = mech.getRoot("basebetter", 1.5, 2);
 
-            Mechanism2d mech = new Mechanism2d(3, 3);
-            // the mechanism root node
-            MechanismRoot2d root = mech.getRoot("base", 1.5, 1.5);
-
-            MechanismLigament2d simLower = root.append(new MechanismLigament2d("lower-arm-sim", ArmConstants.LOWER_JOINT_LENGTH, 90, ArmConstants.LOWER_JOINT_WIDTH * 300, new Color8Bit(Color.kWhite)));
-            MechanismLigament2d simUpper =
-                    simLower.append(
-                            new MechanismLigament2d("upper-arm-sim", ArmConstants.UPPER_JOINT_LENGTH + ArmConstants.GRABBER_LENGTH, 90, ArmConstants.UPPER_JOINT_WIDTH * 300, new Color8Bit(Color.kPurple)));
-
-
-            SmartDashboard.putData("sim-arm", mech);
-
-            lowerArm1 = new SimArmSetup(
-                    ArmConstants.LOWER_CONFIG,
-                    ArmConstants.LOWER_ARM,
-                    ArmConstants.LOWER_SIMPID,
-                    simLower
-            );
-
-            lowerArm2 = MockingUtil.noops(IMotorController.class);
-            upperArm = new SimArmSetup(
-                    ArmConstants.UPPER_CONFIG,
-                    ArmConstants.UPPER_ARM,
-                    ArmConstants.UPPER_SIMPID,
-                    simUpper
-            );
-            gripperJoint = new DCSimSetup(
-                    GripperConstants.GRIPPER_CONFIG,
-                    GripperConstants.DC_GRIPPER_CONFIG,
-                    GripperConstants.GRIPPER_PID
-            );
-        }
-
-         else {
-            Mechanism2d mech = new Mechanism2d(3, 3);
-            // the mechanism root node
-            MechanismRoot2d root = mech.getRoot("basebetter", 1.5, 2);
-
-            MechanismLigament2d simLower = root.append(new MechanismLigament2d("lower-arm-sim", ArmConstants.LOWER_JOINT_LENGTH, 90, ArmConstants.LOWER_JOINT_WIDTH * 300, new Color8Bit(Color.kWhite)));
-            MechanismLigament2d simUpper  =
-                    simLower.append(
-                            new MechanismLigament2d("upper-arm-sim", ArmConstants.UPPER_JOINT_LENGTH + ArmConstants.GRABBER_LENGTH, 90, ArmConstants.UPPER_JOINT_WIDTH * 300, new Color8Bit(Color.kPurple)));
+           MechanismLigament2d simLower = root.append(new MechanismLigament2d("lower-arm-sim", ArmConstants.LOWER_JOINT_LENGTH, 90, ArmConstants.LOWER_JOINT_WIDTH * 300, new Color8Bit(Color.kWhite)));
+           MechanismLigament2d simUpper  =
+                   simLower.append(
+                           new MechanismLigament2d("upper-arm-sim", ArmConstants.UPPER_JOINT_LENGTH + ArmConstants.GRABBER_LENGTH, 90, ArmConstants.UPPER_JOINT_WIDTH * 300, new Color8Bit(Color.kPurple)));
 
 
-            SmartDashboard.putData("sim-arm",mech);
-            Debuggable debuggable = self.generateDebugger();
+           SmartDashboard.putData("sim-arm",mech);
+           Debuggable debuggable = self.generateDebugger();
 
-            var ff = new ArmFeedFordward();
-            var armSimNew = new ArmSimNew(simUpper, simLower, ArmConstants.UPPER_CONFIG, ArmConstants.LOWER_CONFIG, ff, debuggable);
-            lowerArm1 = armSimNew.getLowerArmSetup();
-            upperArm = armSimNew.getUpperArmSetup();
-            lowerArm2 = MockingUtil.noops(IMotorController.class);
+           var ff = new ArmFeedFordward();
+           var armSimNew = new ArmSimNew(simUpper, simLower, ArmConstants.UPPER_CONFIG, ArmConstants.LOWER_CONFIG, ff, debuggable);
+           lowerArm1 = armSimNew.getLowerArmSetup();
+           upperArm = armSimNew.getUpperArmSetup();
+           lowerArm2 = MockingUtil.noops(IMotorController.class);
 
-            self.registerLogicLoop(armSimNew::updateLoopDeltaTwenty);
-            self.registerLogLoop(armSimNew::logLoop);
-        }
+           self.registerLogicLoop(armSimNew::updateLoopDeltaTwenty);
+           self.registerLogLoop(armSimNew::logLoop);
+       }
 
         ArmControlSetup armControlSetup = new ArmControlSetup(
                 lowerArm1,

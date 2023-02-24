@@ -10,6 +10,9 @@ import java.util.Optional;
 
 public interface ArmConstants {
 
+    int LOWER_ARM_1_MOTOR_ID = 9;
+    int LOWER_ARM_2_MOTOR_ID = 10;
+    int UPPER_ARM_MOTOR_ID = 11;
     // calculated gearRatio
     // Input to output- 5:1 4:1 3:1
     // Final gear different for each arm; 16:48 for lower and 16:16 for upper
