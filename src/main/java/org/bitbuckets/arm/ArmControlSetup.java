@@ -46,6 +46,8 @@ public class ArmControlSetup implements ISetup<ArmControl> {
             var lowerSpark1 = lower1.rawAccess(CANSparkMax.class);
             var lowerSpark2 = lower2.rawAccess(CANSparkMax.class);
 
+            var upperSpark = upper.rawAccess(CANSparkMax.class);
+
             lowerSpark2.follow(lowerSpark1, true);
         }
 

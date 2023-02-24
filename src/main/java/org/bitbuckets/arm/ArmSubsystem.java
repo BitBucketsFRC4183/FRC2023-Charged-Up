@@ -7,6 +7,8 @@ import org.bitbuckets.lib.debug.IDebuggable;
 
 public class ArmSubsystem {
 
+    //make motors
+
     final ArmInput armInput;
     final ArmControl armControl;
     final IDebuggable debuggable;
@@ -103,25 +105,21 @@ public class ArmSubsystem {
 
 
     public void teleopPeriodic() {
-
         if (armInput.isCalibratedPressed()) {
             armControl.calibrateLowerArm();
             armControl.calibrateUpperArm();
             System.out.println("Arms calibrated!");
         }
-
-        // Switches the current state to manual mode if enable manual mode is pressed on operator controller
         if (armInput.isDisablePositionControlPressed()) {
             state = ArmFSM.TELEOP;
         }
 
-        // Arm finite state machine that dictates which case of commands the arm should follow based on its state
-        // the state changes the nextState
         switch (state) {
             case TELEOP:
-
                 armControl.manuallyMoveLowerArm(armInput.getLowerArm_PercentOutput());
                 armControl.manuallyMoveUpperArm(armInput.getUpperArm_PercentOutput());
+
+                debuggable.log("lower", armInput.getLowerArm_PercentOutput());
 
                 debuggable.log("line 49", true);
 
@@ -185,7 +183,6 @@ public class ArmSubsystem {
                 }
                 break;
 
-            // Prepare is the case that commands the arm to go backwards to avoid any obstacles when changing between any scoring mode and storage and vice versa
             case PREPARE:
                 armControl.prepareArm();
                 if (armControl.isErrorSmallEnough(.1) || armInput.isStopPidPressed()) {

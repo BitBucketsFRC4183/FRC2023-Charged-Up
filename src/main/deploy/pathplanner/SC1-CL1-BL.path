@@ -93,7 +93,7 @@
       "isStopPoint": false,
       "stopEvent": {
         "names": [
-          "auto-balance"
+          "autoBalance"
         ],
         "executionBehavior": "parallel",
         "waitBehavior": "none",
