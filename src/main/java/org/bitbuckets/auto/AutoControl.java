@@ -2,6 +2,7 @@ package org.bitbuckets.auto;
 
 import com.pathplanner.lib.PathPlannerTrajectory;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
+import edu.wpi.first.wpilibj.DriverStation;
 import org.bitbuckets.odometry.IOdometryControl;
 
 import java.util.ArrayList;
@@ -41,6 +42,12 @@ public class AutoControl implements IAutoControl {
                 }
             }
 
+            var transformedTrajectories = new ArrayList<PathPlannerTrajectory>();
+            for (var trajectory : trajectoryGroup) {
+                var transformTrajectory = PathPlannerTrajectory.transformTrajectoryForAlliance(trajectory, DriverStation.getAlliance());
+                transformedTrajectories.add(transformTrajectory);
+
+            }
         }
 
         odometryControl.setPos(trajectoryGroup.get(0).getInitialState().holonomicRotation, swerveModulePositions, trajectoryGroup.get(0).getInitialState().poseMeters);
