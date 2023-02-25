@@ -129,14 +129,14 @@ public class ArmSubsystem {
             case TELEOP:
                 armControl.manuallyMoveLowerArm(armInput.getLowerArm_PercentOutput());
                 armControl.manuallyMoveUpperArm(armInput.getUpperArm_PercentOutput());
-                if (gripperInput.ifGripperPressed()) {
+                if (gripperInput.ifOpenGripperPressed()) {
                     gripperControl.openGripper();
                 }
-                else if(gripperInput.closeGripperPressed()){
-                    gripperControl.manuallyCloseGripper();
+                else if(gripperInput.ifCloseGripperPressed()){
+                    gripperControl.closeGripper();
                 }
                 else {
-                    gripperControl.closeGripper();
+                    gripperControl.stopGripper();
                 }
 
                 debuggable.log("lower", armInput.getLowerArm_PercentOutput());
