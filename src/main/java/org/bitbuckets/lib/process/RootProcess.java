@@ -29,7 +29,7 @@ public class RootProcess extends AProcess {
 
     @Override
     public <T> T childSetup(String key, ISetup<T> setup) {
-        var path = this.path.append(key);
+        var path = this.selfPath.append(key);
 
         var tab = Shuffleboard.getTab(key);
         var sidebar = tab.getLayout("enablers", BuiltInLayouts.kList);
@@ -40,12 +40,20 @@ public class RootProcess extends AProcess {
         var tune = component.getLayout("tune", BuiltInLayouts.kList).withProperties(Map.of("Label Position", "BOTTOM"));
         var log = component.getLayout("log", BuiltInLayouts.kList).withProperties(Map.of("Label Position", "LEFT"));
 
+        IForceSendTuner<ProcessMode> childMode = (IForceSendTuner<ProcessMode>) ITuneAs.SIDEBAR_ENUM(ProcessMode.class)
+                .generate(
+                        path.getAsFlatTablePath(),
+                        sidebar,
+                        ProcessMode.LOG_COMPETITION,
+                        selfMode
+                );
 
-        ShuffleDebuggable debuggable = new ShuffleDebuggable(debug, this.selfMode);
-        ProcessConsole console = new ProcessConsole(selfMode,path);
 
-        AProcess child = new SubProcess(path, new NoopsTuner(), tab, sidebar, console, debuggable, log, tune);
-        //childMode.bind(child::forceTo);
+        ShuffleDebuggable debuggable = new ShuffleDebuggable(debug, childMode);
+        ProcessConsole console = new ProcessConsole(childMode,path);
+
+        AProcess child = new SubProcess(path, childMode, tab, sidebar, console, debuggable, log, tune);
+        childMode.bind(child::forceTo);
         children.add(child);
 
         var instance = setup.build(child);

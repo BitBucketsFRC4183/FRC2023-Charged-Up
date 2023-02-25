@@ -16,7 +16,7 @@ import java.util.Random;
 
 public interface ITuneAs<T> {
 
-    EnumSet<NetworkTableEvent.Kind> REMOTE = EnumSet.of(NetworkTableEvent.Kind.kValueRemote);
+    EnumSet<NetworkTableEvent.Kind> REMOTE = EnumSet.of(NetworkTableEvent.Kind.kValueAll);
     IValueTuner<T> generate(String key, ShuffleboardContainer container, T data, IValueTuner<ProcessMode> self);
 
     ITuneAs<Double> DOUBLE_INPUT = (k,c,d,s) -> {
@@ -62,7 +62,7 @@ public interface ITuneAs<T> {
             String rand = ".dbg" + ++RootProcess.i; //i hate this
 
             var e = c.add(rand, false).getEntry();
-            NetworkTable hack = e.getTopic().getInstance().getTable(e.getTopic().getName().replaceAll(rand, "/" + k));
+            NetworkTable hack = e.getTopic().getInstance().getTable(e.getTopic().getName().replaceAll("/" + rand, "/" + k));
 
             hack.getEntry(".controllable").setBoolean(true);
             hack.getEntry(".name").setString(k);

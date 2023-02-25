@@ -11,7 +11,6 @@ import org.bitbuckets.lib.log.ILoggable;
 import org.bitbuckets.lib.log.ProcessConsole;
 import org.bitbuckets.lib.tune.IForceSendTuner;
 import org.bitbuckets.lib.tune.IValueTuner;
-import org.bitbuckets.lib.tune.NoopsTuner;
 import org.bitbuckets.lib.util.HasLogLoop;
 import org.bitbuckets.lib.util.HasLoop;
 
@@ -19,8 +18,8 @@ import java.util.Map;
 
 public class SubProcess extends AProcess {
 
-    final ShuffleboardContainer layout;
-    final ShuffleboardContainer sidebar;
+    final ShuffleboardContainer rootLayout;
+    final ShuffleboardContainer rootSidebar;
 
     final IConsole console;
     final IDebuggable debuggable;
@@ -28,40 +27,40 @@ public class SubProcess extends AProcess {
     final ShuffleboardContainer log;
     final ShuffleboardContainer tune;
 
-    public SubProcess(Path path, IForceSendTuner<ProcessMode> selfMode, ShuffleboardContainer layout, ShuffleboardContainer sidebar, IConsole console, IDebuggable debuggable, ShuffleboardContainer log, ShuffleboardContainer tune) {
+    public SubProcess(Path path, IForceSendTuner<ProcessMode> selfMode, ShuffleboardContainer rootLayout, ShuffleboardContainer rootSidebar, IConsole console, IDebuggable debuggable, ShuffleboardContainer selfLog, ShuffleboardContainer selfTune) {
         super(path, selfMode);
-        this.layout = layout;
-        this.sidebar = sidebar;
+        this.rootLayout = rootLayout;
+        this.rootSidebar = rootSidebar;
         this.console = console;
         this.debuggable = debuggable;
-        this.log = log;
-        this.tune = tune;
+        this.log = selfLog;
+        this.tune = selfTune;
     }
 
 
     @Override
     public <T> T childSetup(String key, ISetup<T> setup) {
         //component specific
-        var path = this.path.append(key);
+        var childPath = this.selfPath.append(key);
 
-        var component = layout.getLayout(path.getAsLastTwoPathFlat().orElse(key), BuiltInLayouts.kGrid).withProperties(Map.of("Number of columns", 3, "Number of rows", 1)).withSize(3, 2);
-        var debug = component.getLayout("debug",BuiltInLayouts.kList).withProperties(Map.of("Label Position", "LEFT"));
-        var tune = component.getLayout("tune", BuiltInLayouts.kList).withProperties(Map.of("Label Position", "BOTTOM"));
-        var log = component.getLayout("log", BuiltInLayouts.kList).withProperties(Map.of("Label Position", "LEFT"));
+        var childComponent = rootLayout.getLayout(childPath.getAsFlatTablePath(), BuiltInLayouts.kGrid).withProperties(Map.of("Number of columns", 3, "Number of rows", 1)).withSize(3, 2);
+        var childDebugPart = childComponent.getLayout("debug",BuiltInLayouts.kList).withProperties(Map.of("Label Position", "LEFT"));
+        var childTune = childComponent.getLayout("tune", BuiltInLayouts.kList).withProperties(Map.of("Label Position", "BOTTOM"));
+        var childLog = childComponent.getLayout("log", BuiltInLayouts.kList).withProperties(Map.of("Label Position", "LEFT"));
 
-        /*IForceSendTuner<ProcessMode> childMode = (IForceSendTuner<ProcessMode>) ITuneAs.SIDEBAR_ENUM(ProcessMode.class)
+        IForceSendTuner<ProcessMode> childMode = (IForceSendTuner<ProcessMode>) ITuneAs.SIDEBAR_ENUM(ProcessMode.class)
                 .generate(
-                        "changer",
-                        sidebar,
+                        childPath.getAsFlatTablePath(),
+                        rootSidebar,
                         ProcessMode.LOG_COMPETITION,
                         selfMode
-                );*/
+                );
 
-        ShuffleDebuggable debuggable = new ShuffleDebuggable(debug, this.selfMode);
-        ProcessConsole console = new ProcessConsole(selfMode,path);
+        ShuffleDebuggable childDebug = new ShuffleDebuggable(childDebugPart, childMode);
+        ProcessConsole childConsole = new ProcessConsole(childMode,childPath);
 
-        AProcess child = new SubProcess(path, new NoopsTuner(), layout, sidebar, console, debuggable, log, tune);
-        //childMode.bind(child::forceTo);
+        AProcess child = new SubProcess(childPath, childMode, rootLayout, rootSidebar, childConsole, childDebug, childLog, childTune);
+        childMode.bind(child::forceTo);
         children.add(child);
 
 

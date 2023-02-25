@@ -116,7 +116,7 @@ public class ShuffleDebuggable implements IDebuggable {
 
     @Override
     public void log(String key, SwerveModulePosition[] positions) {
-        throw new UnsupportedOperationException();
+
 
     }
 

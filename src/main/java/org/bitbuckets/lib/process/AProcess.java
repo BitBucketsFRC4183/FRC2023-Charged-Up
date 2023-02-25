@@ -11,21 +11,21 @@ import java.util.List;
 
 public abstract class AProcess implements IProcess {
 
-    final Path path;
+    final Path selfPath;
     final IForceSendTuner<ProcessMode> selfMode;
 
     final List<AProcess> children = new ArrayList<>();
     final List<HasLoop> hasLoop = new ArrayList<>();
     final List<HasLogLoop> hasLogLoop = new ArrayList<>();
 
-    protected AProcess(Path path, IForceSendTuner<ProcessMode> selfMode) {
-        this.path = path;
+    protected AProcess(Path selfPath, IForceSendTuner<ProcessMode> selfMode) {
+        this.selfPath = selfPath;
         this.selfMode = selfMode;
     }
 
     @Override
     public Path getSelfPath() {
-        return path;
+        return selfPath;
     }
 
     @Override
