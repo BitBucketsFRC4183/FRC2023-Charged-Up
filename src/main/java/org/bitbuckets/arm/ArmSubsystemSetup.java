@@ -1,6 +1,10 @@
 package org.bitbuckets.arm;
 
+import edu.wpi.first.math.Matrix;
 import edu.wpi.first.wpilibj.Joystick;
+import org.bitbuckets.gripper.GripperConstants;
+import org.bitbuckets.gripper.GripperControl;
+import org.bitbuckets.gripper.GripperControlSetup;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
@@ -11,12 +15,16 @@ import org.bitbuckets.arm.sim.ArmSimNew;
 import org.bitbuckets.arm.sim.SimArmSetup;
 import org.bitbuckets.auto.AutoSubsystem;
 import org.bitbuckets.auto.AutoSubsystemSetup;
+import org.bitbuckets.gripper.GripperInput;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.lib.hardware.IMotorController;
 import org.bitbuckets.lib.log.Debuggable;
 import org.bitbuckets.lib.util.MockingUtil;
+import org.bitbuckets.lib.vendor.sim.dc.DCMotorConfig;
+import org.bitbuckets.lib.vendor.sim.dc.DCSimSetup;
 import org.bitbuckets.lib.vendor.spark.SparkSetup;
+import org.ejml.simple.SimpleMatrix;
 
 public class ArmSubsystemSetup implements ISetup<ArmSubsystem> {
 
@@ -37,11 +45,13 @@ public class ArmSubsystemSetup implements ISetup<ArmSubsystem> {
         ISetup<IMotorController> lowerArm1;
         ISetup<IMotorController> lowerArm2;
         ISetup<IMotorController> upperArm;
+        ISetup<IMotorController> gripperJoint = new SparkSetup(GripperConstants.GRIPPER_MOTOR_ID, GripperConstants.GRIPPER_CONFIG, GripperConstants.GRIPPER_PID);;
 
         if (self.isReal()) {
             lowerArm1 = new SparkSetup(9, ArmConstants.LOWER_CONFIG, ArmConstants.LOWER_PID);
             lowerArm2 = new SparkSetup(10, ArmConstants.LOWER_CONFIG_FOLLOWER, ArmConstants.LOWER_PID);
             upperArm = new SparkSetup(11, ArmConstants.UPPER_CONFIG, ArmConstants.UPPER_PID);
+            gripperJoint = new SparkSetup(12, GripperConstants.GRIPPER_CONFIG, GripperConstants.GRIPPER_PID);
 
         } else {
            Mechanism2d mech = new Mechanism2d(3, 3);
@@ -73,12 +83,19 @@ public class ArmSubsystemSetup implements ISetup<ArmSubsystem> {
                 upperArm
         );
 
+        GripperControlSetup gripperControlSetup = new GripperControlSetup(
+                gripperJoint
+        );
+
         Debuggable debuggable = self.generateDebugger();
 
         ArmControl armControl = armControlSetup.build(self.addChild("arm-control"));
         ArmInput armInput = new ArmInput(new Joystick(1), self.generateDebugger());
 
-        return new ArmSubsystem(armInput, armControl, debuggable, autoSubsystem);
+        GripperControl gripperControl = gripperControlSetup.build(self.addChild("gripper-control"));
+        GripperInput gripperInput = new GripperInput(new Joystick(1));
+
+        return new ArmSubsystem(armInput, armControl, gripperControl, gripperInput, debuggable, autoSubsystem);
 
     }
 }

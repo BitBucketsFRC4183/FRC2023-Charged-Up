@@ -1,7 +1,6 @@
 package org.bitbuckets.arm;
 
 import org.bitbuckets.arm.kinematics.InverseKinematics;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -19,7 +18,6 @@ class InverseKinematicsTest {
         assertNotEquals(Double.NaN, new InverseKinematics(ArmConstants.LOW_NODE_X, ArmConstants.LOW_NODE_Y).getLowerJoint_degrees());
     }
 
-    @Disabled
     @Test
     void getUpperJointAngle() {
         assertNotEquals(Double.NaN, new InverseKinematics(ArmConstants.HUMAN_INTAKE_X, ArmConstants.HUMAN_INTAKE_Y).getUpperJoint_degrees());

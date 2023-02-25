@@ -92,7 +92,6 @@ DriveSubsystemSetup implements ISetup<DriveSubsystem> {
     DriveControl buildNeoDriveControl(ProcessPath path) {
         // used to configure the spark motor in SparkSetup
 
-
         DriveControl driveControl = new DriveControlSetup(
                 new SwerveModuleSetup(
                         new DriveControllerSetup(new SparkDriveMotorSetup(DriveConstants.FRONT_LEFT_DRIVE_ID, DriveConstants.DRIVE_CONFIG, DriveConstants.MK4I_L2)),
