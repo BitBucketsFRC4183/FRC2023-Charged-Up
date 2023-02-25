@@ -11,20 +11,11 @@ public class AutoPathInstance implements HasLifecycle {
 
     final List<PathPlannerTrajectory> segments;
     final Map<String, Double> eventToTimeMap;
-    final List<SegmentTime> segmentTimes; //needs to be inserted highest back
+    final List<AutoPathInstance.SegmentTime> segmentTimes; //needs to be inserted highest back
     final AutoPath type;
     final double totalTime;
 
-    static class SegmentTime {
-        final int index;
-        final double startTime;
-        final double duration;
-
-        public SegmentTime(int index, double startTime, double duration) {
-            this.index = index;
-            this.startTime = startTime;
-            this.duration = duration;
-        }
+    record SegmentTime(int index, double startTime) {
     }
 
     public AutoPathInstance(List<PathPlannerTrajectory> segments, Map<String, Double> eventToTimeMap, List<SegmentTime> segmentTimes, AutoPath type, double totalTime) {
@@ -41,12 +32,12 @@ public class AutoPathInstance implements HasLifecycle {
 
     public SegmentTime getSegmentTime(double currentTime) {
         for (int i = segmentTimes.size() - 1; i >= 0; i--) { //latest startTime must come first
-            if (currentTime > segmentTimes.get(i).startTime) {
+            if (currentTime >= segmentTimes.get(i).startTime) {
                 return segmentTimes.get(i);
             }
         }
 
-        return new SegmentTime(0, 0, 0);
+        return new SegmentTime(0, 0);
     }
 
 
@@ -62,7 +53,7 @@ public class AutoPathInstance implements HasLifecycle {
         double secondsNow = pathTimer.get();
         if (eventToTimeMap.get(eventName) == null) return false;
 
-        return secondsNow > eventToTimeMap.get(eventName);
+        return secondsNow >= eventToTimeMap.get(eventName);
     }
 
 

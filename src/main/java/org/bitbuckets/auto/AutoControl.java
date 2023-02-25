@@ -33,7 +33,7 @@ public class AutoControl implements IAutoControl {
 
         for (int i = 0; i < trajectoryGroup.size(); i++) {
             PathPlannerTrajectory segment = trajectoryGroup.get(i);
-            segmentTimes.add(new AutoPathInstance.SegmentTime(i, totalTime, segment.getTotalTimeSeconds()));
+            segmentTimes.add(new AutoPathInstance.SegmentTime(i, totalTime));
             totalTime = totalTime + segment.getTotalTimeSeconds();
 
             for (PathPlannerTrajectory.EventMarker marker : segment.getMarkers()) {
