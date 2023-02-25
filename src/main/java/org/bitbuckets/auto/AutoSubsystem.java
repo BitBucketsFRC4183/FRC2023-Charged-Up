@@ -70,7 +70,6 @@ public class AutoSubsystem {
             case DISABLED:
                 if (DriverStation.isAutonomousEnabled()) {
                     transitionToAutoRun();
-
                     state = AutoFSM.AUTO_RUN;
                     break;
                 }
@@ -80,9 +79,11 @@ public class AutoSubsystem {
                 }
                 break;
             case AUTO_RUN:
-
+                if (DriverStation.isDisabled()) {
+                    state = AutoFSM.DISABLED;
+                    break;
+                }
                 if (DriverStation.isTeleopEnabled()) {
-
                     state = AutoFSM.TELEOP;
                     break;
                 }
@@ -93,6 +94,10 @@ public class AutoSubsystem {
                 }
                 break;
             case AUTO_ENDED:
+                if (DriverStation.isDisabled()) {
+                    state = AutoFSM.DISABLED;
+                    break;
+                }
                 if (DriverStation.isTeleopEnabled()) {
                     state = AutoFSM.TELEOP;
                     break;
@@ -117,8 +122,6 @@ public class AutoSubsystem {
     AutoPath toUseLogOnly = AutoPath.NONE;
 
     void transitionToAutoRun() {
-
-
         AutoPath toUse = pathToUse.readValue();
         toUseLogOnly = toUse;
         instance = autoControl.generateAndStartPath(toUse, driveControl.currentPositions(), odometryControl);

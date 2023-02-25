@@ -9,6 +9,9 @@ import org.bitbuckets.drive.controlsds.sds.SwerveModuleConfiguration;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.lib.hardware.IMotorController;
+import org.bitbuckets.lib.hardware.MotorConfig;
+
+import java.util.Optional;
 
 public class TalonDriveMotorSetup implements ISetup<IMotorController> {
 
@@ -61,6 +64,27 @@ public class TalonDriveMotorSetup implements ISetup<IMotorController> {
                 "Failed to configure Falcon status frame period"
         );
 
-        return new TalonRelativeMotorController(motor);
+        var ctrl = new TalonRelativeMotorController(motor, new MotorConfig(
+                moduleConfiguration.getDriveReduction(),
+                10,
+                moduleConfiguration.getWheelDiameter() * Math.PI,
+                moduleConfiguration.isDriveInverted(),
+                true,
+                moduleConfiguration.getDriveCurrentLimit(),
+                false,
+                false,
+                Optional.empty()
+        ));
+
+        TalonLogger logger = new TalonLogger(
+                ctrl,
+                self.generateDoubleLogger("pos-setpoint-mechanism-rotations"),
+                self.generateDoubleLogger("encoder-mechanism-rotations"),
+                self.generateDoubleLogger("encoder-position-raw"),
+                self.generateDoubleLogger("error-mechanism-rotations")
+        );
+
+        self.registerLogLoop(logger);
+        return ctrl;
     }
 }
