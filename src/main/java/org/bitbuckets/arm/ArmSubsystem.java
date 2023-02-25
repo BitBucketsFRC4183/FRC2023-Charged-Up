@@ -1,5 +1,6 @@
 package org.bitbuckets.arm;
 
+import org.bitbuckets.gripper.GripperConstants;
 import org.bitbuckets.gripper.GripperControl;
 import org.bitbuckets.gripper.GripperFSM;
 import org.bitbuckets.gripper.GripperInput;

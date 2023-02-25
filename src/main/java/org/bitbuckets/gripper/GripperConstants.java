@@ -17,6 +17,8 @@ public interface GripperConstants {
     PIDConfig GRIPPER_PID = new PIDConfig(0.1,0,0,0);
 
     //Need to get this value, (0.1) is wrong
-    double GRIPPER_SETPOINT_MOTOR_ROTATIONS = 500;
+    double GRIPPER_SETPOINT_MOTOR_ROTATIONS = 135;
+
+    double CLOSE_DA_GRIPPA = -10;
 
 }

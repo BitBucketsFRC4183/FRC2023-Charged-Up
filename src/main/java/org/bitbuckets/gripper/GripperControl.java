@@ -22,6 +22,6 @@ public class GripperControl {
     }
 
     public void manuallyCloseGripper(){
-        gripper.moveToPosition_mechanismRotations(-GripperConstants.GRIPPER_SETPOINT_MOTOR_ROTATIONS);
+        gripper.moveToPosition_mechanismRotations(GripperConstants.CLOSE_DA_GRIPPA);
     }
 }
