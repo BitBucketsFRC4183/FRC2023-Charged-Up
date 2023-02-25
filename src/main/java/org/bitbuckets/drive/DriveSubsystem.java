@@ -167,10 +167,23 @@ public class DriveSubsystem {
             odometryControl.setPos(Rotation2d.fromDegrees(0), driveControl.currentPositions(), new Pose2d(0, 0, Rotation2d.fromDegrees(0)));
         }
 
-        double xOutput = input.getInputX() * driveControl.getMaxVelocity();
-        double yOutput = -input.getInputY() * driveControl.getMaxVelocity();
-        double rotationOutput = input.getInputRot() * driveControl.getMaxAngularVelocity();
+        double xOutput;
+        double yOutput;
+        double rotationOutput;
 
+        if (input.isSlowDriveHeld())
+        {
+            xOutput = input.getInputX() * driveControl.getMaxVelocity() * 0.1;
+            yOutput = -input.getInputY() * driveControl.getMaxVelocity() * 0.1;
+            rotationOutput = input.getInputRot() * driveControl.getMaxAngularVelocity() * 0.1;
+
+        }
+        else {
+            xOutput = input.getInputX() * driveControl.getMaxVelocity();
+            yOutput = -input.getInputY() * driveControl.getMaxVelocity();
+            rotationOutput = input.getInputRot() * driveControl.getMaxAngularVelocity();
+
+        }
         debuggable.log("x-output", xOutput);
         debuggable.log("y-output", yOutput);
         debuggable.log("rot-output", rotationOutput);
