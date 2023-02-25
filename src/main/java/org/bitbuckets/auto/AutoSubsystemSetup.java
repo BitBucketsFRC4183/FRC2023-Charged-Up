@@ -24,7 +24,7 @@ public class AutoSubsystemSetup implements ISetup<AutoSubsystem> {
         if (!enabled) return MockingUtil.buddy(AutoSubsystem.class);
 
         IAutoControl autoControl = self.childSetup("auto-control", new AutoControlSetup());
-        IValueTuner<AutoPath> pathTuner = self.generateTuner(ITuneAs.ENUM_INPUT(AutoPath.class), "auto-path", AutoPath.NONE);
+        IValueTuner<AutoPath> pathTuner = self.generateTuner(ITuneAs.ENUM(AutoPath.class), "auto-path", AutoPath.NONE);
 
         return new AutoSubsystem(pathTuner, autoControl, self.getDebuggable());
     }

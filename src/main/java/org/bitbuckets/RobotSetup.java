@@ -1,5 +1,6 @@
 package org.bitbuckets;
 
+import edu.wpi.first.wpilibj.Joystick;
 import org.bitbuckets.arm.ArmSubsystem;
 import org.bitbuckets.arm.ArmSubsystemSetup;
 import org.bitbuckets.auto.AutoSubsystem;
@@ -17,6 +18,11 @@ public class RobotSetup implements ISetup<Void> {
     @Override
     public Void build(IProcess self) {
 
+        OperatorInput operatorInput = new OperatorInput(
+                new Joystick(0),
+                new Joystick(1)
+        );
+
         AutoSubsystem autoSubsystem = self.childSetup("auto-system", new AutoSubsystemSetup(false));
         IVisionControl visionControl = self.childSetup("vision-system", new VisionControlSetup(false));
         ArmSubsystem armSubsystem = self.childSetup("arm-system", new ArmSubsystemSetup(autoSubsystem, operatorInput, true));
@@ -24,7 +30,8 @@ public class RobotSetup implements ISetup<Void> {
         DriveSubsystemSetup driveSubsystem = new DriveSubsystemSetup(
                 true,
                 true,
-                operatorInput, autoSubsystem,
+                operatorInput,
+                autoSubsystem,
                 visionControl
         );
         self.childSetup("drive-system", driveSubsystem);

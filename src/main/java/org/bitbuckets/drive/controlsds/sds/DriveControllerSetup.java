@@ -15,6 +15,6 @@ public class DriveControllerSetup implements ISetup<IDriveController> {
     @Override
     public IDriveController build(IProcess self) {
         // pass our configured motorController back to the DriveController
-        return new DriveController(self.inlineSetup(motor));
+        return new DriveController(self.childSetup("motor",motor));
     }
 }

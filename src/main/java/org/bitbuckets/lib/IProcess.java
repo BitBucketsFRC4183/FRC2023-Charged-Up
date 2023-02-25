@@ -19,18 +19,15 @@ public interface IProcess {
     Path getSelfPath();
 
     <T> T childSetup(String key, ISetup<T> setup);
-    <T> T inlineSetup(ISetup<T> setup);
 
     IConsole getAssociatedConsole();
     IDebuggable getDebuggable();
 
     <T> IValueTuner<T> generateTuner(ITuneAs<T> tuneDataType, String key, T dataWhenNotTuning);
     <T> ILoggable<T> generateLogger(ILogAs<T> logDataType, String key);
-    //void generateSendableHook(Sendable sendable);
 
 
-    //IActionProfiler generateProfiler(String key);
-    //IActionProfiler generateStartupProfiler(String key);
+    void forceTo(ProcessMode mode);
 
     void registerLogLoop(HasLogLoop loop);
     void registerLogicLoop(HasLoop loop);

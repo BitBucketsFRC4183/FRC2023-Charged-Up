@@ -118,7 +118,6 @@ public interface ArmConstants {
 
     // will most likely change
     double GRABBER_LENGTH = 0.1524;
-
     double FFUPPER_ARM_LENGTH = UPPER_JOINT_LENGTH + GRABBER_LENGTH;
 
     double GRABBER_MASS = 0;

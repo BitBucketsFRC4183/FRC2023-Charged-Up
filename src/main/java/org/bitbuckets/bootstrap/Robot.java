@@ -6,13 +6,12 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Threads;
-import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.lib.ISetup;
-import org.bitbuckets.lib.Process;
 import org.bitbuckets.lib.log.LogRecord;
 import org.bitbuckets.lib.log.ProcessConsole;
+import org.bitbuckets.lib.process.RootProcess;
 import org.littletonrobotics.junction.LoggedRobot;
 
 import java.util.HashMap;
@@ -39,7 +38,7 @@ public class Robot extends LoggedRobot {
     public void robotInit() {
         try {
             rootTable = NetworkTableInstance.getDefault().getTable("");
-            builtProcess = Process.root();
+            builtProcess = RootProcess.root();
             buildRobot.build(builtProcess);
 
         } catch (Exception e) {
