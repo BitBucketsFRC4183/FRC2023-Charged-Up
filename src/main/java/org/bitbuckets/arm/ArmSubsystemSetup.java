@@ -12,6 +12,7 @@ import org.bitbuckets.auto.AutoSubsystem;
 import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.control.IPIDCalculator;
+import org.bitbuckets.lib.control.PIDCalculatorSetup;
 import org.bitbuckets.lib.control.ProfiledPIDFSetup;
 import org.bitbuckets.lib.hardware.IMotorController;
 import org.bitbuckets.lib.util.MockingUtil;
@@ -39,8 +40,8 @@ public class ArmSubsystemSetup implements ISetup<ArmSubsystem> {
         ISetup<IMotorController> lowerArm2;
         ISetup<IMotorController> upperArm;
 
-        ISetup<IPIDCalculator> lowerPID = new ProfiledPIDFSetup(self.isReal() ? ArmConstants.LOWER_PID : ArmConstants.LOWER_SIMPID, ArmConstants.LOWER_CONSTRAINT);
-        ISetup<IPIDCalculator> upperPID = new ProfiledPIDFSetup(self.isReal() ? ArmConstants.UPPER_PID : ArmConstants.UPPER_SIMPID, ArmConstants.UPPER_CONSTRAINTS);
+        ISetup<IPIDCalculator> lowerPID = new PIDCalculatorSetup(self.isReal() ? ArmConstants.LOWER_PID : ArmConstants.LOWER_SIMPID);
+        ISetup<IPIDCalculator> upperPID = new PIDCalculatorSetup(self.isReal() ? ArmConstants.UPPER_PID : ArmConstants.UPPER_SIMPID);
 
 
         if (self.isReal()) {
