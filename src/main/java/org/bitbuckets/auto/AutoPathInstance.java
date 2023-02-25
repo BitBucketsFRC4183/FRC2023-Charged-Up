@@ -9,50 +9,44 @@ import java.util.Map;
 
 public class AutoPathInstance implements HasLifecycle {
 
-    final List<PathPlannerTrajectory> multiTrajectory;
+    final List<PathPlannerTrajectory> segments;
     final Map<String, Double> eventToTimeMap;
-    final List<Record> records; //needs to be inserted highest back
+    final List<SegmentTime> segmentTimes; //needs to be inserted highest back
     final AutoPath type;
+    final double totalTime;
 
-    static class Record {
-        final double timestamp;
+    static class SegmentTime {
         final int index;
+        final double startTime;
+        final double duration;
 
-        public Record(double timestamp, int index) {
-            this.timestamp = timestamp;
+        public SegmentTime(int index, double startTime, double duration) {
             this.index = index;
+            this.startTime = startTime;
+            this.duration = duration;
         }
     }
 
-    class Results {
-        final int index;
-        final double timestamp;
-
-        public Results(int index, double timestamp) {
-            this.index = index;
-            this.timestamp = timestamp;
-        }
-    }
-
-    public AutoPathInstance(List<PathPlannerTrajectory> multiTrajectory, Map<String, Double> eventToTimeMap, List<Record> records, AutoPath type) {
-        this.multiTrajectory = multiTrajectory;
+    public AutoPathInstance(List<PathPlannerTrajectory> segments, Map<String, Double> eventToTimeMap, List<SegmentTime> segmentTimes, AutoPath type, double totalTime) {
+        this.segments = segments;
         this.eventToTimeMap = eventToTimeMap;
-        this.records = records;
+        this.segmentTimes = segmentTimes;
         this.type = type;
+        this.totalTime = totalTime;
     }
 
     //this is dumb
 
-    Timer totalPathTimer = new Timer();
+    Timer pathTimer = new Timer();
 
-    public Results lastTimestampStamp(double currentTime) {
-        for (Record record : records) { //latest timestamp must come first
-            if (currentTime > record.timestamp) {
-                return new Results(record.index, record.timestamp);
+    public SegmentTime getSegmentTime(double currentTime) {
+        for (int i = segmentTimes.size() - 1; i >= 0; i--) { //latest startTime must come first
+            if (currentTime > segmentTimes.get(i).startTime) {
+                return segmentTimes.get(i);
             }
         }
 
-        return new Results(0, 0);
+        return new SegmentTime(0, 0, 0);
     }
 
 
@@ -65,7 +59,7 @@ public class AutoPathInstance implements HasLifecycle {
             return false;
         }
 
-        double secondsNow = totalPathTimer.get();
+        double secondsNow = pathTimer.get();
         if (eventToTimeMap.get(eventName) == null) return false;
 
         return secondsNow > eventToTimeMap.get(eventName);
@@ -77,27 +71,27 @@ public class AutoPathInstance implements HasLifecycle {
             return new PathPlannerTrajectory.PathPlannerState();
         }
 
-        double secondsNow = totalPathTimer.get();
-        Results lastTimestamp = lastTimestampStamp(secondsNow);
-        double secondsDelta = secondsNow - lastTimestamp.timestamp;
+        double secondsNow = pathTimer.get();
+        SegmentTime lastTimestamp = getSegmentTime(secondsNow);
+        double secondsInSegment = secondsNow - lastTimestamp.startTime;
 
 
-        return (PathPlannerTrajectory.PathPlannerState) multiTrajectory.get(lastTimestamp.index).sample(secondsDelta);
+        return (PathPlannerTrajectory.PathPlannerState) segments.get(lastTimestamp.index).sample(secondsInSegment);
     }
 
     public boolean isDone() {
-        return totalPathTimer.hasElapsed(totalPathTimer.get());
+        return pathTimer.hasElapsed(totalTime);
     }
 
 
     @Override
     public void start() {
-        totalPathTimer.start();
+        pathTimer.start();
     }
 
     @Override
     public void end() {
-        totalPathTimer.stop();
+        pathTimer.stop();
     }
 
 

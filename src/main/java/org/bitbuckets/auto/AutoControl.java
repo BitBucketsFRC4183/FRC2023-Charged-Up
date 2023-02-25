@@ -20,31 +20,31 @@ public class AutoControl implements IAutoControl {
     @Override
     public AutoPathInstance generateAndStartPath(AutoPath whichOne, SwerveModulePosition[] swerveModulePositions, IOdometryControl odometryControl) {
         if (whichOne == AutoPath.NONE) {
-            return new AutoPathInstance(new ArrayList<>(), new HashMap<>(), new ArrayList<>(), whichOne);
+            return new AutoPathInstance(new ArrayList<>(), new HashMap<>(), new ArrayList<>(), whichOne, 0);
         }
 
         var trajectoryGroup = trajectories.get(whichOne.index);
 
         Map<String, Double> eventMap = new HashMap<>();
 
-        double internalTime = 0;
-        List<AutoPathInstance.Record> records = new ArrayList<>();
+        double totalTime = 0;
+        List<AutoPathInstance.SegmentTime> segmentTimes = new ArrayList<>();
 
         for (int i = 0; i < trajectoryGroup.size(); i++) {
-            PathPlannerTrajectory traj = trajectoryGroup.get(i);
-            internalTime = internalTime + traj.getTotalTimeSeconds();
+            PathPlannerTrajectory segment = trajectoryGroup.get(i);
+            segmentTimes.add(new AutoPathInstance.SegmentTime(i, totalTime, segment.getTotalTimeSeconds()));
+            totalTime = totalTime + segment.getTotalTimeSeconds();
 
-            for (PathPlannerTrajectory.EventMarker marker : traj.getMarkers()) {
+            for (PathPlannerTrajectory.EventMarker marker : segment.getMarkers()) {
                 for (String name : marker.names) {
-                    eventMap.put(name, internalTime + marker.timeSeconds);
+                    eventMap.put(name, totalTime + marker.timeSeconds);
                 }
             }
 
-            records.add(new AutoPathInstance.Record(internalTime, i));
         }
 
         odometryControl.setPos(trajectoryGroup.get(0).getInitialState().holonomicRotation, swerveModulePositions, trajectoryGroup.get(0).getInitialState().poseMeters);
-        AutoPathInstance instance = new AutoPathInstance(trajectoryGroup, eventMap, records, whichOne);
+        AutoPathInstance instance = new AutoPathInstance(trajectoryGroup, eventMap, segmentTimes, whichOne, totalTime);
 
         instance.start();
         return instance;
