@@ -11,6 +11,7 @@ import org.bitbuckets.lib.log.ILoggable;
 import org.bitbuckets.lib.log.ProcessConsole;
 import org.bitbuckets.lib.tune.IForceSendTuner;
 import org.bitbuckets.lib.tune.IValueTuner;
+import org.bitbuckets.lib.tune.NoopsTuner;
 import org.bitbuckets.lib.util.HasLogLoop;
 import org.bitbuckets.lib.util.HasLoop;
 
@@ -41,26 +42,26 @@ public class SubProcess extends AProcess {
     @Override
     public <T> T childSetup(String key, ISetup<T> setup) {
         //component specific
+        var path = this.path.append(key);
 
-        System.out.println(key);
-        var component = layout.getLayout(key, BuiltInLayouts.kGrid).withProperties(Map.of("Number of columns", 3, "Number of rows", 1)).withSize(3, 2);
+        var component = layout.getLayout(path.getAsLastTwoPathFlat().orElse(key), BuiltInLayouts.kGrid).withProperties(Map.of("Number of columns", 3, "Number of rows", 1)).withSize(3, 2);
         var debug = component.getLayout("debug",BuiltInLayouts.kList).withProperties(Map.of("Label Position", "LEFT"));
         var tune = component.getLayout("tune", BuiltInLayouts.kList).withProperties(Map.of("Label Position", "BOTTOM"));
         var log = component.getLayout("log", BuiltInLayouts.kList).withProperties(Map.of("Label Position", "LEFT"));
 
-        IForceSendTuner<ProcessMode> childMode = (IForceSendTuner<ProcessMode>) ITuneAs.SIDEBAR_ENUM(ProcessMode.class)
+        /*IForceSendTuner<ProcessMode> childMode = (IForceSendTuner<ProcessMode>) ITuneAs.SIDEBAR_ENUM(ProcessMode.class)
                 .generate(
                         "changer",
                         sidebar,
                         ProcessMode.LOG_COMPETITION,
                         selfMode
-                );
+                );*/
 
         ShuffleDebuggable debuggable = new ShuffleDebuggable(debug, this.selfMode);
         ProcessConsole console = new ProcessConsole(selfMode,path);
 
-        AProcess child = new SubProcess(path.append(key), childMode, layout, sidebar, console, debuggable, log, tune);
-        childMode.bind(child::forceTo);
+        AProcess child = new SubProcess(path, new NoopsTuner(), layout, sidebar, console, debuggable, log, tune);
+        //childMode.bind(child::forceTo);
         children.add(child);
 
 

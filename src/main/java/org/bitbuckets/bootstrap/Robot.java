@@ -37,6 +37,12 @@ public class Robot extends LoggedRobot {
     @Override
     public void robotInit() {
         try {
+            Thread.sleep(2000); //i dont know why this works, but if you dont do it networktables literally expldoes
+        } catch (InterruptedException ex) {
+            throw new RuntimeException(ex);
+        }
+
+        try {
             rootTable = NetworkTableInstance.getDefault().getTable("");
             builtProcess = RootProcess.root();
             buildRobot.build(builtProcess);
