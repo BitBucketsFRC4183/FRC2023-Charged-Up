@@ -1,5 +1,6 @@
 package org.bitbuckets.arm;
 
+import org.bitbuckets.OperatorInput;
 import org.bitbuckets.auto.AutoSubsystem;
 import org.bitbuckets.lib.debug.IDebuggable;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,7 +11,7 @@ import static org.mockito.Mockito.*;
 
 class ArmSubsystemTest {
 
-    ArmInput armInput;
+    OperatorInput armInput;
     ArmControl armControl;
     IDebuggable debuggable;
     AutoSubsystem autoSubsystem;
@@ -19,7 +20,7 @@ class ArmSubsystemTest {
 
     @BeforeEach
     public void beforeEach() {
-        armInput = mock(ArmInput.class);
+        armInput = mock(OperatorInput.class);
         armControl = mock(ArmControl.class);
         debuggable = mock(IDebuggable.class);
         autoSubsystem = mock(AutoSubsystem.class);

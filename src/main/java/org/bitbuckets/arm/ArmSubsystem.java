@@ -4,9 +4,10 @@ import org.bitbuckets.OperatorInput;
 import org.bitbuckets.auto.AutoFSM;
 import org.bitbuckets.auto.AutoSubsystem;
 import org.bitbuckets.lib.debug.IDebuggable;
+import org.bitbuckets.lib.util.HasLoop;
 
 
-public class ArmSubsystem {
+public class ArmSubsystem implements HasLoop {
 
     //make motors
 
@@ -32,7 +33,7 @@ public class ArmSubsystem {
     //private double gearRatio = (5 * 4 * 3) / (12. / 30.);
 
 
-    public void runLoop() {
+    public void loop() {
         switch (state) {
             case DEFAULT:
                 if (autoSubsystem.state() == AutoFSM.AUTO_RUN) {
@@ -83,6 +84,7 @@ public class ArmSubsystem {
             if (autoSubsystem.sampleHasEventStarted("pick-up-game-piece")) {
                 state = ArmFSM.GROUND_INTAKE;
             }
+
             switch (state) {
                 case STORAGE:
                     armControl.storeArm();

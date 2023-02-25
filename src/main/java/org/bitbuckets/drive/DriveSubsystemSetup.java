@@ -67,7 +67,7 @@ public class DriveSubsystemSetup implements ISetup<DriveSubsystem> {
         HoloControl holoControl = self.childSetup("holo-control", new HoloControlSetup(driveControl, visionControl, odometryControl))
 ;
         IValueTuner<DriveSubsystem.OrientationChooser> orientationTuner = self
-                .generateTuner(ITuneAs.ENUM_INPUT(DriveSubsystem.OrientationChooser.class), "set-orientation", DriveSubsystem.OrientationChooser.FIELD_ORIENTED);
+                .generateTuner(ITuneAs.ENUM(DriveSubsystem.OrientationChooser.class), "set-orientation", DriveSubsystem.OrientationChooser.FIELD_ORIENTED);
 
         return new DriveSubsystem(
                 operatorInput,
@@ -116,7 +116,7 @@ public class DriveSubsystemSetup implements ISetup<DriveSubsystem> {
                 )
         );
 
-        return path.inlineSetup(driveControl);
+        return path.childSetup("drive-control",driveControl);
     }
 
     DriveControl buildSimDriveControl(IProcess path) {
@@ -150,7 +150,7 @@ public class DriveSubsystemSetup implements ISetup<DriveSubsystem> {
                 )
         );
 
-        return path.inlineSetup(driveControl);
+        return path.childSetup("drive-control",driveControl);
     }
 
 
@@ -217,7 +217,7 @@ public class DriveSubsystemSetup implements ISetup<DriveSubsystem> {
                 )
         );
 
-        return path.inlineSetup(l);
+        return path.childSetup("drive-control",l);
     }
 
 }

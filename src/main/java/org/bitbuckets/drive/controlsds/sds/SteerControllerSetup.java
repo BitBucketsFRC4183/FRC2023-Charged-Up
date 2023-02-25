@@ -27,8 +27,8 @@ public class SteerControllerSetup implements ISetup<ISteerController> {
     @Override
     public ISteerController build(IProcess self) {
         var controller = new SteerController(
-                self.inlineSetup(motor),
-                self.inlineSetup(encoder),
+                self.childSetup("steer",motor),
+                self.childSetup("absolute",encoder),
                 sensorPositionCoefficient
         );
 
