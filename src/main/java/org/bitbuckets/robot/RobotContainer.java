@@ -36,18 +36,16 @@ public class RobotContainer {
         driveSubsystem.runLoop();
         elevatorSubsystem.robotPeriodic();
         rgbSubsystem.robotPeriodic();
+        armSubsystem.runLoop();
     }
 
 
-    int i = 0;
 
     //Shouldn't need to do anything here
     public void teleopPeriodic() {
-        SmartDashboard.putNumber("debugIncrement", ++i);
         elevatorSubsystem.teleopPeriodic();
-        armSubsystem.teleopPeriodic();
+        armSubsystem.runLoop();
         macroSubsystem.teleopPeriodic();
-
 
     }
 

@@ -49,6 +49,7 @@ public class PidgeonOdometryControl implements IOdometryControl {
 
         //Todo: re add when vision is fixed
         Optional<Pose3d> res = visionControl.estimateVisionRobotPose();
+        if (res == null) return;
 
         if (res != null && res.isPresent()) {
             Pose2d realPose = res.get().toPose2d();
@@ -83,13 +84,19 @@ public class PidgeonOdometryControl implements IOdometryControl {
 
     @Override
     public double getYaw_deg() {
-        return pigeonIMU.getYaw();
+        return Units.radiansToDegrees(pigeonIMU.getYaw());
     }
 
 
     @Override
     public double getRoll_deg() {
-        return pigeonIMU.getRoll();
+
+        double[] data = new double[4];
+        pigeonIMU.getAccumGyro(data); //fill data
+
+        return data[0];
+
+        //return pigeonIMU.getRoll(); TODO this is broken for some reason.
     }
 
     @Override
