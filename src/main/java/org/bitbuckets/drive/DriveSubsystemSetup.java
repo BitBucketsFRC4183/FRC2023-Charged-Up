@@ -24,21 +24,29 @@ import org.bitbuckets.lib.vendor.spark.SparkDriveMotorSetup;
 import org.bitbuckets.lib.vendor.spark.SparkSteerMotorSetup;
 import org.bitbuckets.lib.vendor.thrifty.ThriftyEncoderSetup;
 import org.bitbuckets.odometry.IOdometryControl;
+import org.bitbuckets.odometry.NavXOdometryControlSetup;
 import org.bitbuckets.odometry.PidgeonOdometryControlSetup;
 import org.bitbuckets.vision.IVisionControl;
 
 public class
 DriveSubsystemSetup implements ISetup<DriveSubsystem> {
 
+    public enum Mode {
+        Neo,
+        Talon,
+        Sim
+    }
+
     final boolean driveEnabled;
-    final boolean isSimulated;
+    final Mode mode;
 
     final AutoSubsystem autoSubsystem;
     final IVisionControl visionControl;
 
-    public DriveSubsystemSetup(boolean driveEnabled, boolean isSimulated, AutoSubsystem autoSubsystem, IVisionControl visionControl) {
+
+    public DriveSubsystemSetup(boolean driveEnabled, Mode mode, AutoSubsystem autoSubsystem, IVisionControl visionControl) {
         this.driveEnabled = driveEnabled;
-        this.isSimulated = isSimulated;
+        this.mode = mode;
         this.autoSubsystem = autoSubsystem;
         this.visionControl = visionControl;
     }
@@ -54,16 +62,29 @@ DriveSubsystemSetup implements ISetup<DriveSubsystem> {
                 .build(self.addChild("axis-control"));
 
         DriveControl driveControl;
-        if (isSimulated) {
-            driveControl = buildSimDriveControl(self);
-        } else {
-            driveControl = buildNeoDriveControl(self); //or use talons, when they work}
+        IOdometryControl odometryControl;
+
+        switch (mode) {
+            case Neo:
+                driveControl = buildNeoDriveControl(self);
+                odometryControl = new PidgeonOdometryControlSetup(driveControl, visionControl, 5)
+                        .build(self.addChild("odo-control"));
+                break;
+            case Talon:
+                driveControl = buildTalonDriveControl(self);
+                odometryControl = new NavXOdometryControlSetup(driveControl, visionControl)
+                        .build(self.addChild("odo-control"));
+                break;
+            case Sim:
+                driveControl = buildSimDriveControl(self);
+                odometryControl = new PidgeonOdometryControlSetup(driveControl, visionControl, 5)
+                        .build(self.addChild("odo-control"));
+                break;
+            default:
+                throw new RuntimeException("Invalid drive mode: " + mode);
         }
+
         autoSubsystem.setDriveControl(driveControl);
-
-        IOdometryControl odometryControl = new PidgeonOdometryControlSetup(driveControl, visionControl, 5)
-                .build(self.addChild("odo-control"));
-
         autoSubsystem.setOdometryControl(odometryControl);
 
         HoloControl holoControl = new HoloControlSetup(driveControl, visionControl, odometryControl)

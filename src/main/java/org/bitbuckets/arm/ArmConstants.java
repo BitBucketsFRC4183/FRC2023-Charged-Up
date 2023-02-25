@@ -19,11 +19,11 @@ public interface ArmConstants {
 
     //converts encoder rotations -> mechanism rotations (0.036)
     double LOWER_ARM_GEAR_RATIO = 1.0 / ((5.0 * 4.0 * 3.0) * (48. / 16.));
-    double UPPER_ARM_GEAR_RATIO = 1.0 / ((5.0 * 4.0 * 3.0) * (16. / 16.));
+    double UPPER_ARM_GEAR_RATIO = 1.0 / ((5.0 * 5.0 * 4.0) * (16. / 16.));
 
 
     double LOWER_JOINT_LENGTH = 0.6731;
-    double UPPER_JOINT_LENGTH = 0.6605;
+    double UPPER_JOINT_LENGTH = 0.6605; //not including gripper
 
 
     //mainly for arm sim
@@ -95,8 +95,8 @@ public interface ArmConstants {
     );
 
     ArmConfig UPPER_ARM = new ArmConfig(
-            0.84,
-            1.036005,
+            0.84,  //not incl. gripper length
+            1.474175, //not including gripper mass
             Units.rotationsToRadians(UPPER_ARM_FORWARD_LIMIT_MECHANISM),
             Units.rotationsToRadians(UPPER_ARM_REVERSE_LIMIT_MECHANISM),
             false
@@ -108,7 +108,7 @@ public interface ArmConstants {
 
     double LOWER_CGRADIUS = 0.4318;
 
-    double UPPER_MOI = 0.08;
+    double UPPER_MOI = 0.99647313522;
 
     double UPPER_CGRADIUS = 0.4318;
 
