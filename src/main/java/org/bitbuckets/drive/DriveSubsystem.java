@@ -26,7 +26,6 @@ import java.util.Optional;
 public class DriveSubsystem {
 
     final DriveInput input;
-
     final AutoSubsystem autoSubsystem;
     final IOdometryControl odometryControl;
     final ClosedLoopsControl closedLoopsControl;
@@ -60,47 +59,32 @@ public class DriveSubsystem {
     Optional<Pose3d> visionTarget;
 
     public void runLoop() {
+
+        if (state == DriveFSM.UNINITIALIZED) {
+            if (autoSubsystem.state() == AutoFSM.AUTO_RUN) {
+                state = DriveFSM.AUTO_PATHFINDING;
+            }
+            if (autoSubsystem.state() == AutoFSM.TELEOP) {
+                state = DriveFSM.TELEOP_NORMAL;
+            }
+        }
+
+        switch (autoSubsystem.state()) {
+
+            case AUTO_RUN:
+                autoLoop();
+                break;
+            case TELEOP:
+                teleopLoop();
+                break;
+        }
+
+        debuggable.log("state", state.toString());
+    }
+
+    void teleopLoop() {
         switch (state) {
-            case UNINITIALIZED:
-                if (autoSubsystem.state() == AutoFSM.AUTO_RUN) {
-                    state = DriveFSM.AUTO_PATHFINDING;
-                    break;
-                }
-                if (autoSubsystem.state() == AutoFSM.TELEOP) {
-                    state = DriveFSM.TELEOP_NORMAL;
-                    break;
-                }
-                break;
-
-            case AUTO_PATHFINDING:
-
-                if (autoSubsystem.state() == AutoFSM.TELEOP) {
-                    state = DriveFSM.TELEOP_NORMAL;
-                    break;
-                }
-
-                if (autoSubsystem.state() == AutoFSM.AUTO_ENDED) {
-                    driveControl.drive(new ChassisSpeeds(0, 0, 0));
-                    break;
-
-                }
-                Optional<PathPlannerTrajectory.PathPlannerState> opt = autoSubsystem.samplePathPlannerState();
-                if (opt.isPresent()) {
-                    ChassisSpeeds targetSpeeds = holoControl.calculatePose2DFromState(opt.get());
-                    targetSpeeds.vxMetersPerSecond = -targetSpeeds.vxMetersPerSecond;
-                    targetSpeeds.vyMetersPerSecond = -targetSpeeds.vyMetersPerSecond;
-                    targetSpeeds.omegaRadiansPerSecond = -targetSpeeds.omegaRadiansPerSecond;
-
-                    driveControl.drive(targetSpeeds);
-                }
-                autoPeriodic();
-                break;
-
             case TELEOP_NORMAL:
-                if (autoSubsystem.state() == AutoFSM.AUTO_RUN) {
-                    state = DriveFSM.AUTO_PATHFINDING;
-                    break;
-                }
                 if (input.isVisionGoPressed() && visionControl.isTargTrue()) {
                     visionTarget = visionControl.estimateVisionTargetPose();
                     state = DriveFSM.TELEOP_VISION;
@@ -141,12 +125,42 @@ public class DriveSubsystem {
                 teleopAutoheading();
                 break;
         }
-        debuggable.log("state", state.toString());
     }
 
-    void autoPeriodic() {
-        if (autoSubsystem.sampleHasEventStarted("auto-balance")) {
-            balance();
+    void autoLoop() {
+        switch (state) {
+            case AUTO_PATHFINDING:
+
+                if (autoSubsystem.state() == AutoFSM.TELEOP) {
+                    state = DriveFSM.TELEOP_NORMAL;
+                    break;
+                }
+
+                if (autoSubsystem.state() == AutoFSM.AUTO_ENDED) {
+                    driveControl.drive(new ChassisSpeeds(0, 0, 0));
+                    break;
+
+                }
+                Optional<PathPlannerTrajectory.PathPlannerState> opt = autoSubsystem.samplePathPlannerState();
+                if (opt.isPresent()) {
+                    ChassisSpeeds targetSpeeds = holoControl.calculatePose2DFromState(opt.get());
+                    targetSpeeds.vxMetersPerSecond = -targetSpeeds.vxMetersPerSecond;
+                    targetSpeeds.vyMetersPerSecond = -targetSpeeds.vyMetersPerSecond;
+                    targetSpeeds.omegaRadiansPerSecond = -targetSpeeds.omegaRadiansPerSecond;
+
+                    driveControl.drive(targetSpeeds);
+                }
+
+
+                if (autoSubsystem.sampleHasEventStarted("auto-balance")) {
+                    state = DriveFSM.AUTO_BALANCING;
+                    break;
+                }
+                break;
+
+            case AUTO_BALANCING:
+                balance();
+                break;
         }
     }
 
@@ -206,11 +220,19 @@ public class DriveSubsystem {
 
     void balance() {
 
+        debuggable.log("is-running-ab", true);
         //This is bad and should be shifted somewhere else
         double BalanceDeadband_deg = Preferences.getDouble(DriveConstants.autoBalanceDeadbandDegKey, DriveConstants.BalanceDeadbandDeg);
         double Roll_deg = odometryControl.getRoll_deg();
+
+        debuggable.log("roll-now", Roll_deg);
         if (Math.abs(Roll_deg) > BalanceDeadband_deg) {
+            debuggable.log("is-running-ab-2", true);
+
             double output = closedLoopsControl.calculateBalanceOutput(Roll_deg, 0);
+
+            debuggable.log("control-output-autobalance", output);
+
             driveControl.drive(new ChassisSpeeds(output, 0.0, 0.0));
         } else {
             driveControl.stop90degrees();

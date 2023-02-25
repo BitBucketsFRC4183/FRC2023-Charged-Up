@@ -1,5 +1,8 @@
 package org.bitbuckets.arm;
 
+import org.bitbuckets.gripper.GripperControl;
+import org.bitbuckets.gripper.GripperFSM;
+import org.bitbuckets.gripper.GripperInput;
 import org.bitbuckets.auto.AutoFSM;
 import org.bitbuckets.auto.AutoSubsystem;
 import org.bitbuckets.lib.log.Debuggable;
@@ -10,16 +13,22 @@ public class ArmSubsystem {
 
     final ArmInput armInput;
     final ArmControl armControl;
+
+    final GripperControl gripperControl;
+    final GripperInput gripperInput;
     final Debuggable debuggable;
     final AutoSubsystem autoSubsystem;
 
     ArmFSM state = ArmFSM.DEFAULT; // Placeholder, default state
     ArmFSM nextState = ArmFSM.DEFAULT;
 
-    public ArmSubsystem(ArmInput armInput, ArmControl armControl, Debuggable debuggable, AutoSubsystem autoSubsystem) {
+    GripperFSM gripperState = GripperFSM.MANUAL;
 
+    public ArmSubsystem(ArmInput armInput, ArmControl armControl, GripperControl gripperControl, GripperInput gripperInput, Debuggable debuggable, AutoSubsystem autoSubsystem) {
         this.armInput = armInput;
         this.armControl = armControl;
+        this.gripperControl = gripperControl;
+        this.gripperInput = gripperInput;
         this.debuggable = debuggable;
         this.autoSubsystem = autoSubsystem;
     }
@@ -67,6 +76,7 @@ public class ArmSubsystem {
     }
 
         public void autoPeriodic() {
+            gripperState = GripperFSM.AUTO;
             if (autoSubsystem.sampleHasEventStarted("go-to-storage")) {
                 state = ArmFSM.STORAGE;
             }
@@ -118,6 +128,11 @@ public class ArmSubsystem {
             case TELEOP:
                 armControl.manuallyMoveLowerArm(armInput.getLowerArm_PercentOutput());
                 armControl.manuallyMoveUpperArm(armInput.getUpperArm_PercentOutput());
+                if (gripperInput.ifGripperPressed()) {
+                    gripperControl.openGripper();
+                } else {
+                    gripperControl.closeGripper();
+                }
 
                 debuggable.log("lower", armInput.getLowerArm_PercentOutput());
 
@@ -132,7 +147,6 @@ public class ArmSubsystem {
                     break;
                 } else if (armInput.isScoreMidPressed()) {
                     debuggable.log("line 55", true);
-
                     state = ArmFSM.PREPARE;
                     nextState = ArmFSM.SCORE_MID;
                     break;
@@ -162,18 +176,19 @@ public class ArmSubsystem {
                 break;
 
 
+
+
             //if C is pressed in sim (on keyboard)
             case STORAGE:
 
                 //if X is pressed in sim (on keyboard)
                 if (armInput.isStopPidPressed()) {
                     state = ArmFSM.TELEOP;
-                    break;
                 }
                 armControl.storeArm();
+                gripperControl.closeGripper();
                 if (armControl.isErrorSmallEnough(.1)) {
                     state = ArmFSM.TELEOP;
-                    break;
                 }
                 break;
 
@@ -181,7 +196,7 @@ public class ArmSubsystem {
                 armControl.prepareArm();
                 if (armControl.isErrorSmallEnough(.1) || armInput.isStopPidPressed()) {
                     state = nextState;
-                    break;
+                    gripperControl.openGripper();
                 }
 
                 break;
@@ -190,7 +205,7 @@ public class ArmSubsystem {
                 armControl.humanIntake();
                 if (armControl.isErrorSmallEnough(.1) || armInput.isStopPidPressed()) {
                     state = ArmFSM.TELEOP;
-                    break;
+                    gripperControl.openGripper();
                 }
                 break;
 
@@ -198,7 +213,9 @@ public class ArmSubsystem {
                 armControl.scoreLow();
                 if (armControl.isErrorSmallEnough(0.1) || armInput.isStopPidPressed()) {
                     state = ArmFSM.TELEOP;
-                    break;
+                    if(gripperState == GripperFSM.AUTO){
+                        gripperControl.openGripper();
+                    }
                 }
                 break;
 
@@ -206,7 +223,9 @@ public class ArmSubsystem {
                 armControl.scoreMid();
                 if (armControl.isErrorSmallEnough(.1) || armInput.isStopPidPressed()) {
                     state = ArmFSM.TELEOP;
-                    break;
+                    if(gripperState == GripperFSM.AUTO){
+                        gripperControl.openGripper();
+                    }
                 }
                 break;
 
@@ -214,12 +233,13 @@ public class ArmSubsystem {
                 armControl.scoreHigh();
                 if (armControl.isErrorSmallEnough(.1) || armInput.isStopPidPressed()) {
                     state = ArmFSM.TELEOP;
-                    break;
+                    if(gripperState == GripperFSM.AUTO){
+                        gripperControl.openGripper();
+                    }
                 }
                 break;
         }
         debuggable.log("state", state.toString());
-
 
     }
 

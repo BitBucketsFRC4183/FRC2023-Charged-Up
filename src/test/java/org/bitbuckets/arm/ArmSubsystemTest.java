@@ -1,6 +1,8 @@
 package org.bitbuckets.arm;
 
 import org.bitbuckets.auto.AutoSubsystem;
+import org.bitbuckets.gripper.GripperControl;
+import org.bitbuckets.gripper.GripperInput;
 import org.bitbuckets.lib.log.Debuggable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,10 +14,12 @@ class ArmSubsystemTest {
 
     ArmInput armInput;
     ArmControl armControl;
+    ArmSubsystem armSubsystem;
+    GripperControl gripperControl;
+    GripperInput gripperInput;
     Debuggable debuggable;
     AutoSubsystem autoSubsystem;
 
-    ArmSubsystem armSubsystem;
 
     @BeforeEach
     public void beforeEach() {
@@ -24,7 +28,7 @@ class ArmSubsystemTest {
         debuggable = mock(Debuggable.class);
         autoSubsystem = mock(AutoSubsystem.class);
 
-        armSubsystem = new ArmSubsystem(armInput, armControl, debuggable, autoSubsystem);
+        armSubsystem = new ArmSubsystem(armInput, armControl, gripperControl, gripperInput, debuggable, autoSubsystem);
     }
 
     @Test

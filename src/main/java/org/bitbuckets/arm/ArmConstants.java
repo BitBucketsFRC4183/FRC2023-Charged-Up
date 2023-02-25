@@ -10,6 +10,9 @@ import java.util.Optional;
 
 public interface ArmConstants {
 
+    int LOWER_ARM_1_MOTOR_ID = 9;
+    int LOWER_ARM_2_MOTOR_ID = 10;
+    int UPPER_ARM_MOTOR_ID = 11;
     // calculated gearRatio
     // Input to output- 5:1 4:1 3:1
     // Final gear different for each arm; 16:48 for lower and 16:16 for upper
@@ -19,14 +22,13 @@ public interface ArmConstants {
     double UPPER_ARM_GEAR_RATIO = 1.0 / ((5.0 * 4.0 * 3.0) * (16. / 16.));
 
 
+    double LOWER_JOINT_LENGTH = 0.6731;
+    double UPPER_JOINT_LENGTH = 0.6605;
 
 
     //mainly for arm sim
     double UPPER_JOINT_WIDTH = 0.0254;
     double LOWER_JOINT_WIDTH = 0.0508;
-
-    double UPPER_JOINT_LENGTH = 0.6731;
-    double LOWER_JOINT_LENGTH = 0.6605;
 
     //in rotations
     double LOWER_ARM_FORWARD_LIMIT_MECHANISM = 0.98;
@@ -133,9 +135,7 @@ public interface ArmConstants {
 
     // Neo Brushless Motor Relative Encoder: 42 counts per revolution
 
-    //all
-    //
-    // the numbers below are made up, not actual numbers we will use for competition
+    // all the numbers below are made up, not actual numbers we will use for competition
     double STORAGE_X = 0.3;
     double STORAGE_Y = -0.1;
 
