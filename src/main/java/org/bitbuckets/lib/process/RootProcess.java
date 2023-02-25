@@ -33,12 +33,12 @@ public class RootProcess extends AProcess {
         var sidebar = tab.getLayout("enablers", BuiltInLayouts.kList);
 
         //component specific
-        var component = tab.getLayout(key, BuiltInLayouts.kGrid);
+        var component = tab.getLayout(key, BuiltInLayouts.kGrid).withProperties(Map.of("Number of columns", 3, "Number of rows", 1)).withSize(3, 2);
         var debug = component.getLayout("debug",BuiltInLayouts.kList).withProperties(Map.of("Label Position", "LEFT"));
         var tune = component.getLayout("tune", BuiltInLayouts.kList).withProperties(Map.of("Label Position", "BOTTOM"));
         var log = component.getLayout("log", BuiltInLayouts.kList).withProperties(Map.of("Label Position", "LEFT"));
 
-        IForceSendTuner<ProcessMode> childMode = (IForceSendTuner<ProcessMode>) ITuneAs.SIDEBAR_ENUM(ProcessMode.class, ++i)
+        IForceSendTuner<ProcessMode> childMode = (IForceSendTuner<ProcessMode>) ITuneAs.SIDEBAR_ENUM(ProcessMode.class)
                 .generate(
                         path.getAsFlatTablePath(),
                         sidebar,
@@ -50,7 +50,7 @@ public class RootProcess extends AProcess {
         ShuffleDebuggable debuggable = new ShuffleDebuggable(debug, this.selfMode);
         ProcessConsole console = new ProcessConsole(selfMode,path);
 
-        AProcess child = new SubProcess(path.append(key), childMode, tab, console, debuggable, log, tune);
+        AProcess child = new SubProcess(path.append(key), childMode, tab, sidebar, console, debuggable, log, tune);
         childMode.bind(child::forceTo);
         children.add(child);
 
@@ -89,7 +89,7 @@ public class RootProcess extends AProcess {
     }
 
     public static RootProcess root() {
-        IForceSendTuner<ProcessMode> childMode = (IForceSendTuner<ProcessMode>) ITuneAs.SIDEBAR_ENUM(ProcessMode.class, ++i)
+        IForceSendTuner<ProcessMode> childMode = (IForceSendTuner<ProcessMode>) ITuneAs.SIDEBAR_ENUM(ProcessMode.class)
                 .generate(
                         "global",
                         Shuffleboard.getTab("mattlib"),

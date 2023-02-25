@@ -19,6 +19,7 @@ import java.util.Map;
 public class SubProcess extends AProcess {
 
     final ShuffleboardContainer layout;
+    final ShuffleboardContainer sidebar;
 
     final IConsole console;
     final IDebuggable debuggable;
@@ -26,9 +27,10 @@ public class SubProcess extends AProcess {
     final ShuffleboardContainer log;
     final ShuffleboardContainer tune;
 
-    public SubProcess(Path path, IForceSendTuner<ProcessMode> selfMode, ShuffleboardContainer layout, IConsole console, IDebuggable debuggable, ShuffleboardContainer log, ShuffleboardContainer tune) {
+    public SubProcess(Path path, IForceSendTuner<ProcessMode> selfMode, ShuffleboardContainer layout, ShuffleboardContainer sidebar, IConsole console, IDebuggable debuggable, ShuffleboardContainer log, ShuffleboardContainer tune) {
         super(path, selfMode);
         this.layout = layout;
+        this.sidebar = sidebar;
         this.console = console;
         this.debuggable = debuggable;
         this.log = log;
@@ -38,15 +40,15 @@ public class SubProcess extends AProcess {
 
     @Override
     public <T> T childSetup(String key, ISetup<T> setup) {
-
-        var sidebar = layout.getLayout("enablers", BuiltInLayouts.kList);
         //component specific
-        var component = layout.getLayout(path.getAsFlatTablePath(), BuiltInLayouts.kGrid);
+
+        System.out.println(key);
+        var component = layout.getLayout(key, BuiltInLayouts.kGrid).withProperties(Map.of("Number of columns", 3, "Number of rows", 1)).withSize(3, 2);
         var debug = component.getLayout("debug",BuiltInLayouts.kList).withProperties(Map.of("Label Position", "LEFT"));
         var tune = component.getLayout("tune", BuiltInLayouts.kList).withProperties(Map.of("Label Position", "BOTTOM"));
         var log = component.getLayout("log", BuiltInLayouts.kList).withProperties(Map.of("Label Position", "LEFT"));
 
-        IForceSendTuner<ProcessMode> childMode = (IForceSendTuner<ProcessMode>) ITuneAs.SIDEBAR_ENUM(ProcessMode.class, ++RootProcess.i)
+        IForceSendTuner<ProcessMode> childMode = (IForceSendTuner<ProcessMode>) ITuneAs.SIDEBAR_ENUM(ProcessMode.class)
                 .generate(
                         "changer",
                         sidebar,
@@ -57,7 +59,7 @@ public class SubProcess extends AProcess {
         ShuffleDebuggable debuggable = new ShuffleDebuggable(debug, this.selfMode);
         ProcessConsole console = new ProcessConsole(selfMode,path);
 
-        AProcess child = new SubProcess(path.append(key), childMode, layout, console, debuggable, log, tune);
+        AProcess child = new SubProcess(path.append(key), childMode, layout, sidebar, console, debuggable, log, tune);
         childMode.bind(child::forceTo);
         children.add(child);
 

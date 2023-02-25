@@ -10,6 +10,7 @@ import org.bitbuckets.lib.tune.EnumTuner;
 
 import java.util.Arrays;
 import java.util.EnumSet;
+import java.util.Random;
 
 public interface ITuneAs<T> {
 
@@ -52,10 +53,11 @@ public interface ITuneAs<T> {
         };
     }
 
-    static <E extends Enum<E>> ITuneAs<E> SIDEBAR_ENUM(Class<E> enumType, int number) {
+
+    static <E extends Enum<E>> ITuneAs<E> SIDEBAR_ENUM(Class<E> enumType) {
         return (k,c,d,s) -> {
-            var e = c.add(".dbg", false).getEntry();
-            NetworkTable hack = e.getTopic().getInstance().getTable(e.getTopic().getName().replaceAll("/.dbg", "/" + number));
+            var e = c.add(".dbg-" + Math.random() * 90, false).getEntry();
+            NetworkTable hack = e.getTopic().getInstance().getTable(e.getTopic().getName().replaceAll("/.dbg", "/" + k));
 
             hack.getEntry(".controllable").setBoolean(true);
             hack.getEntry(".name").setString(k);
