@@ -46,7 +46,7 @@ public class RobotSetup implements ISetup<RobotContainer> {
 
         DriveSubsystem driveSubsystem = new DriveSubsystemSetup(
                 true,
-                false,
+                DriveSubsystemSetup.Mode.Neo,
                 autoSubsystem,
                 visionControl
         ).build(self.addChild("drive-subsystem"));
