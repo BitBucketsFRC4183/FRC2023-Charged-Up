@@ -23,12 +23,14 @@ public class RootProcess extends AProcess {
         super(path, selfMode);
     }
 
-    static int i = 0;
+    public static int i = 0;
 
 
 
     @Override
     public <T> T childSetup(String key, ISetup<T> setup) {
+        var path = this.path.append(key);
+
         var tab = Shuffleboard.getTab(key);
         var sidebar = tab.getLayout("enablers", BuiltInLayouts.kList);
 
@@ -38,20 +40,12 @@ public class RootProcess extends AProcess {
         var tune = component.getLayout("tune", BuiltInLayouts.kList).withProperties(Map.of("Label Position", "BOTTOM"));
         var log = component.getLayout("log", BuiltInLayouts.kList).withProperties(Map.of("Label Position", "LEFT"));
 
-        IForceSendTuner<ProcessMode> childMode = (IForceSendTuner<ProcessMode>) ITuneAs.SIDEBAR_ENUM(ProcessMode.class)
-                .generate(
-                        path.getAsFlatTablePath(),
-                        sidebar,
-                        ProcessMode.LOG_COMPETITION,
-                        selfMode
-                );
-
 
         ShuffleDebuggable debuggable = new ShuffleDebuggable(debug, this.selfMode);
         ProcessConsole console = new ProcessConsole(selfMode,path);
 
-        AProcess child = new SubProcess(path.append(key), childMode, tab, sidebar, console, debuggable, log, tune);
-        childMode.bind(child::forceTo);
+        AProcess child = new SubProcess(path, new NoopsTuner(), tab, sidebar, console, debuggable, log, tune);
+        //childMode.bind(child::forceTo);
         children.add(child);
 
         var instance = setup.build(child);
@@ -89,14 +83,8 @@ public class RootProcess extends AProcess {
     }
 
     public static RootProcess root() {
-        IForceSendTuner<ProcessMode> childMode = (IForceSendTuner<ProcessMode>) ITuneAs.SIDEBAR_ENUM(ProcessMode.class)
-                .generate(
-                        "global",
-                        Shuffleboard.getTab("mattlib"),
-                        ProcessMode.LOG_COMPETITION,
-                        new NoopsTuner()
-                );
 
-        return new RootProcess(new Path(new String[0]), childMode);
+
+        return new RootProcess(new Path(new String[0]), new NoopsTuner());
     }
  }

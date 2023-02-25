@@ -3,7 +3,9 @@ package org.bitbuckets.lib;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEvent;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardComponent;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardContainer;
+import org.bitbuckets.lib.process.RootProcess;
 import org.bitbuckets.lib.tune.IValueTuner;
 import org.bitbuckets.lib.tune.ValueTuner;
 import org.bitbuckets.lib.tune.EnumTuner;
@@ -56,8 +58,11 @@ public interface ITuneAs<T> {
 
     static <E extends Enum<E>> ITuneAs<E> SIDEBAR_ENUM(Class<E> enumType) {
         return (k,c,d,s) -> {
-            var e = c.add(".dbg-" + Math.random() * 90, false).getEntry();
-            NetworkTable hack = e.getTopic().getInstance().getTable(e.getTopic().getName().replaceAll("/.dbg", "/" + k));
+
+            String rand = ".dbg" + ++RootProcess.i; //i hate this
+
+            var e = c.add(rand, false).getEntry();
+            NetworkTable hack = e.getTopic().getInstance().getTable(e.getTopic().getName().replaceAll(rand, "/" + k));
 
             hack.getEntry(".controllable").setBoolean(true);
             hack.getEntry(".name").setString(k);
