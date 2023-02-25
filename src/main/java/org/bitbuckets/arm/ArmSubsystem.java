@@ -130,7 +130,11 @@ public class ArmSubsystem {
                 armControl.manuallyMoveUpperArm(armInput.getUpperArm_PercentOutput());
                 if (gripperInput.ifGripperPressed()) {
                     gripperControl.openGripper();
-                } else {
+                }
+                else if(gripperInput.closeGripperPressed()){
+                    gripperControl.manuallyCloseGripper();
+                }
+                else {
                     gripperControl.closeGripper();
                 }
 

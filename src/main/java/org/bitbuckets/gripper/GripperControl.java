@@ -18,6 +18,10 @@ public class GripperControl {
     }
 
     public void closeGripper(){
-        gripper.moveToPosition_mechanismRotations(0);
+        gripper.moveAtPercent(0);
+    }
+
+    public void manuallyCloseGripper(){
+        gripper.moveToPosition_mechanismRotations(-GripperConstants.GRIPPER_SETPOINT_MOTOR_ROTATIONS);
     }
 }
