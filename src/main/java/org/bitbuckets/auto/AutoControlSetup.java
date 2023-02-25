@@ -27,6 +27,7 @@ public class AutoControlSetup implements ISetup<IAutoControl> {
             PathPlannerTrajectory trajectory6 = PathPlanner.loadPath("SC1-CL1-SC3-BL", new PathConstraints(4.0, 3.0));
             PathPlannerTrajectory trajectory8 = PathPlanner.loadPath("SC9-CL4-BL", new PathConstraints(4.0, 3.0));
             PathPlannerTrajectory trajectory9 = PathPlanner.loadPath("SC9-CL4-SC7-BL", new PathConstraints(4.0, 3.0));
+            PathPlannerTrajectory trajectory10 = PathPlanner.loadPath("drive-to-charge-station", new PathConstraints(2.0, 1.5));
             traj = new PathPlannerTrajectory[]{
                     trajectory, trajectory1, trajectory2, trajectory3, trajectory4, trajectory5, trajectory6, trajectory8, trajectory9
             };
