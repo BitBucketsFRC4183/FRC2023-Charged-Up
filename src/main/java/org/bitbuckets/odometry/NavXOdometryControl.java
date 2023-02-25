@@ -76,6 +76,10 @@ public class NavXOdometryControl implements IOdometryControl {
         return navigator.getYaw();
     }
 
+    public double getPitch_deg() {
+        return navigator.getPitch();
+    }
+
     @Override
     public double getRoll_deg() {
         return navigator.getRoll();

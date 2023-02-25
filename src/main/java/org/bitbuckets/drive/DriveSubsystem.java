@@ -236,17 +236,17 @@ public class DriveSubsystem {
         debuggable.log("is-running-ab", true);
         //This is bad and should be shifted somewhere else
         double BalanceDeadband_deg = Preferences.getDouble(DriveConstants.autoBalanceDeadbandDegKey, DriveConstants.BalanceDeadbandDeg);
-        double Roll_deg = odometryControl.getRoll_deg();
+        double Pitch_deg = odometryControl.getPitch_deg();
 
-        debuggable.log("roll-now", Roll_deg);
-        if (Math.abs(Roll_deg) > BalanceDeadband_deg) {
+        debuggable.log("pitch-now", Pitch_deg);
+        if (Math.abs(Pitch_deg) > BalanceDeadband_deg) {
             debuggable.log("is-running-ab-2", true);
 
-            double output = closedLoopsControl.calculateBalanceOutput(Roll_deg, 0);
+            double output = closedLoopsControl.calculateBalanceOutput(Pitch_deg, 0);
 
             debuggable.log("control-output-autobalance", output);
 
-            driveControl.drive(new ChassisSpeeds(output, 0.0, 0.0));
+            driveControl.drive(new ChassisSpeeds(output / 2, 0.0, 0.0));
         } else {
             driveControl.stop90degrees();
 

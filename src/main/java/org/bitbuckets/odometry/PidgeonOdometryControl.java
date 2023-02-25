@@ -87,6 +87,11 @@ public class PidgeonOdometryControl implements IOdometryControl {
         return Units.radiansToDegrees(pigeonIMU.getYaw());
     }
 
+    @Override
+    public double getPitch_deg() {
+        return pigeonIMU.getPitch();
+    }
+
 
     @Override
     public double getRoll_deg() {
