@@ -65,8 +65,7 @@ public class AutoPathInstance implements HasLifecycle {
         double secondsNow = pathTimer.get();
         SegmentTime lastTimestamp = getSegmentTime(secondsNow);
         double secondsInSegment = secondsNow - lastTimestamp.startTime;
-
-
+        
         return (PathPlannerTrajectory.PathPlannerState) segments.get(lastTimestamp.index).sample(secondsInSegment);
     }
 

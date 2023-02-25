@@ -42,16 +42,17 @@ public class AutoControl implements IAutoControl {
                 }
             }
 
-            var transformedTrajectories = new ArrayList<PathPlannerTrajectory>();
-            for (var trajectory : trajectoryGroup) {
-                var transformTrajectory = PathPlannerTrajectory.transformTrajectoryForAlliance(trajectory, DriverStation.getAlliance());
-                transformedTrajectories.add(transformTrajectory);
-
-            }
         }
 
-        odometryControl.setPos(trajectoryGroup.get(0).getInitialState().holonomicRotation, swerveModulePositions, trajectoryGroup.get(0).getInitialState().poseMeters);
-        AutoPathInstance instance = new AutoPathInstance(trajectoryGroup, eventMap, segmentTimes, whichOne, totalTime);
+        var transformedTrajectories = new ArrayList<PathPlannerTrajectory>();
+        for (var trajectory : trajectoryGroup) {
+            var transformTrajectory = PathPlannerTrajectory.transformTrajectoryForAlliance(trajectory, DriverStation.getAlliance());
+            transformedTrajectories.add(transformTrajectory);
+        }
+
+        var initialState = PathPlannerTrajectory.transformStateForAlliance(trajectoryGroup.get(0).getInitialState(), DriverStation.getAlliance());
+        odometryControl.setPos(initialState.holonomicRotation, swerveModulePositions, initialState.poseMeters);
+        AutoPathInstance instance = new AutoPathInstance(transformedTrajectories, eventMap, segmentTimes, whichOne, totalTime);
 
         instance.start();
         return instance;
