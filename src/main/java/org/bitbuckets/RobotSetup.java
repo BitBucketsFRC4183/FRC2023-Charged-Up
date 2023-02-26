@@ -27,22 +27,22 @@ public class RobotSetup implements ISetup<Void> {
         IVisionControl visionControl = self.childSetup("vision-system", new VisionControlSetup(false));
         ArmSubsystem armSubsystem = self.childSetup("arm-system", new ArmSubsystemSetup(autoSubsystem, operatorInput, true));
 
-
         DriveSubsystemSetup driveSubsystem = new DriveSubsystemSetup(
                 true,
-                false,
+                true,
                 operatorInput,
                 autoSubsystem,
                 visionControl
         );
         self.childSetup("drive-system", driveSubsystem);
 
-        /*
-
-
+        /**
+         * Register the crasher runnable if we're in github
+         */
         if (System.getenv().containsKey("CI")) {
             self.registerLogicLoop(new SimulatorKiller());
-        }*/
+        }
+
         
         return null;
     }

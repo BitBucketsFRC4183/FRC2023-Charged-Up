@@ -7,7 +7,7 @@ public class RevUtils {
 
     public static void checkNeoError(REVLibError error, String message) {
         if (error != REVLibError.kOk) {
-            //DriverStation.reportError(String.format("%s: %s", message, error.toString()), false);
+            DriverStation.reportError(String.format("%s: %s", message, error.toString()), false);
         }
     }
 

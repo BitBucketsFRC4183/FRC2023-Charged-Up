@@ -4,28 +4,22 @@ import org.bitbuckets.lib.ProcessMode;
 
 import java.util.function.Consumer;
 
-public class NoopsTuner<T> implements IForceSendTuner<T> {
+public class NoopsTuner implements IForceSendTuner<ProcessMode> {
     //todo make a root tuner
 
-    final T data;
-
-    public NoopsTuner(T data) {
-        this.data = data;
-    }
-
     @Override
-    public void forceToValue(T value) {
+    public void forceToValue(ProcessMode value) {
 
     }
 
     @Override
-    public T readValue() {
-        return data;
+    public ProcessMode readValue() {
+        return ProcessMode.LOG_COMPETITION;
     }
 
     @Override
-    public T consumeValue() {
-        return data;
+    public ProcessMode consumeValue() {
+        return ProcessMode.LOG_COMPETITION;
     }
 
     @Override
@@ -34,7 +28,7 @@ public class NoopsTuner<T> implements IForceSendTuner<T> {
     }
 
     @Override
-    public void bind(Consumer<T> data) {
+    public void bind(Consumer<ProcessMode> data) {
 
     }
 }

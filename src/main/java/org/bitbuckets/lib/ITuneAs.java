@@ -7,7 +7,6 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardComponent;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardContainer;
 import org.bitbuckets.lib.process.RootProcess;
 import org.bitbuckets.lib.tune.IValueTuner;
-import org.bitbuckets.lib.tune.NoopsTuner;
 import org.bitbuckets.lib.tune.ValueTuner;
 import org.bitbuckets.lib.tune.EnumTuner;
 
@@ -22,20 +21,18 @@ public interface ITuneAs<T> {
 
     ITuneAs<Double> DOUBLE_INPUT = (k,c,d,s) -> {
 
-        /*var entry = c.add(k, d).getEntry();
+        var entry = c.add(k, d).getEntry();
         var tuneable = new ValueTuner<>(entry, s, d);
         NetworkTableInstance.getDefault().addListener(entry, REMOTE, tuneable);
 
-        return tuneable;*/
-
-        return new NoopsTuner(0.0);
+        return tuneable;
     };
 
 
 
     static <E extends Enum<E>> ITuneAs<E> ENUM(Class<E> enumType) {
         return (k,c,d,s) -> {
-            /*var e = c.add(".dbg", false).getEntry();
+            var e = c.add(".dbg", false).getEntry();
             NetworkTable hack = e.getTopic().getInstance().getTable(e.getTopic().getName().replaceAll("/.dbg", "/" + k));
 
             hack.getEntry(".controllable").setBoolean(true);
@@ -54,9 +51,7 @@ public interface ITuneAs<T> {
 
             NetworkTableInstance.getDefault().addListener(selected, REMOTE, init);
 
-            return init;*/
-
-            return new NoopsTuner<>(null);
+            return init;
         };
     }
 
@@ -64,7 +59,7 @@ public interface ITuneAs<T> {
     static <E extends Enum<E>> ITuneAs<E> SIDEBAR_ENUM(Class<E> enumType) {
         return (k,c,d,s) -> {
 
-            /*String rand = ".dbg" + ++RootProcess.i; //i hate this
+            String rand = ".dbg" + ++RootProcess.i; //i hate this
 
             var e = c.add(rand, false).getEntry();
             NetworkTable hack = e.getTopic().getInstance().getTable(e.getTopic().getName().replaceAll("/" + rand, "/" + k));
@@ -85,9 +80,7 @@ public interface ITuneAs<T> {
 
             NetworkTableInstance.getDefault().addListener(selected, REMOTE, init);
 
-            return init;*/
-
-            return (IValueTuner<E>) new NoopsTuner(ProcessMode.LOG_COMPETITION);
+            return init;
         };
     }
 

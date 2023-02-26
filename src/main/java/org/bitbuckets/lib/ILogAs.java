@@ -12,52 +12,44 @@ public interface ILogAs<T> {
     ILoggable<T> generate(String key, ShuffleboardContainer con, IValueTuner<ProcessMode> mode);
 
     ILogAs<Boolean> BOOLEAN = (k, c, m) -> {
-        /*var e = c
+        var e = c
                 .add(k, false)
                 .withWidget(BuiltInWidgets.kBooleanBox)
                 .getEntry();
 
-        e.setBoolean(false);*/
+        e.setBoolean(false);
 
-        return a -> {};
+        return e::setBoolean;
     };
 
     ILogAs<Double> DOUBLE = (key,con, m) -> {
-
-
-        var e = con.add(key, 0.0).getEntry();
-        System.out.println(con.getTitle() + "|" + key + "|" + e.getTopic().getName());
-
-
+        var e = con.add(key, 0.0).withWidget(BuiltInWidgets.kTextView).getEntry();
 
         e.setDouble(0.0);
 
-        return a -> {};
+        return e::setDouble;
     };
 
     ILogAs<Double> DOUBLE_GRAPH = (key,con, m) -> {
-        /*var e = con
+        var e = con
                 .add(key, 0.0)
                 .withWidget(BuiltInWidgets.kGraph)
                 .getEntry();
 
         e.setDouble(0.0);
 
-        return e::setDouble;*/
-        return a -> {};
+        return e::setDouble;
     };
 
     ILogAs<Double> DOUBLE_ANGLE = (key, con,m) -> {
-        /*var e = con
+        var e = con
                 .add(key, 0.0)
                 .withWidget(BuiltInWidgets.kGyro)
                 .getEntry();
 
         e.setDouble(0.0);
 
-        return e::setDouble;*/
-
-        return a -> {};
+        return e::setDouble;
     };
 
     ILogAs<double[]> PID_OUT_GRAPH = (key,con,m) -> {
