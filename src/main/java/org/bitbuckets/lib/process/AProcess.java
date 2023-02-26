@@ -59,7 +59,7 @@ public abstract class AProcess implements IProcess {
         if (currentLevel > ProcessMode.DISABLED.level) return;
 
         //run own logic loops
-       /* for (HasLoop hasLoop : this.hasLoop) {
+        for (HasLoop hasLoop : this.hasLoop) {
             hasLoop.loop();
         }
 
@@ -68,7 +68,7 @@ public abstract class AProcess implements IProcess {
             for (HasLogLoop hasLogLoop : this.hasLogLoop) {
                 hasLogLoop.logLoop();
             }
-        }*/
+        }
     }
 
     @Override

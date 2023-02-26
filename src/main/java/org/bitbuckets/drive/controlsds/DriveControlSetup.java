@@ -26,13 +26,17 @@ public class DriveControlSetup implements ISetup<DriveControl> {
     public DriveControl build(IProcess self) {
 
 
-            return new DriveControl(
+        DriveControl control = new DriveControl(
                 self.getDebuggable(),
                 self.childSetup("front-left",frontLeft),
                 self.childSetup("front-right",frontRight),
                 self.childSetup("back-left",backLeft),
                 self.childSetup("back-right",backRight)
         );
+        
+        self.registerLogLoop(control);
+
+        return control;
     }
 
 }

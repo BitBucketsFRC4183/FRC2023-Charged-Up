@@ -43,7 +43,7 @@ public class SubProcess extends AProcess {
         //component specific
         var childPath = this.selfPath.append(key);
 
-        var childComponent = rootLayout.getLayout(childPath.getAsTablePath(), BuiltInLayouts.kGrid).withProperties(Map.of("Number of columns", 3, "Number of rows", 1)).withSize(3, 2);
+        var childComponent = rootLayout.getLayout(childPath.getAsFlatTablePath(), BuiltInLayouts.kGrid).withProperties(Map.of("Number of columns", 3, "Number of rows", 1)).withSize(3, 2);
         var childDebugPart = childComponent.getLayout("debug",BuiltInLayouts.kList).withProperties(Map.of("Label Position", "LEFT"));
         var childTune = childComponent.getLayout("tune", BuiltInLayouts.kList).withProperties(Map.of("Label Position", "BOTTOM"));
         var childLog = childComponent.getLayout("log", BuiltInLayouts.kList).withProperties(Map.of("Label Position", "LEFT"));

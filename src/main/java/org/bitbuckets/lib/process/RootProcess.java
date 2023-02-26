@@ -2,11 +2,9 @@ package org.bitbuckets.lib.process;
 
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardContainer;
 import org.bitbuckets.lib.*;
 import org.bitbuckets.lib.core.Path;
 import org.bitbuckets.lib.debug.IDebuggable;
-import org.bitbuckets.lib.debug.NoopsDebuggable;
 import org.bitbuckets.lib.debug.ShuffleDebuggable;
 import org.bitbuckets.lib.log.IConsole;
 import org.bitbuckets.lib.log.ILoggable;
@@ -33,14 +31,14 @@ public class RootProcess extends AProcess {
     public <T> T childSetup(String key, ISetup<T> setup) {
         var path = this.selfPath.append(key);
 
-        ShuffleboardContainer tab = Shuffleboard.getTab(key);
-        ShuffleboardContainer sidebar = tab.getLayout("enablers", BuiltInLayouts.kList);
+        var tab = Shuffleboard.getTab(key);
+        var sidebar = tab.getLayout("enablers", BuiltInLayouts.kList);
 
-
-        ShuffleboardContainer component = tab.getLayout(key, BuiltInLayouts.kGrid).withProperties(Map.of("Number of columns", 3, "Number of rows", 1)).withSize(3, 2);
-        ShuffleboardContainer debug = component.getLayout("debug",BuiltInLayouts.kList).withProperties(Map.of("Label Position", "LEFT"));
-        ShuffleboardContainer tune = component.getLayout("tune", BuiltInLayouts.kList).withProperties(Map.of("Label Position", "BOTTOM"));
-        ShuffleboardContainer log = component.getLayout("log", BuiltInLayouts.kList).withProperties(Map.of("Label Position", "LEFT"));
+        //component specific
+        var component = tab.getLayout(key, BuiltInLayouts.kGrid).withProperties(Map.of("Number of columns", 3, "Number of rows", 1)).withSize(3, 2);
+        var debug = component.getLayout("debug",BuiltInLayouts.kList).withProperties(Map.of("Label Position", "LEFT"));
+        var tune = component.getLayout("tune", BuiltInLayouts.kList).withProperties(Map.of("Label Position", "BOTTOM"));
+        var log = component.getLayout("log", BuiltInLayouts.kList).withProperties(Map.of("Label Position", "LEFT"));
 
         IForceSendTuner<ProcessMode> childMode = (IForceSendTuner<ProcessMode>) ITuneAs.SIDEBAR_ENUM(ProcessMode.class)
                 .generate(
@@ -51,7 +49,7 @@ public class RootProcess extends AProcess {
                 );
 
 
-        IDebuggable debuggable = new NoopsDebuggable();
+        ShuffleDebuggable debuggable = new ShuffleDebuggable(debug, childMode);
         ProcessConsole console = new ProcessConsole(childMode,path);
 
         AProcess child = new SubProcess(path, childMode, tab, sidebar, console, debuggable, log, tune);
@@ -95,6 +93,6 @@ public class RootProcess extends AProcess {
     public static RootProcess root() {
 
 
-        return new RootProcess(new Path(new String[0]), new NoopsTuner(ProcessMode.LOG_COMPETITION));
+        return new RootProcess(new Path(new String[0]), new NoopsTuner());
     }
  }
