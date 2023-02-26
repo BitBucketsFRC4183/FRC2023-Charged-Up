@@ -22,8 +22,8 @@ public class GripperControlSetup implements ISetup<GripperControl> {
         gripperSpark.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, true);
         gripperSpark.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, true);
 
-        gripperSpark.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, (float) 1000);
-        gripperSpark.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, (float) 1000);
+        gripperSpark.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, (float) 150);
+        gripperSpark.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, (float) 0);
 
         return new GripperControl(self.generateDebugger(), gripper);
     }
