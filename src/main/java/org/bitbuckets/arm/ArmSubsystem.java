@@ -1,5 +1,6 @@
 package org.bitbuckets.arm;
 
+import org.bitbuckets.gripper.GripperConstants;
 import org.bitbuckets.gripper.GripperControl;
 import org.bitbuckets.gripper.GripperFSM;
 import org.bitbuckets.gripper.GripperInput;
@@ -130,7 +131,11 @@ public class ArmSubsystem {
                 armControl.manuallyMoveUpperArm(armInput.getUpperArm_PercentOutput());
                 if (gripperInput.ifGripperPressed()) {
                     gripperControl.openGripper();
-                } else {
+                }
+                else if(gripperInput.closeGripperPressed()){
+                    gripperControl.manuallyCloseGripper();
+                }
+                else {
                     gripperControl.closeGripper();
                 }
 
