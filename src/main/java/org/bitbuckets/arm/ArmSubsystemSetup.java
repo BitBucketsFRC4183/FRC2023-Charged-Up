@@ -1,5 +1,10 @@
 package org.bitbuckets.arm;
 
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.wpilibj.Joystick;
+import org.bitbuckets.gripper.GripperConstants;
+import org.bitbuckets.gripper.GripperControl;
+import org.bitbuckets.gripper.GripperControlSetup;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
@@ -9,6 +14,8 @@ import edu.wpi.first.wpilibj.util.Color8Bit;
 import org.bitbuckets.OperatorInput;
 import org.bitbuckets.arm.sim.SimArmSetup;
 import org.bitbuckets.auto.AutoSubsystem;
+import org.bitbuckets.auto.AutoSubsystemSetup;
+import org.bitbuckets.gripper.GripperInput;
 import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.control.IPIDCalculator;
@@ -16,7 +23,10 @@ import org.bitbuckets.lib.control.PIDCalculatorSetup;
 import org.bitbuckets.lib.control.ProfiledPIDFSetup;
 import org.bitbuckets.lib.hardware.IMotorController;
 import org.bitbuckets.lib.util.MockingUtil;
+import org.bitbuckets.lib.vendor.sim.dc.DCMotorConfig;
+import org.bitbuckets.lib.vendor.sim.dc.DCSimSetup;
 import org.bitbuckets.lib.vendor.spark.SparkSetup;
+import org.ejml.simple.SimpleMatrix;
 
 public class ArmSubsystemSetup implements ISetup<ArmSubsystem> {
 
@@ -39,6 +49,7 @@ public class ArmSubsystemSetup implements ISetup<ArmSubsystem> {
         ISetup<IMotorController> lowerArm1;
         ISetup<IMotorController> lowerArm2;
         ISetup<IMotorController> upperArm;
+        ISetup<IMotorController> gripperJoint = new SparkSetup(GripperConstants.GRIPPER_MOTOR_ID, GripperConstants.GRIPPER_CONFIG, GripperConstants.GRIPPER_PID);;
 
         ISetup<IPIDCalculator> lowerPID = new PIDCalculatorSetup(self.isReal() ? ArmConstants.LOWER_PID : ArmConstants.LOWER_SIMPID);
         ISetup<IPIDCalculator> upperPID = new PIDCalculatorSetup(self.isReal() ? ArmConstants.UPPER_PID : ArmConstants.UPPER_SIMPID);
@@ -48,6 +59,8 @@ public class ArmSubsystemSetup implements ISetup<ArmSubsystem> {
             lowerArm1 = new SparkSetup(9, ArmConstants.LOWER_CONFIG, ArmConstants.LOWER_PID);
             lowerArm2 = new SparkSetup(10, ArmConstants.LOWER_CONFIG_FOLLOWER, ArmConstants.LOWER_PID);
             upperArm = new SparkSetup(11, ArmConstants.UPPER_CONFIG, ArmConstants.UPPER_PID);
+            gripperJoint = new SparkSetup(12, GripperConstants.GRIPPER_CONFIG, GripperConstants.GRIPPER_PID);
+
         } else {
 
             Mechanism2d mech = new Mechanism2d(3, 3);
@@ -84,9 +97,17 @@ public class ArmSubsystemSetup implements ISetup<ArmSubsystem> {
                 upperPID
         );
 
+        GripperControlSetup gripperControlSetup = new GripperControlSetup(
+                gripperJoint
+        );
+
+
         ArmControl armControl = self.childSetup("arm-control", armControlSetup);
 
-        return new ArmSubsystem(operatorInput, armControl, self.getDebuggable(), autoSubsystem);
+        GripperControl gripperControl = self.childSetup("gripper-control", gripperControlSetup);
+        GripperInput gripperInput = new GripperInput(new Joystick(1));
+
+        return new ArmSubsystem(operatorInput, armControl, gripperControl, gripperInput, self.getDebuggable(), autoSubsystem);
 
     }
 }

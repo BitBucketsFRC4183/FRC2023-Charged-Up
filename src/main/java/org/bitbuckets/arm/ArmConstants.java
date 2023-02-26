@@ -10,21 +10,24 @@ import java.util.Optional;
 
 public interface ArmConstants {
 
+    int LOWER_ARM_1_MOTOR_ID = 9;
+    int LOWER_ARM_2_MOTOR_ID = 10;
+    int UPPER_ARM_MOTOR_ID = 11;
     // calculated gearRatio
     // Input to output- 5:1 4:1 3:1
-    // Final gear different for each arm; 16:48 for lower and 16:16 for upper
+    // Final gear different for         each arm; 16:48 for lower and 16:16 for upper
 
     //converts encoder rotations -> mechanism rotations (0.036)
     double LOWER_ARM_GEAR_RATIO = 1.0 / ((5.0 * 4.0 * 3.0) * (48. / 16.));
-    double UPPER_ARM_GEAR_RATIO = 1.0 / ((5.0 * 4.0 * 3.0) * (16. / 16.));
+    double UPPER_ARM_GEAR_RATIO = 1.0 / ((5.0 * 5.0 * 4.0) * (16. / 16.));
 
+
+    double LOWER_JOINT_LENGTH = 0.6731;
+    double UPPER_JOINT_LENGTH = 0.9652; // including gripper
 
     //mainly for arm sim
     double UPPER_JOINT_WIDTH = 0.0254;
     double LOWER_JOINT_WIDTH = 0.0508;
-
-    double UPPER_JOINT_LENGTH = 0.6731;
-    double LOWER_JOINT_LENGTH = 0.6605;
 
     //in rotations
     double LOWER_ARM_FORWARD_LIMIT_MECHANISM = 0.98;
@@ -98,8 +101,8 @@ public interface ArmConstants {
     );
 
     ArmConfig UPPER_ARM = new ArmConfig(
-            0.84,
-            1.036005,
+            0.84,  //not incl. gripper length
+            1.474175, //not including gripper mass
             Units.rotationsToRadians(UPPER_ARM_FORWARD_LIMIT_MECHANISM),
             Units.rotationsToRadians(UPPER_ARM_REVERSE_LIMIT_MECHANISM),
             false
@@ -110,7 +113,8 @@ public interface ArmConstants {
     double LOWER_MOI = 0.08;
     double LOWER_CGRADIUS = 0.4318;
 
-    double UPPER_MOI = 0.08;
+
+    double UPPER_MOI = 0.99647313522;
     double UPPER_CGRADIUS = 0.4318;
 
 
@@ -126,7 +130,18 @@ public interface ArmConstants {
     // Feel free to change to make arms faster/slower for input
     double CONTROL_JOINT_OUTPUT = 1;
 
-    //TODO fix these numbers
+
+    /*
+    Starting Configuration
+    0 = Horizontal
+    lowerJoint = 90
+    upperJoint = 0
+     */
+
+    // Neo Brushless Motor Relative Encoder: 42 counts per revolution
+
+    // all the numbers below are made up, not actual numbers we will use for competition
+
     double STORAGE_X = 0.3;
     double STORAGE_Y = -0.1;
 

@@ -25,24 +25,33 @@ import org.bitbuckets.lib.vendor.spark.SparkDriveMotorSetup;
 import org.bitbuckets.lib.vendor.spark.SparkSteerMotorSetup;
 import org.bitbuckets.lib.vendor.thrifty.ThriftyEncoderSetup;
 import org.bitbuckets.odometry.IOdometryControl;
+import org.bitbuckets.odometry.NavXOdometryControlSetup;
 import org.bitbuckets.odometry.PidgeonOdometryControlSetup;
 import org.bitbuckets.vision.IVisionControl;
 
 public class DriveSubsystemSetup implements ISetup<DriveSubsystem> {
 
+    public enum Mode {
+        Neo,
+        Talon,
+        Sim
+    }
+
     final boolean driveEnabled;
-    final boolean isSimulated;
+    final Mode mode;
 
     final OperatorInput operatorInput;
     final AutoSubsystem autoSubsystem;
     final IVisionControl visionControl;
 
-    public DriveSubsystemSetup(boolean driveEnabled, boolean isSimulated, OperatorInput operatorInput, AutoSubsystem autoSubsystem, IVisionControl visionControl) {
+
+
+    public DriveSubsystemSetup(boolean driveEnabled, Mode mode, OperatorInput input, AutoSubsystem autoSubsystem, IVisionControl visionControl) {
         this.driveEnabled = driveEnabled;
-        this.isSimulated = isSimulated;
-        this.operatorInput = operatorInput;
+        this.mode = mode;
         this.autoSubsystem = autoSubsystem;
         this.visionControl = visionControl;
+        this.operatorInput = input;
     }
 
     @Override
@@ -54,20 +63,30 @@ public class DriveSubsystemSetup implements ISetup<DriveSubsystem> {
         BalanceControl balanceControl = self.childSetup("closed-loop", new BalanceSetup());
 
         DriveControl driveControl;
-        if (isSimulated) {
-            driveControl = buildSimDriveControl(self);
-        } else {
-            driveControl = buildNeoDriveControl(self); //or use talons, when they work}
+        IOdometryControl odometryControl;
+
+        switch (mode) {
+            case Neo:
+                driveControl = buildNeoDriveControl(self);
+                odometryControl = self.childSetup("odo-control", new PidgeonOdometryControlSetup(driveControl, visionControl, 5));
+                break;
+            case Talon:
+                driveControl = buildTalonDriveControl(self);
+                odometryControl = self.childSetup("odo-control", new NavXOdometryControlSetup(driveControl, visionControl));
+                break;
+            case Sim:
+                driveControl = buildSimDriveControl(self);
+                odometryControl = self.childSetup("odo-control", new PidgeonOdometryControlSetup(driveControl, visionControl, 5));
+                break;
+            default:
+                throw new RuntimeException("Invalid drive mode: " + mode);
         }
+
         autoSubsystem.setDriveControl(driveControl);
+        autoSubsystem.setOdometryControl(odometryControl);
 
-        //TODO uncomment
-        //IOdometryControl odometryControl = self.childSetup("pidgeon-control", new PidgeonOdometryControlSetup(driveControl, visionControl, 5));
+        HoloControl holoControl = self.childSetup("holo-control",new HoloControlSetup(driveControl, visionControl, odometryControl));
 
-        //autoSubsystem.setOdometryControl(odometryControl);
-
-       // HoloControl holoControl = self.childSetup("holo-control", new HoloControlSetup(driveControl, visionControl, odometryControl))
-;
         IValueTuner<DriveSubsystem.OrientationChooser> orientationTuner = self
                 .generateTuner(ITuneAs.ENUM(DriveSubsystem.OrientationChooser.class), "set-orientation", DriveSubsystem.OrientationChooser.FIELD_ORIENTED);
 
@@ -91,7 +110,8 @@ public class DriveSubsystemSetup implements ISetup<DriveSubsystem> {
         // used to configure the spark motor in SparkSetup
 
 
-        var driveControl = new DriveControlSetup(
+        DriveControlSetup driveControl = new DriveControlSetup(
+
                 new SwerveModuleSetup(
                         new DriveControllerSetup(
                                 new SparkDriveMotorSetup(
