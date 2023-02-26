@@ -57,7 +57,7 @@ public class DriveInput {
     /**
      * @return whether the slow drive (left trigger) is held down
      */
-    public boolean isSlowDrivePressed() {
+    public boolean isSlowDriveHeld() {
         return joystick.getRawAxis(XboxController.Axis.kLeftTrigger.value) > 0.1;
     }
 

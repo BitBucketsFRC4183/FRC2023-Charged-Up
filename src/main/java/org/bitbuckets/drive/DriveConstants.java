@@ -127,5 +127,5 @@ public interface DriveConstants {
 
 
     String autoBalanceDeadbandDegKey = "AutoBalance.deadbandDeg";
-    double BalanceDeadbandDeg = 6;
+    double BalanceDeadbandDeg = 0;
 }

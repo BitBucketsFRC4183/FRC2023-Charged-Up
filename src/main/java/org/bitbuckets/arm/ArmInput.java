@@ -48,31 +48,20 @@ Right Joystick to control upper joint on arm
 
     public double getLowerArm_PercentOutput() {
 
-        return armDeadband(operatorControl.getRawAxis(XboxController.Axis.kLeftY.value));
+        return armDeadband(operatorControl.getRawAxis(XboxController.Axis.kLeftY.value)); //TODO remove 0.5 because iw as using it for testing in order to not explode robot
     }
 
     public double getUpperArm_PercentOutput() {
 
-        return -armDeadband(operatorControl.getRawAxis(0));
+        return -armDeadband(operatorControl.getRawAxis(XboxController.Axis.kRightY.value));
     }
-
-    //for picking up cones
-    public double getIsClampReleased() {
-        return armDeadband(operatorControl.getRawAxis(XboxController.Axis.kLeftTrigger.value));
-    }
-
-    public double getIsClampHeld() {
-        return armDeadband(operatorControl.getRawAxis(XboxController.Axis.kRightTrigger.value));
-    }
-
-    /*
-    public double isStopAllMotorsPressed(){
-        return operatorControl.getRawButtonPressed(XboxController.Button.kB.value);
-    }
-     */
 
     public boolean isStoragePressed() {
         return operatorControl.getRawButton(XboxController.Button.kX.value);
+    }
+
+    public boolean isDebugDegreesPressed() {
+        return operatorControl.getRawButtonPressed(XboxController.Button.kY.value);
     }
 
     // checks if operator wants to move arms to intake for human player station (by pressing RIGHT DPAD)
@@ -111,11 +100,9 @@ Right Joystick to control upper joint on arm
     }
 
 
-    public boolean isStopPidPressed(){
+    public boolean isStopPidPressed() {
         return operatorControl.getRawButtonPressed(XboxController.Button.kB.value);
     }
-
-
 
 
 }

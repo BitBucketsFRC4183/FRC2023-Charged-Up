@@ -3,6 +3,8 @@ package org.bitbuckets.drive.holo;
 import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import org.bitbuckets.drive.controlsds.DriveControl;
 import org.bitbuckets.lib.ISetup;
@@ -42,6 +44,9 @@ public class HoloControlSetup implements ISetup<HoloControl> {
                 x.rawAccess(PIDController.class),
                 y.rawAccess(PIDController.class),
                 theta.rawAccess(ProfiledPIDController.class)
+        );
+        holonomicDriveController.setTolerance(
+                new Pose2d(0.1, 0.1, Rotation2d.fromDegrees(1))
         );
         var debuggable = self.generateDebugger();
 

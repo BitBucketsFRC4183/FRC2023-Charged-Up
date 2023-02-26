@@ -21,6 +21,6 @@ public class DriveController implements IDriveController {
 
     @Override
     public double getStatePosition_meters() {
-        return motor.getPositionMechanism_meters();
+        return -motor.getPositionMechanism_meters();
     }
 }

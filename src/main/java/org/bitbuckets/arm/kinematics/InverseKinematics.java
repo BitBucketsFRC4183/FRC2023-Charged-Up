@@ -36,7 +36,7 @@ public class InverseKinematics {
     public double getLowerJoint_degrees() {
         double c = Math.sqrt(x * x + y * y);
         double alpha = Math.atan(y / x);
-        return (180. / Math.PI) * (Math.acos((Math.pow(ArmConstants.LOWER_JOINT_LENGTH, 2) + Math.pow(c, 2) - Math.pow(ArmConstants.UPPER_JOINT_LENGTH, 2)) / (2 * ArmConstants.LOWER_JOINT_LENGTH * c)) - alpha);
+        return (180. / Math.PI) * (Math.acos((Math.pow(ArmConstants.LOWER_JOINT_LENGTH, 2) + Math.pow(c, 2) - Math.pow(ArmConstants.UPPER_JOINT_LENGTH, 2)) / (2 * ArmConstants.LOWER_JOINT_LENGTH * c)) + alpha);
     }
 
 
@@ -49,6 +49,6 @@ public class InverseKinematics {
         double c = Math.sqrt(x * x + y * y);
         double beta = Math.acos((Math.pow(ArmConstants.LOWER_JOINT_LENGTH, 2) + Math.pow(ArmConstants.UPPER_JOINT_LENGTH, 2) - Math.pow(c, 2)) / (2 * ArmConstants.UPPER_JOINT_LENGTH * ArmConstants.LOWER_JOINT_LENGTH));
 
-        return (180./Math.PI) * (Math.PI - beta);
+        return -((180./Math.PI) * (Math.PI - beta));
     }
 }

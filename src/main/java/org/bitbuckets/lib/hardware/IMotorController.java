@@ -14,6 +14,7 @@ public interface IMotorController extends IMotor, IEncoder {
         double setpoint = getSetpoint_mechanismRotations();
         double actualPosition = getMechanismPositionAccum_rot();
         return setpoint - actualPosition;
+
     }
 
 }

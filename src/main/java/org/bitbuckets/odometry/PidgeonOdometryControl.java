@@ -49,8 +49,9 @@ public class PidgeonOdometryControl implements IOdometryControl {
 
         //Todo: re add when vision is fixed
         Optional<Pose3d> res = visionControl.estimateVisionRobotPose();
+        if (res == null) return;
 
-        if (res.isPresent()) {
+        if (res != null && res.isPresent()) {
             Pose2d realPose = res.get().toPose2d();
             swerveDrivePoseEstimator.addVisionMeasurement(realPose, epoch, visionMeasurementStdDevs);
 
@@ -78,18 +79,29 @@ public class PidgeonOdometryControl implements IOdometryControl {
 
     @Override
     public Rotation2d getRotation2d() {
-        return Rotation2d.fromDegrees(pigeonIMU.getYaw());
+        return pigeonIMU.getRotation2d();
     }
 
     @Override
     public double getYaw_deg() {
-        return pigeonIMU.getYaw();
+        return Units.radiansToDegrees(pigeonIMU.getYaw());
+    }
+
+    @Override
+    public double getPitch_deg() {
+        return pigeonIMU.getPitch();
     }
 
 
     @Override
     public double getRoll_deg() {
-        return pigeonIMU.getRoll();
+
+        double[] data = new double[4];
+        pigeonIMU.getAccumGyro(data); //fill data
+
+        return data[0];
+
+        //return pigeonIMU.getRoll(); TODO this is broken for some reason.
     }
 
     @Override

@@ -11,6 +11,8 @@ public interface IOdometryControl {
 
     double getYaw_deg();
 
+    double getPitch_deg();
+
     double getRoll_deg();
 
     void zero();

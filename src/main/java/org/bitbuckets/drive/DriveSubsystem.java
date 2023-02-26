@@ -26,7 +26,6 @@ import java.util.Optional;
 public class DriveSubsystem {
 
     final DriveInput input;
-
     final AutoSubsystem autoSubsystem;
     final IOdometryControl odometryControl;
     final ClosedLoopsControl closedLoopsControl;
@@ -60,42 +59,39 @@ public class DriveSubsystem {
     Optional<Pose3d> visionTarget;
 
     public void runLoop() {
+
+        if (state == DriveFSM.UNINITIALIZED) {
+            if (autoSubsystem.state() == AutoFSM.AUTO_RUN) {
+                state = DriveFSM.AUTO_PATHFINDING;
+            }
+            if (autoSubsystem.state() == AutoFSM.TELEOP) {
+                state = DriveFSM.TELEOP_NORMAL;
+            }
+        } else if (state == DriveFSM.TELEOP_NORMAL && autoSubsystem.state() == AutoFSM.AUTO_RUN) {
+            // switch to auto from teleop
+            state = DriveFSM.AUTO_PATHFINDING;
+        }
+
+        switch (autoSubsystem.state()) {
+
+            case AUTO_RUN:
+                autoLoop();
+                break;
+            case TELEOP:
+                teleopLoop();
+                break;
+            case DISABLED:
+                // TODO: we aren't really "uninitialized" but the drive subsystem treats uninitialized and disabled as the same?
+                state = DriveFSM.UNINITIALIZED;
+                break;
+        }
+
+        debuggable.log("state", state.toString());
+    }
+
+    void teleopLoop() {
         switch (state) {
-            case UNINITIALIZED:
-                if (autoSubsystem.state() == AutoFSM.AUTO_RUN) {
-                    state = DriveFSM.AUTO_PATHFINDING;
-                    break;
-                }
-                if (autoSubsystem.state() == AutoFSM.TELEOP) {
-                    state = DriveFSM.TELEOP_NORMAL;
-                    break;
-                }
-                break;
-
-            case AUTO_PATHFINDING:
-
-                if (autoSubsystem.state() == AutoFSM.TELEOP) {
-                    state = DriveFSM.TELEOP_NORMAL;
-                    break;
-                }
-
-                if (autoSubsystem.state() == AutoFSM.AUTO_ENDED) {
-                    driveControl.drive(new ChassisSpeeds(0, 0, 0));
-                    break;
-
-                }
-                Optional<PathPlannerTrajectory.PathPlannerState> opt = autoSubsystem.samplePathPlannerState();
-                if (opt.isPresent()) {
-                    ChassisSpeeds targetSpeeds = holoControl.calculatePose2DFromState(opt.get());
-                    driveControl.drive(targetSpeeds);
-                }
-                break;
-
             case TELEOP_NORMAL:
-                if (autoSubsystem.state() == AutoFSM.AUTO_RUN) {
-                    state = DriveFSM.AUTO_PATHFINDING;
-                    break;
-                }
                 if (input.isVisionGoPressed() && visionControl.isTargTrue()) {
                     visionTarget = visionControl.estimateVisionTargetPose();
                     state = DriveFSM.TELEOP_VISION;
@@ -117,7 +113,7 @@ public class DriveSubsystem {
                     state = DriveFSM.TELEOP_NORMAL;
                     break;
                 }
-                teleopBalancing();
+                balance();
                 break;
 
             case TELEOP_VISION:
@@ -136,12 +132,52 @@ public class DriveSubsystem {
                 teleopAutoheading();
                 break;
         }
-        debuggable.log("state", state.toString());
+    }
+
+    void autoLoop() {
+        switch (state) {
+            case AUTO_PATHFINDING:
+
+                if (autoSubsystem.state() == AutoFSM.TELEOP) {
+                    state = DriveFSM.TELEOP_NORMAL;
+                    break;
+                }
+
+                if (autoSubsystem.state() == AutoFSM.AUTO_ENDED) {
+                    driveControl.drive(new ChassisSpeeds(0, 0, 0));
+                    break;
+
+                }
+                Optional<PathPlannerTrajectory.PathPlannerState> opt = autoSubsystem.samplePathPlannerState();
+                if (opt.isPresent()) {
+                    ChassisSpeeds targetSpeeds = holoControl.calculatePose2DFromState(opt.get());
+                    targetSpeeds.vxMetersPerSecond = -targetSpeeds.vxMetersPerSecond;
+                    targetSpeeds.vyMetersPerSecond = -targetSpeeds.vyMetersPerSecond;
+                    targetSpeeds.omegaRadiansPerSecond = -targetSpeeds.omegaRadiansPerSecond;
+
+                    driveControl.drive(targetSpeeds);
+                }
+
+
+                if (autoSubsystem.sampleHasEventStarted("auto-balance")) {
+                    state = DriveFSM.AUTO_BALANCING;
+                    break;
+                }
+                break;
+
+            case AUTO_BALANCING:
+                balance();
+                break;
+        }
     }
 
     void teleopVision() {
         if (visionTarget.isPresent()) {
             ChassisSpeeds speeds = holoControl.calculatePose2D(visionTarget.get().toPose2d(), 1, visionTarget.get().toPose2d().getRotation());
+            speeds.vxMetersPerSecond = -speeds.vxMetersPerSecond;
+            speeds.vyMetersPerSecond = -speeds.vyMetersPerSecond;
+            speeds.omegaRadiansPerSecond = -speeds.omegaRadiansPerSecond;
+
 
             driveControl.drive(speeds);
         } else {
@@ -159,10 +195,21 @@ public class DriveSubsystem {
             odometryControl.setPos(Rotation2d.fromDegrees(0), driveControl.currentPositions(), new Pose2d(0, 0, Rotation2d.fromDegrees(0)));
         }
 
-        double xOutput = input.getInputX() * driveControl.getMaxVelocity();
-        double yOutput = -input.getInputY() * driveControl.getMaxVelocity();
-        double rotationOutput = input.getInputRot() * driveControl.getMaxAngularVelocity();
+        double xOutput;
+        double yOutput;
+        double rotationOutput;
 
+        if (input.isSlowDriveHeld()) {
+            xOutput = input.getInputX() * driveControl.getMaxVelocity() * 0.1;
+            yOutput = -input.getInputY() * driveControl.getMaxVelocity() * 0.1;
+            rotationOutput = input.getInputRot() * driveControl.getMaxAngularVelocity() * 0.1;
+
+        } else {
+            xOutput = input.getInputX() * driveControl.getMaxVelocity();
+            yOutput = -input.getInputY() * driveControl.getMaxVelocity();
+            rotationOutput = input.getInputRot() * driveControl.getMaxAngularVelocity();
+
+        }
         debuggable.log("x-output", xOutput);
         debuggable.log("y-output", yOutput);
         debuggable.log("rot-output", rotationOutput);
@@ -189,20 +236,27 @@ public class DriveSubsystem {
 
     }
 
-    void teleopBalancing() {
+    void balance() {
 
+        debuggable.log("is-running-ab", true);
         //This is bad and should be shifted somewhere else
         double BalanceDeadband_deg = Preferences.getDouble(DriveConstants.autoBalanceDeadbandDegKey, DriveConstants.BalanceDeadbandDeg);
-        double Roll_deg = odometryControl.getRoll_deg();
-        if (Math.abs(Roll_deg) > BalanceDeadband_deg) {
-            double output = closedLoopsControl.calculateBalanceOutput(Roll_deg, 0);
-            driveControl.drive(new ChassisSpeeds(output, 0.0, 0.0));
+        double Pitch_deg = odometryControl.getPitch_deg();
+
+        debuggable.log("pitch-now", Pitch_deg);
+        if (Math.abs(Pitch_deg) > BalanceDeadband_deg) {
+            debuggable.log("is-running-ab-2", true);
+
+            double output = closedLoopsControl.calculateBalanceOutput(Pitch_deg, 0);
+
+            debuggable.log("control-output-autobalance", output);
+
+            driveControl.drive(new ChassisSpeeds(output / 2, 0.0, 0.0));
         } else {
             driveControl.stop90degrees();
 
         }
     }
-
 
     void teleopAutoheading() {
         double IMU_Yaw = Math.toRadians(odometryControl.getYaw_deg());//Math.toRadians(-350);

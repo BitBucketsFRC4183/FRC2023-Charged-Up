@@ -20,7 +20,6 @@ public class SimArmSetup implements ISetup<IMotorController> {
     final ArmConfig armConfig;
     final PIDConfig pidConfig;
     final MechanismLigament2d mechanismLigament2d;
-
     public SimArmSetup(MotorConfig config, ArmConfig armConfig, PIDConfig pidConfig, MechanismLigament2d mechanismLigament2d) {
         this.config = config;
         this.armConfig = armConfig;
@@ -39,13 +38,11 @@ public class SimArmSetup implements ISetup<IMotorController> {
         SingleJointedArmSim sim = new SingleJointedArmSim(
                 DCMotor.getNeo550(2),
                 1.0 / config.encoderToMechanismCoefficient * 10.0, //TODO fix this dumb hack
-                estimateMOI(armConfig.lengthMeters, armConfig.armMass),
                 armConfig.lengthMeters,
                 armConfig.armMinAngle,
                 armConfig.armMaxAngle,
                 armConfig.armMass,
-                armConfig.isGravitySimulated,
-                VecBuilder.fill(0.001)
+                armConfig.isGravitySimulated
         );
 
         PIDController pidController = new PIDController(
@@ -55,6 +52,7 @@ public class SimArmSetup implements ISetup<IMotorController> {
         SimArm arm = new SimArm(self.generateDebugger(), mechanismLigament2d, config, sim, pidController);
 
         self.registerSimLoop(arm::runSimulationLoop, "simulate-arm");
+
 
         return arm;
     }

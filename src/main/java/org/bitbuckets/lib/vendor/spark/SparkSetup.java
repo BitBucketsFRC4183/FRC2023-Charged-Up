@@ -113,6 +113,7 @@ public class SparkSetup implements ISetup<IMotorController> {
                 ctrl,
                 self.generateDoubleLogger("pos-setpoint-mechanism-rotations"),
                 self.generateDoubleLogger("encoder-mechanism-rotations"),
+                self.generateDoubleLogger("encoder-position-raw"),
                 self.generateDoubleLogger("error-mechanism-rotations"),
                 self.generateEnumLogger("last-control-mode", LastControlMode.class)
         );

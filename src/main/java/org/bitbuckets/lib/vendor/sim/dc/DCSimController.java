@@ -99,7 +99,7 @@ public class DCSimController implements IMotorController, Runnable{
 
     @Override
     public void moveToPosition_mechanismRotations(double position_mechanismRotations) {
-        throw new UnsupportedOperationException();
+        simulatedMotor.setInputVoltage(simulatedPIDController.calculate(getMechanismPositionAccum_rot(), position_mechanismRotations));
     }
 
     @Override

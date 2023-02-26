@@ -13,6 +13,7 @@ import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -101,7 +102,7 @@ class VisionControlTest {
         when(photonPipelineResult.hasTargets()).thenReturn(true);
 
         // Photon vision estimates that our robot is at (0, 0, 0) -> rotated 0º field relative
-        EstimatedRobotPose robotPose = new EstimatedRobotPose(new Pose3d(0, 0, 0, new Rotation3d(0, 0, Math.toRadians(0))), 0);
+        EstimatedRobotPose robotPose = new EstimatedRobotPose(new Pose3d(0, 0, 0, new Rotation3d(0, 0, Math.toRadians(0))), 0, new ArrayList<>());
         when(photonPoseEstimator.update()).thenReturn(Optional.of(robotPose));
 
         // Mock our apriltag to 2, 0, rotated -180 (facing towards us)
