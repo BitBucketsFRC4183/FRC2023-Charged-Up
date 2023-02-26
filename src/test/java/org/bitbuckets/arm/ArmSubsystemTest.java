@@ -2,13 +2,11 @@ package org.bitbuckets.arm;
 
 import org.bitbuckets.OperatorInput;
 import org.bitbuckets.auto.AutoSubsystem;
-<<<<<<< HEAD
-import org.bitbuckets.lib.debug.IDebuggable;
-=======
+
 import org.bitbuckets.gripper.GripperControl;
 import org.bitbuckets.gripper.GripperInput;
-import org.bitbuckets.lib.log.Debuggable;
->>>>>>> main
+
+import org.bitbuckets.lib.debug.IDebuggable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -19,14 +17,11 @@ class ArmSubsystemTest {
 
     OperatorInput armInput;
     ArmControl armControl;
-<<<<<<< HEAD
-    IDebuggable debuggable;
-=======
+
     ArmSubsystem armSubsystem;
     GripperControl gripperControl;
     GripperInput gripperInput;
-    Debuggable debuggable;
->>>>>>> main
+    IDebuggable debuggable;
     AutoSubsystem autoSubsystem;
 
 
