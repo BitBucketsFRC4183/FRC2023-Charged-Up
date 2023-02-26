@@ -4,23 +4,41 @@ import com.pathplanner.lib.PathPlannerTrajectory;
 import edu.wpi.first.wpilibj.Timer;
 import org.bitbuckets.lib.util.HasLifecycle;
 
+import java.util.List;
 import java.util.Map;
 
 public class AutoPathInstance implements HasLifecycle {
 
-    final PathPlannerTrajectory trajectory;
+    final List<PathPlannerTrajectory> segments;
     final Map<String, Double> eventToTimeMap;
-    final double pathTime_seconds;
+    final List<AutoPathInstance.SegmentTime> segmentTimes; //needs to be inserted highest back
     final AutoPath type;
+    final double totalTime;
 
-    AutoPathInstance(PathPlannerTrajectory trajectory, Map<String, Double> eventToTimeMap, double pathTime_seconds, AutoPath type) {
-        this.trajectory = trajectory;
-        this.eventToTimeMap = eventToTimeMap;
-        this.pathTime_seconds = pathTime_seconds;
-        this.type = type;
+    record SegmentTime(int index, double startTime) {
     }
 
-    final Timer timer = new Timer();
+    public AutoPathInstance(List<PathPlannerTrajectory> segments, Map<String, Double> eventToTimeMap, List<SegmentTime> segmentTimes, AutoPath type, double totalTime) {
+        this.segments = segments;
+        this.eventToTimeMap = eventToTimeMap;
+        this.segmentTimes = segmentTimes;
+        this.type = type;
+        this.totalTime = totalTime;
+    }
+
+    //this is dumb
+
+    Timer pathTimer = new Timer();
+
+    public SegmentTime getSegmentTime(double currentTime) {
+        for (int i = segmentTimes.size() - 1; i >= 0; i--) { //latest startTime must come first
+            if (currentTime >= segmentTimes.get(i).startTime) {
+                return segmentTimes.get(i);
+            }
+        }
+
+        return new SegmentTime(0, 0);
+    }
 
 
     /**
@@ -31,34 +49,40 @@ public class AutoPathInstance implements HasLifecycle {
         if (type == AutoPath.NONE) {
             return false;
         }
-        double secondsNow = timer.get();
 
+        double secondsNow = pathTimer.get();
         if (eventToTimeMap.get(eventName) == null) return false;
 
-        return secondsNow > eventToTimeMap.get(eventName);
+        return secondsNow >= eventToTimeMap.get(eventName);
     }
+
 
     public PathPlannerTrajectory.PathPlannerState sampleSpeeds() {
         if (type == AutoPath.NONE) {
             return new PathPlannerTrajectory.PathPlannerState();
         }
-        double secondsNow = timer.get();
 
-        return (PathPlannerTrajectory.PathPlannerState) trajectory.sample(secondsNow);
+        double secondsNow = pathTimer.get();
+        SegmentTime lastTimestamp = getSegmentTime(secondsNow);
+        double secondsInSegment = secondsNow - lastTimestamp.startTime;
+        
+        return (PathPlannerTrajectory.PathPlannerState) segments.get(lastTimestamp.index).sample(secondsInSegment);
     }
 
     public boolean isDone() {
-        return timer.hasElapsed(pathTime_seconds);
+        return pathTimer.hasElapsed(totalTime);
     }
 
 
     @Override
     public void start() {
-        timer.start();
+        pathTimer.start();
     }
 
     @Override
     public void end() {
-        timer.stop();
+        pathTimer.stop();
     }
+
+
 }

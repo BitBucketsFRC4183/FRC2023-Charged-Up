@@ -29,7 +29,7 @@ public class RobotSetup implements ISetup<Void> {
 
         DriveSubsystemSetup driveSubsystem = new DriveSubsystemSetup(
                 true,
-                false,
+                DriveSubsystemSetup.Mode.Neo,
                 operatorInput,
                 autoSubsystem,
                 visionControl

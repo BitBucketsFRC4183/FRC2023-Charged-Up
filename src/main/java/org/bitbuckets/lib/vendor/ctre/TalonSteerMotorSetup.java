@@ -7,9 +7,13 @@ import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import org.bitbuckets.drive.controlsds.sds.SwerveModuleConfiguration;
+import org.bitbuckets.lib.ILogAs;
 import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.hardware.IMotorController;
+import org.bitbuckets.lib.hardware.MotorConfig;
+
+import java.util.Optional;
 
 import static org.bitbuckets.lib.vendor.ctre.CtreUtils.checkCtreError;
 
@@ -68,6 +72,28 @@ public class TalonSteerMotorSetup implements ISetup<IMotorController> {
                 "Failed to configure Falcon status frame period"
         );
 
-        return new TalonRelativeMotorController(motor);
+        var ctrl = new TalonRelativeMotorController(motor, new MotorConfig(
+                sensorPositionCoefficient,
+                10,
+                moduleConfiguration.getWheelDiameter() * Math.PI,
+                moduleConfiguration.isSteerInverted(),
+                true,
+                moduleConfiguration.getSteerCurrentLimit(),
+                Optional.empty(),
+                Optional.empty(),
+                false,
+                false,
+                Optional.empty()
+        ));
+
+        TalonLogger logger = new TalonLogger(
+                ctrl,
+                self.generateLogger(ILogAs.DOUBLE, "pos-setpoint-mechanism-rotations"),
+                self.generateLogger(ILogAs.DOUBLE,"encoder-mechanism-rotations"),
+                self.generateLogger(ILogAs.DOUBLE,"encoder-position-raw")
+        );
+
+        self.registerLogLoop(logger);
+        return ctrl;
     }
 }
