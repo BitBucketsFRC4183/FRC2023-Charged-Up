@@ -44,32 +44,30 @@ public class DriveSubsystemSetup implements ISetup<DriveSubsystem> {
         this.visionControl = visionControl;
     }
 
+    //THE SHIT IS HAPPENING IN HERE
     @Override
     public DriveSubsystem build(IProcess self) {
         if (!driveEnabled) {
             return MockingUtil.buddy(DriveSubsystem.class);
         }
 
-        BalanceControl balanceControl = self.childSetup("closed-loop", new BalanceSetup());
-
-        DriveControl driveControl;
-        if (isSimulated) {
-            driveControl = buildSimDriveControl(self);
-        } else {
-            driveControl = buildNeoDriveControl(self); //or use talons, when they work}
-        }
-        autoSubsystem.setDriveControl(driveControl);
+       /* BalanceControl balanceControl = self.childSetup("closed-loop", new BalanceSetup());
+*/
+        DriveControl driveControl = buildNeoDriveControl(self);
+        /*autoSubsystem.setDriveControl(driveControl);
 
         IOdometryControl odometryControl = self.childSetup("pidgeon-control", new PidgeonOdometryControlSetup(driveControl, visionControl, 5));
 
         autoSubsystem.setOdometryControl(odometryControl);
 
         HoloControl holoControl = self.childSetup("holo-control", new HoloControlSetup(driveControl, visionControl, odometryControl))
-;
-        IValueTuner<DriveSubsystem.OrientationChooser> orientationTuner = self
+;*/
+        /*IValueTuner<DriveSubsystem.OrientationChooser> orientationTuner = self
                 .generateTuner(ITuneAs.ENUM(DriveSubsystem.OrientationChooser.class), "set-orientation", DriveSubsystem.OrientationChooser.FIELD_ORIENTED);
+*/
 
-        return new DriveSubsystem(
+        return MockingUtil.buddy(DriveSubsystem.class);
+        /*return new DriveSubsystem(
                 operatorInput,
                 odometryControl,
                 balanceControl,
@@ -80,7 +78,7 @@ public class DriveSubsystemSetup implements ISetup<DriveSubsystem> {
                 orientationTuner,
                 self.getDebuggable()
 
-        );
+        );*/
 
     }
 
