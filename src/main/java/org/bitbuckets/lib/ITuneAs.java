@@ -21,6 +21,7 @@ public interface ITuneAs<T> {
 
     ITuneAs<Double> DOUBLE_INPUT = (k,c,d,s) -> {
 
+
         var entry = c.add(k, d).getEntry();
         var tuneable = new ValueTuner<>(entry, s, d);
         NetworkTableInstance.getDefault().addListener(entry, REMOTE, tuneable);
