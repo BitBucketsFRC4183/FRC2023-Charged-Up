@@ -7,6 +7,7 @@ import org.bitbuckets.drive.balance.BalanceSetup;
 import org.bitbuckets.drive.controlsds.DriveControl;
 import org.bitbuckets.drive.controlsds.DriveControlSetup;
 import org.bitbuckets.drive.controlsds.sds.DriveControllerSetup;
+import org.bitbuckets.drive.controlsds.sds.ISwerveModule;
 import org.bitbuckets.drive.controlsds.sds.SteerControllerSetup;
 import org.bitbuckets.drive.controlsds.sds.SwerveModuleSetup;
 import org.bitbuckets.drive.holo.HoloControl;
@@ -60,22 +61,23 @@ public class DriveSubsystemSetup implements ISetup<DriveSubsystem> {
         }
         autoSubsystem.setDriveControl(driveControl);
 
-        IOdometryControl odometryControl = self.childSetup("pidgeon-control", new PidgeonOdometryControlSetup(driveControl, visionControl, 5));
+        //TODO uncomment
+        //IOdometryControl odometryControl = self.childSetup("pidgeon-control", new PidgeonOdometryControlSetup(driveControl, visionControl, 5));
 
-        autoSubsystem.setOdometryControl(odometryControl);
+        //autoSubsystem.setOdometryControl(odometryControl);
 
-        HoloControl holoControl = self.childSetup("holo-control", new HoloControlSetup(driveControl, visionControl, odometryControl))
+       // HoloControl holoControl = self.childSetup("holo-control", new HoloControlSetup(driveControl, visionControl, odometryControl))
 ;
         IValueTuner<DriveSubsystem.OrientationChooser> orientationTuner = self
                 .generateTuner(ITuneAs.ENUM(DriveSubsystem.OrientationChooser.class), "set-orientation", DriveSubsystem.OrientationChooser.FIELD_ORIENTED);
 
         return new DriveSubsystem(
                 operatorInput,
-                odometryControl,
+                MockingUtil.buddy(IOdometryControl.class),
                 balanceControl,
                 driveControl,
                 autoSubsystem,
-                holoControl,
+                MockingUtil.buddy(HoloControl.class),
                 visionControl,
                 orientationTuner,
                 self.getDebuggable()
@@ -91,29 +93,47 @@ public class DriveSubsystemSetup implements ISetup<DriveSubsystem> {
 
         var driveControl = new DriveControlSetup(
                 new SwerveModuleSetup(
-                        new DriveControllerSetup(new SparkDriveMotorSetup(DriveConstants.FRONT_LEFT_DRIVE_ID, DriveConstants.DRIVE_CONFIG, DriveConstants.MK4I_L2)),
+                        new DriveControllerSetup(
+                                new SparkDriveMotorSetup(
+                                        DriveConstants.FRONT_LEFT_DRIVE_ID,
+                                        DriveConstants.DRIVE_CONFIG,
+                                        DriveConstants.MK4I_L2
+                                )
+                        ),
                         new SteerControllerSetup(
-                                new SparkSteerMotorSetup(DriveConstants.FRONT_LEFT_STEER_ID, DriveConstants.STEER_CONFIG, DriveConstants.STEER_PID, DriveConstants.MK4I_L2),
-                                new ThriftyEncoderSetup(DriveConstants.FRONT_LEFT_ENCODER_CHANNEL, DriveConstants.FRONT_LEFT_OFFSET))
+                                new SparkDriveMotorSetup(
+                                        DriveConstants.FRONT_LEFT_STEER_ID,
+                                        DriveConstants.STEER_CONFIG,
+                                        DriveConstants.MK4I_L2
+                                ),
+                                new ThriftyEncoderSetup(
+                                        DriveConstants.FRONT_LEFT_ENCODER_CHANNEL,
+                                        DriveConstants.FRONT_LEFT_OFFSET
+                                )
+                        )
                 ),
                 new SwerveModuleSetup(
-                        new DriveControllerSetup(new SparkDriveMotorSetup(DriveConstants.FRONT_RIGHT_DRIVE_ID, DriveConstants.DRIVE_CONFIG, DriveConstants.MK4I_L2)),
+                        new DriveControllerSetup(
+                                new SparkDriveMotorSetup(
+                                        DriveConstants.FRONT_RIGHT_DRIVE_ID,
+                                        DriveConstants.DRIVE_CONFIG,
+                                        DriveConstants.MK4I_L2
+                                )
+                        ),
                         new SteerControllerSetup(
-                                new SparkSteerMotorSetup(DriveConstants.FRONT_RIGHT_STEER_ID, DriveConstants.STEER_CONFIG, DriveConstants.STEER_PID, DriveConstants.MK4I_L2),
-                                new ThriftyEncoderSetup(DriveConstants.FRONT_RIGHT_ENCODER_CHANNEL, DriveConstants.FRONT_RIGHT_OFFSET))
+                                new SparkDriveMotorSetup(
+                                        DriveConstants.FRONT_RIGHT_STEER_ID,
+                                        DriveConstants.STEER_CONFIG,
+                                        DriveConstants.MK4I_L2
+                                ),
+                                new ThriftyEncoderSetup(
+                                        DriveConstants.FRONT_RIGHT_ENCODER_CHANNEL,
+                                        DriveConstants.FRONT_RIGHT_OFFSET
+                                )
+                        )
                 ),
-                new SwerveModuleSetup(
-                        new DriveControllerSetup(new SparkDriveMotorSetup(DriveConstants.BACK_LEFT_DRIVE_ID, DriveConstants.DRIVE_CONFIG, DriveConstants.MK4I_L2)),
-                        new SteerControllerSetup(
-                                new SparkSteerMotorSetup(DriveConstants.BACK_LEFT_STEER_ID, DriveConstants.STEER_CONFIG, DriveConstants.STEER_PID, DriveConstants.MK4I_L2),
-                                new ThriftyEncoderSetup(DriveConstants.BACK_LEFT_ENCODER_CHANNEL, DriveConstants.BACK_LEFT_OFFSET))
-                ),
-                new SwerveModuleSetup(
-                        new DriveControllerSetup(new SparkDriveMotorSetup(DriveConstants.BACK_RIGHT_DRIVE_ID, DriveConstants.DRIVE_CONFIG, DriveConstants.MK4I_L2)),
-                        new SteerControllerSetup(
-                                new SparkSteerMotorSetup(DriveConstants.BACK_RIGHT_STEER_ID, DriveConstants.STEER_CONFIG, DriveConstants.STEER_PID, DriveConstants.MK4I_L2),
-                                new ThriftyEncoderSetup(DriveConstants.BACK_RIGHT_ENCODER_CHANNEL, DriveConstants.BACK_RIGHT_OFFSET))
-                )
+                MockingUtil.noops(ISwerveModule.class),
+                MockingUtil.noops(ISwerveModule.class)
         );
 
         return path.childSetup("drive-control",driveControl);

@@ -14,7 +14,10 @@ import org.bitbuckets.lib.tune.IValueTuner;
 import org.bitbuckets.lib.util.HasLogLoop;
 import org.bitbuckets.lib.util.HasLoop;
 
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 
 public class SubProcess extends AProcess {
 
@@ -38,12 +41,14 @@ public class SubProcess extends AProcess {
     }
 
 
+    static int counter = 0;
+
     @Override
     public <T> T childSetup(String key, ISetup<T> setup) {
         //component specific
         var childPath = this.selfPath.append(key);
 
-        var childComponent = rootLayout.getLayout(childPath.getAsFlatTablePath(), BuiltInLayouts.kGrid).withProperties(Map.of("Number of columns", 3, "Number of rows", 1)).withSize(3, 2);
+        var childComponent = rootLayout.getLayout(childPath.getAsFlatTablePath(), BuiltInLayouts.kGrid).withProperties(Map.of("Number of columns", 3, "Number of rows", 1)).withSize(1, 1);
         var childDebugPart = childComponent.getLayout("debug",BuiltInLayouts.kList).withProperties(Map.of("Label Position", "LEFT"));
         var childTune = childComponent.getLayout("tune", BuiltInLayouts.kList).withProperties(Map.of("Label Position", "BOTTOM"));
         var childLog = childComponent.getLayout("log", BuiltInLayouts.kList).withProperties(Map.of("Label Position", "LEFT"));
@@ -87,8 +92,17 @@ public class SubProcess extends AProcess {
         return debuggable;
     }
 
+    Set<String> hasSeen = new HashSet<>();
+
     @Override
     public <T> IValueTuner<T> generateTuner(ITuneAs<T> tuneDataType, String key, T dataWhenNotTuning) {
+
+        if (hasSeen.contains(key)) {
+            throw new IllegalStateException("already using key: " + key);
+        }
+        hasSeen.add(key);
+
+        System.out.println(tune.getTitle() + "|" + key);
         return tuneDataType.generate(key, tune, dataWhenNotTuning, selfMode);
     }
 

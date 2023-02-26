@@ -36,7 +36,7 @@ public class Path {
             if (i == pathComposition.length - 1) {
                 builder.append(pathComposition[i]);
             } else {
-                builder.append(pathComposition[i]).append("-");
+                builder.append(pathComposition[i]).append("|");
             }
         }
 
@@ -65,7 +65,7 @@ public class Path {
         int lastIndex = pathComposition.length - 1;
         int secondLastIndex = lastIndex - 1;
 
-        String toReturn = pathComposition[secondLastIndex] + "-" + pathComposition[lastIndex];
+        String toReturn = pathComposition[secondLastIndex] + "|" + pathComposition[lastIndex];
         return Optional.of(toReturn);
     }
 

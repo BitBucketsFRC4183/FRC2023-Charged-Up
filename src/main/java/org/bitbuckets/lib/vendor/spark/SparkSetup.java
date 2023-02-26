@@ -40,6 +40,8 @@ public class SparkSetup implements ISetup<IMotorController> {
 
     @Override
     public IMotorController build(IProcess self) {
+
+        System.out.println("called: " + self.getSelfPath().getAsTablePath());
         
 
         //check id for duplicate usage
@@ -79,23 +81,17 @@ public class SparkSetup implements ISetup<IMotorController> {
         }
 
 
-        // setup tuneable pid
-        if (pidConfig.kP == 0 && pidConfig.kI == 0 && pidConfig.kD == 0) {
-            IValueTuner<Double> p = self.generateTuner(ITuneAs.DOUBLE_INPUT, "p", pidConfig.kP);
-            IValueTuner<Double> i = self.generateTuner(ITuneAs.DOUBLE_INPUT, "i", pidConfig.kI);
-            IValueTuner<Double> d = self.generateTuner(ITuneAs.DOUBLE_INPUT,"d", pidConfig.kD);
-            var pidController = spark.getPIDController();
-            SparkTuner sparkTuner = new SparkTuner(p, i, d, pidController);
-            pidController.setP(p.consumeValue());
-            pidController.setI(i.consumeValue());
-            pidController.setD(d.consumeValue());
-            self.registerLogicLoop(sparkTuner);
-        } else {
+        IValueTuner<Double> p = self.generateTuner(ITuneAs.DOUBLE_INPUT, "p", pidConfig.kP);
+        IValueTuner<Double> i = self.generateTuner(ITuneAs.DOUBLE_INPUT, "i", pidConfig.kI);
+        IValueTuner<Double> d = self.generateTuner(ITuneAs.DOUBLE_INPUT,"d", pidConfig.kD);
 
-            checkNeoError(spark.getPIDController().setP(pidConfig.kP), "Failed to set NEO PID proportional constant");
-            checkNeoError(spark.getPIDController().setI(pidConfig.kI), "Failed to set NEO PID integral constant");
-            checkNeoError(spark.getPIDController().setD(pidConfig.kD), "Failed to set NEO PID derivative constant");
-        }
+        spark.getPIDController().setP(p.readValue());
+        spark.getPIDController().setP(i.readValue());
+        spark.getPIDController().setP(d.readValue());
+
+
+        SparkTuner tuner = new SparkTuner(p,i,d, spark.getPIDController());
+        self.registerLogicLoop(tuner);
 
         SparkRelativeMotorController ctrl = new SparkRelativeMotorController(motorConfig, spark);
         OnboardPidLogger onboardPidLogger = new OnboardPidLogger(

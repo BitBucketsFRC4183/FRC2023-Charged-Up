@@ -29,6 +29,7 @@ public class RootProcess extends AProcess {
 
     @Override
     public <T> T childSetup(String key, ISetup<T> setup) {
+
         var path = this.selfPath.append(key);
 
         var tab = Shuffleboard.getTab(key);
