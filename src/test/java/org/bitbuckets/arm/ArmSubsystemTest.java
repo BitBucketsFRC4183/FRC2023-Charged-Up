@@ -11,6 +11,8 @@ import static org.mockito.Mockito.*;
 
 class ArmSubsystemTest {
 
+    //test
+
     OperatorInput armInput;
     ArmControl armControl;
     IDebuggable debuggable;
