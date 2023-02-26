@@ -68,6 +68,28 @@
         "waitBehavior": "none",
         "waitTime": 0
       }
+    },
+    {
+      "anchorPoint": {
+        "x": 4.393877176643242,
+        "y": 2.0110225637117933
+      },
+      "prevControl": {
+        "x": 5.657506378954312,
+        "y": 1.873501683635311
+      },
+      "nextControl": null,
+      "holonomicAngle": 0,
+      "isReversal": false,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": false,
+      "stopEvent": {
+        "names": [],
+        "executionBehavior": "parallel",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
     }
   ],
   "maxVelocity": 2.0,

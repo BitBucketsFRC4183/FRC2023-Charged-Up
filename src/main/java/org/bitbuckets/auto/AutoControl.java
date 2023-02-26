@@ -54,6 +54,8 @@ public class AutoControl implements IAutoControl {
         odometryControl.setPos(initialState.holonomicRotation, swerveModulePositions, initialState.poseMeters);
         AutoPathInstance instance = new AutoPathInstance(transformedTrajectories, eventMap, segmentTimes, whichOne, totalTime);
 
+        var initState = PathPlannerTrajectory.transformStateForAlliance(trajectoryGroup.get(0).getInitialState(), DriverStation.getAlliance());
+
         instance.start();
         return instance;
     }
