@@ -24,9 +24,9 @@ public class ThriftyEncoderSetup implements ISetup<IAbsoluteEncoder> {
 
         AnalogInput input = new AnalogInput(channel);
         
-        ILoggable<Double> raw = self.generateLogger(ILogAs.DOUBLE, "raw-rad" + Math.random());
-        ILoggable<Double> abs = self.generateLogger(ILogAs.DOUBLE, "abs-rad" + Math.random());
-        ILoggable<Double> volt = self.generateLogger(ILogAs.DOUBLE, "voltage" + Math.random());
+        ILoggable<Double> raw = self.generateLogger(ILogAs.DOUBLE, "raw-rad");
+        ILoggable<Double> abs = self.generateLogger(ILogAs.DOUBLE, "abs-rad");
+        ILoggable<Double> volt = self.generateLogger(ILogAs.DOUBLE, "voltage");
 
         return new ThriftyEncoder(input, offset_radians, raw, abs, volt);
     }
