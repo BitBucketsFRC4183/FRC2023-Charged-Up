@@ -9,17 +9,20 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
 public class AutoControl implements IAutoControl {
 
     final List<List<PathPlannerTrajectory>> trajectories;
+    final Supplier<SwerveModulePosition[]> suppliers2;
+    final Supplier<>
 
     public AutoControl(List<List<PathPlannerTrajectory>> trajectories) {
         this.trajectories = trajectories;
     }
 
     @Override
-    public AutoPathInstance generateAndStartPath(AutoPath whichOne, SwerveModulePosition[] swerveModulePositions, IOdometryControl odometryControl) {
+    public AutoPathInstance generateAndStartPath(AutoPath whichOne) {
         if (whichOne == AutoPath.NONE) {
             return new AutoPathInstance(new ArrayList<>(), new HashMap<>(), new ArrayList<>(), whichOne, 0);
         }
@@ -51,7 +54,6 @@ public class AutoControl implements IAutoControl {
         }
 
         var initialState = PathPlannerTrajectory.transformStateForAlliance(trajectoryGroup.get(0).getInitialState(), DriverStation.getAlliance());
-        odometryControl.setPos(initialState.holonomicRotation, swerveModulePositions, initialState.poseMeters);
         AutoPathInstance instance = new AutoPathInstance(transformedTrajectories, eventMap, segmentTimes, whichOne, totalTime);
 
         instance.start();

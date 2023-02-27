@@ -67,27 +67,10 @@ public class DriveSubsystemSetup implements ISetup<DriveSubsystem> {
         DriveControl driveControl;
         IOdometryControl odometryControl;
 
-        switch (mode) {
-            case Neo:
-                driveControl = buildNeoDriveControl(self);
-                odometryControl = self.childSetup("odo-control", new PidgeonOdometryControlSetup(driveControl, visionControl, 5));
-                break;
-            case Talon:
-                driveControl = buildTalonDriveControl(self);
-                odometryControl = self.childSetup("odo-control", new NavXOdometryControlSetup(driveControl, visionControl));
-                break;
-            case Sim:
-                driveControl = buildSimDriveControl(self);
-                odometryControl = self.childSetup("odo-control", new PidgeonOdometryControlSetup(driveControl, visionControl, 5));
-                break;
-            default:
-                throw new RuntimeException("Invalid drive mode: " + mode);
-        }
-
         autoSubsystem.setDriveControl(driveControl);
         autoSubsystem.setOdometryControl(odometryControl);
 
-        HoloControl holoControl = self.childSetup("holo-control",new HoloControlSetup(driveControl, visionControl, odometryControl));
+        HoloControl holoControl = self.childSetup("holo-control", new HoloControlSetup(driveControl, visionControl, odometryControl));
 
         IValueTuner<DriveSubsystem.OrientationChooser> orientationTuner = self
                 .generateTuner(ITuneAs.ENUM(DriveSubsystem.OrientationChooser.class), "set-orientation", DriveSubsystem.OrientationChooser.FIELD_ORIENTED);
@@ -102,158 +85,9 @@ public class DriveSubsystemSetup implements ISetup<DriveSubsystem> {
                 visionControl,
                 orientationTuner,
                 self.getDebuggable()
-
         );
 
     }
 
-
-    DriveControl buildNeoDriveControl(IProcess path) {
-        // used to configure the spark motor in SparkSetup
-
-
-        DriveControlSetup driveControl = new DriveControlSetup(
-
-                new SwerveModuleSetup(
-                        new DriveControllerSetup(
-                                new SparkDriveMotorSetup(
-                                        DriveConstants.FRONT_LEFT_DRIVE_ID,
-                                        DriveConstants.DRIVE_CONFIG,
-                                        DriveConstants.MK4I_L2
-                                )
-                        ),
-                        new SteerControllerSetup(
-                                new SparkDriveMotorSetup(
-                                        DriveConstants.FRONT_LEFT_STEER_ID,
-                                        DriveConstants.STEER_CONFIG,
-                                        DriveConstants.MK4I_L2
-                                ),
-                                new ThriftyEncoderSetup(
-                                        DriveConstants.FRONT_LEFT_ENCODER_CHANNEL,
-                                        DriveConstants.FRONT_LEFT_OFFSET
-                                )
-                        )
-                ),
-                new SwerveModuleSetup(
-                        new DriveControllerSetup(
-                                new SparkDriveMotorSetup(
-                                        DriveConstants.FRONT_RIGHT_DRIVE_ID,
-                                        DriveConstants.DRIVE_CONFIG,
-                                        DriveConstants.MK4I_L2
-                                )
-                        ),
-                        new SteerControllerSetup(
-                                new SparkDriveMotorSetup(
-                                        DriveConstants.FRONT_RIGHT_STEER_ID,
-                                        DriveConstants.STEER_CONFIG,
-                                        DriveConstants.MK4I_L2
-                                ),
-                                new ThriftyEncoderSetup(
-                                        DriveConstants.FRONT_RIGHT_ENCODER_CHANNEL,
-                                        DriveConstants.FRONT_RIGHT_OFFSET
-                                )
-                        )
-                ),
-                MockingUtil.noops(ISwerveModule.class),
-                MockingUtil.noops(ISwerveModule.class)
-        );
-
-        return path.childSetup("drive-control",driveControl);
-    }
-
-    DriveControl buildSimDriveControl(IProcess path) {
-        // used to configure the spark motor in SparkSetup
-
-
-        var driveControl = new DriveControlSetup(
-                new SwerveModuleSetup(
-                        new DriveControllerSetup(new DCSimSetup(DriveTurdSpecific.DRIVE_TURD, Drive.DRIVE_DC_CONFIG, Drive.PI)),
-                        new SteerControllerSetup(
-                                new DCSimSetup(DriveConstants.STEER_CONFIG, DriveConstants.STEER_MOTOR, DriveConstants.STEER_PID),
-                                new ThriftyEncoderSetup(DriveConstants.FRONT_LEFT_ENCODER_CHANNEL, DriveTurdSpecific.FRONT_LEFT_OFFSET_TURD))
-                ),
-                new SwerveModuleSetup(
-                        new DriveControllerSetup(new DCSimSetup(DriveConstants.DRIVE_CONFIG, DriveConstants.DRIVE_MOTOR, DriveConstants.DRIVE_PID)),
-                        new SteerControllerSetup(
-                                new DCSimSetup(DriveConstants.STEER_CONFIG, DriveConstants.STEER_MOTOR, Drive.STEER_PID),
-                                new ThriftyEncoderSetup(DriveConstants.FRONT_RIGHT_ENCODER_CHANNEL, DriveTurdSpecific.FRONT_RIGHT_OFFSET_TURD))
-                ),
-                new SwerveModuleSetup(
-                        new DriveControllerSetup(new DCSimSetup(DriveConstants.DRIVE_CONFIG, DriveConstants.DRIVE_MOTOR, DriveConstants.DRIVE_PID)),
-                        new SteerControllerSetup(
-                                new DCSimSetup(DriveConstants.STEER_CONFIG, DriveConstants.STEER_MOTOR, Drive.STEER_PID),
-                                new ThriftyEncoderSetup(DriveConstants.BACK_LEFT_ENCODER_CHANNEL, DriveTurdSpecific.BACK_LEFT_OFFSET_TURD))
-                ),
-                new SwerveModuleSetup(
-                        new DriveControllerSetup(new DCSimSetup(DriveConstants.DRIVE_CONFIG, DriveConstants.DRIVE_MOTOR, DriveConstants.DRIVE_PID)),
-                        new SteerControllerSetup(
-                                new DCSimSetup(DriveConstants.STEER_CONFIG, DriveConstants.STEER_MOTOR, Drive.STEER_PID),
-                                new ThriftyEncoderSetup(DriveConstants.BACK_RIGHT_ENCODER_CHANNEL, DriveTurdSpecific.BACK_RIGHT_OFFSET_TURD))
-                )
-        );
-
-        return path.childSetup("drive-control",driveControl);
-    }
-
-
-    DriveControl buildTalonDriveControl(IProcess path) {
-
-        int frontLeftModuleDriveMotor_ID = 1;
-        int frontLeftModuleSteerMotor_ID = 2;
-        int frontLeftModuleSteerEncoder_ID = 9;
-
-        int frontRightModuleDriveMotor_ID = 7;
-        int frontRightModuleSteerMotor_ID = 8;
-        int frontRightModuleSteerEncoder_ID = 12;
-
-        int backLeftModuleDriveMotor_ID = 5;
-        int backLeftModuleSteerMotor_ID = 6;
-        int backLeftModuleSteerEncoder_ID = 11;
-
-        int backRightModuleDriveMotor_ID = 3;
-        int backRightModuleSteerMotor_ID = 4;
-        int backRightModuleSteerEncoder_ID = 10;
-
-
-
-        double sensorPositionCoefficient = 2.0 * Math.PI / 2048 * DriveConstants.MK4_L2.getSteerReduction();
-
-        var l = new DriveControlSetup(
-                new SwerveModuleSetup(
-                        new DriveControllerSetup(new TalonDriveMotorSetup(frontLeftModuleDriveMotor_ID, DriveConstants.MK4_L2)),
-                        new SteerControllerSetup(
-                                new TalonSteerMotorSetup(frontLeftModuleSteerMotor_ID, DriveConstants.MK4_L2),
-                                new CANCoderAbsoluteEncoderSetup(frontLeftModuleSteerEncoder_ID, frontLeftModuleSteerOffset),
-                                sensorPositionCoefficient
-                        )
-                ),
-                new SwerveModuleSetup(
-                        new DriveControllerSetup(new TalonDriveMotorSetup(frontRightModuleDriveMotor_ID, DriveConstants.MK4_L2)),
-                        new SteerControllerSetup(
-                                new TalonSteerMotorSetup(frontRightModuleSteerMotor_ID, DriveConstants.MK4_L2),
-                                new CANCoderAbsoluteEncoderSetup(frontRightModuleSteerEncoder_ID, frontRightModuleSteerOffset),
-                                sensorPositionCoefficient
-                        )
-                ),
-                new SwerveModuleSetup(
-                        new DriveControllerSetup(new TalonDriveMotorSetup(backLeftModuleDriveMotor_ID, DriveConstants.MK4_L2)),
-                        new SteerControllerSetup(
-                                new TalonSteerMotorSetup(backLeftModuleSteerMotor_ID, DriveConstants.MK4_L2),
-                                new CANCoderAbsoluteEncoderSetup(backLeftModuleSteerEncoder_ID, backLeftModuleSteerOffset),
-                                sensorPositionCoefficient
-                        )
-                ),
-                new SwerveModuleSetup(
-                        new DriveControllerSetup(new TalonDriveMotorSetup(backRightModuleDriveMotor_ID, DriveConstants.MK4_L2)),
-                        new SteerControllerSetup(
-                                new TalonSteerMotorSetup(backRightModuleSteerMotor_ID, DriveConstants.MK4_L2),
-                                new CANCoderAbsoluteEncoderSetup(backRightModuleSteerEncoder_ID, backRightModuleSteerOffset),
-                                sensorPositionCoefficient
-                        )
-                )
-        );
-
-        return path.childSetup("drive-control",l);
-    }
 
 }
