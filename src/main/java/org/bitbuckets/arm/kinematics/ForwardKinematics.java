@@ -9,7 +9,7 @@ public class ForwardKinematics {
     final double theta2;
 
     /**
-     * Parameters must be in radians
+     * Parameters must be in degrees
      * This class calculates the position of the end of the arm given two angles.
      * The position assumes a regular x-y coordinate system, with the origin at the base
      * of the arm.
@@ -29,9 +29,10 @@ public class ForwardKinematics {
      */
     public double getX() {
 
-        double z = Math.sqrt(Math.pow(ArmConstants.LOWER_JOINT_LENGTH, 2.0) + Math.pow(ArmConstants.UPPER_JOINT_LENGTH, 2.0) + (2.0 * ArmConstants.LOWER_JOINT_LENGTH * ArmConstants.UPPER_JOINT_LENGTH * Math.cos(theta2)));
+        double z = Math.sqrt(Math.pow(ArmConstants.LOWER_JOINT_LENGTH, 2.0) + Math.pow(ArmConstants.UPPER_JOINT_LENGTH, 2.0) + (2.0 * ArmConstants.LOWER_JOINT_LENGTH * ArmConstants.UPPER_JOINT_LENGTH * Math.cos(-(Math.PI / 180.) * theta2)));
         double beta = Math.acos((Math.pow(z, 2.0) + Math.pow(ArmConstants.LOWER_JOINT_LENGTH, 2.0) - Math.pow(ArmConstants.UPPER_JOINT_LENGTH, 2.0)) / (2.0 * ArmConstants.LOWER_JOINT_LENGTH * z));
-        double x = z * Math.cos(theta1 - beta);
+
+        double x = z * Math.cos((Math.PI / 180.) * (theta1) - beta);
 
         return x;
     }
@@ -42,9 +43,9 @@ public class ForwardKinematics {
      */
     public double getY() {
 
-        double z = Math.sqrt(Math.pow(ArmConstants.LOWER_JOINT_LENGTH, 2.0) + Math.pow(ArmConstants.UPPER_JOINT_LENGTH, 2.0) + (2.0 * ArmConstants.LOWER_JOINT_LENGTH * ArmConstants.UPPER_JOINT_LENGTH * Math.cos(theta2)));
+        double z = Math.sqrt(Math.pow(ArmConstants.LOWER_JOINT_LENGTH, 2.0) + Math.pow(ArmConstants.UPPER_JOINT_LENGTH, 2.0) + (2.0 * ArmConstants.LOWER_JOINT_LENGTH * ArmConstants.UPPER_JOINT_LENGTH * Math.cos(-(Math.PI / 180.) * theta2)));
         double beta = Math.acos((Math.pow(z, 2.0) + Math.pow(ArmConstants.LOWER_JOINT_LENGTH, 2.0) - Math.pow(ArmConstants.UPPER_JOINT_LENGTH, 2.0)) / (2.0 * ArmConstants.LOWER_JOINT_LENGTH * z));
-        double y = z * Math.sin(theta1 - beta);
+        double y = z * Math.sin((Math.PI / 180.) * (theta1) - beta);
 
         return y;
     }

@@ -22,8 +22,8 @@ public interface ArmConstants {
     double UPPER_ARM_GEAR_RATIO = 1.0 / ((5.0 * 5.0 * 4.0) * (16. / 16.));
 
 
-    double LOWER_JOINT_LENGTH = 0.6731;
-    double UPPER_JOINT_LENGTH = 0.9652; // including gripper
+    double LOWER_JOINT_LENGTH = 0.67;
+    double UPPER_JOINT_LENGTH = 0.96; // including gripper
 
 
     //mainly for arm sim
