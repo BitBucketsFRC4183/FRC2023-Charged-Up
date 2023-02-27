@@ -1,7 +1,7 @@
 package org.bitbuckets.arm.kinematics;
 
 
-import org.bitbuckets.arm.ArmConstants;
+import config.Arm;
 
 
 public class ForwardKinematics {
@@ -29,8 +29,8 @@ public class ForwardKinematics {
      */
     public double getX() {
 
-        double z = Math.sqrt(Math.pow(ArmConstants.LOWER_JOINT_LENGTH, 2.0) + Math.pow(ArmConstants.UPPER_JOINT_LENGTH, 2.0) + (2.0 * ArmConstants.LOWER_JOINT_LENGTH * ArmConstants.UPPER_JOINT_LENGTH * Math.cos(theta2)));
-        double beta = Math.acos((Math.pow(z, 2.0) + Math.pow(ArmConstants.LOWER_JOINT_LENGTH, 2.0) - Math.pow(ArmConstants.UPPER_JOINT_LENGTH, 2.0)) / (2.0 * ArmConstants.LOWER_JOINT_LENGTH * z));
+        double z = Math.sqrt(Math.pow(Arm.LOWER_JOINT_LENGTH, 2.0) + Math.pow(Arm.UPPER_JOINT_LENGTH, 2.0) + (2.0 * Arm.LOWER_JOINT_LENGTH * Arm.UPPER_JOINT_LENGTH * Math.cos(theta2)));
+        double beta = Math.acos((Math.pow(z, 2.0) + Math.pow(Arm.LOWER_JOINT_LENGTH, 2.0) - Math.pow(Arm.UPPER_JOINT_LENGTH, 2.0)) / (2.0 * Arm.LOWER_JOINT_LENGTH * z));
         double x = z * Math.cos(theta1 - beta);
 
         return x;
@@ -42,8 +42,8 @@ public class ForwardKinematics {
      */
     public double getY() {
 
-        double z = Math.sqrt(Math.pow(ArmConstants.LOWER_JOINT_LENGTH, 2.0) + Math.pow(ArmConstants.UPPER_JOINT_LENGTH, 2.0) + (2.0 * ArmConstants.LOWER_JOINT_LENGTH * ArmConstants.UPPER_JOINT_LENGTH * Math.cos(theta2)));
-        double beta = Math.acos((Math.pow(z, 2.0) + Math.pow(ArmConstants.LOWER_JOINT_LENGTH, 2.0) - Math.pow(ArmConstants.UPPER_JOINT_LENGTH, 2.0)) / (2.0 * ArmConstants.LOWER_JOINT_LENGTH * z));
+        double z = Math.sqrt(Math.pow(Arm.LOWER_JOINT_LENGTH, 2.0) + Math.pow(Arm.UPPER_JOINT_LENGTH, 2.0) + (2.0 * Arm.LOWER_JOINT_LENGTH * Arm.UPPER_JOINT_LENGTH * Math.cos(theta2)));
+        double beta = Math.acos((Math.pow(z, 2.0) + Math.pow(Arm.LOWER_JOINT_LENGTH, 2.0) - Math.pow(Arm.UPPER_JOINT_LENGTH, 2.0)) / (2.0 * Arm.LOWER_JOINT_LENGTH * z));
         double y = z * Math.sin(theta1 - beta);
 
         return y;

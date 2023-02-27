@@ -102,9 +102,7 @@ public class OperatorInput {
         return driveControl.getRawButtonPressed(XboxController.Button.kStart.value);
     }
 
-    public boolean isResetOdoPressed() {
-        return driveControl.getRawButtonPressed(XboxController.Button.kLeftBumper.value);
-    }
+    public boolean isResetOdoPressed() {return driveControl.getRawButtonPressed(XboxController.Button.kLeftBumper.value);}
 
     public static double armDeadband(double input) {
         double value = input;
@@ -167,10 +165,15 @@ public class OperatorInput {
     public boolean isDisablePositionControlPressed() {
         return operatorControl.getRawButtonPressed(XboxController.Button.kRightStick.value);
     }
-
-
     public boolean isStopPidPressed() {
         return operatorControl.getRawButtonPressed(XboxController.Button.kB.value);
+    }
+    public boolean ifGripperPressed() {
+        return operatorControl.getRawButton(XboxController.Button.kRightBumper.value);
+    }
+
+    public boolean closeGripperPressed(){
+        return operatorControl.getRawButton(XboxController.Button.kLeftBumper.value);
     }
 
 

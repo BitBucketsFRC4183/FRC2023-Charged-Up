@@ -4,7 +4,6 @@ import org.bitbuckets.OperatorInput;
 import org.bitbuckets.auto.AutoSubsystem;
 
 import org.bitbuckets.gripper.GripperControl;
-import org.bitbuckets.gripper.GripperInput;
 
 import org.bitbuckets.lib.debug.IDebuggable;
 import org.junit.jupiter.api.BeforeEach;

@@ -1,5 +1,6 @@
 package org.bitbuckets.arm;
 
+import config.Arm;
 import org.bitbuckets.arm.kinematics.ForwardKinematics;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -11,7 +12,7 @@ class ForwardKinematicsTest {
     @Disabled
     @Test
     public void testX() {
-        assertEquals((ArmConstants.LOWER_JOINT_LENGTH + ArmConstants.UPPER_JOINT_LENGTH), new ForwardKinematics(Math.PI/4, 0).getX(), 0.001);
+        assertEquals((Arm.LOWER_JOINT_LENGTH + Arm.UPPER_JOINT_LENGTH), new ForwardKinematics(Math.PI/4, 0).getX(), 0.001);
     }
 
     //@Disabled

@@ -2,6 +2,7 @@ package org.bitbuckets.arm;
 
 
 
+import config.Arm;
 import edu.wpi.first.math.MatBuilder;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
@@ -10,8 +11,6 @@ import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.numbers.*;
 import edu.wpi.first.math.system.NumericalIntegration;
 import edu.wpi.first.math.system.plant.DCMotor;
-import org.bitbuckets.lib.ISetup;
-import org.bitbuckets.lib.hardware.IMotorController;
 
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -113,8 +112,8 @@ public class ArmFeedFordward {
                             var torque = VecBuilder.fill(shoulderTorque, elbowTorque);
 
                             // Apply limits
-                            if (position.get(0, 0) < ArmConstants.LOWER_ARM.armMinAngle) {
-                                position.set(0, 0, ArmConstants.LOWER_ARM.armMinAngle);
+                            if (position.get(0, 0) < Arm.LOWER_ARM.armMinAngle) {
+                                position.set(0, 0, Arm.LOWER_ARM.armMinAngle);
                                 if (velocity.get(0, 0) < 0.0) {
                                     velocity.set(0, 0, 0.0);
                                 }
@@ -122,8 +121,8 @@ public class ArmFeedFordward {
                                     torque.set(0, 0, 0.0);
                                 }
                             }
-                            if (position.get(0, 0) > ArmConstants.LOWER_ARM.armMaxAngle) {
-                                position.set(0, 0, ArmConstants.LOWER_ARM.armMaxAngle);
+                            if (position.get(0, 0) > Arm.LOWER_ARM.armMaxAngle) {
+                                position.set(0, 0, Arm.LOWER_ARM.armMaxAngle);
                                 if (velocity.get(0, 0) > 0.0) {
                                     velocity.set(0, 0, 0.0);
                                 }
@@ -131,8 +130,8 @@ public class ArmFeedFordward {
                                     torque.set(0, 0, 0.0);
                                 }
                             }
-                            if (position.get(1, 0) < ArmConstants.UPPER_ARM.armMinAngle) {
-                                position.set(1, 0, ArmConstants.UPPER_ARM.armMinAngle);
+                            if (position.get(1, 0) < Arm.UPPER_ARM.armMinAngle) {
+                                position.set(1, 0, Arm.UPPER_ARM.armMinAngle);
                                 if (velocity.get(1, 0) < 0.0) {
                                     velocity.set(1, 0, 0.0);
                                 }
@@ -140,8 +139,8 @@ public class ArmFeedFordward {
                                     torque.set(1, 0, 0.0);
                                 }
                             }
-                            if (position.get(1, 0) > ArmConstants.UPPER_ARM.armMaxAngle) {
-                                position.set(1, 0, ArmConstants.UPPER_ARM.armMaxAngle);
+                            if (position.get(1, 0) > Arm.UPPER_ARM.armMaxAngle) {
+                                position.set(1, 0, Arm.UPPER_ARM.armMaxAngle);
                                 if (velocity.get(1, 0) > 0.0) {
                                     velocity.set(1, 0, 0.0);
                                 }
@@ -197,28 +196,28 @@ public class ArmFeedFordward {
         M.set(
                 0,
                 0,
-                ArmConstants.LOWER_ARM.armMass * Math.pow(ArmConstants.LOWER_CGRADIUS, 2.0)
-                        + ArmConstants.FFUPPER_ARM_MASS * (Math.pow(ArmConstants.LOWER_ARM.lengthMeters, 2.0) + Math.pow(ArmConstants.UPPER_CGRADIUS, 2.0))
-                        + ArmConstants.LOWER_MOI
-                        + ArmConstants.UPPER_MOI
+                Arm.LOWER_ARM.armMass * Math.pow(Arm.LOWER_CGRADIUS, 2.0)
+                        + Arm.FFUPPER_ARM_MASS * (Math.pow(Arm.LOWER_ARM.lengthMeters, 2.0) + Math.pow(Arm.UPPER_CGRADIUS, 2.0))
+                        + Arm.LOWER_MOI
+                        + Arm.UPPER_MOI
                         + 2
-                        * ArmConstants.FFUPPER_ARM_MASS
-                        * ArmConstants.LOWER_ARM.lengthMeters
-                        * ArmConstants.UPPER_CGRADIUS
+                        * Arm.FFUPPER_ARM_MASS
+                        * Arm.LOWER_ARM.lengthMeters
+                        * Arm.UPPER_CGRADIUS
                         * Math.cos(position.get(1, 0)));
         M.set(
                 1,
                 0,
-                ArmConstants.FFUPPER_ARM_MASS * Math.pow(ArmConstants.UPPER_CGRADIUS, 2.0)
-                        + ArmConstants.UPPER_MOI
-                        + ArmConstants.FFUPPER_ARM_MASS * ArmConstants.LOWER_ARM.lengthMeters * ArmConstants.UPPER_CGRADIUS * Math.cos(position.get(1, 0)));
+                Arm.FFUPPER_ARM_MASS * Math.pow(Arm.UPPER_CGRADIUS, 2.0)
+                        + Arm.UPPER_MOI
+                        + Arm.FFUPPER_ARM_MASS * Arm.LOWER_ARM.lengthMeters * Arm.UPPER_CGRADIUS * Math.cos(position.get(1, 0)));
         M.set(
                 0,
                 1,
-                ArmConstants.FFUPPER_ARM_MASS * Math.pow(ArmConstants.UPPER_CGRADIUS, 2.0)
-                        + ArmConstants.UPPER_MOI
-                        + ArmConstants.FFUPPER_ARM_MASS * ArmConstants.LOWER_ARM.lengthMeters * ArmConstants.UPPER_CGRADIUS * Math.cos(position.get(1, 0)));
-        M.set(1, 1, ArmConstants.FFUPPER_ARM_MASS * Math.pow(ArmConstants.UPPER_CGRADIUS, 2.0) + ArmConstants.UPPER_MOI);
+                Arm.FFUPPER_ARM_MASS * Math.pow(Arm.UPPER_CGRADIUS, 2.0)
+                        + Arm.UPPER_MOI
+                        + Arm.FFUPPER_ARM_MASS * Arm.LOWER_ARM.lengthMeters * Arm.UPPER_CGRADIUS * Math.cos(position.get(1, 0)));
+        M.set(1, 1, Arm.FFUPPER_ARM_MASS * Math.pow(Arm.UPPER_CGRADIUS, 2.0) + Arm.UPPER_MOI);
         return M;
     }
 
@@ -227,25 +226,25 @@ public class ArmFeedFordward {
         C.set(
                 0,
                 0,
-                -ArmConstants.FFUPPER_ARM_MASS
-                        * ArmConstants.LOWER_ARM.lengthMeters
-                        * ArmConstants.UPPER_CGRADIUS
+                -Arm.FFUPPER_ARM_MASS
+                        * Arm.LOWER_ARM.lengthMeters
+                        * Arm.UPPER_CGRADIUS
                         * Math.sin(position.get(1, 0))
                         * velocity.get(1, 0));
         C.set(
                 1,
                 0,
-                ArmConstants.FFUPPER_ARM_MASS
-                        * ArmConstants.LOWER_ARM.lengthMeters
-                        * ArmConstants.UPPER_CGRADIUS
+                Arm.FFUPPER_ARM_MASS
+                        * Arm.LOWER_ARM.lengthMeters
+                        * Arm.UPPER_CGRADIUS
                         * Math.sin(position.get(1, 0))
                         * velocity.get(0, 0));
         C.set(
                 0,
                 1,
-                -ArmConstants.FFUPPER_ARM_MASS
-                        * ArmConstants.LOWER_ARM.lengthMeters
-                        * ArmConstants.UPPER_CGRADIUS
+                -Arm.FFUPPER_ARM_MASS
+                        * Arm.LOWER_ARM.lengthMeters
+                        * Arm.UPPER_CGRADIUS
                         * Math.sin(position.get(1, 0))
                         * (velocity.get(0, 0) + velocity.get(1, 0)));
         return C;
@@ -256,18 +255,18 @@ public class ArmFeedFordward {
         Tg.set(
                 0,
                 0,
-                (ArmConstants.LOWER_ARM.armMass * ArmConstants.LOWER_CGRADIUS + ArmConstants.FFUPPER_ARM_MASS * ArmConstants.LOWER_ARM.lengthMeters)
+                (Arm.LOWER_ARM.armMass * Arm.LOWER_CGRADIUS + Arm.FFUPPER_ARM_MASS * Arm.LOWER_ARM.lengthMeters)
                         *
                         g
                         * Math.cos(position.get(0, 0))
-                        + ArmConstants.FFUPPER_ARM_MASS
-                        * ArmConstants.UPPER_CGRADIUS
+                        + Arm.FFUPPER_ARM_MASS
+                        * Arm.UPPER_CGRADIUS
                         * g
                         * Math.cos(position.get(0, 0) + position.get(1, 0)));
         Tg.set(
                 1,
                 0,
-                ArmConstants.FFUPPER_ARM_MASS * ArmConstants.UPPER_CGRADIUS * g * Math.cos(position.get(0, 0) + position.get(1, 0)));
+                Arm.FFUPPER_ARM_MASS * Arm.UPPER_CGRADIUS * g * Math.cos(position.get(0, 0) + position.get(1, 0)));
         return Tg;
 
 }

@@ -1,11 +1,21 @@
 package config;
 
+import edu.wpi.first.wpilibj.motorcontrol.Spark;
+import org.bitbuckets.arm.ArmControl;
+import org.bitbuckets.arm.ArmControlSetup;
+import org.bitbuckets.arm.ArmSubsystem;
+import org.bitbuckets.arm.ArmSubsystemSetup;
 import org.bitbuckets.auto.*;
 import org.bitbuckets.drive.controlsds.DriveControl;
 import org.bitbuckets.drive.controlsds.DriveControlSetup;
 import org.bitbuckets.drive.controlsds.sds.*;
+import org.bitbuckets.gripper.GripperControl;
+import org.bitbuckets.gripper.GripperControlSetup;
+import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.SwitcherSetup;
+import org.bitbuckets.lib.control.IPIDCalculator;
+import org.bitbuckets.lib.control.PIDCalculatorSetup;
 import org.bitbuckets.lib.hardware.IAbsoluteEncoder;
 import org.bitbuckets.lib.hardware.IMotorController;
 import org.bitbuckets.lib.util.MockingUtil;
@@ -19,6 +29,8 @@ import org.bitbuckets.lib.vendor.spark.SparkSteerMotorSetup;
 import org.bitbuckets.lib.vendor.thrifty.ThriftyEncoderSetup;
 import org.bitbuckets.vision.IVisionControl;
 import org.bitbuckets.vision.VisionControlSetup;
+
+import java.util.Spliterator;
 
 public interface Setups {
 
@@ -269,19 +281,50 @@ public interface Setups {
     );
 
     //ARM
-
-    ISetup<IMotorController> LOWER_ARM = new SwitcherSetup<>(
+    ISetup<IMotorController> LOWER_ARM_1 = new SwitcherSetup<>(
             MockingUtil.noops(IMotorController.class),
             new SparkSetup(
-                    9,
+                    MotorIds.LOWER_ARM_ID_1,
+                    Arm.LOWER_CONFIG,
+                    Arm.LOWER_PID
+            )
+    );
+    ISetup<IMotorController> LOWER_ARM_2 = new SwitcherSetup<>(
+            MockingUtil.noops(IMotorController.class),
+            new SparkSetup(
+                    MotorIds.LOWER_ARM_ID_2,
+                    Arm.LOWER_CONFIG_FOLLOWER,
+                    Arm.LOWER_PID
+            )
+    );
 
+    //ARM MOTOR CONTROLLERS
+    ISetup<IMotorController> UPPER_ARM = new SwitcherSetup<>(
+            MockingUtil.noops(IMotorController.class),
+            new SparkSetup(
+                    MotorIds.UPPER_ARM_ID,
+                    Arm.UPPER_CONFIG,
+                    Arm.UPPER_PID
+            )
+    );
+    ISetup<IPIDCalculator> LOWER_PID = new SwitcherSetup<>(
+            MockingUtil.noops(IPIDCalculator.class),
+            new PIDCalculatorSetup(Arm.LOWER_PID),
+            new PIDCalculatorSetup(Arm.LOWER_SIMPID)
+    );
+    ISetup<IPIDCalculator> UPPER_PID = new SwitcherSetup<>(
+            MockingUtil.noops(IPIDCalculator.class),
+            new PIDCalculatorSetup(Arm.UPPER_PID),
+            new PIDCalculatorSetup(Arm.UPPER_SIMPID)
+    );
 
-            ),
-    )
-
+    //GRIPPER MOTOR CONTROLLER
+    ISetup<IMotorController> GRIPPER_JOINT = new SwitcherSetup<>(
+            MockingUtil.noops(IMotorController.class),
+            new SparkSetup(MotorIds.GRIPPER_ARM_ID, Arm.GRIPPER_CONFIG, Arm.GRIPPER_PID)
+    );
 
     //CONTROLS
-
     ISetup<DriveControl> DRIVE_CONTROL = new DriveControlSetup(
             FRONT_LEFT,
             FRONT_RIGHT,
@@ -290,7 +333,8 @@ public interface Setups {
     );
     ISetup<IAutoControl> AUTO_CONTROL = new AutoControlSetup();
     ISetup<IVisionControl> VISION_CONTROL = new VisionControlSetup(false);
-
+    ISetup<ArmControl> ARM_CONTROL = new ArmControlSetup(LOWER_ARM_1, LOWER_ARM_2, UPPER_ARM, LOWER_PID, UPPER_PID);
+    ISetup<GripperControl> GRIPPER_CONTROL_SETUP = new GripperControlSetup(GRIPPER_JOINT);
 
 
 

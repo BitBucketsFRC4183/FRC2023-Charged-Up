@@ -14,7 +14,12 @@ public interface MotorIds {
     int BACK_RIGHT_DRIVE_ID = 1;
     int BACK_RIGHT_STEER_ID = 2;
     int BACK_RIGHT_ENCODER_CHANNEL = 0;
+    int LOWER_ARM_ID_1 = 9;
+    int LOWER_ARM_ID_2 = 10;
+    int UPPER_ARM_ID = 11;
+    int GRIPPER_ARM_ID = 12;
 
+    //APPA
     int FRONT_LEFT_DRIVE_APPA = 1;
     int FRONT_LEFT_STEER_APPA = 2;
     int FRONT_LEFT_ENCODER_CHANNEL_APPA = 9;
@@ -27,10 +32,4 @@ public interface MotorIds {
     int BACK_RIGHT_DRIVE_APPA = 3;
     int BACK_RIGHT_STEER_APPA = 4;
     int BACK_RIGHT_ENCODER_CHANNEL_APPA = 10;
-
-    int LOWER_ARM_ID = 10;
-    int UPPER_ARM_ID = 11;
-    int GRIPPER_ARM_ID = 12;
-
-
 }
