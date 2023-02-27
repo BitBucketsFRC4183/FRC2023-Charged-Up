@@ -1,6 +1,10 @@
 package org.bitbuckets.RGB;
 
 public enum RgbFSM {
-    A, B,
+    DEFAULT,
+    CONE,
+    CUBE,
+    BALANCING,
+    BALANCED,
     DISABLED
 }

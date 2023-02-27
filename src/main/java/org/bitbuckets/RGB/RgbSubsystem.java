@@ -1,24 +1,22 @@
 package org.bitbuckets.RGB;
 
 import com.ctre.phoenix.ErrorCode;
-import com.ctre.phoenix.led.CANdle;
-import com.ctre.phoenix.led.CANdleFaults;
-import com.ctre.phoenix.led.LarsonAnimation;
-import com.ctre.phoenix.led.RainbowAnimation;
+import com.ctre.phoenix.led.*;
 import org.bitbuckets.lib.log.Debuggable;
+
+import java.awt.*;
 
 public class RgbSubsystem {
 
     final CANdle candle;
 
-    RgbFSM state = RgbFSM.A;
+    RgbFSM state = RgbFSM.DEFAULT;
 
-    final RgbInput rgbInput;
-
+    final OperatorInput rgbInput;
 
     final Debuggable debuggable;
 
-    public RgbSubsystem(CANdle candle, RgbInput rgbInput, Debuggable debuggable) {
+    public RgbSubsystem(CANdle candle, OperatorInput rgbInput, Debuggable debuggable) {
         this.candle = candle;
         this.rgbInput = rgbInput;
         this.debuggable = debuggable;
@@ -29,10 +27,10 @@ public class RgbSubsystem {
 
         switch (state) {
             case DISABLED:
-                ;
-            case A:
-                if (rgbInput.buttonB()) {
-                    state = RgbFSM.B;
+                break;
+            case DEFAULT:
+                if (rgbInput.) {
+                    state = RgbFSM.CUBE;
                     break;
                 }
                 RainbowAnimation rainbowAnim = new RainbowAnimation(1, 1, 68);
@@ -41,14 +39,19 @@ public class RgbSubsystem {
                 CANdleFaults faults = new CANdleFaults();
                 ErrorCode faultsError = candle.getFaults(faults); // fills faults with the current CANdle faults; returns the last error generated
                 break;
-            case B:
-                if (rgbInput.buttonA()) {
-                    state = RgbFSM.A;
+            case CUBE:
+                if (rgbInput.) {
+                    state = RgbFSM.CONE;
                     break;
                 }
-                LarsonAnimation larsonAnimation = new LarsonAnimation(255, 1, 1, 1, 1, 68, LarsonAnimation.BounceMode.Center, 2);
-                candle.animate(larsonAnimation);
+                candle.setLEDs(119, 0, 200);
                 break;
+
+            case CONE:
+                candle.setLEDs(225,215,0);
+
+            case BALANCING:
+                candle.setLEDs(255, 0, 0);
         }
 
     }
