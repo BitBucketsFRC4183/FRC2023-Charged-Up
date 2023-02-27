@@ -1,5 +1,7 @@
 package org.bitbuckets.drive;
 
+import config.Drive;
+import config.DriveTurdSpecific;
 import org.bitbuckets.OperatorInput;
 import org.bitbuckets.auto.AutoSubsystem;
 import org.bitbuckets.drive.balance.BalanceControl;
@@ -165,28 +167,28 @@ public class DriveSubsystemSetup implements ISetup<DriveSubsystem> {
 
         var driveControl = new DriveControlSetup(
                 new SwerveModuleSetup(
-                        new DriveControllerSetup(new DCSimSetup(DriveConstants.DRIVE_CONFIG, DriveConstants.DRIVE_MOTOR, DriveConstants.DRIVE_PID)),
+                        new DriveControllerSetup(new DCSimSetup(DriveTurdSpecific.DRIVE_TURD, Drive.DRIVE_DC_CONFIG, Drive.PI)),
                         new SteerControllerSetup(
                                 new DCSimSetup(DriveConstants.STEER_CONFIG, DriveConstants.STEER_MOTOR, DriveConstants.STEER_PID),
-                                new ThriftyEncoderSetup(DriveConstants.FRONT_LEFT_ENCODER_CHANNEL, DriveConstants.FRONT_LEFT_OFFSET))
+                                new ThriftyEncoderSetup(DriveConstants.FRONT_LEFT_ENCODER_CHANNEL, DriveTurdSpecific.FRONT_LEFT_OFFSET_TURD))
                 ),
                 new SwerveModuleSetup(
                         new DriveControllerSetup(new DCSimSetup(DriveConstants.DRIVE_CONFIG, DriveConstants.DRIVE_MOTOR, DriveConstants.DRIVE_PID)),
                         new SteerControllerSetup(
-                                new DCSimSetup(DriveConstants.STEER_CONFIG, DriveConstants.STEER_MOTOR, DriveConstants.STEER_PID),
-                                new ThriftyEncoderSetup(DriveConstants.FRONT_RIGHT_ENCODER_CHANNEL, DriveConstants.FRONT_RIGHT_OFFSET))
+                                new DCSimSetup(DriveConstants.STEER_CONFIG, DriveConstants.STEER_MOTOR, Drive.STEER_PID),
+                                new ThriftyEncoderSetup(DriveConstants.FRONT_RIGHT_ENCODER_CHANNEL, DriveTurdSpecific.FRONT_RIGHT_OFFSET_TURD))
                 ),
                 new SwerveModuleSetup(
                         new DriveControllerSetup(new DCSimSetup(DriveConstants.DRIVE_CONFIG, DriveConstants.DRIVE_MOTOR, DriveConstants.DRIVE_PID)),
                         new SteerControllerSetup(
-                                new DCSimSetup(DriveConstants.STEER_CONFIG, DriveConstants.STEER_MOTOR, DriveConstants.STEER_PID),
-                                new ThriftyEncoderSetup(DriveConstants.BACK_LEFT_ENCODER_CHANNEL, DriveConstants.BACK_LEFT_OFFSET))
+                                new DCSimSetup(DriveConstants.STEER_CONFIG, DriveConstants.STEER_MOTOR, Drive.STEER_PID),
+                                new ThriftyEncoderSetup(DriveConstants.BACK_LEFT_ENCODER_CHANNEL, DriveTurdSpecific.BACK_LEFT_OFFSET_TURD))
                 ),
                 new SwerveModuleSetup(
                         new DriveControllerSetup(new DCSimSetup(DriveConstants.DRIVE_CONFIG, DriveConstants.DRIVE_MOTOR, DriveConstants.DRIVE_PID)),
                         new SteerControllerSetup(
-                                new DCSimSetup(DriveConstants.STEER_CONFIG, DriveConstants.STEER_MOTOR, DriveConstants.STEER_PID),
-                                new ThriftyEncoderSetup(DriveConstants.BACK_RIGHT_ENCODER_CHANNEL, DriveConstants.BACK_RIGHT_OFFSET))
+                                new DCSimSetup(DriveConstants.STEER_CONFIG, DriveConstants.STEER_MOTOR, Drive.STEER_PID),
+                                new ThriftyEncoderSetup(DriveConstants.BACK_RIGHT_ENCODER_CHANNEL, DriveTurdSpecific.BACK_RIGHT_OFFSET_TURD))
                 )
         );
 

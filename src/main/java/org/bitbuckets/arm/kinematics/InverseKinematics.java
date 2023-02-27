@@ -1,6 +1,6 @@
 package org.bitbuckets.arm.kinematics;
 
-import org.bitbuckets.arm.ArmConstants;
+import config.Arm;
 
 
 public class InverseKinematics {
@@ -34,7 +34,7 @@ public class InverseKinematics {
     public double getLowerJoint_degrees() {
         double c = Math.sqrt(x * x + y * y);
         double alpha = Math.atan(y / x);
-        return (180. / Math.PI) * (Math.acos((Math.pow(ArmConstants.LOWER_JOINT_LENGTH, 2) + Math.pow(c, 2) - Math.pow(ArmConstants.UPPER_JOINT_LENGTH, 2)) / (2 * ArmConstants.LOWER_JOINT_LENGTH * c)) + alpha);
+        return (180. / Math.PI) * (Math.acos((Math.pow(Arm.LOWER_JOINT_LENGTH, 2) + Math.pow(c, 2) - Math.pow(Arm.UPPER_JOINT_LENGTH, 2)) / (2 * Arm.LOWER_JOINT_LENGTH * c)) + alpha);
     }
 
 
@@ -45,7 +45,7 @@ public class InverseKinematics {
      */
     public double getUpperJoint_degrees() {
         double c = Math.sqrt(x * x + y * y);
-        double beta = Math.acos((Math.pow(ArmConstants.LOWER_JOINT_LENGTH, 2) + Math.pow(ArmConstants.UPPER_JOINT_LENGTH, 2) - Math.pow(c, 2)) / (2 * ArmConstants.UPPER_JOINT_LENGTH * ArmConstants.LOWER_JOINT_LENGTH));
+        double beta = Math.acos((Math.pow(Arm.LOWER_JOINT_LENGTH, 2) + Math.pow(Arm.UPPER_JOINT_LENGTH, 2) - Math.pow(c, 2)) / (2 * Arm.UPPER_JOINT_LENGTH * Arm.LOWER_JOINT_LENGTH));
 
         return -((180./Math.PI) * (Math.PI - beta));
     }

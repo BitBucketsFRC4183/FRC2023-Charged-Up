@@ -1,12 +1,11 @@
 package org.bitbuckets.arm;
 
 import org.bitbuckets.OperatorInput;
-import org.bitbuckets.gripper.GripperConstants;
 import org.bitbuckets.gripper.GripperControl;
 import org.bitbuckets.gripper.GripperFSM;
-import org.bitbuckets.gripper.GripperInput;
 import org.bitbuckets.auto.AutoFSM;
 import org.bitbuckets.auto.AutoSubsystem;
+import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.debug.IDebuggable;
 import org.bitbuckets.lib.util.HasLoop;
 
@@ -16,8 +15,8 @@ public class ArmSubsystem implements HasLoop {
     //make motors
 
     final OperatorInput armInput;
-    final ArmControl armControl;
-    final GripperControl gripperControl;
+    final ISetup<ArmControl> armControl;
+    final ISetup<GripperControl> gripperControl;
     final GripperInput gripperInput;
     final IDebuggable debuggable;
     final AutoSubsystem autoSubsystem;
@@ -27,7 +26,7 @@ public class ArmSubsystem implements HasLoop {
 
     GripperFSM gripperState = GripperFSM.MANUAL;
 
-    public ArmSubsystem(OperatorInput armInput, ArmControl armControl, GripperControl gripperControl, GripperInput gripperInput, IDebuggable debuggable, AutoSubsystem autoSubsystem) {
+    public ArmSubsystem(OperatorInput armInput, ISetup<ArmControl> armControl, ISetup<GripperControl> gripperControl, GripperInput gripperInput, IDebuggable debuggable, AutoSubsystem autoSubsystem) {
         this.armInput = armInput;
         this.armControl = armControl;
         this.gripperControl = gripperControl;

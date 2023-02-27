@@ -13,9 +13,9 @@ import org.bitbuckets.lib.util.MockingUtil;
 public class AutoSubsystemSetup implements ISetup<AutoSubsystem> {
 
     final boolean enabled;
-    final ISetup<AutoControl> autoControlSetup;
+    final ISetup<IAutoControl> autoControlSetup;
 
-    public AutoSubsystemSetup(boolean enabled, ISetup<AutoControl> autoControlSetup) {
+    public AutoSubsystemSetup(boolean enabled, ISetup<IAutoControl> autoControlSetup) {
         this.enabled = enabled;
         this.autoControlSetup = autoControlSetup;
     }

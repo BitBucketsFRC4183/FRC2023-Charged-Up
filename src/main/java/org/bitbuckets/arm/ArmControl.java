@@ -1,5 +1,6 @@
 package org.bitbuckets.arm;
 
+import config.Arm;
 import edu.wpi.first.math.geometry.Translation2d;
 import org.bitbuckets.arm.kinematics.InverseKinematics;
 import org.bitbuckets.lib.control.IPIDCalculator;
@@ -39,12 +40,12 @@ public class ArmControl {
 //        double lowerRotation = gearRatio * percentOutput / 360;
 //        lowerJoint.getPIDController().setReference(lowerRotation, CANSparkMax.ControlType.kPosition);
         //test if lower arm moves with outputs
-        lowerJoint1.moveAtPercent(percentOutput * ArmConstants.CONTROL_JOINT_OUTPUT);
+        lowerJoint1.moveAtPercent(percentOutput * Arm.CONTROL_JOINT_OUTPUT);
     }
 
 
     public void manuallyMoveUpperArm(double percentOutput) {
-        upperJoint.moveAtPercent(percentOutput * ArmConstants.CONTROL_JOINT_OUTPUT);
+        upperJoint.moveAtPercent(percentOutput * Arm.CONTROL_JOINT_OUTPUT);
     }
 
 
@@ -53,11 +54,11 @@ public class ArmControl {
     }
 
     public double convertMechanismRotationtoRawRotation_lowerJoint(double mechanismRotation) {
-        return mechanismRotation / ArmConstants.LOWER_ARM_GEAR_RATIO;
+        return mechanismRotation / Arm.LOWER_ARM_GEAR_RATIO;
     }
 
     public double convertMechanismRotationtoRawRotation_upperJoint(double mechanismRotation) {
-        return mechanismRotation / ArmConstants.UPPER_ARM_GEAR_RATIO;
+        return mechanismRotation / Arm.UPPER_ARM_GEAR_RATIO;
     }
 
 
@@ -95,7 +96,7 @@ public class ArmControl {
     public void humanIntake() {
         //Need inverse kinematics
 
-        InverseKinematics humanPlayer = new InverseKinematics(ArmConstants.HUMAN_INTAKE_X, ArmConstants.HUMAN_INTAKE_Y);
+        InverseKinematics humanPlayer = new InverseKinematics(Arm.HUMAN_INTAKE_X, Arm.HUMAN_INTAKE_Y);
         double lowerAngle_degrees = humanPlayer.getLowerJoint_degrees();
         double upperAngle_degrees = humanPlayer.getUpperJoint_degrees();
 
@@ -120,7 +121,7 @@ public class ArmControl {
 
     public void storeArm() {
 
-        InverseKinematics store = new InverseKinematics(ArmConstants.STORAGE_X, ArmConstants.STORAGE_Y);
+        InverseKinematics store = new InverseKinematics(Arm.STORAGE_X, Arm.STORAGE_Y);
         double lowerAngle_degrees = store.getLowerJoint_degrees();
         double upperAngle_degrees = store.getUpperJoint_degrees();
 
@@ -156,7 +157,7 @@ public class ArmControl {
     public void prepareArm() {
         debuggable.log("arm-is-called", true);
 
-        InverseKinematics prepare = new InverseKinematics(ArmConstants.PREPARE_X, ArmConstants.PREPARE_Y);
+        InverseKinematics prepare = new InverseKinematics(Arm.PREPARE_X, Arm.PREPARE_Y);
         double lowerAngle_degrees = prepare.getLowerJoint_degrees();
         double upperAngle_degrees = prepare.getUpperJoint_degrees();
 
@@ -177,7 +178,7 @@ public class ArmControl {
     }
 
     public void scoreLow() {
-        InverseKinematics lowNode = new InverseKinematics(ArmConstants.LOW_NODE_X, ArmConstants.LOW_NODE_Y);
+        InverseKinematics lowNode = new InverseKinematics(Arm.LOW_NODE_X, Arm.LOW_NODE_Y);
         double lowerAngle_degrees = lowNode.getLowerJoint_degrees();
         double upperAngle_degrees = lowNode.getUpperJoint_degrees();
 
@@ -215,7 +216,7 @@ public class ArmControl {
          */
 
 
-        InverseKinematics midNode = new InverseKinematics(ArmConstants.MID_NODE_X, ArmConstants.MID_NODE_Y);
+        InverseKinematics midNode = new InverseKinematics(Arm.MID_NODE_X, Arm.MID_NODE_Y);
         double lowerAngle_degrees = midNode.getLowerJoint_degrees();
         double upperAngle_degrees = midNode.getUpperJoint_degrees();
 
@@ -241,7 +242,7 @@ public class ArmControl {
 
 
     public void scoreHigh() {
-        InverseKinematics highNode = new InverseKinematics(ArmConstants.HIGH_NODE_X, ArmConstants.HIGH_NODE_Y);
+        InverseKinematics highNode = new InverseKinematics(Arm.HIGH_NODE_X, Arm.HIGH_NODE_Y);
         double lowerAngle_degrees = highNode.getLowerJoint_degrees();
         double upperAngle_degrees = highNode.getUpperJoint_degrees();
 
@@ -262,7 +263,7 @@ public class ArmControl {
         }
     }
     public void intakeGround(){
-        InverseKinematics intakeGround = new InverseKinematics(ArmConstants.INTAKE_GROUND_X, ArmConstants.INTAKE_GROUND_Y);
+        InverseKinematics intakeGround = new InverseKinematics(Arm.INTAKE_GROUND_X, Arm.INTAKE_GROUND_Y);
         double lowerAngle_degrees = intakeGround.getLowerJoint_degrees();
         double upperAngle_degrees = intakeGround.getUpperJoint_degrees();
 
@@ -290,7 +291,7 @@ public class ArmControl {
     //the next few functions are for the sim
 
     public void moveStraightUp(){
-        InverseKinematics straightUp = new InverseKinematics(0, ArmConstants.LOWER_JOINT_LENGTH + ArmConstants.UPPER_JOINT_LENGTH);
+        InverseKinematics straightUp = new InverseKinematics(0, Arm.LOWER_JOINT_LENGTH + Arm.UPPER_JOINT_LENGTH);
         double lowerAngle_degrees = straightUp.getLowerJoint_degrees();
         double upperAngle_degrees = straightUp.getUpperJoint_degrees();
 
@@ -311,7 +312,7 @@ public class ArmControl {
         }
     }
     public void moveToZero(){
-        InverseKinematics zero = new InverseKinematics(ArmConstants.LOWER_JOINT_LENGTH + ArmConstants.UPPER_JOINT_LENGTH, 0);
+        InverseKinematics zero = new InverseKinematics(Arm.LOWER_JOINT_LENGTH + Arm.UPPER_JOINT_LENGTH, 0);
         double lowerAngle_degrees = zero.getLowerJoint_degrees();
         double upperAngle_degrees = zero.getUpperJoint_degrees();
 

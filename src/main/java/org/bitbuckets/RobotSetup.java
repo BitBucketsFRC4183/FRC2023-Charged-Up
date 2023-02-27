@@ -1,5 +1,6 @@
 package org.bitbuckets;
 
+import config.Setups;
 import edu.wpi.first.wpilibj.Joystick;
 import org.bitbuckets.arm.ArmSubsystem;
 import org.bitbuckets.arm.ArmSubsystemSetup;
@@ -25,9 +26,9 @@ public class RobotSetup implements ISetup<Void> {
                 new Joystick(1)
         );
 
-        AutoSubsystem autoSubsystem = self.childSetup("auto-system", new AutoSubsystemSetup(false, autoControlSetup));
+        AutoSubsystem autoSubsystem = self.childSetup("auto-system", new AutoSubsystemSetup(false, Setups.AUTO_CONTROL));
         IVisionControl visionControl = self.childSetup("vision-system", new VisionControlSetup(false));
-        ArmSubsystem armSubsystem = self.childSetup("arm-system", new ArmSubsystemSetup(autoSubsystem, operatorInput, false));
+        ArmSubsystem armSubsystem = self.childSetup("arm-system", new ArmSubsystemSetup(autoSubsystem, operatorInput, armControlISetup, gripperControlISetup, false));
 
         DriveSubsystemSetup driveSubsystem = new DriveSubsystemSetup(
                 true,
