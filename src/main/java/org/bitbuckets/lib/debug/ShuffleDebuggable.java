@@ -29,6 +29,8 @@ public class ShuffleDebuggable implements IDebuggable {
     public ShuffleDebuggable(ShuffleboardContainer container, IValueTuner<ProcessMode> modeTuner) {
         this.modeTuner = modeTuner;
         this.container = container;
+
+        container.add("debugged yet", false);
     }
 
     @Override
