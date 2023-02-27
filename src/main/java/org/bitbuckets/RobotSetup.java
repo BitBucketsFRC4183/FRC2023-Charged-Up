@@ -15,6 +15,8 @@ import org.bitbuckets.vision.VisionControlSetup;
 public class RobotSetup implements ISetup<Void> {
 
 
+
+
     @Override
     public Void build(IProcess self) {
 
@@ -23,7 +25,7 @@ public class RobotSetup implements ISetup<Void> {
                 new Joystick(1)
         );
 
-        AutoSubsystem autoSubsystem = self.childSetup("auto-system", new AutoSubsystemSetup(false));
+        AutoSubsystem autoSubsystem = self.childSetup("auto-system", new AutoSubsystemSetup(false, autoControlSetup));
         IVisionControl visionControl = self.childSetup("vision-system", new VisionControlSetup(false));
         ArmSubsystem armSubsystem = self.childSetup("arm-system", new ArmSubsystemSetup(autoSubsystem, operatorInput, false));
 

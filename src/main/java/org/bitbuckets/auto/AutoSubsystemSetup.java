@@ -13,17 +13,18 @@ import org.bitbuckets.lib.util.MockingUtil;
 public class AutoSubsystemSetup implements ISetup<AutoSubsystem> {
 
     final boolean enabled;
+    final ISetup<AutoControl> autoControlSetup;
 
-
-    public AutoSubsystemSetup(boolean enabled) {
+    public AutoSubsystemSetup(boolean enabled, ISetup<AutoControl> autoControlSetup) {
         this.enabled = enabled;
+        this.autoControlSetup = autoControlSetup;
     }
 
     @Override
     public AutoSubsystem build(IProcess self) {
         if (!enabled) return MockingUtil.buddy(AutoSubsystem.class);
 
-        IAutoControl autoControl = self.childSetup("auto-control", new AutoControlSetup());
+        IAutoControl autoControl = self.childSetup("auto-control", autoControlSetup);
         IValueTuner<AutoPath> pathTuner = self.generateTuner(ITuneAs.ENUM(AutoPath.class), "auto-path", AutoPath.NONE);
 
         return new AutoSubsystem(pathTuner, autoControl, self.getDebuggable());

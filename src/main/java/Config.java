@@ -1,5 +1,0 @@
-public interface Config {
-
-    //DRIVE
-
-}

@@ -1,10 +1,6 @@
 package org.bitbuckets.arm;
 
-import edu.wpi.first.math.Matrix;
 import edu.wpi.first.wpilibj.Joystick;
-import org.bitbuckets.gripper.GripperConstants;
-import org.bitbuckets.gripper.GripperControl;
-import org.bitbuckets.gripper.GripperControlSetup;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
@@ -14,24 +10,27 @@ import edu.wpi.first.wpilibj.util.Color8Bit;
 import org.bitbuckets.OperatorInput;
 import org.bitbuckets.arm.sim.SimArmSetup;
 import org.bitbuckets.auto.AutoSubsystem;
-import org.bitbuckets.auto.AutoSubsystemSetup;
+import org.bitbuckets.gripper.GripperConstants;
+import org.bitbuckets.gripper.GripperControl;
+import org.bitbuckets.gripper.GripperControlSetup;
 import org.bitbuckets.gripper.GripperInput;
 import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.control.IPIDCalculator;
 import org.bitbuckets.lib.control.PIDCalculatorSetup;
-import org.bitbuckets.lib.control.ProfiledPIDFSetup;
 import org.bitbuckets.lib.hardware.IMotorController;
 import org.bitbuckets.lib.util.MockingUtil;
-import org.bitbuckets.lib.vendor.sim.dc.DCMotorConfig;
-import org.bitbuckets.lib.vendor.sim.dc.DCSimSetup;
 import org.bitbuckets.lib.vendor.spark.SparkSetup;
-import org.ejml.simple.SimpleMatrix;
 
 public class ArmSubsystemSetup implements ISetup<ArmSubsystem> {
 
     final AutoSubsystem autoSubsystem;
     final OperatorInput operatorInput;
+
+    final ISetup<IMotorController> lowerArm1;
+    final ISetup<IMotorController> lowerArm2;
+    final ISetup<IMotorController> upperArm;
+
     final boolean isEnabled;
 
     public ArmSubsystemSetup(AutoSubsystem autoSubsystem, OperatorInput operatorInput, boolean isEnabled) {
@@ -86,6 +85,8 @@ public class ArmSubsystemSetup implements ISetup<ArmSubsystem> {
                     ArmConstants.UPPER_SIMPID,
                     simUpper
             );
+
+
 
         }
 

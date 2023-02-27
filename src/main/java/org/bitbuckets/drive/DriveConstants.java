@@ -49,12 +49,6 @@ public interface DriveConstants {
             Optional.empty()
     );
 
-    PIDConfig DRIVE_PID = new PIDConfig(0, 0, 0, Optional.empty(),Optional.empty());
-    PIDConfig STEER_PID = new PIDConfig(1, 0, 0.1, Optional.empty(),Optional.empty());
-
-    DCMotorConfig DRIVE_MOTOR = new DCMotorConfig(0.025, Matrix.mat(Nat.N1(), Nat.N1()).fill(0));
-    DCMotorConfig STEER_MOTOR = new DCMotorConfig(0.005, Matrix.mat(Nat.N1(), Nat.N1()).fill(0));
-
     double HALF_WIDTH = Units.inchesToMeters(18.25 / 2);
     double HALF_BASE = Units.inchesToMeters(20.5 / 2);
 
@@ -66,8 +60,6 @@ public interface DriveConstants {
             new Translation2d(-HALF_WIDTH, -HALF_BASE)
     );
 
-    double TURN_REDUCTION = (15.0 / 32.0) * (10.0 / 60.0);
-    double DRIVE_REDUCTION = (14.0 / 50.0) * (27.0 / 17.0) * (15.0 / 45.0);
 
     double MAX_DRIVE_VELOCITY = 6380.0 / 60.0 * (14.0 / 50.0) * (27.0 / 17.0) * (15.0 / 45.0) * 0.10033 * Math.PI;
     double MAX_ANG_VELOCITY = MAX_DRIVE_VELOCITY / Math.hypot(HALF_WIDTH, HALF_BASE);
@@ -80,6 +72,8 @@ public interface DriveConstants {
             new SwerveModuleState(0, Rotation2d.fromDegrees(-45)),
             new SwerveModuleState(0, Rotation2d.fromDegrees(45))
     };
+
+
 
     int FRONT_LEFT_DRIVE_ID = 5;
     int FRONT_LEFT_STEER_ID = 6;
@@ -97,10 +91,7 @@ public interface DriveConstants {
     int BACK_RIGHT_STEER_ID = 2;
     int BACK_RIGHT_ENCODER_CHANNEL = 0;
 
-    double FRONT_LEFT_OFFSET = Math.toRadians(76.904289); // set front left steer offset
-    double FRONT_RIGHT_OFFSET = Math.toRadians(94.75707037500001); // set front right steer offset
-    double BACK_LEFT_OFFSET = Math.toRadians(2.1972654); // set back left steer offset
-    double BACK_RIGHT_OFFSET = Math.toRadians(119.56785885000002); // set back right steer offset
+
 
     SwerveModuleConfiguration MK4_L2 = new SwerveModuleConfiguration(
             0.10033,
