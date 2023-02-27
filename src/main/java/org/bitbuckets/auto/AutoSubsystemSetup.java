@@ -1,10 +1,12 @@
 package org.bitbuckets.auto;
 
+import org.bitbuckets.drive.IDriveControl;
 import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ITuneAs;
 import org.bitbuckets.lib.tune.IValueTuner;
 import org.bitbuckets.lib.util.MockingUtil;
+import org.bitbuckets.odometry.IOdometryControl;
 
 /**
  * labels: low priority, easy
@@ -13,11 +15,15 @@ import org.bitbuckets.lib.util.MockingUtil;
 public class AutoSubsystemSetup implements ISetup<AutoSubsystem> {
 
     final boolean enabled;
-    final ISetup<IAutoControl> autoControlSetup;
+    final ISetup<AutoControl> autoControlSetup;
+    final IDriveControl driveControl;
+    final IOdometryControl odometryControl;
 
-    public AutoSubsystemSetup(boolean enabled, ISetup<IAutoControl> autoControlSetup) {
+    public AutoSubsystemSetup(boolean enabled, ISetup<AutoControl> autoControlSetup, IDriveControl driveControl, IOdometryControl odometryControl) {
         this.enabled = enabled;
         this.autoControlSetup = autoControlSetup;
+        this.driveControl = driveControl;
+        this.odometryControl = odometryControl;
     }
 
     @Override
@@ -27,7 +33,7 @@ public class AutoSubsystemSetup implements ISetup<AutoSubsystem> {
         IAutoControl autoControl = self.childSetup("auto-control", autoControlSetup);
         IValueTuner<AutoPath> pathTuner = self.generateTuner(ITuneAs.ENUM(AutoPath.class), "auto-path", AutoPath.NONE);
 
-        return new AutoSubsystem(pathTuner, autoControl, self.getDebuggable());
+        return new AutoSubsystem(pathTuner, autoControl, self.getDebuggable(), driveControl, odometryControl);
     }
 
 

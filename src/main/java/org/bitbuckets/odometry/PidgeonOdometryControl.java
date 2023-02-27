@@ -37,13 +37,12 @@ public class PidgeonOdometryControl implements IOdometryControl {
     }
 
     private static final Vector<N7> stateStdDevs = VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(5), 0.05, 0.05, 0.05, 0.05);
-
     private static final Vector<N5> localMeasurementStdDevs = VecBuilder.fill(Units.degreesToRadians(0.01), 0.01, 0.01, 0.01, 0.01);
     private static final Vector<N3> visionMeasurementStdDevs = VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(10));
 
 
     public void updateOdometryLoop() {
-        Rotation2d gyroangle = (pigeonIMU.getRotation2d());
+        Rotation2d gyroangle = pigeonIMU.getRotation2d();
         double epoch = Timer.getFPGATimestamp();
         debuggable.log("raw-swerve-pose", swerveDrivePoseEstimator.update(gyroangle, driveControl.currentPositions()));
 

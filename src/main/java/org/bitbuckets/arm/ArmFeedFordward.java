@@ -78,6 +78,7 @@ public class ArmFeedFordward {
                         .times(acceleration)
                         .plus(C(position, velocity).times(velocity))
                         .plus(Tg(position));
+
         return VecBuilder.fill(
                 getVoltageNowUpper(torque.get(0, 0), velocity.get(0, 0)),
                 getVoltageNowLower(torque.get(1, 0), velocity.get(1, 0)));
