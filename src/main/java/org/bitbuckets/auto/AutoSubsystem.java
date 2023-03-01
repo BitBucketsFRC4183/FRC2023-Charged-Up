@@ -2,36 +2,34 @@ package org.bitbuckets.auto;
 
 import com.pathplanner.lib.PathPlannerTrajectory;
 import edu.wpi.first.wpilibj.DriverStation;
-import org.bitbuckets.drive.IDriveControl;
+import org.bitbuckets.lib.core.HasLogLoop;
+import org.bitbuckets.lib.core.HasLoop;
 import org.bitbuckets.lib.debug.IDebuggable;
 import org.bitbuckets.lib.tune.IValueTuner;
-import org.bitbuckets.odometry.IOdometryControl;
 
 import java.util.Optional;
 
-public class AutoSubsystem {
+public class AutoSubsystem implements HasLogLoop, HasLoop {
 
     final IValueTuner<AutoPath> pathToUse;
     final IAutoControl autoControl;
     final IDebuggable debug;
 
-    final IDriveControl driveControl;
-    final IOdometryControl odometryControl;
-
-    public AutoSubsystem(IValueTuner<AutoPath> pathToUse, IAutoControl autoControl, IDebuggable debug, IDriveControl driveControl, IOdometryControl odometryControl) {
+    public AutoSubsystem(IValueTuner<AutoPath> pathToUse, IAutoControl autoControl, IDebuggable debug) {
         this.pathToUse = pathToUse;
         this.autoControl = autoControl;
         this.debug = debug;
-        this.driveControl = driveControl;
-        this.odometryControl = odometryControl;
     }
 
-    AutoPathInstance instance;
-
+    AutoPathInstance instance; //this is bad
     AutoFSM state = AutoFSM.DISABLED;
 
     public AutoFSM state() {
         return state;
+    }
+
+    public boolean hasChanged() {
+        return hasChanged;
     }
 
     public boolean sampleHasEventStarted(String event) {
@@ -56,7 +54,10 @@ public class AutoSubsystem {
 
     int iteration = 0;
 
-    public void runLoop() {
+    boolean hasChanged = false;
+
+    @Override
+    public void loop() {
 
         var opt = samplePathPlannerState();
 
@@ -68,13 +69,22 @@ public class AutoSubsystem {
 
         switch (state) {
             case DISABLED:
+                if (DriverStation.isTeleopEnabled() || DriverStation.isAutonomousEnabled()) {
+                    hasChanged = true;
+                    state = AutoFSM.INITIALIZATION;
+                }
+                break;
+            case INITIALIZATION:
                 if (DriverStation.isAutonomousEnabled()) {
                     transitionToAutoRun();
+
                     state = AutoFSM.AUTO_RUN;
+                    hasChanged = true;
                     break;
                 }
                 if (DriverStation.isTeleopEnabled()) {
                     state = AutoFSM.TELEOP;
+                    hasChanged = true;
                     break;
                 }
                 break;
@@ -82,33 +92,39 @@ public class AutoSubsystem {
 
                 if (DriverStation.isDisabled()) {
                     state = AutoFSM.DISABLED;
+                    hasChanged = true;
                     break;
                 }
 
                 if (DriverStation.isTeleopEnabled()) {
                     state = AutoFSM.TELEOP;
+                    hasChanged = true;
                     break;
                 }
                 if (instance.isDone()) {
-                    instance.end();
+                    instance.onPhaseChangeEvent(AutoFSM.AUTO_ENDED);
                     state = AutoFSM.AUTO_ENDED;
+                    hasChanged = true;
                     break;
                 }
                 break;
             case AUTO_ENDED:
                 if (DriverStation.isDisabled()) {
                     state = AutoFSM.DISABLED;
+                    hasChanged = true;
                     break;
                 }
 
                 if (DriverStation.isTeleopEnabled()) {
                     state = AutoFSM.TELEOP;
+                    hasChanged = true;
                     break;
                 }
                 break;
             case TELEOP:
                 if (DriverStation.isDisabled()) {
                     state = AutoFSM.DISABLED;
+                    hasChanged = true;
                     break;
                 }
                 //this can only happen in testing
@@ -116,10 +132,13 @@ public class AutoSubsystem {
                     transitionToAutoRun();
 
                     state = AutoFSM.AUTO_RUN;
+                    hasChanged = true;
                     break;
                 }
                 break;
         }
+        hasChanged = false;
+
     }
 
     AutoPath toUseLogOnly = AutoPath.NONE;
@@ -127,22 +146,16 @@ public class AutoSubsystem {
     void transitionToAutoRun() {
         AutoPath toUse = pathToUse.readValue();
         toUseLogOnly = toUse;
-        instance = autoControl.generateAndStartPath(toUse, driveControl.currentPositions(), odometryControl);
+        instance = autoControl.generateAndStartPath(toUse);
         iteration++;
 
     }
 
-    void logLoop() {
+    @Override
+    public void logLoop() {
         debug.log("current-state", state);
         debug.log("actual-path", toUseLogOnly);
         debug.log("dashboard-path", pathToUse.readValue());
     }
 
-    public void setDriveControl(IDriveControl driveControl) {
-        this.driveControl = driveControl;
-    }
-
-    public void setOdometryControl(IOdometryControl odometryControl) {
-        this.odometryControl = odometryControl;
-    }
 }

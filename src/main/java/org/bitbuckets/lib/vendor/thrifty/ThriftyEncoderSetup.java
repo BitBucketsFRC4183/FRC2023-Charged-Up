@@ -6,7 +6,6 @@ import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.hardware.IAbsoluteEncoder;
 import org.bitbuckets.lib.log.ILoggable;
-import org.opencv.core.Mat;
 
 public class ThriftyEncoderSetup implements ISetup<IAbsoluteEncoder> {
 

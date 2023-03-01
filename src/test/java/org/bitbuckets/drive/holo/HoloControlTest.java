@@ -35,7 +35,7 @@ class HoloControlTest {
         visionControl = mock(IVisionControl.class);
         debuggable = mock(IDebuggable.class);
 
-        control = new HoloControl(driveControl, visionControl, odometryControl,
+        control = new HoloControl(driveControl, odometryControl,
                 new HolonomicDriveController(new PIDController(1, 0, 0), new PIDController(1, 0, 0),
                         new ProfiledPIDController(1, 0, 0, new TrapezoidProfile.Constraints(1, 1)))
                 , debuggable);

@@ -1,10 +1,6 @@
 package org.bitbuckets.rgb;
 
-import com.ctre.phoenix.ErrorCode;
 import com.ctre.phoenix.led.CANdle;
-import com.ctre.phoenix.led.CANdleFaults;
-import com.ctre.phoenix.led.LarsonAnimation;
-import com.ctre.phoenix.led.RainbowAnimation;
 import org.bitbuckets.OperatorInput;
 import org.bitbuckets.lib.debug.IDebuggable;
 
@@ -28,11 +24,12 @@ public class RgbSubsystem {
 
     public void robotPeriodic() {
 
-        switch (state) {
+        //TODO add rgb back with real buttons and states
+        /*switch (state) {
             case DISABLED:
                 ;
             case A:
-                if (rgbInput.buttonB()) {
+                if (rgbInput.is()) {
                     state = RgbFSM.B;
                     break;
                 }
@@ -50,7 +47,7 @@ public class RgbSubsystem {
                 LarsonAnimation larsonAnimation = new LarsonAnimation(255, 1, 1, 1, 1, 68, LarsonAnimation.BounceMode.Center, 2);
                 candle.animate(larsonAnimation);
                 break;
-        }
+        }*/
 
     }
 

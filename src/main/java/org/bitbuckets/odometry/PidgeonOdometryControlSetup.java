@@ -1,13 +1,12 @@
 package org.bitbuckets.odometry;
 
 import com.ctre.phoenix.sensors.Pigeon2;
-import com.ctre.phoenix.sensors.Pigeon2Configuration;
 import com.ctre.phoenix.sensors.WPI_Pigeon2;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
-import org.bitbuckets.drive.DriveConstants;
 import org.bitbuckets.drive.IDriveControl;
 import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.lib.ISetup;
@@ -19,12 +18,14 @@ public class PidgeonOdometryControlSetup implements ISetup<IOdometryControl> {
 
     final IDriveControl control;
     final IVisionControl visionControl;
+    final SwerveDriveKinematics kinematics;
 
     final int pidgeonId;
 
-    public PidgeonOdometryControlSetup(IDriveControl control, IVisionControl visionControl, int pidgeonId1) {
+    public PidgeonOdometryControlSetup(IDriveControl control, IVisionControl visionControl, SwerveDriveKinematics kinematics, int pidgeonId1) {
         this.control = control;
         this.visionControl = visionControl;
+        this.kinematics = kinematics;
         this.pidgeonId = pidgeonId1;
     }
 
@@ -32,7 +33,7 @@ public class PidgeonOdometryControlSetup implements ISetup<IOdometryControl> {
     public IOdometryControl build(IProcess self) {
 
         SwerveDrivePoseEstimator estimator = new SwerveDrivePoseEstimator(
-                DriveConstants.KINEMATICS,
+                kinematics,
                 Rotation2d.fromDegrees(0),
                 new SwerveModulePosition[]{
                         new SwerveModulePosition(),

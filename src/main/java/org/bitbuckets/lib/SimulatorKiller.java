@@ -1,6 +1,6 @@
 package org.bitbuckets.lib;
 
-import org.bitbuckets.lib.util.HasLoop;
+import org.bitbuckets.lib.core.HasLoop;
 
 /**
  * Designed to kill the robot

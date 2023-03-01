@@ -1,0 +1,38 @@
+package org.bitbuckets.lib;
+
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
+public class SwapSetup<T> implements ISetup<T> {
+
+    //do stuff based on the robot
+
+    final ISetup<T> useOnAppa;
+    final ISetup<T> useOnNew;
+    final ISetup<T> useOnSim;
+
+    public SwapSetup(ISetup<T> useOnAppa, ISetup<T> useOnNew, ISetup<T> useOnSim) {
+        this.useOnAppa = useOnAppa;
+        this.useOnNew = useOnNew;
+        this.useOnSim = useOnSim;
+    }
+
+    @Override
+    public T build(IProcess self) {
+        if (self.isReal()) {
+            try {
+                String localhost = InetAddress.getLocalHost().getHostName();
+
+                if (localhost.contains("appa")) {
+                    return useOnAppa.build(self);
+                } else {
+                    return useOnNew.build(self);
+                }
+            } catch (UnknownHostException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            return useOnSim.build(self);
+        }
+    }
+}

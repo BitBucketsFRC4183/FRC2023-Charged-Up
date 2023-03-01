@@ -2,9 +2,7 @@ package org.bitbuckets.lib.vendor.spark;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
-import com.revrobotics.REVPhysicsSim;
 import com.revrobotics.SparkMaxLimitSwitch;
-import edu.wpi.first.math.system.plant.DCMotor;
 import org.bitbuckets.lib.ILogAs;
 import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.lib.ISetup;
@@ -12,13 +10,12 @@ import org.bitbuckets.lib.ITuneAs;
 import org.bitbuckets.lib.control.PIDConfig;
 import org.bitbuckets.lib.hardware.IMotorController;
 import org.bitbuckets.lib.hardware.MotorConfig;
+import org.bitbuckets.lib.hardware.OptimizationMode;
 import org.bitbuckets.lib.tune.IValueTuner;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static java.lang.String.format;
-import static org.bitbuckets.lib.vendor.spark.RevUtils.checkNeoError;
+import java.util.Optional;
 
 /**
  * SparkPIDSetup is for control based shit
@@ -32,17 +29,17 @@ public class SparkSetup implements ISetup<IMotorController> {
     final MotorConfig motorConfig;
     final PIDConfig pidConfig;
 
-    public SparkSetup(int canId, MotorConfig motorConfig, PIDConfig pidConfig) {
+    final Optional<SparkSetup> follower; //This will follow
+
+    public SparkSetup(int canId, MotorConfig motorConfig, PIDConfig pidConfig, Optional<SparkSetup> follower) {
         this.canId = canId;
         this.motorConfig = motorConfig;
         this.pidConfig = pidConfig;
+        this.follower = follower;
     }
 
     @Override
     public IMotorController build(IProcess self) {
-
-        System.out.println("called: " + self.getSelfPath().getAsTablePath());
-        
 
         //check id for duplicate usage
         if (seen.contains(canId)) {
@@ -86,8 +83,8 @@ public class SparkSetup implements ISetup<IMotorController> {
         IValueTuner<Double> d = self.generateTuner(ITuneAs.DOUBLE_INPUT,"d", pidConfig.kD);
 
         spark.getPIDController().setP(p.readValue());
-        spark.getPIDController().setP(i.readValue());
-        spark.getPIDController().setP(d.readValue());
+        spark.getPIDController().setI(i.readValue());
+        spark.getPIDController().setD(d.readValue());
 
 
         SparkTuner tuner = new SparkTuner(p,i,d, spark.getPIDController());
@@ -118,7 +115,31 @@ public class SparkSetup implements ISetup<IMotorController> {
             );
             self.registerLogLoop(loggingAspect);        }
 
-        REVPhysicsSim.getInstance().addSparkMax(spark, DCMotor.getNeo550(1));
+        if (follower.isPresent()) {
+
+            SparkRelativeMotorController ctol = (SparkRelativeMotorController) self.siblingSetup(self.getSelfPath().getTail() + "-follower", follower.get());
+            ctol.disableExternalAccess();
+
+
+            ctol.rawAccess(CANSparkMax.class).follow(spark); //lmao dont do this typically
+            //TODO optimize can frames for followers
+
+        }
+
+        //dont care about sticky faults eevery 100ms
+        spark.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus0, 200);
+
+        if (motorConfig.optimizationMode == OptimizationMode.OFFBOARD_VEL_PID || motorConfig.optimizationMode == OptimizationMode.LQR) {
+            spark.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus1, 20);
+        } else {
+            spark.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus1, 200);
+        }
+
+        if (motorConfig.optimizationMode == OptimizationMode.OFFBOARD_POS_PID || motorConfig.optimizationMode == OptimizationMode.LQR) {
+            spark.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus2, 20);
+        } else {
+            spark.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus2, 200);
+        }
 
         return ctrl;
     }

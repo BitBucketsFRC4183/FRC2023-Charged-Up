@@ -1,6 +1,9 @@
 package config;
 
+//assorted can IDs that are not mutex'd because can makes 0 sense
 public interface MotorIds {
+
+    int PIDGEON_IMU_ID = 5;
 
     int FRONT_LEFT_DRIVE_ID = 5;
     int FRONT_LEFT_STEER_ID = 6;
@@ -15,7 +18,7 @@ public interface MotorIds {
     int BACK_RIGHT_STEER_ID = 2;
     int BACK_RIGHT_ENCODER_CHANNEL = 0;
     int LOWER_ARM_ID_1 = 9;
-    int LOWER_ARM_ID_2 = 10;
+    int LOWER_ARM_FOLLOWER = 10;
     int UPPER_ARM_ID = 11;
     int GRIPPER_ARM_ID = 12;
 

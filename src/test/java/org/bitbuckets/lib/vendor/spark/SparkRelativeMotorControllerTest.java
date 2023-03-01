@@ -4,7 +4,9 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 import com.revrobotics.SparkMaxPIDController;
 import edu.wpi.first.hal.HAL;
+import edu.wpi.first.math.system.plant.DCMotor;
 import org.bitbuckets.lib.hardware.MotorConfig;
+import org.bitbuckets.lib.hardware.OptimizationMode;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -25,7 +27,8 @@ class SparkRelativeMotorControllerTest {
             Optional.empty(),
             false,
             false,
-            Optional.empty()
+            OptimizationMode.GENERIC,
+            DCMotor.getNEO(1)
     );
 
 

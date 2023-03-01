@@ -1,6 +1,7 @@
 package org.bitbuckets.drive.controlsds;
 
-import config.Setups;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import org.bitbuckets.drive.IDriveControl;
 import org.bitbuckets.drive.controlsds.sds.ISwerveModule;
 import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.lib.ISetup;
@@ -9,14 +10,16 @@ import org.bitbuckets.lib.ISetup;
  * Sets up prereqs for a drive controller
  * <p>
  */
-public class DriveControlSetup implements ISetup<DriveControl> {
+public class DriveControlSetup implements ISetup<IDriveControl> {
 
+    final SwerveDriveKinematics kinematics;
     final ISetup<ISwerveModule> frontLeft;
     final ISetup<ISwerveModule> frontRight;
     final ISetup<ISwerveModule> backLeft;
     final ISetup<ISwerveModule> backRight;
 
-    public DriveControlSetup(ISetup<ISwerveModule> frontLeft, ISetup<ISwerveModule> frontRight, ISetup<ISwerveModule> backLeft, ISetup<ISwerveModule> backRight) {
+    public DriveControlSetup(SwerveDriveKinematics kinematics, ISetup<ISwerveModule> frontLeft, ISetup<ISwerveModule> frontRight, ISetup<ISwerveModule> backLeft, ISetup<ISwerveModule> backRight) {
+        this.kinematics = kinematics;
         this.frontLeft = frontLeft;
         this.frontRight = frontRight;
         this.backLeft = backLeft;
@@ -28,6 +31,7 @@ public class DriveControlSetup implements ISetup<DriveControl> {
 
 
         DriveControl control = new DriveControl(
+                kinematics,
                 self.getDebuggable(),
                 self.childSetup("front-left",frontLeft),
                 self.childSetup("front-right",frontRight),

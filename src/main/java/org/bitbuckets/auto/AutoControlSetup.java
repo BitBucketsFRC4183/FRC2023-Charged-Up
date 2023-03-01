@@ -3,14 +3,21 @@ package org.bitbuckets.auto;
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.lib.ISetup;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 public class AutoControlSetup implements ISetup<IAutoControl> {
 
+    final Supplier<SwerveModulePosition[]> modules;
+
+    public AutoControlSetup(Supplier<SwerveModulePosition[]> modules) {
+        this.modules = modules;
+    }
 
     @Override
     public IAutoControl build(IProcess self) {
@@ -18,7 +25,6 @@ public class AutoControlSetup implements ISetup<IAutoControl> {
 
         List<List<PathPlannerTrajectory>> paths = new ArrayList<>();
         try {
-
 
             List<PathPlannerTrajectory> trajectory = PathPlanner.loadPathGroup("test-forwardright", new PathConstraints(1.25, 2.25), new PathConstraints(1.00, 1));
             List<PathPlannerTrajectory> trajectory1 = PathPlanner.loadPathGroup("taxi-right", new PathConstraints(4.0, 3.0));
@@ -46,6 +52,6 @@ public class AutoControlSetup implements ISetup<IAutoControl> {
 
 
 
-        return new AutoControl(paths);
+        return new AutoControl(paths, modules);
     }
 }

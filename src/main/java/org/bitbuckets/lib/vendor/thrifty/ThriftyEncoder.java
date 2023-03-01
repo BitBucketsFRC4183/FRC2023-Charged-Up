@@ -1,7 +1,7 @@
 package org.bitbuckets.lib.vendor.thrifty;
 
 import edu.wpi.first.wpilibj.AnalogInput;
-import org.bitbuckets.lib.util.HasLogLoop;
+import org.bitbuckets.lib.core.HasLogLoop;
 import org.bitbuckets.lib.hardware.IAbsoluteEncoder;
 import org.bitbuckets.lib.log.ILoggable;
 

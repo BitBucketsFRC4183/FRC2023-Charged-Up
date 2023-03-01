@@ -1,10 +1,11 @@
 package org.bitbuckets.lib.process;
 
-import org.bitbuckets.lib.*;
+import org.bitbuckets.lib.IProcess;
+import org.bitbuckets.lib.ProcessMode;
+import org.bitbuckets.lib.core.HasLogLoop;
+import org.bitbuckets.lib.core.HasLoop;
 import org.bitbuckets.lib.core.Path;
 import org.bitbuckets.lib.tune.IForceSendTuner;
-import org.bitbuckets.lib.util.HasLogLoop;
-import org.bitbuckets.lib.util.HasLoop;
 
 import java.util.ArrayList;
 import java.util.List;

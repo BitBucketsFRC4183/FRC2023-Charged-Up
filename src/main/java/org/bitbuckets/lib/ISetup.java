@@ -14,12 +14,7 @@ package org.bitbuckets.lib;
 public interface ISetup<T> {
 
     /**
-     * function representing the setup of a piece of code that requires robot-initalized-specific devices
-     * <p>
-     * make sure you call any child factory with tools.child() and NOT with this tools instance
-     *
-     * @param self a variety of tools.
-     * @return a fully initialized object
+     * never call this
      */
     T build(IProcess self);
 

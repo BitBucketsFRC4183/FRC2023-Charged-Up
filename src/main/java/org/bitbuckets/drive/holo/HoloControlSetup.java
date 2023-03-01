@@ -6,7 +6,7 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import org.bitbuckets.drive.controlsds.DriveControl;
+import org.bitbuckets.drive.IDriveControl;
 import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.control.IPIDCalculator;
@@ -14,19 +14,16 @@ import org.bitbuckets.lib.control.PIDCalculatorSetup;
 import org.bitbuckets.lib.control.PIDConfig;
 import org.bitbuckets.lib.control.ProfiledPIDFSetup;
 import org.bitbuckets.odometry.IOdometryControl;
-import org.bitbuckets.vision.IVisionControl;
 
 import java.util.Optional;
 
 public class HoloControlSetup implements ISetup<HoloControl> {
 
-    final DriveControl drive;
-    final IVisionControl visionControl;
+    final IDriveControl drive;
     final IOdometryControl odo;
 
-    public HoloControlSetup(DriveControl drive, IVisionControl visionControl, IOdometryControl odo) {
+    public HoloControlSetup(IDriveControl drive, IOdometryControl odo) {
         this.drive = drive;
-        this.visionControl = visionControl;
         this.odo = odo;
     }
 
@@ -54,9 +51,9 @@ public class HoloControlSetup implements ISetup<HoloControl> {
 
         return new HoloControl(
                 drive,
-                visionControl,
                 odo,
                 holonomicDriveController,
-                self.getDebuggable());
+                self.getDebuggable()
+        );
     }
 }

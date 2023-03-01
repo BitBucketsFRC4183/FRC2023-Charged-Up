@@ -10,6 +10,8 @@ import org.bitbuckets.lib.control.PIDConfig;
 import org.bitbuckets.lib.hardware.IMotorController;
 import org.bitbuckets.lib.hardware.MotorConfig;
 
+import java.util.Optional;
+
 import static org.bitbuckets.lib.vendor.spark.RevUtils.checkNeoError;
 
 /**
@@ -21,7 +23,7 @@ public class SparkSteerMotorSetup extends SparkSetup {
 
 
     public SparkSteerMotorSetup(int canId, MotorConfig motorConfig, PIDConfig pidConfig, SwerveModuleConfiguration swerveModuleConfiguration) {
-        super(canId, motorConfig, pidConfig);
+        super(canId, motorConfig, pidConfig, Optional.empty());
         this.swerveModuleConfiguration = swerveModuleConfiguration;
     }
 

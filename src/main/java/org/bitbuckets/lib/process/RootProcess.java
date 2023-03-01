@@ -2,7 +2,14 @@ package org.bitbuckets.lib.process;
 
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import org.bitbuckets.lib.*;
+import org.bitbuckets.auto.AutoFSM;
+import org.bitbuckets.lib.ILogAs;
+import org.bitbuckets.lib.ISetup;
+import org.bitbuckets.lib.ITuneAs;
+import org.bitbuckets.lib.ProcessMode;
+import org.bitbuckets.lib.core.HasLifecycle;
+import org.bitbuckets.lib.core.HasLogLoop;
+import org.bitbuckets.lib.core.HasLoop;
 import org.bitbuckets.lib.core.Path;
 import org.bitbuckets.lib.debug.IDebuggable;
 import org.bitbuckets.lib.debug.ShuffleDebuggable;
@@ -12,18 +19,14 @@ import org.bitbuckets.lib.log.ProcessConsole;
 import org.bitbuckets.lib.tune.IForceSendTuner;
 import org.bitbuckets.lib.tune.IValueTuner;
 import org.bitbuckets.lib.tune.NoopsTuner;
-import org.bitbuckets.lib.util.HasLogLoop;
-import org.bitbuckets.lib.util.HasLoop;
 
 import java.util.Map;
 
-public class RootProcess extends AProcess {
+public class RootProcess extends AProcess implements HasLifecycle {
 
     public RootProcess(Path path, IForceSendTuner<ProcessMode> selfMode) {
         super(path, selfMode);
     }
-
-    public static int i = 0;
 
 
 
@@ -41,7 +44,7 @@ public class RootProcess extends AProcess {
         var tune = component.getLayout("tune", BuiltInLayouts.kList).withProperties(Map.of("Label Position", "BOTTOM"));
         var log = component.getLayout("log", BuiltInLayouts.kList).withProperties(Map.of("Label Position", "LEFT"));
 
-        IForceSendTuner<ProcessMode> childMode = (IForceSendTuner<ProcessMode>) ITuneAs.SIDEBAR_ENUM(ProcessMode.class)
+        IForceSendTuner<ProcessMode> childMode = (IForceSendTuner<ProcessMode>) ITuneAs.ENUM(ProcessMode.class)
                 .generate(
                         path.getAsFlatTablePath(),
                         sidebar,
@@ -70,6 +73,11 @@ public class RootProcess extends AProcess {
         return instance;
     }
 
+    @Override
+    public <T> T siblingSetup(String key, ISetup<T> setup) {
+        throw new IllegalStateException("Illegal root sibling at: " + key);
+    }
+
 
     @Override
     public IConsole getAssociatedConsole() {
@@ -91,9 +99,29 @@ public class RootProcess extends AProcess {
         throw new UnsupportedOperationException("cannot use logger");
     }
 
+    @Override
+    public void registerLifecycle(HasLifecycle lifecycle) {
+
+    }
+
+    @Override
+    public HasLifecycle offerInternalLifecycler() {
+        return null;
+    }
+
     public static RootProcess root() {
 
 
         return new RootProcess(new Path(new String[0]), new NoopsTuner());
     }
- }
+
+    @Override
+    public void onEvent(String autoEvent) {
+
+    }
+
+    @Override
+    public void onPhaseChangeEvent(AutoFSM phase) {
+
+    }
+}
