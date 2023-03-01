@@ -1,14 +1,24 @@
 package org.bitbuckets.lib.tune;
 
-class
-ValueTunerTest {
-/*
-    @Disabled
+import edu.wpi.first.hal.HAL;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+
+class ValueTunerTest {
+
+
+    /*
     @Test
     void readValue_shouldWork() throws InterruptedException {
         assert HAL.initialize(500, 0);
 
-        ValueTuner<Double> tuner = new ModernTuner<>(20.0);
+        var entry = NetworkTableInstance
+                .getDefault()
+                .getTable("frc")
+                .getEntry("hello");
+
+        ValueTuner<Double> tuner = new ValueTuner<>(entry, new NoopsTuner(),20.0);
         NetworkTableInstance
                 .getDefault()
                 .getTable("frc")

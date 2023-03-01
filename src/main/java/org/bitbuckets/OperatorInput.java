@@ -20,15 +20,6 @@ public class OperatorInput {
     }
 
 
-    public boolean buttonA() {
-        return operatorControl.getRawButton(XboxController.Button.kA.value);
-    }
-
-    public boolean buttonB() {
-        return operatorControl.getRawButton(XboxController.Button.kB.value);
-    }
-
-
 
     /**
      * @param input a value
@@ -131,6 +122,15 @@ public class OperatorInput {
         return operatorControl.getRawButtonPressed(XboxController.Button.kY.value);
     }
 
+    public boolean isManualModePressed() {
+        return operatorControl.getRawButtonPressed(XboxController.Button.kBack.value);
+    }
+
+    //checks if operator for some reason wants to manually zero the shit
+    public boolean isZeroArmPressed() {
+        return operatorControl.getRawButton(XboxController.Button.kStart.value);
+    }
+
     // checks if operator wants to move arms to intake for human player station (by pressing RIGHT DPAD)
     public boolean isHumanIntakePressed() {
         int pressed = operatorControl.getPOV();
@@ -157,14 +157,6 @@ public class OperatorInput {
     }
 
 
-    // sets current lowerArm and upperArm position to 0 when left joystick button is pressed
-    public boolean isCalibratedPressed() {
-        return operatorControl.getRawButtonPressed(XboxController.Button.kLeftStick.value);
-    }
-
-    public boolean isDisablePositionControlPressed() {
-        return operatorControl.getRawButtonPressed(XboxController.Button.kRightStick.value);
-    }
     public boolean isStopPidPressed() {
         return operatorControl.getRawButtonPressed(XboxController.Button.kB.value);
     }

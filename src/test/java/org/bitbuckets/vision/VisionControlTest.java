@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -127,7 +128,7 @@ class VisionControlTest {
 
         // call the visionPoseEstimator
         var result = control.visionPoseEstimator();
-        assertEquals(true, result.isPresent());
+        assertTrue(result.isPresent());
 
         // if we are at (2,0), the target is at (0, 0) and we are facing it
         // we expect the translation to target to be (-1, 0) and our rotation should be 0

@@ -1,7 +1,9 @@
 package config;
 
+import edu.wpi.first.math.system.plant.DCMotor;
 import org.bitbuckets.drive.controlsds.sds.SwerveModuleConfiguration;
 import org.bitbuckets.lib.hardware.MotorConfig;
+import org.bitbuckets.lib.hardware.OptimizationMode;
 
 import java.util.Optional;
 
@@ -18,7 +20,8 @@ public interface DriveAppaSpecific {
             Optional.empty(),
             false,
             false,
-            Optional.empty()
+            OptimizationMode.GENERIC,
+            DCMotor.getFalcon500(1).withReduction(1) //TODO fix for sim
     );
 
     double FRONT_LEFT_OFFSET_APPA = -Math.toRadians(51.6); // set front left steer offset

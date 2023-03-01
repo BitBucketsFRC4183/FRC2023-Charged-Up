@@ -1,7 +1,5 @@
 package org.bitbuckets.lib.core;
 
-import edu.wpi.first.wpilibj.motorcontrol.Spark;
-
 import java.util.Optional;
 
 /**

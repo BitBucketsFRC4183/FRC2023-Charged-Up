@@ -4,7 +4,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import org.bitbuckets.drive.controlsds.sds.ISwerveModule;
-import org.bitbuckets.lib.util.HasLogLoop;
+import org.bitbuckets.lib.core.HasLogLoop;
 import org.bitbuckets.lib.hardware.IAbsoluteEncoder;
 import org.bitbuckets.lib.hardware.IMotorController;
 

@@ -14,10 +14,9 @@ import edu.wpi.first.math.numbers.N7;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
 import org.bitbuckets.drive.IDriveControl;
-
+import org.bitbuckets.lib.core.HasLogLoop;
+import org.bitbuckets.lib.core.HasLoop;
 import org.bitbuckets.lib.debug.IDebuggable;
-import org.bitbuckets.lib.util.HasLogLoop;
-import org.bitbuckets.lib.util.HasLoop;
 import org.bitbuckets.vision.IVisionControl;
 
 import java.util.Optional;

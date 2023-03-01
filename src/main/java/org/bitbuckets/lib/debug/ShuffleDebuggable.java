@@ -18,8 +18,6 @@ import java.util.concurrent.Executors;
 
 public class ShuffleDebuggable implements IDebuggable {
 
-    static final Executor EXECUTOR = Executors.newSingleThreadExecutor();
-
     final ShuffleboardContainer container;
     final IValueTuner<ProcessMode> modeTuner;
 
@@ -38,37 +36,32 @@ public class ShuffleDebuggable implements IDebuggable {
         if (modeTuner.readValue().level > ProcessMode.LOG_DEBUG.level) return;
 
 
-        EXECUTOR.execute(() -> {
-            cache.computeIfAbsent(key, k -> container.add(k, number).getEntry()).setDouble(number);
-        });
+        cache.computeIfAbsent(key, k -> container.add(k, number).getEntry()).setDouble(number);
+
     }
 
     @Override
     public void log(String key, String word) {
         if (modeTuner.readValue().level > ProcessMode.LOG_DEBUG.level) return;
 
-        EXECUTOR.execute(() -> {
-            cache.computeIfAbsent(key, k -> container.add(k, word).getEntry()).setString(word);
-        });
+        var e = cache.computeIfAbsent(key, k -> container.add(k, word).getEntry());
+        e.setString(word);
     }
 
     @Override
     public void log(String key, Enum<?> num) {
         if (modeTuner.readValue().level > ProcessMode.LOG_DEBUG.level) return;
 
-        EXECUTOR.execute(() -> {
-            String name = num.name();
-            cache.computeIfAbsent(key, k -> container.add(k, name).getEntry()).setString(name);
-        });
+        String name = num.name();
+        cache.computeIfAbsent(key, k -> container.add(k, name).getEntry()).setString(name);
     }
 
     @Override
     public void log(String key, boolean data) {
         if (modeTuner.readValue().level > ProcessMode.LOG_DEBUG.level) return;
 
-        EXECUTOR.execute(() -> {
-            cache.computeIfAbsent(key, k -> container.add(k, data).getEntry()).setBoolean(data);
-        });
+        cache.computeIfAbsent(key, k -> container.add(k, data).getEntry()).setBoolean(data);
+
     }
 
     @Override
@@ -82,25 +75,21 @@ public class ShuffleDebuggable implements IDebuggable {
         data[5] = pose3d.getRotation().getQuaternion().getY();
         data[6] = pose3d.getRotation().getQuaternion().getZ();
 
-        EXECUTOR.execute(() -> {
-            cache.computeIfAbsent(key, k -> container.add(k, data).getEntry()).setDoubleArray(data);
-        });
+        cache.computeIfAbsent(key, k -> container.add(k, data).getEntry()).setDoubleArray(data);
+
     }
 
     @Override
     public void log(String key, Pose2d pose2) {
+        if (modeTuner.readValue().level > ProcessMode.LOG_DEBUG.level) return;
+
         double[] data = new double[3];
         data[0] = pose2.getX();
         data[1] = pose2.getY();
         data[2] = pose2.getRotation().getRadians();
 
-        EXECUTOR.execute(() -> {
-            cache.computeIfAbsent(key, k -> container.add(k, data).getEntry()).setDoubleArray(data);
-        });
+        cache.computeIfAbsent(key, k -> container.add(k, data).getEntry()).setDoubleArray(data);
 
-
-
-        if (modeTuner.readValue().level > ProcessMode.LOG_DEBUG.level) return;
 
     }
 
@@ -132,9 +121,7 @@ public class ShuffleDebuggable implements IDebuggable {
             data[i * 2 + 1] = value[i].speedMetersPerSecond;
         }
 
-        EXECUTOR.execute(() -> {
-            cache.computeIfAbsent(key, k -> container.add(k, data).getEntry()).setDoubleArray(data);
-        });
+        cache.computeIfAbsent(key, k -> container.add(k, data).getEntry()).setDoubleArray(data);
 
     }
 }

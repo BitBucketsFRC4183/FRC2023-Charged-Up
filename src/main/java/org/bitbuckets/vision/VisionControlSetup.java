@@ -5,13 +5,11 @@ import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.debug.IDebuggable;
-import org.bitbuckets.lib.util.MockingUtil;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.SimVisionSystem;
@@ -20,19 +18,9 @@ import java.io.IOException;
 
 public class VisionControlSetup implements ISetup<IVisionControl> {
 
-    final boolean isEnabled;
-
-    public VisionControlSetup(boolean isEnabled) {
-        this.isEnabled = isEnabled;
-    }
-
 
     @Override
     public IVisionControl build(IProcess self) {
-
-        if (!isEnabled) {
-            return MockingUtil.buddy(VisionControl.class);
-        }
 
         AprilTagFieldLayout aprilTagFieldLayout;
         try {

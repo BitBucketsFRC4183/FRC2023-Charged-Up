@@ -2,7 +2,7 @@ package org.bitbuckets.drive;
 
 public enum DriveFSM {
 
-    UNINITIALIZED,
+    IDLE,
     TELEOP_NORMAL,
     TELEOP_EXTERNAL_CONTROL, //Another subsystem is using the drivebase
 

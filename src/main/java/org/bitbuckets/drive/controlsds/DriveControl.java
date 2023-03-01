@@ -1,15 +1,15 @@
 package org.bitbuckets.drive.controlsds;
 
+import config.Drive;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import org.bitbuckets.drive.DriveConstants;
 import org.bitbuckets.drive.IDriveControl;
 import org.bitbuckets.drive.controlsds.sds.ISwerveModule;
-import org.bitbuckets.lib.util.HasLogLoop;
+import org.bitbuckets.lib.core.HasLogLoop;
 import org.bitbuckets.lib.debug.IDebuggable;
 
 import java.util.List;
@@ -19,6 +19,7 @@ import java.util.List;
  */
 public class DriveControl implements IDriveControl, HasLogLoop {
 
+    final SwerveDriveKinematics kinematics;
     final IDebuggable debug;
 
     // Swerve Modules
@@ -40,7 +41,8 @@ public class DriveControl implements IDriveControl, HasLogLoop {
             new SwerveModuleState()
     };
 
-    public DriveControl(IDebuggable debug, ISwerveModule moduleFrontLeft, ISwerveModule moduleFrontRight, ISwerveModule moduleBackLeft, ISwerveModule moduleBackRight) {
+    public DriveControl(SwerveDriveKinematics kinematics, IDebuggable debug, ISwerveModule moduleFrontLeft, ISwerveModule moduleFrontRight, ISwerveModule moduleBackLeft, ISwerveModule moduleBackRight) {
+        this.kinematics = kinematics;
         this.moduleFrontLeft = moduleFrontLeft;
         this.moduleFrontRight = moduleFrontRight;
         this.moduleBackLeft = moduleBackLeft;
@@ -59,20 +61,14 @@ public class DriveControl implements IDriveControl, HasLogLoop {
         }
     }
 
+    @Override
     public void drive(ChassisSpeeds chassisSpeeds) {
-        doDriveWithStates(DriveConstants.KINEMATICS.toSwerveModuleStates(chassisSpeeds));
+        doDriveWithStates(kinematics.toSwerveModuleStates(chassisSpeeds));
     }
 
-    public void stop90degrees() {
-        doDriveWithStates(new SwerveModuleState[]{
-                new SwerveModuleState(0, Rotation2d.fromDegrees(90)), //Front Left
-                new SwerveModuleState(0, Rotation2d.fromDegrees(-90)), //Front Right
-                new SwerveModuleState(0, Rotation2d.fromDegrees(-90)), //Back Left
-                new SwerveModuleState(0, Rotation2d.fromDegrees(90)) //Back Right
-        });
-    }
 
-    public void stopSticky() {
+    @Override
+    public void stop() {
         doDriveWithStates(new SwerveModuleState[]{
                 new SwerveModuleState(0, Rotation2d.fromDegrees(45)),
                 new SwerveModuleState(0, Rotation2d.fromDegrees(-45)),
@@ -82,19 +78,13 @@ public class DriveControl implements IDriveControl, HasLogLoop {
     }
 
     public double getMaxVelocity() {
-        return DriveConstants.MAX_DRIVE_VELOCITY * speedModifier;
+        return Drive.MAX_DRIVE_VELOCITY * speedModifier;
     }
 
     public double getMaxAngularVelocity() {
-        return DriveConstants.MAX_ANG_VELOCITY * speedModifier;
+        return Drive.MAX_ANG_VELOCITY * speedModifier;
     }
 
-
-    public void stop() {
-        //tags: low priority
-        //TODO this should use x-lock wheel constants
-        this.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
-    }
 
     private void doDriveWithStates(SwerveModuleState[] states) {
 
@@ -105,7 +95,7 @@ public class DriveControl implements IDriveControl, HasLogLoop {
             for (int i = 0; i < 4; i++) {
                 //System.out.println("Module " + i + ": " + states[i].angle.getDegrees());
                 int maxVoltage = 12;
-                double ff = DriveConstants.FF.calculate(states[i].speedMetersPerSecond);
+                double ff = Drive.FF.calculate(states[i].speedMetersPerSecond);
                 modules.get(i).set(MathUtil.clamp(ff, -maxVoltage, maxVoltage), states[i].angle.getRadians());
             }
         }

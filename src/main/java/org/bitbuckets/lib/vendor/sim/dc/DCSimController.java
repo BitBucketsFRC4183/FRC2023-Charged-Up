@@ -2,13 +2,14 @@ package org.bitbuckets.lib.vendor.sim.dc;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
-import org.bitbuckets.lib.util.HasLoop;
+import org.bitbuckets.lib.core.HasLogLoop;
+import org.bitbuckets.lib.core.HasLoop;
+import org.bitbuckets.lib.debug.IDebuggable;
 import org.bitbuckets.lib.hardware.IMotorController;
 import org.bitbuckets.lib.hardware.MotorConfig;
-import org.bitbuckets.lib.debug.IDebuggable;
 
 //TODO this needs to be run at 500 hz
-public class DCSimController implements IMotorController, HasLoop {
+public class DCSimController implements IMotorController, HasLoop, HasLogLoop {
 
 
     final MotorConfig config;
@@ -122,6 +123,11 @@ public class DCSimController implements IMotorController, HasLoop {
     }
 
     @Override
+    public void goLimp() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public <T> T rawAccess(Class<T> clazz) throws UnsupportedOperationException {
         throw new IllegalStateException("it's a sim motor you buffoon");
     }
@@ -131,7 +137,11 @@ public class DCSimController implements IMotorController, HasLoop {
         simulatedMotor.update(0.02); //TODO this needs to be accurate
 
         position = position + simulatedMotor.getAngularVelocityRadPerSec() * 0.02 / 2.0 / Math.PI;
+    }
 
+
+    @Override
+    public void logLoop() {
         debuggable.log("position-mechanism", getPositionMechanism_meters());
         debuggable.log("velocity-mechanism", getVelocityMechanism_metersPerSecond());
         debuggable.log("velocity-encoder", getVelocityEncoder_metersPerSecond());
@@ -141,6 +151,4 @@ public class DCSimController implements IMotorController, HasLoop {
         debuggable.log("enc-to-mech",config.encoderToMechanismCoefficient);
         debuggable.log("rpm", simulatedMotor.getAngularVelocityRPM());
     }
-
-
 }

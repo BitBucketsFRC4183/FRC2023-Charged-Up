@@ -1,10 +1,10 @@
 package org.bitbuckets.arm.sim;
 
-import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
+import org.bitbuckets.arm.config.ArmJointConfig;
 import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.control.PIDConfig;
@@ -15,12 +15,12 @@ import org.bitbuckets.lib.hardware.MotorConfig;
 public class SimArmSetup implements ISetup<IMotorController> {
 
     final MotorConfig config;
-    final ArmConfig armConfig;
+    final ArmJointConfig armJointConfig;
     final PIDConfig pidConfig;
     final MechanismLigament2d mechanismLigament2d;
-    public SimArmSetup(MotorConfig config, ArmConfig armConfig, PIDConfig pidConfig, MechanismLigament2d mechanismLigament2d) {
+    public SimArmSetup(MotorConfig config, ArmJointConfig armJointConfig, PIDConfig pidConfig, MechanismLigament2d mechanismLigament2d) {
         this.config = config;
-        this.armConfig = armConfig;
+        this.armJointConfig = armJointConfig;
         this.pidConfig = pidConfig;
         this.mechanismLigament2d = mechanismLigament2d;
     }
@@ -36,11 +36,11 @@ public class SimArmSetup implements ISetup<IMotorController> {
         SingleJointedArmSim sim = new SingleJointedArmSim(
                 DCMotor.getNeo550(2),
                 1.0 / config.encoderToMechanismCoefficient * 10.0, //TODO fix this dumb hack
-                armConfig.lengthMeters,
-                armConfig.armMinAngle,
-                armConfig.armMaxAngle,
-                armConfig.armMass,
-                armConfig.isGravitySimulated
+                armJointConfig.length_meters,
+                armJointConfig.jointMinAngle_rads,
+                armJointConfig.jointMaxAngle_rads,
+                armJointConfig.jointMass_kg,
+                armJointConfig.isGravitySimulated
         );
 
         PIDController pidController = new PIDController(

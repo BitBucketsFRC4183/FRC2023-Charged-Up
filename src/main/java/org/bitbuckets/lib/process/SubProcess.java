@@ -2,7 +2,13 @@ package org.bitbuckets.lib.process;
 
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardContainer;
-import org.bitbuckets.lib.*;
+import org.bitbuckets.lib.ILogAs;
+import org.bitbuckets.lib.ISetup;
+import org.bitbuckets.lib.ITuneAs;
+import org.bitbuckets.lib.ProcessMode;
+import org.bitbuckets.lib.core.HasLifecycle;
+import org.bitbuckets.lib.core.HasLogLoop;
+import org.bitbuckets.lib.core.HasLoop;
 import org.bitbuckets.lib.core.Path;
 import org.bitbuckets.lib.debug.IDebuggable;
 import org.bitbuckets.lib.debug.ShuffleDebuggable;
@@ -11,13 +17,11 @@ import org.bitbuckets.lib.log.ILoggable;
 import org.bitbuckets.lib.log.ProcessConsole;
 import org.bitbuckets.lib.tune.IForceSendTuner;
 import org.bitbuckets.lib.tune.IValueTuner;
-import org.bitbuckets.lib.util.HasLogLoop;
-import org.bitbuckets.lib.util.HasLoop;
+import org.bitbuckets.lib.tune.NoopsTuner;
 
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 
 public class SubProcess extends AProcess {
 
@@ -41,19 +45,17 @@ public class SubProcess extends AProcess {
     }
 
 
-    static int counter = 0;
-
     @Override
     public <T> T childSetup(String key, ISetup<T> setup) {
         //component specific
         var childPath = this.selfPath.append(key);
 
-        var childComponent = rootLayout.getLayout(childPath.getAsFlatTablePath(), BuiltInLayouts.kGrid).withProperties(Map.of("Number of columns", 3, "Number of rows", 1)).withSize(1, 1);
+        var childComponent = rootLayout.getLayout(childPath.getTail(), BuiltInLayouts.kGrid).withProperties(Map.of("Number of columns", 3, "Number of rows", 1)).withSize(1, 1);
         var childDebugPart = childComponent.getLayout("debug",BuiltInLayouts.kList).withProperties(Map.of("Label Position", "LEFT"));
         var childTune = childComponent.getLayout("tune", BuiltInLayouts.kList).withProperties(Map.of("Label Position", "BOTTOM"));
         var childLog = childComponent.getLayout("log", BuiltInLayouts.kList).withProperties(Map.of("Label Position", "LEFT"));
 
-        IForceSendTuner<ProcessMode> childMode = (IForceSendTuner<ProcessMode>) ITuneAs.SIDEBAR_ENUM(ProcessMode.class)
+        IForceSendTuner<ProcessMode> childMode = (IForceSendTuner<ProcessMode>) ITuneAs.ENUM(ProcessMode.class)
                 .generate(
                         childPath.getAsFlatTablePath(),
                         rootSidebar,
@@ -71,6 +73,8 @@ public class SubProcess extends AProcess {
 
         var instance = setup.build(child);
 
+        //after setup.build is run... check if the child quantity is >0 and if so only then form the shuffleboard components..
+
         if (instance instanceof HasLoop) {
             child.registerLogicLoop((HasLoop) instance);
         }
@@ -80,6 +84,11 @@ public class SubProcess extends AProcess {
         }
 
         return instance;
+    }
+
+    @Override
+    public <T> T siblingSetup(String key, ISetup<T> setup) {
+        return null;
     }
 
     @Override
@@ -97,17 +106,33 @@ public class SubProcess extends AProcess {
     @Override
     public <T> IValueTuner<T> generateTuner(ITuneAs<T> tuneDataType, String key, T dataWhenNotTuning) {
 
+        return (IValueTuner<T>) new NoopsTuner();
+
+        /*
+
         if (hasSeen.contains(key)) {
             throw new IllegalStateException("already using key: " + key);
         }
         hasSeen.add(key);
 
-        System.out.println(tune.getTitle() + "|" + key);
-        return tuneDataType.generate(key, tune, dataWhenNotTuning, selfMode);
+        return tuneDataType.generate(key, tune, dataWhenNotTuning, selfMode);*/
     }
 
     @Override
     public <T> ILoggable<T> generateLogger(ILogAs<T> logDataType, String key) {
-        return logDataType.generate(key, log, selfMode);
+
+        return (a) -> {};
+
+        //return logDataType.generate(key, log, selfMode);
+    }
+
+    @Override
+    public void registerLifecycle(HasLifecycle lifecycle) {
+
+    }
+
+    @Override
+    public HasLifecycle offerInternalLifecycler() {
+        return null;
     }
 }

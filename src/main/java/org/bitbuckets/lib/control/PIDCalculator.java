@@ -1,8 +1,6 @@
 package org.bitbuckets.lib.control;
 
 import edu.wpi.first.math.controller.PIDController;
-import org.bitbuckets.lib.ILogAs;
-import org.bitbuckets.lib.debug.IDebuggable;
 import org.bitbuckets.lib.log.ILoggable;
 import org.bitbuckets.lib.tune.IValueTuner;
 

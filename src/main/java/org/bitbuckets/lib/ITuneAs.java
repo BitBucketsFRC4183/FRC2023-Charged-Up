@@ -1,18 +1,13 @@
 package org.bitbuckets.lib;
 
-import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEvent;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardComponent;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardContainer;
-import org.bitbuckets.lib.process.RootProcess;
 import org.bitbuckets.lib.tune.IValueTuner;
+import org.bitbuckets.lib.tune.ChooserTuner;
 import org.bitbuckets.lib.tune.ValueTuner;
-import org.bitbuckets.lib.tune.EnumTuner;
 
-import java.util.Arrays;
 import java.util.EnumSet;
-import java.util.Random;
 
 public interface ITuneAs<T> {
 
@@ -29,64 +24,21 @@ public interface ITuneAs<T> {
         return tuneable;
     };
 
-
-
+    //lord this is cursed, networktables is a thing that causes me great pain
     static <E extends Enum<E>> ITuneAs<E> ENUM(Class<E> enumType) {
         return (k,c,d,s) -> {
-            var e = c.add(".dbg", false).getEntry();
-            NetworkTable hack = e.getTopic().getInstance().getTable(e.getTopic().getName().replaceAll("/.dbg", "/" + k));
+            var chooser = new ChooserTuner<>(enumType, d);
 
-            hack.getEntry(".controllable").setBoolean(true);
-            hack.getEntry(".name").setString(k);
-            hack.getEntry(".type").setString("String Chooser");
-            hack.getEntry("default").setString(d.name());
-            hack.getEntry("options").setStringArray(Arrays.stream(d.getDeclaringClass().getEnumConstants()).map(Enum::name).toArray(String[]::new));
+            for (E e : enumType.getEnumConstants()) {
+                chooser.addOption(e.name(), e);
+            }
 
-            var selected = hack.getEntry("selected");
-            var active = hack.getEntry("active");
+            c.add(chooser);
 
-            selected.setString(d.name());
-            active.setString(d.name());
-
-            var init = new EnumTuner<>(enumType, d, selected, active);
-
-            NetworkTableInstance.getDefault().addListener(selected, REMOTE, init);
-
-            return init;
+            return chooser;
         };
+
     }
-
-
-    static <E extends Enum<E>> ITuneAs<E> SIDEBAR_ENUM(Class<E> enumType) {
-        return (k,c,d,s) -> {
-
-            String rand = ".dbg" + ++RootProcess.i; //i hate this
-
-            var e = c.add(rand, false).getEntry();
-            NetworkTable hack = e.getTopic().getInstance().getTable(e.getTopic().getName().replaceAll("/" + rand, "/" + k));
-
-            hack.getEntry(".controllable").setBoolean(true);
-            hack.getEntry(".name").setString(k);
-            hack.getEntry(".type").setString("String Chooser");
-            hack.getEntry("default").setString(d.name());
-            hack.getEntry("options").setStringArray(Arrays.stream(d.getDeclaringClass().getEnumConstants()).map(Enum::name).toArray(String[]::new));
-
-            var selected = hack.getEntry("selected");
-            var active = hack.getEntry("active");
-
-            selected.setString(d.name());
-            active.setString(d.name());
-
-            var init = new EnumTuner<>(enumType, d, selected, active);
-
-            NetworkTableInstance.getDefault().addListener(selected, REMOTE, init);
-
-            return init;
-        };
-    }
-
-
-
 
 
 }

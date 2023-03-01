@@ -1,15 +1,8 @@
 package org.bitbuckets.drive.balance;
 
-import edu.wpi.first.math.controller.PIDController;
 import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.lib.ISetup;
-
 import org.bitbuckets.lib.control.IPIDCalculator;
-import org.bitbuckets.lib.control.PIDCalculatorSetup;
-import org.bitbuckets.lib.control.PIDConfig;
-import org.bitbuckets.lib.control.ProfiledPIDFController;
-
-import java.util.Optional;
 
 /**
  * labels: high priority
@@ -17,12 +10,17 @@ import java.util.Optional;
  */
 public class BalanceSetup implements ISetup<BalanceControl> {
 
+    final ISetup<IPIDCalculator> balanceCalculator;
+
+    public BalanceSetup(ISetup<IPIDCalculator> balanceCalculator) {
+        this.balanceCalculator = balanceCalculator;
+    }
+
     @Override
     public BalanceControl build(IProcess self) {
 
-        IPIDCalculator balanceController = self.childSetup("pid", new PIDCalculatorSetup(new PIDConfig(0.05,0,0, Optional.empty(), Optional.empty())));
-        ProfiledPIDFController rotController = new ProfiledPIDFController(0,0,0,0, null);
+        IPIDCalculator balanceController = self.childSetup("balance-pid", balanceCalculator);
 
-        return new BalanceControl(balanceController,rotController);
+        return new BalanceControl(balanceController);
     }
 }

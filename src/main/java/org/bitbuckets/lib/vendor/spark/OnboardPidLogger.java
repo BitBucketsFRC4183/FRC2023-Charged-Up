@@ -1,6 +1,6 @@
 package org.bitbuckets.lib.vendor.spark;
 
-import org.bitbuckets.lib.util.HasLogLoop;
+import org.bitbuckets.lib.core.HasLogLoop;
 import org.bitbuckets.lib.log.ILoggable;
 
 /**

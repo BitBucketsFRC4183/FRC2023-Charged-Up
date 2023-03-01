@@ -1,7 +1,7 @@
 package org.bitbuckets.lib.vendor.ctre;
 
+import org.bitbuckets.lib.core.HasLogLoop;
 import org.bitbuckets.lib.log.ILoggable;
-import org.bitbuckets.lib.util.HasLogLoop;
 
 /**
  * Log mattlib related stuff of the SparkRelativeMotorController

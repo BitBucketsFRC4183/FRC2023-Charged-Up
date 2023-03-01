@@ -24,13 +24,17 @@ public class SteerControllerSetup implements ISetup<ISteerController> {
         this.sensorPositionCoefficient = sensorPositionCoefficient;
     }
 
+
     @Override
     public ISteerController build(IProcess self) {
+
+
         var controller = new SteerController(
-                self.childSetup("steer",motor),
-                self.childSetup("absolute",encoder),
+                motor.build(self),
+                encoder.build(self),
                 sensorPositionCoefficient
         );
+
 
         // this used to be: checkNeoError(integratedEncoder.setPosition(absoluteEncoder.getAbsoluteAngle()), "Failed to set NEO encoder position");
         // in the motor setup

@@ -5,7 +5,6 @@ import org.bitbuckets.lib.ILogAs;
 import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ITuneAs;
-import org.bitbuckets.lib.tune.IValueTuner;
 
 public class PIDCalculatorSetup implements ISetup<IPIDCalculator> {
 

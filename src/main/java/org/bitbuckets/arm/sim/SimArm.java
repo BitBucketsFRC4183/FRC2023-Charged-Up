@@ -4,11 +4,10 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
+import org.bitbuckets.lib.core.HasLoop;
 import org.bitbuckets.lib.debug.IDebuggable;
 import org.bitbuckets.lib.hardware.IMotorController;
 import org.bitbuckets.lib.hardware.MotorConfig;
-import org.bitbuckets.lib.util.HasLogLoop;
-import org.bitbuckets.lib.util.HasLoop;
 
 public class SimArm implements IMotorController, HasLoop {
 
@@ -109,6 +108,11 @@ public class SimArm implements IMotorController, HasLoop {
     @Override
     public double getCurrent() {
         return sim.getCurrentDrawAmps();
+    }
+
+    @Override
+    public void goLimp() {
+
     }
 
     @Override
