@@ -60,7 +60,6 @@ public class SparkSetup implements ISetup<IMotorController> {
 
         spark.setInverted(motorConfig.isInverted);
         spark.setSmartCurrentLimit((int) motorConfig.currentLimit);
-
         // Uncomment this when doing something that may command motors to full throttle by accident
         //spark.getPIDController().setOutputRange(-0.3,0.3);
 
@@ -68,13 +67,13 @@ public class SparkSetup implements ISetup<IMotorController> {
         SparkMaxLimitSwitch reverseSwitch = null;
 
         if (motorConfig.isForwardHardLimitEnabled) {
-            //forwardSwitch = spark.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
-            //forwardSwitch.enableLimitSwitch(true);
+            forwardSwitch = spark.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
+            forwardSwitch.enableLimitSwitch(true);
         }
 
         if (motorConfig.isBackwardHardLimitEnabled) {
-            //reverseSwitch = spark.getReverseLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
-            //reverseSwitch.enableLimitSwitch(true);
+            reverseSwitch = spark.getReverseLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
+            reverseSwitch.enableLimitSwitch(true);
         }
 
 
@@ -117,12 +116,11 @@ public class SparkSetup implements ISetup<IMotorController> {
 
         if (follower.isPresent()) {
 
-
-
             SparkRelativeMotorController follower = (SparkRelativeMotorController) self.childSetup(self.getSelfPath().getTail() + "-follower", this.follower.get());
 
 
-            follower.rawAccess(CANSparkMax.class).follow(spark); //lmao dont do this typically
+            //TODO this shouldnt be true
+            follower.rawAccess(CANSparkMax.class).follow(spark, true); //lmao dont do this typically
             //TODO optimize can frames for followers
 
         }

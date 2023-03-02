@@ -11,6 +11,8 @@ public class MotorConfig {
     public final double encoderToMechanismCoefficient;
     public final double timeCoefficient;
     public final double rotationToMeterCoefficient;
+
+    //This is ignored if in follower mode because... sparks
     public final boolean isInverted;
     public final boolean shouldBreakOnNoCommand;
     public final double currentLimit;
