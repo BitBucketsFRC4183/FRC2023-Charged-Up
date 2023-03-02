@@ -11,6 +11,7 @@ import org.bitbuckets.lib.core.HasLogLoop;
 import org.bitbuckets.lib.core.HasLoop;
 import org.bitbuckets.lib.core.Path;
 import org.bitbuckets.lib.debug.IDebuggable;
+import org.bitbuckets.lib.debug.NoopsDebuggable;
 import org.bitbuckets.lib.debug.ShuffleDebuggable;
 import org.bitbuckets.lib.log.IConsole;
 import org.bitbuckets.lib.log.ILoggable;
@@ -99,7 +100,7 @@ public class SubProcess extends AProcess {
 
     @Override
     public IDebuggable getDebuggable() {
-        return debuggable;
+        return new NoopsDebuggable();
     }
 
     Set<String> hasSeen = new HashSet<>();
@@ -117,8 +118,8 @@ public class SubProcess extends AProcess {
 
     @Override
     public <T> ILoggable<T> generateLogger(ILogAs<T> logDataType, String key) {
-
         return logDataType.generate(key, log, selfMode);
+        //return a->{};
     }
 
     @Override

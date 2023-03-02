@@ -25,14 +25,14 @@ public class ArmSubsystem implements HasLoop {
     public void loop() {
         //handle arm calibration
         if (autoSubsystem.hasChanged() && autoSubsystem.state() == AutoFSM.INITIALIZATION) {
+            System.out.println("ZESROED");
             armControl.zeroToStartingPosition(); //Assume it's at the starting position lmao
         }
-        if (operatorInput.isUserInputZeroed()) {
+        if (operatorInput.isZeroArmPressed()) {
             armControl.zero(); //assume where we are is zero. Only do this if you really have to since zeroing needs
             //to go outside frame perimeter, and you can only do that in a match L
         }
 
-        System.out.println(shouldDoNext);
 
         //handle inputs, which will calculate what the next input of the robot is
         handleInputs();
@@ -115,6 +115,14 @@ public class ArmSubsystem implements HasLoop {
             );
         }
 
+        if (shouldDoNext == ArmFSM.STORAGE) {
+            armControl.commandArmToState(
+                    0.225,
+                    -0.246,
+                    !operatorInput.closeGripperPressed()
+            );
+        }
+
         //TODO fix the numbers
         if (shouldDoNext == ArmFSM.DEBUG_TO_DEGREES) {
             armControl.commandArmToState(
@@ -122,6 +130,14 @@ public class ArmSubsystem implements HasLoop {
                     Units.degreesToRotations(45),
                     !operatorInput.closeGripperPressed()
             );
+
+            if (armControl.getErrorQuantity() > Arm.ARM_TOLERANCE_TO_MOVE_ON) {
+                shouldDoNext = ArmFSM.IDLE;
+            }
+        }
+
+        if (shouldDoNext == ArmFSM.SCORE_MID) {
+            armControl.commandArmToState(0.225, -0.246,true);
 
             if (armControl.getErrorQuantity() > Arm.ARM_TOLERANCE_TO_MOVE_ON) {
                 shouldDoNext = ArmFSM.IDLE;

@@ -22,9 +22,6 @@ public class ArmControl {
     final IMotorController gripperActuator;
 
 
-    //input of state n3, output of error n1
-    Matrix<N1, N3> toError;
-
     public ArmControl(ArmDynamics ff, IMotorController lowerArm, IMotorController upperArm, IPIDCalculator lowerArmControl, IPIDCalculator upperArmControl, IMotorController gripperActuator) {
         this.ff = ff;
         this.lowerArm = lowerArm;
@@ -41,27 +38,37 @@ public class ArmControl {
      * @param gripperShouldOpen
      */
     public void commandArmToState(double lowerArm_rot, double upperArm_rot, boolean gripperShouldOpen) {
+
         var ffVoltageVector = ff.feedforward(VecBuilder.fill(lowerArm_rot * Math.PI * 2.0, upperArm_rot * Math.PI * 2.0));
+
+
 
         var lowerArmFFVoltage = ffVoltageVector.get(0,0);
         var lowerArmFeedbackVoltage = lowerArmControl.calculateNext(
-                lowerArm.getMechanismPositionBound_rot(),
+                lowerArm.getMechanismPositionAccum_rot(),
                 lowerArm_rot
         );
 
         var upperArmFFVoltage = ffVoltageVector.get(1,0);
         var upperArmFeedbackVoltage = upperArmControl.calculateNext(
-                upperArm.getMechanismPositionBound_rot(),
+                upperArm.getMechanismPositionAccum_rot(),
                 upperArm_rot
         );
+
+
+        System.out.println("FF LOW: " + lowerArmFFVoltage);
+        System.out.println("FB LOW: " + lowerArmFeedbackVoltage);
+
+        System.out.println("FF UP: " + upperArmFFVoltage);
+        System.out.println("FB UP: " + upperArmFeedbackVoltage);
 
         lowerArm.moveAtVoltage(lowerArmFFVoltage + lowerArmFeedbackVoltage);
         upperArm.moveAtVoltage(upperArmFFVoltage + upperArmFeedbackVoltage);
 
         if (gripperShouldOpen) {
-            gripperActuator.moveToPosition_mechanismRotations(Arm.GRIPPER_SETPOINT_MOTOR_ROTATIONS);
+            //gripperActuator.moveToPosition_mechanismRotations(Arm.GRIPPER_SETPOINT_MOTOR_ROTATIONS);
         } else {
-            gripperActuator.goLimp(); //let the ropes pull it back
+            //gripperActuator.goLimp(); //let the ropes pull it back
         }
 
     }
@@ -71,6 +78,9 @@ public class ArmControl {
 
         lowerArm.moveAtPercent(lowerArmPercent);
         upperArm.moveAtPercent(upperArmPercent);
+
+        System.out.println("LOWER " + lowerArm.getMechanismPositionAccum_rot());
+        System.out.println("UPPER " + upperArm.getMechanismPositionAccum_rot());
 
 
         if (gripperShouldOpen) {
@@ -94,7 +104,7 @@ public class ArmControl {
     }
 
     public double getErrorQuantity() {
-        return toError.times(VecBuilder.fill(2,2,3)).get(0,0);
+        return 1;
     }
 
 

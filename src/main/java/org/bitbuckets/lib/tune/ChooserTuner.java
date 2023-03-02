@@ -122,6 +122,8 @@ public class ChooserTuner<V extends Enum<V>> implements NTSendable, AutoCloseabl
 
     public synchronized void runData(V data) {
         for (Consumer<V> consumer : listeners) {
+
+            System.out.println("Consumer fired!");
             consumer.accept(data);
         }
     }

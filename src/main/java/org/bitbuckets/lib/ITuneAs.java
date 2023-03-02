@@ -24,6 +24,7 @@ public interface ITuneAs<T> {
         return tuneable;
     };
 
+
     //lord this is cursed, networktables is a thing that causes me great pain
     static <E extends Enum<E>> ITuneAs<E> ENUM(Class<E> enumType) {
         return (k,c,d,s) -> {
@@ -38,6 +39,10 @@ public interface ITuneAs<T> {
             return chooser;
         };
 
+    }
+
+    class Random {
+        static int random = 0;
     }
 
 

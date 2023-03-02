@@ -73,7 +73,7 @@ public class OperatorInput {
         return driveControl.getRawButtonPressed(XboxController.Button.kA.value);
     }
 
-    public boolean isUserInputZeroed() {
+    public boolean isUserInputNone() {
         return getInputX() == 0 && getInputY() == 0 && getInputRot() == 0;
     }
 
@@ -127,16 +127,16 @@ public class OperatorInput {
     }
 
     //checks if operator for some reason wants to manually zero the shit
-    public boolean isZeroArmPressed() {
-        return operatorControl.getRawButton(XboxController.Button.kBack.value);
-    }
-
     // checks if operator wants to move arms to intake for human player station (by pressing RIGHT DPAD)
     public boolean isHumanIntakePressed() {
         int pressed = operatorControl.getPOV();
         return pressed == 90;
     }
 
+
+    public boolean isZeroArmPressed() {
+        return operatorControl.getRawButtonPressed(XboxController.Button.kLeftStick.value);
+    }
 
     //controlled by dPad Left
     public boolean isScoreLowPressed() {
