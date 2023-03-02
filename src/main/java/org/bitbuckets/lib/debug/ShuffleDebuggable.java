@@ -8,6 +8,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardContainer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.bitbuckets.lib.ProcessMode;
 import org.bitbuckets.lib.tune.IValueTuner;
 
@@ -28,15 +29,16 @@ public class ShuffleDebuggable implements IDebuggable {
         this.modeTuner = modeTuner;
         this.container = container;
 
-        container.add("debugged yet", false);
+        //container.add("debugged yet", false);
     }
+
+    static int test = 0;
 
     @Override
     public void log(String key, double number) {
         if (modeTuner.readValue().level > ProcessMode.LOG_DEBUG.level) return;
 
-
-        cache.computeIfAbsent(key, k -> container.add(k, number).getEntry()).setDouble(number);
+        cache.computeIfAbsent(key, k -> container.add(k + ++test, number).getEntry()).setDouble(number);
 
     }
 

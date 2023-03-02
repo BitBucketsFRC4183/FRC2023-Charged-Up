@@ -11,6 +11,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Consumer;
 
+//FIXME this is awful
 /**
  * I frankensteined up a sendable chooser
  * @param <V>
@@ -114,30 +115,24 @@ public class ChooserTuner<V extends Enum<V>> implements NTSendable, AutoCloseabl
                 SELECTED,
                 null,
                 val -> {
-                    //new stuff is comign in!!!!!!
-                    m_mutex.lock();
-                    try {
-                        m_selected = val;
-                        for (Consumer<V> consumer : listeners) {
-                            V enm = Enum.valueOf(clazz, val);
-
-                            consumer.accept(enm);
-                        }
-
-                        for (StringPublisher pub : m_activePubs) {
-                            pub.set(val);
-                        }
-                    } finally {
-                        m_mutex.unlock();
-                    }
+                    forceToValue(Enum.valueOf(clazz, val));
+                    runData(Enum.valueOf(clazz, val));
                 });
     }
 
+    public synchronized void runData(V data) {
+        for (Consumer<V> consumer : listeners) {
+            consumer.accept(data);
+        }
+    }
 
     @Override
     public void forceToValue(V value) {
         m_mutex.lock();
         try {
+            for (StringPublisher publisher : m_activePubs) {
+                publisher.set(value.name());
+            }
             m_selected = value.name();
         } finally {
             m_mutex.unlock();

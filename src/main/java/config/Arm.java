@@ -136,7 +136,7 @@ public interface Arm {
     //PID
 
     PIDConfig LOWER_PID = new PIDConfig(
-            0.3,
+            0.5,
             0,
             0,
             Optional.empty(),
@@ -144,7 +144,7 @@ public interface Arm {
     );
 
     PIDConfig UPPER_PID = new PIDConfig(
-            0.3,
+            0.5,
             0,
             0,
             Optional.empty(),

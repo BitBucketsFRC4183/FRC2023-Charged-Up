@@ -1,6 +1,9 @@
 package org.bitbuckets.lib.core;
 
+import java.util.Arrays;
 import java.util.Optional;
+import java.util.function.BooleanSupplier;
+import java.util.function.Function;
 
 /**
  * Utility class
@@ -63,8 +66,21 @@ public class Path {
         int lastIndex = pathComposition.length - 1;
         int secondLastIndex = lastIndex - 1;
 
-        String toReturn = pathComposition[secondLastIndex] + "|" + pathComposition[lastIndex];
+        String toReturn = pathComposition[secondLastIndex] + " " + pathComposition[lastIndex];
         return Optional.of(toReturn);
+    }
+
+    public Path sibling(String sibling) {
+        if (sibling == null) throw new IllegalStateException("what");
+
+        if (pathComposition.length == 0) {
+            return new Path(new String[] {sibling} );
+        }
+
+        String[] toReturnArray = pathComposition.clone();
+        toReturnArray[pathComposition.length - 1] = sibling;
+
+        return new Path(toReturnArray);
     }
 
     public Path append(String next) {
@@ -86,6 +102,25 @@ public class Path {
 
     public int length() {
         return pathComposition.length;
+    }
+
+    public String getUniqueName(String name, Function<String, Boolean> toCheck) {
+
+        int startAt = pathComposition.length - 1;
+
+        if (!toCheck.apply(name)) {
+            startAt -= 1;
+        }
+
+        var compound = Arrays.copyOfRange(pathComposition, startAt, pathComposition.length);
+
+        StringBuilder use = new StringBuilder();
+
+        for (String str : compound) {
+            use.append(str).append("/");
+        }
+
+        return use.toString();
     }
 
 
