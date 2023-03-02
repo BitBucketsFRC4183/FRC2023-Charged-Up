@@ -20,6 +20,7 @@ public class ArmSubsystem implements HasLoop {
     }
 
     ArmFSM shouldDoNext = ArmFSM.IDLE;
+    ArmFSM cubeOrCone = ArmFSM.CONE;
 
     @Override
     public void loop() {
@@ -134,17 +135,17 @@ public class ArmSubsystem implements HasLoop {
 
         if (shouldDoNext == ArmFSM.STORAGE) {
             armControl.commandArmToState(
-                    0.225,
-                    -0.246,
+                    0.168,
+                    -0.222,
                     !operatorInput.closeGripperPressed()
             );
         }
 
         //TODO fix the numbers
         if (shouldDoNext == ArmFSM.DEBUG_TO_DEGREES) {
+            System.out.println("DEBUGGING");
             armControl.commandArmToState(
-                    Units.degreesToRotations(45),
-                    Units.degreesToRotations(45),
+                    0,0,
                     !operatorInput.closeGripperPressed()
             );
 
@@ -153,8 +154,27 @@ public class ArmSubsystem implements HasLoop {
             }
         }
 
+
         if (shouldDoNext == ArmFSM.SCORE_MID) {
-            armControl.commandArmToState(0.225, -0.246,true);
+            if(cubeOrCone == ArmFSM.CONE)
+            {
+                armControl.commandArmToState(0.008, -0.227,true);
+            }
+
+            if (armControl.getErrorQuantity() > Arm.ARM_TOLERANCE_TO_MOVE_ON) {
+                shouldDoNext = ArmFSM.IDLE;
+            }
+        }
+        if (shouldDoNext == ArmFSM.SCORE_HIGH) {
+            if(cubeOrCone == ArmFSM.CONE) {
+                armControl.commandArmToState(-0.126,0.0,  true);
+            }
+            if (armControl.getErrorQuantity() > Arm.ARM_TOLERANCE_TO_MOVE_ON) {
+                shouldDoNext = ArmFSM.IDLE;
+            }
+        }
+        if (shouldDoNext == ArmFSM.GROUND_INTAKE) {
+            armControl.commandArmToState(0.581, -0.274,true);
 
             if (armControl.getErrorQuantity() > Arm.ARM_TOLERANCE_TO_MOVE_ON) {
                 shouldDoNext = ArmFSM.IDLE;

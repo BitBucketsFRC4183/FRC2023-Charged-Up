@@ -115,7 +115,7 @@ public class OperatorInput {
         return -armDeadband(operatorControl.getRawAxis(XboxController.Axis.kRightY.value));
     }
 
-    public boolean isStoragePressed() {
+    public boolean isHumanIntakePressed() {
         return operatorControl.getRawButton(XboxController.Button.kX.value);
     }
 
@@ -133,9 +133,9 @@ public class OperatorInput {
 
     //checks if operator for some reason wants to manually zero the shit
     // checks if operator wants to move arms to intake for human player station (by pressing RIGHT DPAD)
-    public boolean isHumanIntakePressed() {
+    public boolean isStoragePressed() {
         int pressed = operatorControl.getPOV();
-        return pressed == 90;
+        return pressed == 270;
     }
 
 
@@ -144,13 +144,13 @@ public class OperatorInput {
     //controlled by dPad Left
     public boolean isScoreLowPressed() {
         int pressed = operatorControl.getPOV();
-        return pressed == 270;
+        return pressed == 180;
     }
 
     // checks if operator wants to move arms to score in medium node position (by pressing DPad Down)
     public boolean isScoreMidPressed() {
         int pressed = operatorControl.getPOV();
-        return pressed == 180;
+        return pressed == 90;
     }
 
     // checks if operator wants to move arms to score in high node position (by pressing dPad Up)
