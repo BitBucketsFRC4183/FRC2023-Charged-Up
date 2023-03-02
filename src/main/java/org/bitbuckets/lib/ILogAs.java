@@ -7,6 +7,7 @@ import edu.wpi.first.util.datalog.DataLog;
 import edu.wpi.first.util.datalog.DoubleLogEntry;
 import edu.wpi.first.util.datalog.StringLogEntry;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardContainer;
+import org.bitbuckets.lib.log.EnumLoggable;
 import org.bitbuckets.lib.log.FutureLoggable;
 import org.bitbuckets.lib.log.ILoggable;
 import org.bitbuckets.lib.log.PoseLoggable;
@@ -53,7 +54,7 @@ public interface ILogAs<T> {
                 return a.add(k, "default enum").getEntry();
             }, RegisterType.LOG);
 
-            return new FutureLoggable<>(onReady);
+            return new EnumLoggable<>(onReady);
         };
     }
 
