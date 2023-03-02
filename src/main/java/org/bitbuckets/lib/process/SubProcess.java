@@ -1,7 +1,9 @@
 package org.bitbuckets.lib.process;
 
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardContainer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.bitbuckets.lib.ILogAs;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ITuneAs;
@@ -23,6 +25,11 @@ import org.bitbuckets.lib.tune.NoopsTuner;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 
 @Deprecated
 public class SubProcess extends AProcess {
@@ -108,6 +115,30 @@ public class SubProcess extends AProcess {
     @Override
     public <T> IValueTuner<T> generateTuner(ITuneAs<T> tuneDataType, String key, T dataWhenNotTuning) {
 
+        if (true) {
+            return new IValueTuner<T>() {
+                @Override
+                public T readValue() {
+                    return null;
+                }
+
+                @Override
+                public T consumeValue() {
+                    return null;
+                }
+
+                @Override
+                public boolean hasUpdated() {
+                    return false;
+                }
+
+                @Override
+                public void bind(Consumer<T> data) {
+
+                }
+            };
+        }
+
         if (hasSeen.contains(key)) {
             throw new IllegalStateException("already using key: " + key);
         }
@@ -116,10 +147,11 @@ public class SubProcess extends AProcess {
         return tuneDataType.generate(key, tune, dataWhenNotTuning, selfMode);
     }
 
+    static ScheduledExecutorService sex = new ScheduledThreadPoolExecutor(2);
+
     @Override
     public <T> ILoggable<T> generateLogger(ILogAs<T> logDataType, String key) {
-        return logDataType.generate(key, log, selfMode);
-        //return a->{};
+        return logDataType.generate(selfPath.append(key).getAsTablePath(), log, selfMode);
     }
 
     @Override

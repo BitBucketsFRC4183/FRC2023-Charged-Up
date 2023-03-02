@@ -33,10 +33,10 @@ public class DriveControlSetup implements ISetup<IDriveControl> {
         DriveControl control = new DriveControl(
                 kinematics,
                 self.getDebuggable(),
-                self.childSetup("front-left",frontLeft),
-                self.childSetup("front-right",frontRight),
-                self.childSetup("back-left",backLeft),
-                self.childSetup("back-right",backRight)
+                self.childSetup("frontLeft",frontLeft),
+                self.childSetup("frontRight",frontRight),
+                self.childSetup("backLeft",backLeft),
+                self.childSetup("backRight",backRight)
         );
         
         self.registerLogLoop(control);

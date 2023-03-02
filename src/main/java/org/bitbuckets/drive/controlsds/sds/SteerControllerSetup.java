@@ -30,8 +30,8 @@ public class SteerControllerSetup implements ISetup<ISteerController> {
 
 
         var controller = new SteerController(
-                motor.build(self),
-                encoder.build(self),
+                self.childSetup("motor", motor),
+                self.childSetup("encoder", encoder),
                 sensorPositionCoefficient
         );
 
