@@ -17,6 +17,7 @@ public interface MotorIds {
     int BACK_RIGHT_DRIVE_ID = 1;
     int BACK_RIGHT_STEER_ID = 2;
     int BACK_RIGHT_ENCODER_CHANNEL = 0;
+
     int LOWER_ARM_ID_1 = 9;
     int LOWER_ARM_FOLLOWER = 10;
     int UPPER_ARM_ID = 11;

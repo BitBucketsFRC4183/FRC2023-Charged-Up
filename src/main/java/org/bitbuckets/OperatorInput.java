@@ -123,12 +123,12 @@ public class OperatorInput {
     }
 
     public boolean isManualModePressed() {
-        return operatorControl.getRawButtonPressed(XboxController.Button.kBack.value);
+        return operatorControl.getRawButtonPressed(XboxController.Button.kA.value);
     }
 
     //checks if operator for some reason wants to manually zero the shit
     public boolean isZeroArmPressed() {
-        return operatorControl.getRawButton(XboxController.Button.kStart.value);
+        return operatorControl.getRawButton(XboxController.Button.kBack.value);
     }
 
     // checks if operator wants to move arms to intake for human player station (by pressing RIGHT DPAD)

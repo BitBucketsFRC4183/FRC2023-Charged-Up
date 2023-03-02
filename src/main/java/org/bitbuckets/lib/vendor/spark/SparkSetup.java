@@ -68,13 +68,13 @@ public class SparkSetup implements ISetup<IMotorController> {
         SparkMaxLimitSwitch reverseSwitch = null;
 
         if (motorConfig.isForwardHardLimitEnabled) {
-            forwardSwitch = spark.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
-            forwardSwitch.enableLimitSwitch(true);
+            //forwardSwitch = spark.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
+            //forwardSwitch.enableLimitSwitch(true);
         }
 
         if (motorConfig.isBackwardHardLimitEnabled) {
-            reverseSwitch = spark.getReverseLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
-            reverseSwitch.enableLimitSwitch(true);
+            //reverseSwitch = spark.getReverseLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
+            //reverseSwitch.enableLimitSwitch(true);
         }
 
 
@@ -117,17 +117,18 @@ public class SparkSetup implements ISetup<IMotorController> {
 
         if (follower.isPresent()) {
 
-            SparkRelativeMotorController ctol = (SparkRelativeMotorController) self.siblingSetup(self.getSelfPath().getTail() + "-follower", follower.get());
-            ctol.disableExternalAccess();
 
 
-            ctol.rawAccess(CANSparkMax.class).follow(spark); //lmao dont do this typically
+            SparkRelativeMotorController follower = (SparkRelativeMotorController) self.childSetup(self.getSelfPath().getTail() + "-follower", this.follower.get());
+
+
+            follower.rawAccess(CANSparkMax.class).follow(spark); //lmao dont do this typically
             //TODO optimize can frames for followers
 
         }
 
         //dont care about sticky faults eevery 100ms
-        spark.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus0, 200);
+        /*spark.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus0, 200);
 
         if (motorConfig.optimizationMode == OptimizationMode.OFFBOARD_VEL_PID || motorConfig.optimizationMode == OptimizationMode.LQR) {
             spark.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus1, 20);
@@ -139,7 +140,7 @@ public class SparkSetup implements ISetup<IMotorController> {
             spark.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus2, 20);
         } else {
             spark.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus2, 200);
-        }
+        }*/
 
         return ctrl;
     }

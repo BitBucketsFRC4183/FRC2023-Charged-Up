@@ -35,8 +35,8 @@ public class RobotSetup implements ISetup<Void> {
         SwerveDriveKinematics KINEMATICS = DriveTurdSpecific.KINEMATICS; //TODO make this swappable
 
         OperatorInput operatorInput = new OperatorInput(
-                new Joystick(0),
-                new Joystick(1)
+                new Joystick(1),
+                new Joystick(0)
         );
 
         //if only these could be children of the drive subsystem... TODO fix this in mattlib future editions

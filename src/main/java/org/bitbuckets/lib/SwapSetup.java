@@ -20,17 +20,7 @@ public class SwapSetup<T> implements ISetup<T> {
     @Override
     public T build(IProcess self) {
         if (self.isReal()) {
-            try {
-                String localhost = InetAddress.getLocalHost().getHostName();
-
-                if (localhost.contains("appa")) {
-                    return useOnAppa.build(self);
-                } else {
-                    return useOnNew.build(self);
-                }
-            } catch (UnknownHostException e) {
-                throw new RuntimeException(e);
-            }
+            return useOnNew.build(self);
         } else {
             return useOnSim.build(self);
         }

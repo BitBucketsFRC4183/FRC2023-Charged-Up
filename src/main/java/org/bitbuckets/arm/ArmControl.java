@@ -67,12 +67,16 @@ public class ArmControl {
     }
 
     public void commandArmToPercent(double lowerArmPercent, double upperArmPercent, boolean gripperShouldOpen) {
+        System.out.println("Moving at perc: " + lowerArmPercent);
+
         lowerArm.moveAtPercent(lowerArmPercent);
         upperArm.moveAtPercent(upperArmPercent);
+
+
         if (gripperShouldOpen) {
-            gripperActuator.moveToPosition_mechanismRotations(Arm.GRIPPER_SETPOINT_MOTOR_ROTATIONS);
+            //gripperActuator.moveToPosition_mechanismRotations(Arm.GRIPPER_SETPOINT_MOTOR_ROTATIONS);
         } else {
-            gripperActuator.goLimp(); //let the ropes pull it back
+            //gripperActuator.goLimp(); //let the ropes pull it back
         }
     }
 

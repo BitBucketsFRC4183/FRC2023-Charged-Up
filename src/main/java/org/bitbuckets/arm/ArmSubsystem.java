@@ -32,6 +32,8 @@ public class ArmSubsystem implements HasLoop {
             //to go outside frame perimeter, and you can only do that in a match L
         }
 
+        System.out.println(shouldDoNext);
+
         //handle inputs, which will calculate what the next input of the robot is
         handleInputs();
         handleLogic();
@@ -42,6 +44,10 @@ public class ArmSubsystem implements HasLoop {
     //generates what the FSM should do. Will modify shouldDoNext if something has happened
     void handleInputs() {
         if (operatorInput.isStopPidPressed() && autoSubsystem.state() != AutoFSM.AUTO_RUN) {
+            shouldDoNext = ArmFSM.IDLE;
+        }
+
+        if (autoSubsystem.state() == AutoFSM.DISABLED) {
             shouldDoNext = ArmFSM.IDLE;
         }
 
@@ -64,6 +70,7 @@ public class ArmSubsystem implements HasLoop {
         }
 
         if (autoSubsystem.state() == AutoFSM.TELEOP) {
+
             if (operatorInput.isHumanIntakePressed()) {
                 shouldDoNext = ArmFSM.HUMAN_INTAKE;
             }
@@ -87,16 +94,20 @@ public class ArmSubsystem implements HasLoop {
             if (operatorInput.isManualModePressed()) {
                 shouldDoNext = ArmFSM.MANUAL;
             }
+
         }
     }
 
     //acts on shouldDoNext and then updates it to the result state if it has managed to complete it's task
     void handleLogic() {
-        if (autoSubsystem.state() != AutoFSM.DISABLED) { //arm can move after auto fsm has ended, so that if we fuck up it can still win without us
+        if (autoSubsystem.state() == AutoFSM.DISABLED) { //arm can move after auto fsm has ended, so that if we fuck up it can still win without us
             return;
         }
 
         if (shouldDoNext == ArmFSM.MANUAL) {
+
+            System.out.println(operatorInput.getLowerArm_PercentOutput());
+
             armControl.commandArmToPercent(
                     operatorInput.getLowerArm_PercentOutput(),
                     operatorInput.getUpperArm_PercentOutput(),
