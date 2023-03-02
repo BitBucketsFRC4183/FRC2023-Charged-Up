@@ -31,8 +31,6 @@ public class ShuffleDebuggable implements IDebuggable {
         //container.add("debugged yet", false);
     }
 
-    static int test = 0;
-
     void consume(Consumer<ShuffleboardContainer> consumer) {
         if (container.isDone()) {
             consumer.accept(container.join());
@@ -45,12 +43,9 @@ public class ShuffleDebuggable implements IDebuggable {
     public void log(String key, double number) {
         if (modeTuner.readValue().level > ProcessMode.LOG_DEBUG.level) return;
 
-        System.out.println("dbg at" + number);
 
         consume(a-> {
-            System.out.println("consume at");
-
-            cache.computeIfAbsent(key, k -> a.add(k + ++test, number).getEntry()).setDouble(number);
+            cache.computeIfAbsent(key, k -> a.add(k, number).getEntry()).setDouble(number);
         });
 
 
@@ -61,7 +56,7 @@ public class ShuffleDebuggable implements IDebuggable {
     public void log(String key, String word) {
         if (modeTuner.readValue().level > ProcessMode.LOG_DEBUG.level) return;
         consume(a-> {
-            cache.computeIfAbsent(key, k -> a.add(k + ++test, word).getEntry()).setString(word);
+            cache.computeIfAbsent(key, k -> a.add(k, word).getEntry()).setString(word);
         });
     }
 
@@ -69,9 +64,8 @@ public class ShuffleDebuggable implements IDebuggable {
     public void log(String key, Enum<?> num) {
         if (modeTuner.readValue().level > ProcessMode.LOG_DEBUG.level) return;
 
-        String name = num.name();
         consume(a-> {
-            cache.computeIfAbsent(key, k -> a.add(k + ++test, num.name()).getEntry()).setString(num.name());
+            cache.computeIfAbsent(key, k -> a.add(k, num.name()).getEntry()).setString(num.name());
         });
     }
 
@@ -80,7 +74,7 @@ public class ShuffleDebuggable implements IDebuggable {
         if (modeTuner.readValue().level > ProcessMode.LOG_DEBUG.level) return;
 
         consume(a-> {
-            cache.computeIfAbsent(key, k -> a.add(k + ++test, data).getEntry()).setBoolean(data);
+            cache.computeIfAbsent(key, k -> a.add(k, data).getEntry()).setBoolean(data);
         });
 
     }
@@ -97,7 +91,7 @@ public class ShuffleDebuggable implements IDebuggable {
         data[6] = pose3d.getRotation().getQuaternion().getZ();
 
         consume(a-> {
-            cache.computeIfAbsent(key, k -> a.add(k + ++test, data).getEntry()).setDoubleArray(data);
+            cache.computeIfAbsent(key, k -> a.add(k, data).getEntry()).setDoubleArray(data);
         });
 
     }
@@ -112,7 +106,7 @@ public class ShuffleDebuggable implements IDebuggable {
         data[2] = pose2.getRotation().getRadians();
 
         consume(a-> {
-            cache.computeIfAbsent(key, k -> a.add(k + ++test, data).getEntry()).setDoubleArray(data);
+            cache.computeIfAbsent(key, k -> a.add(k, data).getEntry()).setDoubleArray(data);
         });
 
 
@@ -147,7 +141,7 @@ public class ShuffleDebuggable implements IDebuggable {
         }
 
         consume(a-> {
-            cache.computeIfAbsent(key, k -> a.add(k + ++test, data).getEntry()).setDoubleArray(data);
+            cache.computeIfAbsent(key, k -> a.add(k, data).getEntry()).setDoubleArray(data);
         });
 
     }

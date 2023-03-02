@@ -1,5 +1,6 @@
 package org.bitbuckets.lib.process;
 
+import config.Mattlib;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardContainer;
@@ -160,7 +161,7 @@ public class OnReadyProcess extends AProcess implements IDoWhenReady {
                 .generate(
                         childPath.getAsFlatTablePath(),
                         this,
-                        ProcessMode.LOG_COMPETITION,
+                        Mattlib.DEFAULT_MODE,
                         selfMode
                 );
 

@@ -58,9 +58,10 @@ public class DriveSubsystem implements HasLoop {
     @Override
     public void loop() {
         handleStateTransitions();
+        debuggable.log("state", nextStateShould.toString());
         handleLogic();
 
-        debuggable.log("state", nextStateShould.toString());
+
     }
 
     DriveFSM nextStateShould = DriveFSM.IDLE;

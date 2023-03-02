@@ -1,5 +1,6 @@
 package org.bitbuckets.lib.process;
 
+import config.Mattlib;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -64,7 +65,7 @@ public class RootProcess extends AProcess {
                 .generate(
                         path.getAsFlatTablePath(),
                         child,
-                        ProcessMode.LOG_COMPETITION,
+                        Mattlib.DEFAULT_MODE,
                         selfMode
                 );
 
