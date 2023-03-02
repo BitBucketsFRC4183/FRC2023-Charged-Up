@@ -84,8 +84,8 @@ public class ArmControl {
 
     public void zeroToStartingPosition() {
         //TODO these are random numbers and need to be accurate
-        lowerArm.forceOffset_mechanismRotations(0.2);
-        upperArm.forceOffset_mechanismRotations(0);
+        lowerArm.forceOffset_mechanismRotations(0.391);
+        upperArm.forceOffset_mechanismRotations(-0.281);
         gripperActuator.forceOffset_mechanismRotations(0);
     }
 

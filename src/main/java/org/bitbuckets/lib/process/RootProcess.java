@@ -22,6 +22,7 @@ import org.bitbuckets.lib.tune.NoopsTuner;
 
 import java.util.Map;
 
+@Deprecated
 public class RootProcess extends AProcess implements HasLifecycle {
 
     public RootProcess(Path path, IForceSendTuner<ProcessMode> selfMode) {

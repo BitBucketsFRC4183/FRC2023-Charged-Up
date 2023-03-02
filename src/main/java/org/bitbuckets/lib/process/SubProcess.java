@@ -23,6 +23,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+@Deprecated
 public class SubProcess extends AProcess {
 
     final ShuffleboardContainer rootLayout;
