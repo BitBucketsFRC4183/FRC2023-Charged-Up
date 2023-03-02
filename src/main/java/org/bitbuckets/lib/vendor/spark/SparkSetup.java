@@ -53,6 +53,7 @@ public class SparkSetup implements ISetup<IMotorController> {
         spark.enableVoltageCompensation(12.0);
 
         if (motorConfig.shouldBreakOnNoCommand) {
+            System.out.println("break");
             spark.setIdleMode(CANSparkMax.IdleMode.kBrake);
         } else {
             spark.setIdleMode(CANSparkMax.IdleMode.kCoast);
@@ -60,8 +61,7 @@ public class SparkSetup implements ISetup<IMotorController> {
 
         spark.setInverted(motorConfig.isInverted);
         spark.setSmartCurrentLimit((int) motorConfig.currentLimit);
-        // Uncomment this when doing something that may command motors to full throttle by accident
-        //spark.getPIDController().setOutputRange(-0.3,0.3);
+
 
         SparkMaxLimitSwitch forwardSwitch = null;
         SparkMaxLimitSwitch reverseSwitch = null;
@@ -120,13 +120,13 @@ public class SparkSetup implements ISetup<IMotorController> {
 
 
             //TODO this shouldnt be true
+            //FIXME THIS IS REALLY BAD IF SOMEONE BESIDES ME TRIES TO FOLLOW THEIR ROBOT WILL EXPLODE
             follower.rawAccess(CANSparkMax.class).follow(spark, true); //lmao dont do this typically
-            //TODO optimize can frames for followers
 
         }
 
         //dont care about sticky faults eevery 100ms
-        /*spark.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus0, 200);
+        spark.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus0, 200);
 
         if (motorConfig.optimizationMode == OptimizationMode.OFFBOARD_VEL_PID || motorConfig.optimizationMode == OptimizationMode.LQR) {
             spark.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus1, 20);
@@ -138,7 +138,7 @@ public class SparkSetup implements ISetup<IMotorController> {
             spark.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus2, 20);
         } else {
             spark.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus2, 200);
-        }*/
+        }
 
         return ctrl;
     }

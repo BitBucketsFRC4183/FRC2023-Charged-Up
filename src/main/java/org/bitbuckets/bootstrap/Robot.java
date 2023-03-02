@@ -6,13 +6,13 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Threads;
+import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.log.LogRecord;
 import org.bitbuckets.lib.log.ProcessConsole;
 import org.bitbuckets.lib.process.RootProcess;
-import org.littletonrobotics.junction.LoggedRobot;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,7 +23,7 @@ import static java.lang.String.format;
  * Launchpoint for the robot (It's like the launchpoint for the robot or something)
  * Has all the bucketlib and advantagekit code in it so don't touch it unless you really need to
  */
-public class Robot extends LoggedRobot {
+public class Robot extends TimedRobot {
 
 
     final ISetup<Void> buildRobot;
@@ -43,7 +43,6 @@ public class Robot extends LoggedRobot {
         }
 
         try {
-            rootTable = NetworkTableInstance.getDefault().getTable("");
             builtProcess = RootProcess.root();
             buildRobot.build(builtProcess);
 
@@ -53,7 +52,6 @@ public class Robot extends LoggedRobot {
 
     }
 
-    NetworkTable rootTable;
 
     @Override
     public void robotPeriodic() {
@@ -95,12 +93,12 @@ public class Robot extends LoggedRobot {
         }
 
 
-        if (report.length() > 0) {
+        /*if (report.length() > 0) {
             if (e == null) {
                 e = Shuffleboard.getTab("mattlib").add("console", report.toString()).getEntry();
             }
             e.setString(report.toString());
-        }
+        }*/
 
 
 
@@ -109,10 +107,8 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void simulationPeriodic() {
-        REVPhysicsSim.getInstance().run();
     }
 
-    static GenericEntry e;
 
 
 }

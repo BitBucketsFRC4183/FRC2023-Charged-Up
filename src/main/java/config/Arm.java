@@ -78,7 +78,7 @@ public interface Arm {
             1,
             1,
             false,
-            false,
+            true,
             20,
             Optional.empty(),
             Optional.empty(),
@@ -92,8 +92,8 @@ public interface Arm {
             1,
             1,
             false,
-            false,
-            40,
+            true,
+            20,
             Optional.empty(),
             Optional.empty(),
             false,
@@ -136,7 +136,7 @@ public interface Arm {
     //PID
 
     PIDConfig LOWER_PID = new PIDConfig(
-            0.5,
+            8,
             0,
             0,
             Optional.empty(),
@@ -144,7 +144,7 @@ public interface Arm {
     );
 
     PIDConfig UPPER_PID = new PIDConfig(
-            0.5,
+            6,
             0,
             0,
             Optional.empty(),
