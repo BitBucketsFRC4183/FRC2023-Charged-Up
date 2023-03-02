@@ -34,7 +34,7 @@ public interface Drive {
     );
 
     PIDConfig STEER_SIM_PID = new PIDConfig(
-            0,
+            2,
             0,
             0,
             Optional.empty(),

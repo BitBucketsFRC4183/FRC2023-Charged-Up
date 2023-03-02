@@ -206,6 +206,9 @@ public class DriveSubsystem implements HasLoop {
                 if (xOutput == 0 && yOutput == 0 && rotationOutput == 0) {
                     driveControl.stop();
                 } else {
+                    debuggable.log("y", yOutput);
+                    debuggable.log("x", xOutput);
+
                     driveControl.drive(
                             ChassisSpeeds.fromFieldRelativeSpeeds(yOutput, xOutput, rotationOutput, odometryControl.getRotation2d())
                     );
