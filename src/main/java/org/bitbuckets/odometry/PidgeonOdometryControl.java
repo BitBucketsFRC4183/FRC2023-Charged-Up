@@ -105,8 +105,8 @@ public class PidgeonOdometryControl implements IOdometryControl {
     }
 
     @Override
-    public void setPos(Rotation2d gyroAngle, SwerveModulePosition[] modulePositions, Pose2d poseMeters) {
-        swerveDrivePoseEstimator.resetPosition(gyroAngle, modulePositions, poseMeters);
+    public void setPos(Rotation2d gyroAngle, Pose2d poseMeters) {
+        swerveDrivePoseEstimator.resetPosition(gyroAngle, driveControl.currentPositions(), poseMeters);
     }
 
 

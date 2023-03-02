@@ -6,6 +6,7 @@ import com.pathplanner.lib.PathPlannerTrajectory;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.lib.ISetup;
+import org.bitbuckets.odometry.IOdometryControl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,10 +14,10 @@ import java.util.function.Supplier;
 
 public class AutoControlSetup implements ISetup<IAutoControl> {
 
-    final Supplier<SwerveModulePosition[]> modules;
+    final IOdometryControl odometryControl;
 
-    public AutoControlSetup(Supplier<SwerveModulePosition[]> modules) {
-        this.modules = modules;
+    public AutoControlSetup(IOdometryControl odometryControl) {
+        this.odometryControl = odometryControl;
     }
 
     @Override
@@ -52,6 +53,6 @@ public class AutoControlSetup implements ISetup<IAutoControl> {
 
 
 
-        return new AutoControl(paths, modules);
+        return new AutoControl(paths, odometryControl);
     }
 }

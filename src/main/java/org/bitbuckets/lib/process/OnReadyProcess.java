@@ -7,6 +7,8 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardContainer;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import org.bitbuckets.lib.*;
 import org.bitbuckets.lib.core.HasLifecycle;
+import org.bitbuckets.lib.core.HasLogLoop;
+import org.bitbuckets.lib.core.HasLoop;
 import org.bitbuckets.lib.core.Path;
 import org.bitbuckets.lib.debug.IDebuggable;
 import org.bitbuckets.lib.debug.NoopsDebuggable;
@@ -60,8 +62,7 @@ public class OnReadyProcess extends AProcess implements IDoWhenReady {
 
             ShuffleboardContainer component = root.getLayout(
                             selfPath
-                                    .getAsLastTwoPathFlat()
-                                    .orElse(selfPath.getTail()),
+                                    .getAsFlatTablePath(),
                             BuiltInLayouts.kGrid
                     ).withProperties(Map.of("Number of columns", has.size(), "Number of rows", 1))
                     .withSize(has.size(), 1);
@@ -169,7 +170,17 @@ public class OnReadyProcess extends AProcess implements IDoWhenReady {
         childMode.bind(child::forceTo);
         this.children.add(child);
 
-        return setup.build(child);
+        T built = setup.build(child);
+
+        if (built instanceof HasLoop) {
+            hasLoop.add((HasLoop) built);
+        }
+
+        if (built instanceof HasLogLoop) {
+            hasLogLoop.add((HasLogLoop) built);
+        }
+
+        return built;
     }
 
     @Override

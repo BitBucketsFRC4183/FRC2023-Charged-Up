@@ -3,6 +3,7 @@ package org.bitbuckets.lib.vendor.sim.dc;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
+import org.bitbuckets.lib.ILogAs;
 import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.control.PIDConfig;
@@ -28,6 +29,10 @@ public class DCSimSetup implements ISetup<IMotorController> {
     public IMotorController build(IProcess self) {
         DCMotorSim motorSim = new DCMotorSim(config.motorType, 1.0/ config.encoderToMechanismCoefficient, simInertiaConfig.momentOfInertia);
         PIDController pidController = new PIDController(pidConfig.kP, pidConfig.kI, pidConfig.kD);
+
+        System.out.println("AAAA");
+
+        self.generateLogger(ILogAs.DOUBLE, "anal");
 
         return new DCSimController(config, motorSim, pidController, self.getDebuggable());
     }

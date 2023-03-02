@@ -40,7 +40,7 @@ public class RootProcess extends AProcess {
         for (ThisRecord thisRecord : records) {
 
             ShuffleboardContainer tab = Shuffleboard.getTab(thisRecord.name);
-            ShuffleboardContainer sidebar = tab.getLayout("enablers", BuiltInLayouts.kList).withSize(1,5);
+            ShuffleboardContainer sidebar = tab.getLayout("enablers", BuiltInLayouts.kList).withSize(1,1);
 
             thisRecord.self().internalReady(tab, sidebar);
         }

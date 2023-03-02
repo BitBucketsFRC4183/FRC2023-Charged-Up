@@ -3,6 +3,7 @@ package org.bitbuckets.auto;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.wpilibj.DriverStation;
+import org.bitbuckets.odometry.IOdometryControl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,11 +14,11 @@ import java.util.function.Supplier;
 public class AutoControl implements IAutoControl {
 
     final List<List<PathPlannerTrajectory>> trajectories;
-    final Supplier<SwerveModulePosition[]> suppliers2;
+    final IOdometryControl odometryControl;
 
-    public AutoControl(List<List<PathPlannerTrajectory>> trajectories, Supplier<SwerveModulePosition[]> suppliers2) {
+    public AutoControl(List<List<PathPlannerTrajectory>> trajectories, IOdometryControl odometryControl) {
         this.trajectories = trajectories;
-        this.suppliers2 = suppliers2;
+        this.odometryControl = odometryControl;
     }
 
     @Override
@@ -53,6 +54,7 @@ public class AutoControl implements IAutoControl {
         }
 
         var initialState = PathPlannerTrajectory.transformStateForAlliance(trajectoryGroup.get(0).getInitialState(), DriverStation.getAlliance());
+        odometryControl.setPos(initialState.holonomicRotation, initialState.poseMeters);
         AutoPathInstance instance = new AutoPathInstance(transformedTrajectories, eventMap, segmentTimes, whichOne, totalTime);
 
         instance.onPhaseChangeEvent(AutoFSM.AUTO_RUN);

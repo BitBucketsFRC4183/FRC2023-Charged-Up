@@ -29,7 +29,11 @@ public interface ILogAs<T> {
 
     ILogAs<Double> DOUBLE = (key,ct, m) -> {
         CompletableFuture<GenericEntry> onReady = ct.doWhenReady(a -> {
-            return a.add(key, 0).getEntry();
+            var e =  a.add(key, 0).getEntry();
+
+            System.out.println(e.getTopic().getName());
+
+            return e;
         }, RegisterType.LOG);
 
         return new FutureLoggable<>(onReady);

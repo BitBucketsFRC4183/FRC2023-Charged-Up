@@ -37,7 +37,7 @@ public class Path {
             if (i == pathComposition.length - 1) {
                 builder.append(pathComposition[i]);
             } else {
-                builder.append(pathComposition[i]).append("|");
+                builder.append(pathComposition[i]).append(" ");
             }
         }
 

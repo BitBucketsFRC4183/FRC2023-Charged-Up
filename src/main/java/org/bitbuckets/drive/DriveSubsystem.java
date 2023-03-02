@@ -179,7 +179,7 @@ public class DriveSubsystem implements HasLoop {
             odometryControl.zero();
         }
         if (input.isResetOdoPressed()) {
-            odometryControl.setPos(Rotation2d.fromDegrees(0), driveControl.currentPositions(), new Pose2d(0, 0, Rotation2d.fromDegrees(0)));
+            odometryControl.setPos(Rotation2d.fromDegrees(0), new Pose2d(0, 0, Rotation2d.fromDegrees(0)));
         }
 
         double xOutput;

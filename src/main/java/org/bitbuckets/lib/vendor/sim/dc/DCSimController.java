@@ -70,6 +70,7 @@ public class DCSimController implements IMotorController, HasLoop, HasLogLoop {
 
     @Override
     public void moveAtVoltage(double voltage) {
+
         //debuggable.out("moveAtVoltage called with" + voltage);
         lastVoltage = voltage;
 

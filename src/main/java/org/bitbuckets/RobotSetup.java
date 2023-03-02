@@ -83,7 +83,7 @@ public class RobotSetup implements ISetup<Void> {
                         Enabled.auto,
                         AutoSubsystem.class,
                         new AutoSubsystemSetup(
-                            new AutoControlSetup(driveControl::currentPositions)
+                            new AutoControlSetup(odometryControl)
                         )
                 )
         );
