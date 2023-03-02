@@ -81,6 +81,14 @@ public class ChooserTuner<V extends Enum<V>> implements NTSendable, AutoCloseabl
     private final List<StringPublisher> m_activePubs = new ArrayList<>();
     private final ReentrantLock m_mutex = new ReentrantLock();
 
+    synchronized String active() {
+        if (m_selected != null) {
+            return m_selected;
+        } else {
+            return defaultData.name();
+        }
+    }
+
     @Override
     public void initSendable(NTSendableBuilder builder) {
         builder.setSmartDashboardType("String Chooser");
@@ -91,26 +99,13 @@ public class ChooserTuner<V extends Enum<V>> implements NTSendable, AutoCloseabl
         builder.addStringArrayProperty(OPTIONS, () -> m_map.keySet().toArray(new String[0]), null);
         builder.addStringProperty(
                 ACTIVE,
-                () -> {
-                    m_mutex.lock();
-                    try {
-                        if (m_selected != null) {
-                            return m_selected;
-                        } else {
-                            return defaultData.name();
-                        }
-                    } finally {
-                        m_mutex.unlock();
-                    }
-                },
+                this::active,
                 null);
-        m_mutex.lock();
-        try {
-            //i have no idea why they do this
+
+        synchronized (m_activePubs) {
             m_activePubs.add(new StringTopic(builder.getTopic(ACTIVE)).publish());
-        } finally {
-            m_mutex.unlock();
         }
+
         builder.addStringProperty(
                 SELECTED,
                 null,
@@ -129,16 +124,15 @@ public class ChooserTuner<V extends Enum<V>> implements NTSendable, AutoCloseabl
     }
 
     @Override
-    public void forceToValue(V value) {
-        m_mutex.lock();
-        try {
-            for (StringPublisher publisher : m_activePubs) {
-                publisher.set(value.name());
-            }
-            m_selected = value.name();
-        } finally {
-            m_mutex.unlock();
+    public synchronized void forceToValue(V value) {
+        System.out.println(value);
+
+        for (StringPublisher publisher : m_activePubs) {
+            publisher.set(value.name());
         }
+        m_selected = value.name();
+
+        System.out.println("done!");
     }
 
     @Override

@@ -25,10 +25,13 @@ public class ArmSubsystem implements HasLoop {
     public void loop() {
         //handle arm calibration
         if (autoSubsystem.hasChanged() && autoSubsystem.state() == AutoFSM.INITIALIZATION) {
-            System.out.println("ZESROED");
+            System.out.println("System zeroed to starting position");
+
             armControl.zeroToStartingPosition(); //Assume it's at the starting position lmao
         }
         if (operatorInput.isZeroArmPressed()) {
+            System.out.println("System zeroed to user input");
+
             armControl.zero(); //assume where we are is zero. Only do this if you really have to since zeroing needs
             //to go outside frame perimeter, and you can only do that in a match L
         }

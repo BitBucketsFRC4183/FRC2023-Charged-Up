@@ -14,12 +14,14 @@ import edu.wpi.first.math.numbers.N7;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
 import org.bitbuckets.drive.IDriveControl;
+import org.bitbuckets.lib.core.HasLogLoop;
+import org.bitbuckets.lib.core.HasLoop;
 import org.bitbuckets.lib.debug.IDebuggable;
 import org.bitbuckets.vision.IVisionControl;
 
 import java.util.Optional;
 
-public class PidgeonOdometryControl implements IOdometryControl {
+public class PidgeonOdometryControl implements IOdometryControl, HasLoop, HasLogLoop {
 
     final IDebuggable debuggable;
     final IDriveControl driveControl;
@@ -41,14 +43,14 @@ public class PidgeonOdometryControl implements IOdometryControl {
     private static final Vector<N3> visionMeasurementStdDevs = VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(10));
 
 
-    public void updateOdometryLoop() {
+    @Override
+    public void loop() {
         Rotation2d gyroangle = pigeonIMU.getRotation2d();
         double epoch = Timer.getFPGATimestamp();
         debuggable.log("raw-swerve-pose", swerveDrivePoseEstimator.update(gyroangle, driveControl.currentPositions()));
 
         //Todo: re add when vision is fixed
         Optional<Pose3d> res = visionControl.estimateVisionRobotPose();
-        if (res == null) return;
         if (res.isEmpty()) return;
 
         Pose2d realPose = res.get().toPose2d();

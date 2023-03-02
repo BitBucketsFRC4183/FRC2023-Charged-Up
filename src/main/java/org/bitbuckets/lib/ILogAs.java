@@ -1,5 +1,6 @@
 package org.bitbuckets.lib;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.util.datalog.BooleanLogEntry;
 import edu.wpi.first.util.datalog.DataLog;
@@ -8,6 +9,7 @@ import edu.wpi.first.util.datalog.StringLogEntry;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardContainer;
 import org.bitbuckets.lib.log.FutureLoggable;
 import org.bitbuckets.lib.log.ILoggable;
+import org.bitbuckets.lib.log.PoseLoggable;
 import org.bitbuckets.lib.process.RegisterType;
 import org.bitbuckets.lib.tune.IValueTuner;
 
@@ -29,14 +31,20 @@ public interface ILogAs<T> {
 
     ILogAs<Double> DOUBLE = (key,ct, m) -> {
         CompletableFuture<GenericEntry> onReady = ct.doWhenReady(a -> {
-            var e =  a.add(key, 0).getEntry();
-
-            System.out.println(e.getTopic().getName());
-
-            return e;
+            return a.add(key, 0).getEntry();
         }, RegisterType.LOG);
 
         return new FutureLoggable<>(onReady);
+    };
+
+    ILogAs<Pose2d> POSE = (k,c,m) -> {
+
+        CompletableFuture<GenericEntry> onReady = c.doWhenReady(a -> {
+
+            return a.add(k, new double[] {0,0,0}).getEntry();
+        }, RegisterType.LOG);
+
+        return new PoseLoggable(onReady);
     };
 
     static <T extends Enum<T>> ILogAs<T> ENUM(Class<T> clazz) {

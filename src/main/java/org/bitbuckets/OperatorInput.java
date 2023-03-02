@@ -94,10 +94,6 @@ public class OperatorInput {
         return driveControl.getRawButtonPressed(XboxController.Button.kStart.value);
     }
 
-    public boolean isResetOdoPressed() {
-        return driveControl.getRawButtonPressed(XboxController.Button.kLeftBumper.value);
-    }
-
     //OPERATOR
 
     public static double armDeadband(double input) {

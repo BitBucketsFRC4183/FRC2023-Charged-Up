@@ -48,17 +48,11 @@ public class PidgeonOdometryControlSetup implements ISetup<IOdometryControl> {
         pigeonIMU.configFactoryDefault();
         pigeonIMU.configMountPose(Pigeon2.AxisDirection.PositiveY, Pigeon2.AxisDirection.PositiveZ);
 
-        PidgeonOdometryControl odometryControl = new PidgeonOdometryControl(
+            return new PidgeonOdometryControl(
                 self.getDebuggable(),
                 control,
                 visionControl,
                 pigeonIMU,
                 estimator);
-
-        self.registerLogLoop(odometryControl::logLoop);
-        self.registerLogicLoop(odometryControl::updateOdometryLoop);
-
-
-        return odometryControl;
     }
 }

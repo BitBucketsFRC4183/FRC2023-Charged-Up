@@ -24,7 +24,11 @@ deploy {
 
                 frcJava(getArtifactTypeClass('FRCJavaArtifact')) {
                     gcType = edu.wpi.first.gradlerio.deploy.roborio.GarbageCollectorType.Other
-                    jvmArgs << '-XX:+UseG1GC'
+                    jvmArgs << '' +
+                            '-XX:+UseG1GC ' +
+                            '-XX:+ParallelRefProcEnabled ' +
+                            '-XX:+UnlockExperimentalVMOptions ' +
+                            '-XX:+AlwaysPreTouch ' //allocates to physical and not virtual memory, can disable it it takes too lpong to start up
                 }
 
                 // Static files artifact

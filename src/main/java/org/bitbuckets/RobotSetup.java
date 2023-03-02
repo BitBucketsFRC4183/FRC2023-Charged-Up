@@ -1,5 +1,6 @@
 package org.bitbuckets;
 
+import com.ctre.phoenix.sensors.Pigeon2;
 import config.*;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.wpilibj.Joystick;
@@ -17,7 +18,9 @@ import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.SimulatorKiller;
 import org.bitbuckets.lib.ToggleableSetup;
+import org.bitbuckets.lib.vendor.ctre.PidgeonGyroSetup;
 import org.bitbuckets.odometry.IOdometryControl;
+import org.bitbuckets.odometry.OdometryControlSetup;
 import org.bitbuckets.odometry.PidgeonOdometryControlSetup;
 import org.bitbuckets.vision.IVisionControl;
 import org.bitbuckets.vision.VisionControlSetup;
@@ -68,11 +71,22 @@ public class RobotSetup implements ISetup<Void> {
                 new ToggleableSetup<>(
                         Enabled.drive,
                         IOdometryControl.class,
-                        new PidgeonOdometryControlSetup( //needs to be swappable
+                        /*new PidgeonOdometryControlSetup( //needs to be swappable
                                 driveControl,
                                 visionControl,
                                 KINEMATICS,
                                 MotorIds.PIDGEON_IMU_ID
+                        )*/
+                        new OdometryControlSetup(
+                                Drive.STD_VISION,
+                                KINEMATICS,
+                                driveControl,
+                                visionControl,
+                                new PidgeonGyroSetup(
+                                        MotorIds.PIDGEON_IMU_ID,
+                                        Pigeon2.AxisDirection.PositiveY,
+                                        Pigeon2.AxisDirection.PositiveZ
+                                )
                         )
                 )
         );
