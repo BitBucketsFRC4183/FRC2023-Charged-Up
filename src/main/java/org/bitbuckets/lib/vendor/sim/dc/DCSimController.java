@@ -27,8 +27,8 @@ public class DCSimController implements IMotorController, HasLoop, HasLogLoop {
 
     @Override
     public double getMechanismFactor() {
-        return config.encoderToMechanismCoefficient;
-    }
+        return 1;
+    } //shhh this needs to be fixed
 
     @Override
     public double getRotationsToMetersFactor() {
