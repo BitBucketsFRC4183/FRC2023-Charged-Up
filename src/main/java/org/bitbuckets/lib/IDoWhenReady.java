@@ -12,5 +12,6 @@ public interface IDoWhenReady {
 
     CompletableFuture<GenericEntry> doWhenReady(Function<ShuffleboardContainer, GenericEntry> fn, RegisterType type);
     CompletableFuture<Void> doWhenReady(Consumer<ShuffleboardContainer> container, RegisterType type);
+    CompletableFuture<ShuffleboardContainer> doWhenReadyDbg();
 
 }

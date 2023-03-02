@@ -15,7 +15,7 @@ import java.util.List;
 public abstract class AProcess implements IProcess, IDoWhenReady {
 
     final Path selfPath;
-    final IForceSendTuner<ProcessMode> selfMode;
+    IForceSendTuner<ProcessMode> selfMode;
 
     final List<AProcess> children = new ArrayList<>();
     final List<HasLoop> hasLoop = new ArrayList<>();

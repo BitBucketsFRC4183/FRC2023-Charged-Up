@@ -20,6 +20,7 @@ public class OperatorInput {
     }
 
 
+    //DRIVER
 
     /**
      * @param input a value
@@ -77,11 +78,11 @@ public class OperatorInput {
         return getInputX() == 0 && getInputY() == 0 && getInputRot() == 0;
     }
 
-    public boolean isDefaultPressed() {
+    public boolean isDefaultDrivePressed() {
         return driveControl.getRawButtonPressed(XboxController.Button.kX.value);
     }
 
-    public boolean isVisionGoPressed() {
+    public boolean isVisionDrivePressed() {
         return driveControl.getRawButton(XboxController.Button.kY.value);
     }
 
@@ -93,7 +94,11 @@ public class OperatorInput {
         return driveControl.getRawButtonPressed(XboxController.Button.kStart.value);
     }
 
-    public boolean isResetOdoPressed() {return driveControl.getRawButtonPressed(XboxController.Button.kLeftBumper.value);}
+    public boolean isResetOdoPressed() {
+        return driveControl.getRawButtonPressed(XboxController.Button.kLeftBumper.value);
+    }
+
+    //OPERATOR
 
     public static double armDeadband(double input) {
         double value = input;
@@ -126,6 +131,10 @@ public class OperatorInput {
         return operatorControl.getRawButtonPressed(XboxController.Button.kA.value);
     }
 
+    public boolean isZeroArmPressed() {
+        return operatorControl.getRawButtonPressed(XboxController.Button.kLeftStick.value);
+    }
+
     //checks if operator for some reason wants to manually zero the shit
     // checks if operator wants to move arms to intake for human player station (by pressing RIGHT DPAD)
     public boolean isHumanIntakePressed() {
@@ -134,9 +143,7 @@ public class OperatorInput {
     }
 
 
-    public boolean isZeroArmPressed() {
-        return operatorControl.getRawButtonPressed(XboxController.Button.kLeftStick.value);
-    }
+
 
     //controlled by dPad Left
     public boolean isScoreLowPressed() {

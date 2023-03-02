@@ -67,6 +67,7 @@ public class AutoSubsystem implements HasLogLoop, HasLoop {
         }
 
 
+        hasChanged = false;
         switch (state) {
             case DISABLED:
                 if (DriverStation.isTeleopEnabled() || DriverStation.isAutonomousEnabled()) {
@@ -137,7 +138,7 @@ public class AutoSubsystem implements HasLogLoop, HasLoop {
                 }
                 break;
         }
-        hasChanged = false;
+
 
     }
 

@@ -9,6 +9,7 @@ import org.bitbuckets.lib.core.HasLifecycle;
 import org.bitbuckets.lib.core.Path;
 import org.bitbuckets.lib.debug.IDebuggable;
 import org.bitbuckets.lib.debug.NoopsDebuggable;
+import org.bitbuckets.lib.debug.ShuffleDebuggable;
 import org.bitbuckets.lib.log.IConsole;
 import org.bitbuckets.lib.log.ILoggable;
 import org.bitbuckets.lib.tune.IForceSendTuner;
@@ -62,7 +63,7 @@ public class OnReadyProcess extends AProcess implements IDoWhenReady {
                                     .orElse(selfPath.getTail()),
                             BuiltInLayouts.kGrid
                     ).withProperties(Map.of("Number of columns", has.size(), "Number of rows", 1))
-                    .withSize(has.size(), 2);
+                    .withSize(has.size(), 1);
 
 
             Set<RegisterRecord> debugs = sort(RegisterType.DEBUG);
@@ -106,6 +107,7 @@ public class OnReadyProcess extends AProcess implements IDoWhenReady {
             if (sidebar.size() > 0) {
                 for (RegisterRecord record : sidebar) {
                     var entry = record.fn.apply(enablers);
+
                     record.ftr.complete(entry);
                 }
             }
@@ -120,6 +122,8 @@ public class OnReadyProcess extends AProcess implements IDoWhenReady {
 
     record RegisterRecord(Function<ShuffleboardContainer, GenericEntry> fn, CompletableFuture<GenericEntry> ftr, org.bitbuckets.lib.process.RegisterType type) {}
     final List<RegisterRecord> onReady = new ArrayList<>();
+
+
 
     @Override
     public CompletableFuture<GenericEntry> doWhenReady(Function<ShuffleboardContainer, GenericEntry> fn, RegisterType type) {
@@ -137,6 +141,15 @@ public class OnReadyProcess extends AProcess implements IDoWhenReady {
         onReady.add(new RegisterRecord(a -> { container.accept(a); return null; }, empty, type));
 
         return empty.thenAccept(ignore -> {});
+    }
+
+    @Override
+    public CompletableFuture<ShuffleboardContainer> doWhenReadyDbg() {
+        CompletableFuture<ShuffleboardContainer> empty = new CompletableFuture<>();
+
+        onReady.add(new RegisterRecord(a -> {empty.complete(a); return null;}, new CompletableFuture<>(), RegisterType.DEBUG));
+
+        return empty;
     }
 
     @Override
@@ -168,9 +181,21 @@ public class OnReadyProcess extends AProcess implements IDoWhenReady {
         throw new UnsupportedOperationException();
     }
 
+
+    ShuffleDebuggable cached = null;
     @Override
     public IDebuggable getDebuggable() {
-        return new NoopsDebuggable();
+
+
+        if (cached == null) {
+
+            CompletableFuture<ShuffleboardContainer> ctr = doWhenReadyDbg();
+
+            cached = new ShuffleDebuggable(ctr, selfMode);
+        }
+
+        return cached;
+
     }
 
     @Override

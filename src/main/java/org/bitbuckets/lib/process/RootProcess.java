@@ -6,10 +6,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardContainer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.bitbuckets.auto.AutoFSM;
-import org.bitbuckets.lib.ILogAs;
-import org.bitbuckets.lib.ISetup;
-import org.bitbuckets.lib.ITuneAs;
-import org.bitbuckets.lib.ProcessMode;
+import org.bitbuckets.lib.*;
 import org.bitbuckets.lib.core.HasLifecycle;
 import org.bitbuckets.lib.core.HasLogLoop;
 import org.bitbuckets.lib.core.HasLoop;
@@ -23,9 +20,7 @@ import org.bitbuckets.lib.tune.IForceSendTuner;
 import org.bitbuckets.lib.tune.IValueTuner;
 import org.bitbuckets.lib.tune.NoopsTuner;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -62,17 +57,18 @@ public class RootProcess extends AProcess {
 
         var path = this.selfPath.append(key);
 
+        //TODO this is a terrible hack (setting to null then assigning late)
+        AProcess child = new OnReadyProcess(path, null);
 
-        IForceSendTuner<ProcessMode> childMode = (IForceSendTuner<ProcessMode>) ITuneAs.ENUM(ProcessMode.class)
+        IForceSendTuner<ProcessMode> childMode = (IForceSendTuner<ProcessMode>) ITuneAs.SIDE_ENUM(ProcessMode.class)
                 .generate(
                         path.getAsFlatTablePath(),
-                        this,
+                        child,
                         ProcessMode.LOG_COMPETITION,
                         selfMode
                 );
 
-
-        AProcess child = new OnReadyProcess(path, childMode);
+        child.selfMode = childMode;
         records.add(new ThisRecord(key, child));
         childMode.bind(child::forceTo);
         children.add(child);
@@ -140,5 +136,10 @@ public class RootProcess extends AProcess {
     @Override
     public CompletableFuture<Void> doWhenReady(Consumer<ShuffleboardContainer> container, RegisterType type) {
         return new CompletableFuture<>();
+    }
+
+    @Override
+    public CompletableFuture<ShuffleboardContainer> doWhenReadyDbg() {
+        throw new UnsupportedOperationException("what");
     }
 }

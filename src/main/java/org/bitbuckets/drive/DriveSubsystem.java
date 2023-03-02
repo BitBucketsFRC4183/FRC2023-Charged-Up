@@ -36,7 +36,6 @@ public class DriveSubsystem implements HasLoop {
     final IValueTuner<OrientationChooser> orientation;
     final IDebuggable debuggable;
 
-
     public enum OrientationChooser {
         FIELD_ORIENTED,
         ROBOT_ORIENTED,
@@ -54,111 +53,117 @@ public class DriveSubsystem implements HasLoop {
         this.debuggable = debuggable;
     }
 
-    DriveFSM state = DriveFSM.IDLE;
-
-    Optional<Pose3d> visionTarget;
+    Optional<Pose3d> lastVisionTarget;
 
     @Override
     public void loop() {
+        handleStateTransitions();
+        handleLogic();
 
-        if (state == DriveFSM.IDLE) {
-            if (autoSubsystem.state() == AutoFSM.AUTO_RUN) {
-                state = DriveFSM.AUTO_PATHFINDING;
-            }
-            if (autoSubsystem.state() == AutoFSM.TELEOP) {
-                state = DriveFSM.TELEOP_NORMAL;
-            }
-        } else if (state == DriveFSM.TELEOP_NORMAL && autoSubsystem.state() == AutoFSM.AUTO_RUN) {
-            // switch to auto from teleop
-            state = DriveFSM.AUTO_PATHFINDING;
-        }
-
-        switch (autoSubsystem.state()) {
-            case AUTO_RUN -> autoLoop();
-            case TELEOP -> teleopLoop();
-            case DISABLED ->
-                // TODO: we aren't really "uninitialized" but the drive subsystem treats uninitialized and disabled as the same?
-                    state = DriveFSM.IDLE;
-        }
-
-        debuggable.log("state", state.toString());
+        debuggable.log("state", nextStateShould.toString());
     }
 
-    void teleopLoop() {
-        switch (state) {
-            case TELEOP_NORMAL -> {
-                if (input.isVisionGoPressed() && visionControl.isTargTrue()) {
-                    visionTarget = visionControl.estimateVisionTargetPose();
-                    state = DriveFSM.TELEOP_VISION;
-                    break;
-                }
-                if (input.isAutoBalancePressed()) {
-                    state = DriveFSM.TELEOP_BALANCING; //do balancing next iteration
-                    break;
-                }
-                if (input.isAutoHeadingPressed()) {
-                    state = DriveFSM.TELEOP_AUTOHEADING;
-                    break;
-                }
-                teleopNormal();
+    DriveFSM nextStateShould = DriveFSM.IDLE;
+
+    void handleStateTransitions() {
+        //handle forced overrides from the auto subsystem
+
+
+        if (autoSubsystem.hasChanged() && autoSubsystem.state() == AutoFSM.DISABLED) {
+            nextStateShould = DriveFSM.IDLE;
+            return;
+        }
+
+        if (autoSubsystem.hasChanged() && autoSubsystem.state() == AutoFSM.AUTO_RUN) {
+            nextStateShould = DriveFSM.AUTO_PATHFINDING;
+            return;
+        }
+
+        if (autoSubsystem.hasChanged() && autoSubsystem.state() == AutoFSM.AUTO_ENDED) {
+            driveControl.stop();
+            nextStateShould = DriveFSM.IDLE; //Stop moving after the path says we are done
+            return;
+        }
+
+        if (autoSubsystem.hasChanged() && autoSubsystem.state() == AutoFSM.TELEOP) {
+            nextStateShould = DriveFSM.MANUAL;
+            return;
+        }
+
+        //handle event overrides from the auto subsystem
+
+        if (autoSubsystem.state() == AutoFSM.AUTO_RUN) {
+            if (autoSubsystem.sampleHasEventStarted("do-balance")) {
+                nextStateShould = DriveFSM.BALANCE;
+                return;
             }
-            case TELEOP_BALANCING -> {
-                if (input.isDefaultPressed()) {
-                    state = DriveFSM.TELEOP_NORMAL;
-                    break;
-                }
-                balance();
+
+            if (autoSubsystem.sampleHasEventStarted("do-vision")) {
+                nextStateShould = DriveFSM.VISION;
+                return;
             }
-            case TELEOP_VISION -> {
-                if ((!input.isVisionGoPressed())) {
-                    state = DriveFSM.TELEOP_NORMAL;
-                    break;
-                }
-                teleopVision();
+        }
+
+
+        //handle inputs from user
+
+        if (autoSubsystem.state() == AutoFSM.TELEOP) {
+            if (input.isVisionDrivePressed() && visionControl.isTargTrue()) {
+                nextStateShould = DriveFSM.VISION;
+                return;
+            }
+
+            if (input.isAutoBalancePressed()) {
+                nextStateShould = DriveFSM.BALANCE;
             }
         }
     }
 
-    void autoLoop() {
-        switch (state) {
-            case AUTO_PATHFINDING:
+    void handleLogic() {
+        if (nextStateShould == DriveFSM.AUTO_PATHFINDING) {
+            autoPathFinding();
+            return;
+        }
 
-                if (autoSubsystem.state() == AutoFSM.TELEOP) {
-                    state = DriveFSM.TELEOP_NORMAL;
-                    break;
-                }
+        if (nextStateShould == DriveFSM.MANUAL) {
+            teleopNormal();
+            return;
+        }
 
-                if (autoSubsystem.state() == AutoFSM.AUTO_ENDED) {
-                    driveControl.drive(new ChassisSpeeds(0, 0, 0));
-                    break;
+        if (nextStateShould == DriveFSM.BALANCE) {
+            balance();
+            return;
+        }
 
-                }
-                Optional<PathPlannerTrajectory.PathPlannerState> opt = autoSubsystem.samplePathPlannerState();
-                if (opt.isPresent()) {
-                    ChassisSpeeds targetSpeeds = holoControl.calculatePose2DFromState(opt.get());
-                    targetSpeeds.vxMetersPerSecond = -targetSpeeds.vxMetersPerSecond;
-                    targetSpeeds.vyMetersPerSecond = -targetSpeeds.vyMetersPerSecond;
-                    targetSpeeds.omegaRadiansPerSecond = -targetSpeeds.omegaRadiansPerSecond;
+        if (nextStateShould == DriveFSM.VISION) {
+            teleopVision();
+            return;
+        }
 
-                    driveControl.drive(targetSpeeds);
-                }
+        if (nextStateShould == DriveFSM.IDLE) {
+            driveControl.stop();
+        }
+
+        //if idle it will do nothing..
+    }
 
 
-                if (autoSubsystem.sampleHasEventStarted("auto-balance")) {
-                    state = DriveFSM.AUTO_BALANCING;
-                    break;
-                }
-                break;
 
-            case AUTO_BALANCING:
-                balance();
-                break;
+    void autoPathFinding() {
+        Optional<PathPlannerTrajectory.PathPlannerState> opt = autoSubsystem.samplePathPlannerState();
+        if (opt.isPresent()) {
+            ChassisSpeeds targetSpeeds = holoControl.calculatePose2DFromState(opt.get());
+            targetSpeeds.vxMetersPerSecond = -targetSpeeds.vxMetersPerSecond;
+            targetSpeeds.vyMetersPerSecond = -targetSpeeds.vyMetersPerSecond;
+            targetSpeeds.omegaRadiansPerSecond = -targetSpeeds.omegaRadiansPerSecond;
+
+            driveControl.drive(targetSpeeds);
         }
     }
 
     void teleopVision() {
-        if (visionTarget.isPresent()) {
-            ChassisSpeeds speeds = holoControl.calculatePose2D(visionTarget.get().toPose2d(), 1, visionTarget.get().toPose2d().getRotation());
+        if (lastVisionTarget.isPresent()) {
+            ChassisSpeeds speeds = holoControl.calculatePose2D(lastVisionTarget.get().toPose2d(), 1, lastVisionTarget.get().toPose2d().getRotation());
             speeds.vxMetersPerSecond = -speeds.vxMetersPerSecond;
             speeds.vyMetersPerSecond = -speeds.vyMetersPerSecond;
             speeds.omegaRadiansPerSecond = -speeds.omegaRadiansPerSecond;
@@ -166,8 +171,6 @@ public class DriveSubsystem implements HasLoop {
 
             driveControl.drive(speeds);
         }
-
-
     }
 
     void teleopNormal() {
@@ -221,7 +224,8 @@ public class DriveSubsystem implements HasLoop {
 
     void balance() {
 
-        debuggable.log("is-running-ab", true);
+        //TODO deadband only
+
         //This is bad and should be shifted somewhere else
 
         double Pitch_deg = odometryControl.getPitch_deg();

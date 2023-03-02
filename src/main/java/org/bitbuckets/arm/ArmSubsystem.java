@@ -35,37 +35,44 @@ public class ArmSubsystem implements HasLoop {
 
 
         //handle inputs, which will calculate what the next input of the robot is
-        handleInputs();
+        handleStateTransitions();
         handleLogic();
 
     }
 
 
     //generates what the FSM should do. Will modify shouldDoNext if something has happened
-    void handleInputs() {
+    void handleStateTransitions() {
         if (operatorInput.isStopPidPressed() && autoSubsystem.state() != AutoFSM.AUTO_RUN) {
             shouldDoNext = ArmFSM.IDLE;
+            return;
         }
 
         if (autoSubsystem.state() == AutoFSM.DISABLED) {
             shouldDoNext = ArmFSM.IDLE;
+            return;
         }
 
         if (autoSubsystem.state() == AutoFSM.AUTO_RUN) {
             if (autoSubsystem.sampleHasEventStarted("arm-storage")) {
                 shouldDoNext = ArmFSM.STORAGE;
+                return;
             }
             if (autoSubsystem.sampleHasEventStarted("arm-prepare")) {
                 shouldDoNext = ArmFSM.PREPARE;
+                return;
             }
             if (autoSubsystem.sampleHasEventStarted("arm-score-high")) {
                 shouldDoNext = ArmFSM.SCORE_HIGH;
+                return;
             }
             if (autoSubsystem.sampleHasEventStarted("arm-human-intake")) {
                 shouldDoNext = ArmFSM.HUMAN_INTAKE;
+                return;
             }
             if (autoSubsystem.sampleHasEventStarted("arm-ground-intake")) {
                 shouldDoNext = ArmFSM.GROUND_INTAKE;
+                return;
             }
         }
 
@@ -73,26 +80,33 @@ public class ArmSubsystem implements HasLoop {
 
             if (operatorInput.isHumanIntakePressed()) {
                 shouldDoNext = ArmFSM.HUMAN_INTAKE;
+                return;
             }
             //TODO ground intake button
             if (operatorInput.isStoragePressed()) {
                 shouldDoNext = ArmFSM.STORAGE;
+                return;
             }
             if (operatorInput.isScoreHighPressed()) {
                 shouldDoNext = ArmFSM.SCORE_HIGH;
+                return;
             }
             if (operatorInput.isScoreMidPressed()) {
                 shouldDoNext = ArmFSM.SCORE_MID;
+                return;
             }
             if (operatorInput.isScoreLowPressed()) {
                 shouldDoNext = ArmFSM.SCORE_LOW;
+                return;
             }
             if (operatorInput.isDebugDegreesPressed()) {
                 shouldDoNext = ArmFSM.DEBUG_TO_DEGREES;
+                return;
             }
 
             if (operatorInput.isManualModePressed()) {
                 shouldDoNext = ArmFSM.MANUAL;
+                return;
             }
 
         }
