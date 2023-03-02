@@ -15,7 +15,7 @@ public interface ArmConstants {
     int UPPER_ARM_MOTOR_ID = 11;
     // calculated gearRatio
     // Input to output- 5:1 4:1 3:1
-    // Final gear different for each arm; 16:48 for lower and 16:16 for upper
+    // Final gear different for         each arm; 16:48 for lower and 16:16 for upper
 
     //converts encoder rotations -> mechanism rotations (0.036)
     double LOWER_ARM_GEAR_RATIO = 1.0 / ((5.0 * 4.0 * 3.0) * (48. / 16.));
@@ -23,7 +23,7 @@ public interface ArmConstants {
 
 
     double LOWER_JOINT_LENGTH = 0.6731;
-    double UPPER_JOINT_LENGTH = 0.6605; //not including gripper
+    double UPPER_JOINT_LENGTH = 0.9652; // including gripper
 
 
     //mainly for arm sim
