@@ -40,8 +40,6 @@ public interface IProcess {
     //dont call this
     void run();
 
-    //uses for breaking shit
-    int componentQuantity();
 
     //dont call this
     HasLifecycle offerInternalLifecycler();

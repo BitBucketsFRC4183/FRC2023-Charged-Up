@@ -6,6 +6,7 @@ import org.bitbuckets.lib.ProcessMode;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
@@ -15,14 +16,15 @@ import java.util.function.Consumer;
  */
 public class ValueTuner<T> implements IValueTuner<T>, Consumer<NetworkTableEvent> {
 
-    final GenericEntry entry;
+    //TODO this is such a hack, but at this point i need to focus on what matters and not debugging garbage
+    final CompletableFuture<GenericEntry> entry;
     final IValueTuner<ProcessMode> processMode;
     final T defaultData;
     final AtomicReference<AtomicRecord<T>> cachedValue;
 
     final List<Consumer<T>> bound = new ArrayList<>();
 
-    public ValueTuner(GenericEntry entry, IValueTuner<ProcessMode> processMode, T defaultData) {
+    public ValueTuner(CompletableFuture<GenericEntry> entry, IValueTuner<ProcessMode> processMode, T defaultData) {
         this.entry = entry;
         this.processMode = processMode;
         this.defaultData = defaultData;
@@ -33,7 +35,11 @@ public class ValueTuner<T> implements IValueTuner<T>, Consumer<NetworkTableEvent
 
     void onProcessModeChange(ProcessMode mode) {
         if (mode != ProcessMode.TUNE) {
-            entry.setValue(defaultData);
+            if (entry.isDone()) {
+                entry.join().setValue(  defaultData );
+            } else {
+                entry.thenAccept( e-> e.setValue( defaultData ));
+            }
         }
     }
 
@@ -80,7 +86,11 @@ public class ValueTuner<T> implements IValueTuner<T>, Consumer<NetworkTableEvent
     @Override
     public void accept(NetworkTableEvent networkTableEvent) {
         if (processMode.readValue().level > ProcessMode.TUNE.level) {
-            entry.setValue(defaultData);
+            if (entry.isDone()) {
+                entry.join().setValue(defaultData);
+            } else {
+                entry.thenAccept(e -> e.setValue(defaultData));
+            }
             return;
         }
 

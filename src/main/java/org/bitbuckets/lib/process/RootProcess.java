@@ -1,7 +1,10 @@
 package org.bitbuckets.lib.process;
 
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardContainer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.bitbuckets.auto.AutoFSM;
 import org.bitbuckets.lib.ILogAs;
 import org.bitbuckets.lib.ISetup;
@@ -20,44 +23,57 @@ import org.bitbuckets.lib.tune.IForceSendTuner;
 import org.bitbuckets.lib.tune.IValueTuner;
 import org.bitbuckets.lib.tune.NoopsTuner;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
-@Deprecated
-public class RootProcess extends AProcess implements HasLifecycle {
+
+public class RootProcess extends AProcess {
 
     public RootProcess(Path path, IForceSendTuner<ProcessMode> selfMode) {
         super(path, selfMode);
     }
 
+    final List<ThisRecord> records = new ArrayList<>();
 
+
+    public void ready() {
+        for (ThisRecord thisRecord : records) {
+
+            ShuffleboardContainer tab = Shuffleboard.getTab(thisRecord.name);
+            ShuffleboardContainer sidebar = tab.getLayout("enablers", BuiltInLayouts.kList).withSize(1,5);
+
+            thisRecord.self().internalReady(tab, sidebar);
+        }
+    }
+
+    @Override
+    protected void internalReady(ShuffleboardContainer root, ShuffleboardContainer enablers) {
+        throw new UnsupportedOperationException();
+    }
+
+    record ThisRecord(String name, AProcess self) {}
 
     @Override
     public <T> T childSetup(String key, ISetup<T> setup) {
 
         var path = this.selfPath.append(key);
 
-        var tab = Shuffleboard.getTab(key);
-        var sidebar = tab.getLayout("enablers", BuiltInLayouts.kList);
-
-        //component specific
-        var component = tab.getLayout(key, BuiltInLayouts.kGrid).withProperties(Map.of("Number of columns", 3, "Number of rows", 1)).withSize(3, 2);
-        var debug = component.getLayout("debug",BuiltInLayouts.kList).withProperties(Map.of("Label Position", "LEFT"));
-        var tune = component.getLayout("tune", BuiltInLayouts.kList).withProperties(Map.of("Label Position", "BOTTOM"));
-        var log = component.getLayout("log", BuiltInLayouts.kList).withProperties(Map.of("Label Position", "LEFT"));
 
         IForceSendTuner<ProcessMode> childMode = (IForceSendTuner<ProcessMode>) ITuneAs.ENUM(ProcessMode.class)
                 .generate(
                         path.getAsFlatTablePath(),
-                        sidebar,
+                        this,
                         ProcessMode.LOG_COMPETITION,
                         selfMode
                 );
 
 
-        ShuffleDebuggable debuggable = new ShuffleDebuggable(debug, childMode);
-        ProcessConsole console = new ProcessConsole(childMode,path);
-
-        AProcess child = new SubProcess(path, childMode, tab, sidebar, console, debuggable, log, tune);
+        AProcess child = new OnReadyProcess(path, childMode);
+        records.add(new ThisRecord(key, child));
         childMode.bind(child::forceTo);
         children.add(child);
 
@@ -117,12 +133,12 @@ public class RootProcess extends AProcess implements HasLifecycle {
     }
 
     @Override
-    public void onEvent(String autoEvent) {
-
+    public CompletableFuture<GenericEntry> doWhenReady(Function<ShuffleboardContainer, GenericEntry> fn, RegisterType type) {
+        return new CompletableFuture<>();
     }
 
     @Override
-    public void onPhaseChangeEvent(AutoFSM phase) {
-
+    public CompletableFuture<Void> doWhenReady(Consumer<ShuffleboardContainer> container, RegisterType type) {
+        return new CompletableFuture<>();
     }
 }

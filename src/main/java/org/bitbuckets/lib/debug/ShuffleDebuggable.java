@@ -29,6 +29,7 @@ public class ShuffleDebuggable implements IDebuggable {
         this.modeTuner = modeTuner;
         this.container = container;
 
+        //TODO this is going to cause huge errors
         //container.add("debugged yet", false);
     }
 

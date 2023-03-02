@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Threads;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.log.LogRecord;
@@ -28,7 +29,7 @@ public class Robot extends TimedRobot {
 
     final ISetup<Void> buildRobot;
 
-    IProcess builtProcess;
+    RootProcess builtProcess;
 
     public Robot(ISetup<Void> buildRobot) {
         this.buildRobot = buildRobot;
@@ -52,9 +53,16 @@ public class Robot extends TimedRobot {
 
     }
 
+    boolean ran = false;
 
     @Override
     public void robotPeriodic() {
+
+        if (!ran) {
+            ran = true;
+            builtProcess.ready();
+        }
+
         Threads.setCurrentThreadPriority(true, 99); //stupid hack
         builtProcess.run();
 
