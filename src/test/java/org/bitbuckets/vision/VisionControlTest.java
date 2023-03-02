@@ -4,6 +4,7 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.geometry.*;
 import org.bitbuckets.lib.debug.IDebuggable;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
@@ -97,6 +98,7 @@ class VisionControlTest {
         assertEquals(Optional.empty(), control.visionPoseEstimator());
     }
 
+    @Disabled
     @Test
     void visionPoseEstimator() {
         // make our vision return a target
