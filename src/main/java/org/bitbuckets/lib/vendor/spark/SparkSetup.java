@@ -92,31 +92,31 @@ public class SparkSetup implements ISetup<IMotorController> {
         SparkRelativeMotorController ctrl = new SparkRelativeMotorController(motorConfig, spark);
         OnboardPidLogger onboardPidLogger = new OnboardPidLogger(
                 ctrl,
-                self.generateLogger(ILogAs.DOUBLE, "pos-setpoint-mechanism-rotations"),
-                self.generateLogger(ILogAs.DOUBLE, "encoder-mechanism-rotations"),
-                self.generateLogger(ILogAs.DOUBLE, "error-mechanism-rotations"),
-                self.generateLogger(ILogAs.ENUM(LastControlMode.class),"last-control-mode")
+                self.generateLogger(ILogAs.DOUBLE, "setpointMechanismRot"),
+                self.generateLogger(ILogAs.DOUBLE, "encoderMechanismRot"),
+                self.generateLogger(ILogAs.DOUBLE, "errorMechanismRot"),
+                self.generateLogger(ILogAs.ENUM(LastControlMode.class),"lastControlMode")
         );
 
         self.registerLogLoop(onboardPidLogger);
 
         if (forwardSwitch != null) {
             LimitSwitchLogger loggingAspect = new LimitSwitchLogger(
-                    self.generateLogger(ILogAs.BOOLEAN, "limit-forward"),
+                    self.generateLogger(ILogAs.BOOLEAN, "limitFw"),
                     forwardSwitch
             );
             self.registerLogLoop(loggingAspect);
         }
         if (reverseSwitch != null) {
             LimitSwitchLogger loggingAspect = new LimitSwitchLogger(
-                    self.generateLogger(ILogAs.BOOLEAN, "limit-reverse"),
+                    self.generateLogger(ILogAs.BOOLEAN, "limitRv"),
                     reverseSwitch
             );
             self.registerLogLoop(loggingAspect);        }
 
         if (follower.isPresent()) {
 
-            SparkRelativeMotorController follower = (SparkRelativeMotorController) self.childSetup(self.getSelfPath().getTail() + "-follower", this.follower.get());
+            SparkRelativeMotorController follower = (SparkRelativeMotorController) self.childSetup(self.getSelfPath().getTail() + "Follower", this.follower.get());
 
 
             //TODO this shouldnt be true

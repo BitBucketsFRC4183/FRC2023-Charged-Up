@@ -17,12 +17,12 @@ public class SwerveModuleSetup implements ISetup<ISwerveModule> {
 
     @Override
     public ISwerveModule build(IProcess self) {
-        ILoggable<Double> percentOutput = self.generateLogger(ILogAs.DOUBLE, "percent-command");
-        ILoggable<Double> angleCommand = self.generateLogger(ILogAs.DOUBLE, "angle-command");
+        ILoggable<Double> percentOutput = self.generateLogger(ILogAs.DOUBLE, "percentCommand");
+        ILoggable<Double> angleCommand = self.generateLogger(ILogAs.DOUBLE, "angleCommand");
 
         return new SwerveModule(
-                self.childSetup("drive-controller", driveController),
-                self.childSetup("steer-controller", steerController),
+                self.childSetup("driveController", driveController),
+                self.childSetup("steerController", steerController),
                 angleCommand,
                 percentOutput
         );

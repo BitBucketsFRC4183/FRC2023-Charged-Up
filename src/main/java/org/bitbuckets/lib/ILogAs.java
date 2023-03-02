@@ -3,57 +3,44 @@ package org.bitbuckets.lib;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardContainer;
 import org.bitbuckets.lib.log.ILoggable;
+import org.bitbuckets.lib.log.ScheduledLoggable;
 import org.bitbuckets.lib.tune.IValueTuner;
 
-import java.util.Map;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 public interface ILogAs<T> {
 
     ILoggable<T> generate(String key, ShuffleboardContainer con, IValueTuner<ProcessMode> mode);
 
-    ILogAs<Boolean> BOOLEAN = (k, c, m) -> {
-        var e = c
-                .add(k, false)
-                .withWidget(BuiltInWidgets.kBooleanBox)
-                .getEntry();
+    ILogAs<Boolean> BOOLEAN = (k, conn, m) -> new ScheduledLoggable<>(
+            TRACKER.SEX.schedule(
+                    () -> conn.add(k, false)
+                            .withWidget(BuiltInWidgets.kGraph)
+                            .getEntry(),
+                    TRACKER.LASTMS += 1,
+                    TimeUnit.SECONDS
+            )
+    );
 
 
-        return (a) -> {
-           if (e.exists() && e.isValid()) {
-               e.setBoolean(a);
-           } else {
-               System.out.println("BAD NT");
-           }
-        };
-    };
+    class TRACKER {
+        static final ScheduledExecutorService SEX = new ScheduledThreadPoolExecutor(2);
+        static int LASTMS = 0;
+    }
 
-    ILogAs<Double> DOUBLE = (key,con, m) -> {
-        var e = con.add(key, 0.0).withWidget(BuiltInWidgets.kTextView).getEntry();
 
-        System.out.println(e.getTopic().getInfo().type);
-        return (a) -> {
-            if (e.exists() && e.isValid()) {
-                e.setDouble(a);
-            } else {
-                System.out.println("BAD NT");
-            }
-        };
-    };
 
-    ILogAs<Double> DOUBLE_GRAPH = (key,con, m) -> {
-        var e = con
-                .add(key, 0.0)
-                .withWidget(BuiltInWidgets.kGraph)
-                .getEntry();
-
-        return (a) -> {
-            if (e.exists() && e.isValid()) {
-                e.setDouble(a);
-            } else {
-                System.out.println("BAD NT");
-            }
-        };
-    };
+    ILogAs<Double> DOUBLE = (key,con, m) -> new ScheduledLoggable<>(
+            TRACKER.SEX.schedule(
+                    () -> con.add(key, 0.0)
+                            .withWidget(BuiltInWidgets.kGraph)
+                            .getEntry(),
+                    TRACKER.LASTMS += 1,
+                    TimeUnit.SECONDS
+            )
+    );
 
     static <T extends Enum<T>> ILogAs<T> ENUM(Class<T> clazz) {
         return (k,c, m) -> {
