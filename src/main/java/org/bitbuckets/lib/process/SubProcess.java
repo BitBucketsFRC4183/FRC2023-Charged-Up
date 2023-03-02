@@ -107,24 +107,18 @@ public class SubProcess extends AProcess {
     @Override
     public <T> IValueTuner<T> generateTuner(ITuneAs<T> tuneDataType, String key, T dataWhenNotTuning) {
 
-        return (IValueTuner<T>) new NoopsTuner();
-
-        /*
-
         if (hasSeen.contains(key)) {
             throw new IllegalStateException("already using key: " + key);
         }
         hasSeen.add(key);
 
-        return tuneDataType.generate(key, tune, dataWhenNotTuning, selfMode);*/
+        return tuneDataType.generate(key, tune, dataWhenNotTuning, selfMode);
     }
 
     @Override
     public <T> ILoggable<T> generateLogger(ILogAs<T> logDataType, String key) {
 
-        return (a) -> {};
-
-        //return logDataType.generate(key, log, selfMode);
+        return logDataType.generate(key, log, selfMode);
     }
 
     @Override

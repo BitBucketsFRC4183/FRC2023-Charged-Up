@@ -73,14 +73,7 @@ public class SparkRelativeMotorController implements IMotorController {
     double cachedVoltage = 0;
     @Override
     public void moveAtVoltage(double voltage) {
-        if (isLimp) {
-            isLimp = false;
-            sparkMax.setIdleMode(motorConfig.shouldBreakOnNoCommand ? CANSparkMax.IdleMode.kBrake : CANSparkMax.IdleMode.kCoast);
-        }
 
-        if (lastControlMode == LastControlMode.VOLTAGE && voltage == cachedVoltage) {
-            return; //avoid spamming CAN frames
-        }
         cachedVoltage = voltage;
         lastControlMode = LastControlMode.VOLTAGE;
         sparkMax.setVoltage(voltage);
@@ -89,14 +82,6 @@ public class SparkRelativeMotorController implements IMotorController {
     double cachedPercent = 0;
     @Override
     public void moveAtPercent(double percent) {
-        if (isLimp) {
-            isLimp = false;
-            sparkMax.setIdleMode(motorConfig.shouldBreakOnNoCommand ? CANSparkMax.IdleMode.kBrake : CANSparkMax.IdleMode.kCoast);
-        }
-
-        if (lastControlMode == LastControlMode.PERCENT && percent == cachedPercent) {
-            return; //avoid spamming CAN frames
-        }
 
         lastControlMode = LastControlMode.PERCENT;
         sparkMax.set(percent);
@@ -106,11 +91,6 @@ public class SparkRelativeMotorController implements IMotorController {
 
     @Override
     public void moveToPosition(double position_encoderRotations) {
-        if (isLimp) {
-            isLimp = false;
-            sparkMax.setIdleMode(motorConfig.shouldBreakOnNoCommand ? CANSparkMax.IdleMode.kBrake : CANSparkMax.IdleMode.kCoast);
-        }
-
         lastControlMode = LastControlMode.POSITION;
         lastSetpoint_mechanismRotations = position_encoderRotations * motorConfig.encoderToMechanismCoefficient;
 
@@ -119,11 +99,6 @@ public class SparkRelativeMotorController implements IMotorController {
 
     @Override
     public void moveToPosition_mechanismRotations(double position_mechanismRotations) {
-        if (isLimp) {
-            isLimp = false;
-            sparkMax.setIdleMode(motorConfig.shouldBreakOnNoCommand ? CANSparkMax.IdleMode.kBrake : CANSparkMax.IdleMode.kCoast);
-        }
-
         lastControlMode = LastControlMode.POSITION;
         lastSetpoint_mechanismRotations = position_mechanismRotations;
         double position_encoderRotations = position_mechanismRotations * (1.0 / motorConfig.encoderToMechanismCoefficient);
@@ -133,10 +108,6 @@ public class SparkRelativeMotorController implements IMotorController {
 
     @Override
     public void moveAtVelocity(double velocity_encoderMetersPerSecond) {
-        if (isLimp) {
-            isLimp = false;
-            sparkMax.setIdleMode(motorConfig.shouldBreakOnNoCommand ? CANSparkMax.IdleMode.kBrake : CANSparkMax.IdleMode.kCoast);
-        }
 
         lastControlMode = LastControlMode.VELOCITY;
         double rotationsPerMinute = velocity_encoderMetersPerSecond / getRotationsToMetersFactor() * 60.0;
@@ -165,11 +136,7 @@ public class SparkRelativeMotorController implements IMotorController {
 
     @Override
     public void goLimp() {
-        if (!isLimp) {
-            isLimp = true;
-            sparkMax.setVoltage(0);
-            sparkMax.setIdleMode(CANSparkMax.IdleMode.kCoast);
-        }
+
     }
 
     @Override
