@@ -1,6 +1,9 @@
 package config;
 
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.math.util.Units;
 import org.bitbuckets.drive.controlsds.sds.SwerveModuleConfiguration;
 import org.bitbuckets.lib.hardware.MotorConfig;
 import org.bitbuckets.lib.hardware.OptimizationMode;
@@ -8,6 +11,16 @@ import org.bitbuckets.lib.hardware.OptimizationMode;
 import java.util.Optional;
 
 public interface DriveAppaSpecific {
+
+    double HALF_WIDTH = 0.6096 / 2.0;
+    double HALF_BASE = 0.7112 / 2.0;
+
+    SwerveDriveKinematics KINEMATICS = new SwerveDriveKinematics(
+            new Translation2d(HALF_WIDTH, HALF_BASE),
+            new Translation2d(HALF_WIDTH, -HALF_BASE),
+            new Translation2d(-HALF_WIDTH, HALF_BASE),
+            new Translation2d(-HALF_WIDTH, -HALF_BASE)
+    );
 
     MotorConfig STEER_APPA = new MotorConfig(
             (14.0 / 50.0) * (10.0 / 60.0),

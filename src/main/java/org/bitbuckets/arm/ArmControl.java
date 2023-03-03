@@ -13,6 +13,8 @@ public class ArmControl {
     //needs a 1 by 3 mat describing correctness
     final ArmDynamics ff;
 
+
+
     final IMotorController lowerArm;
     final IMotorController upperArm;
 
@@ -85,8 +87,8 @@ public class ArmControl {
     }
 
     public void zero() {
-        lowerArm.forceOffset_mechanismRotations(0.25);
-        upperArm.forceOffset_mechanismRotations(0.25);
+        lowerArm.forceOffset_mechanismRotations(0);
+        upperArm.forceOffset_mechanismRotations(0);
         gripperActuator.forceOffset_mechanismRotations(0);
     }
 

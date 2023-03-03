@@ -35,7 +35,7 @@ public class RobotSetup implements ISetup<Void> {
 
 
 
-        SwerveDriveKinematics KINEMATICS = DriveTurdSpecific.KINEMATICS; //TODO make this swappable
+        SwerveDriveKinematics KINEMATICS = DriveAppaSpecific.KINEMATICS; //TODO make this swappable
 
         OperatorInput operatorInput = new OperatorInput(
                 new Joystick(1),
