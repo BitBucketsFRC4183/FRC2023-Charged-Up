@@ -64,7 +64,9 @@ public class ArmControl {
 
         lowerArm.moveAtVoltage(lowerArmFFVoltage + lowerArmFeedbackVoltage);
         upperArm.moveAtVoltage(upperArmFFVoltage + upperArmFeedbackVoltage);
-
+//
+//        lowerArm.moveAtVoltage( lowerArmFeedbackVoltage);
+//        upperArm.moveAtVoltage( upperArmFeedbackVoltage);
         if (gripperShouldOpen) {
             //gripperActuator.moveToPosition_mechanismRotations(Arm.GRIPPER_SETPOINT_MOTOR_ROTATIONS);
         } else {
@@ -85,21 +87,23 @@ public class ArmControl {
     }
 
     public void zero() {
-        lowerArm.forceOffset_mechanismRotations(0.25);
-        upperArm.forceOffset_mechanismRotations(0.25);
+        lowerArm.forceOffset_mechanismRotations(0);
+        upperArm.forceOffset_mechanismRotations(-0);
         gripperActuator.forceOffset_mechanismRotations(0);
     }
 
     public void zeroToStartingPosition() {
         //TODO these are random numbers and need to be accurate
-        lowerArm.forceOffset_mechanismRotations(0.391);
-        upperArm.forceOffset_mechanismRotations(-0.281);
+        lowerArm.forceOffset_mechanismRotations(.168);
+        upperArm.forceOffset_mechanismRotations(-.222);
         gripperActuator.forceOffset_mechanismRotations(0);
     }
 
     public double getErrorQuantity() {
         return 1;
     }
+
+
 
 
 

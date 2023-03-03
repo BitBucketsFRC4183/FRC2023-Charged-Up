@@ -1,10 +1,10 @@
 package org.bitbuckets.arm;
 
 import config.Arm;
-import edu.wpi.first.math.util.Units;
 import org.bitbuckets.OperatorInput;
 import org.bitbuckets.auto.AutoFSM;
 import org.bitbuckets.auto.AutoSubsystem;
+import org.bitbuckets.cubeCone.GamePiece;
 import org.bitbuckets.lib.core.HasLoop;
 
 public class ArmSubsystem implements HasLoop {
@@ -13,6 +13,8 @@ public class ArmSubsystem implements HasLoop {
     final ArmControl armControl;
     final AutoSubsystem autoSubsystem;
 
+    public GamePiece gamePiece;
+
     public ArmSubsystem(OperatorInput operatorInput, ArmControl armControl, AutoSubsystem autoSubsystem) {
         this.operatorInput = operatorInput;
         this.armControl = armControl;
@@ -20,6 +22,7 @@ public class ArmSubsystem implements HasLoop {
     }
 
     ArmFSM shouldDoNext = ArmFSM.IDLE;
+    ArmFSM cubeOrCone = ArmFSM.CONE;
 
     @Override
     public void loop() {
@@ -46,6 +49,7 @@ public class ArmSubsystem implements HasLoop {
 
     //generates what the FSM should do. Will modify shouldDoNext if something has happened
     void handleStateTransitions() {
+        System.out.println(shouldDoNext);
         if (operatorInput.isStopPidPressed() && autoSubsystem.state() != AutoFSM.AUTO_RUN) {
             shouldDoNext = ArmFSM.IDLE;
             return;
@@ -117,6 +121,7 @@ public class ArmSubsystem implements HasLoop {
 
     //acts on shouldDoNext and then updates it to the result state if it has managed to complete it's task
     void handleLogic() {
+
         if (autoSubsystem.state() == AutoFSM.DISABLED) { //arm can move after auto fsm has ended, so that if we fuck up it can still win without us
             return;
         }
@@ -134,17 +139,17 @@ public class ArmSubsystem implements HasLoop {
 
         if (shouldDoNext == ArmFSM.STORAGE) {
             armControl.commandArmToState(
-                    0.225,
-                    -0.246,
+                    0.168,
+                    -0.222,
                     !operatorInput.closeGripperPressed()
             );
         }
 
         //TODO fix the numbers
         if (shouldDoNext == ArmFSM.DEBUG_TO_DEGREES) {
+            System.out.println("DEBUGGING");
             armControl.commandArmToState(
-                    Units.degreesToRotations(45),
-                    Units.degreesToRotations(45),
+                    0,0,
                     !operatorInput.closeGripperPressed()
             );
 
@@ -153,12 +158,24 @@ public class ArmSubsystem implements HasLoop {
             }
         }
 
-        if (shouldDoNext == ArmFSM.SCORE_MID) {
-            armControl.commandArmToState(0.225, -0.246,true);
 
-            if (armControl.getErrorQuantity() > Arm.ARM_TOLERANCE_TO_MOVE_ON) {
-                shouldDoNext = ArmFSM.IDLE;
+        if (shouldDoNext == ArmFSM.SCORE_MID) {
+            if(gamePiece.isCone())
+            {
+                armControl.commandArmToState(0.008, -0.227,true);
             }
+
+
+        }
+        if (shouldDoNext == ArmFSM.SCORE_HIGH) {
+            if(gamePiece.isCone()) {
+                armControl.commandArmToState(-0.126,0.0,  true);
+            }
+
+        }
+        if (shouldDoNext == ArmFSM.GROUND_INTAKE) {
+            armControl.commandArmToState(0.581, -0.274,true);
+
         }
 
         //TODO fill out the rest
