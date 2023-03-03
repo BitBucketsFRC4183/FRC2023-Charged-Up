@@ -47,6 +47,7 @@ public class ArmSubsystem implements HasLoop {
 
     //generates what the FSM should do. Will modify shouldDoNext if something has happened
     void handleStateTransitions() {
+        System.out.println(shouldDoNext);
         if (operatorInput.isStopPidPressed() && autoSubsystem.state() != AutoFSM.AUTO_RUN) {
             shouldDoNext = ArmFSM.IDLE;
             return;
@@ -161,24 +162,17 @@ public class ArmSubsystem implements HasLoop {
                 armControl.commandArmToState(0.008, -0.227,true);
             }
 
-            if (armControl.getErrorQuantity() > Arm.ARM_TOLERANCE_TO_MOVE_ON) {
-                shouldDoNext = ArmFSM.IDLE;
-            }
+
         }
         if (shouldDoNext == ArmFSM.SCORE_HIGH) {
             if(cubeOrCone == ArmFSM.CONE) {
                 armControl.commandArmToState(-0.126,0.0,  true);
             }
-            if (armControl.getErrorQuantity() > Arm.ARM_TOLERANCE_TO_MOVE_ON) {
-                shouldDoNext = ArmFSM.IDLE;
-            }
+
         }
         if (shouldDoNext == ArmFSM.GROUND_INTAKE) {
             armControl.commandArmToState(0.581, -0.274,true);
 
-            if (armControl.getErrorQuantity() > Arm.ARM_TOLERANCE_TO_MOVE_ON) {
-                shouldDoNext = ArmFSM.IDLE;
-            }
         }
 
         //TODO fill out the rest

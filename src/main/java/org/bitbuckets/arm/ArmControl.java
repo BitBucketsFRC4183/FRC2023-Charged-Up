@@ -64,7 +64,7 @@ public class ArmControl {
 
         lowerArm.moveAtVoltage(lowerArmFFVoltage + lowerArmFeedbackVoltage);
         upperArm.moveAtVoltage(upperArmFFVoltage + upperArmFeedbackVoltage);
-
+//
 //        lowerArm.moveAtVoltage( lowerArmFeedbackVoltage);
 //        upperArm.moveAtVoltage( upperArmFeedbackVoltage);
         if (gripperShouldOpen) {
@@ -87,8 +87,8 @@ public class ArmControl {
     }
 
     public void zero() {
-        lowerArm.forceOffset_mechanismRotations(0.25);
-        upperArm.forceOffset_mechanismRotations(0.25);
+        lowerArm.forceOffset_mechanismRotations(0);
+        upperArm.forceOffset_mechanismRotations(-0);
         gripperActuator.forceOffset_mechanismRotations(0);
     }
 
