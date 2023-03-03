@@ -57,6 +57,10 @@ public class DriveSubsystem implements HasLoop {
 
     @Override
     public void loop() {
+        if (input.isResetGyroPressed()) {
+            odometryControl.zero();
+        }
+
         handleStateTransitions();
         debuggable.log("state", nextStateShould.toString());
         handleLogic();
@@ -67,6 +71,7 @@ public class DriveSubsystem implements HasLoop {
     DriveFSM nextStateShould = DriveFSM.IDLE;
 
     void handleStateTransitions() {
+
         //handle forced overrides from the auto subsystem
 
 
@@ -175,9 +180,7 @@ public class DriveSubsystem implements HasLoop {
     }
 
     void teleopNormal() {
-        if (input.isResetGyroPressed()) {
-            odometryControl.zero();
-        }
+
 
         double xOutput;
         double yOutput;
@@ -231,16 +234,19 @@ public class DriveSubsystem implements HasLoop {
 
         double Pitch_deg = odometryControl.getPitch_deg();
 
+        System.out.println("WEENER");
+
         debuggable.log("pitch-now", Pitch_deg);
         if (Math.abs(Pitch_deg) > 0.1) {
-            debuggable.log("is-running-ab-2", true);
+            System.out.println("HUGE WEENER");
 
             double output = balanceControl.calculateBalanceOutput(Pitch_deg, 0);
 
             debuggable.log("control-output-autobalance", output);
 
-            driveControl.drive(new ChassisSpeeds(output / 2, 0.0, 0.0));
+            driveControl.drive(new ChassisSpeeds(output / 2.0, 0.0, 0.0));
         } else {
+            debuggable.log("is-running-ab-2", false);
             driveControl.stop();
 
         }

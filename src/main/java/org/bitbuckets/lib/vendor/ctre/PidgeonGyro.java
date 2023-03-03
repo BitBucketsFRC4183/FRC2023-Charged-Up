@@ -26,21 +26,31 @@ public class PidgeonGyro implements IGyro {
 
     @Override
     public double getPitch_deg() {
-        return pigeon2.getPitch();
+        return pigeon2.getPitch() - pitchTare;
     }
 
     @Override
     public double getRoll_deg() {
-        double[] data = new double[4];
+        return pigeon2.getRoll() - rollTare;
+        /*double[] data = new double[4];
         pigeon2.getAccumGyro(data); //fill data
 
-        return data[0];
+        return data[0];*/
     }
+
+    //Shitty hacks because the pidgeon doesnt let me reset these other values;
+    double rollTare = 0;
+    double pitchTare = 0;
 
     @Override
     public void zero() {
         pigeon2.setYaw(0);
-        //TODO set everything to 0
+
+        rollTare += getRoll_deg();
+        pitchTare += getPitch_deg();
+
+
+        //tare LMAO
     }
 
 

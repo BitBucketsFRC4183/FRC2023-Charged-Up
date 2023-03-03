@@ -1,10 +1,12 @@
 package org.bitbuckets.lib.control;
 
 import edu.wpi.first.math.controller.PIDController;
+import org.bitbuckets.lib.core.HasLogLoop;
+import org.bitbuckets.lib.core.HasLoop;
 import org.bitbuckets.lib.log.ILoggable;
 import org.bitbuckets.lib.tune.IValueTuner;
 
-public class PIDCalculator implements IPIDCalculator, Runnable {
+public class PIDCalculator implements IPIDCalculator, HasLogLoop {
 
     final PIDController controller;
 
@@ -48,9 +50,14 @@ public class PIDCalculator implements IPIDCalculator, Runnable {
         return lastSetpointVal - lastMeasureVal;
     }
 
-    @Override
-    public void run() {
 
+    @Override
+    public <T> T rawAccess(Class<T> clazz) throws UnsupportedOperationException {
+        return clazz.cast(controller);
+    }
+
+    @Override
+    public void logLoop() {
         lastSetpoint.log(lastSetpointVal);
         lastActual.log(lastMeasureVal);
         lastOutput.log(lastVoltageVal);
@@ -66,8 +73,5 @@ public class PIDCalculator implements IPIDCalculator, Runnable {
         }
     }
 
-    @Override
-    public <T> T rawAccess(Class<T> clazz) throws UnsupportedOperationException {
-        return clazz.cast(controller);
-    }
+
 }

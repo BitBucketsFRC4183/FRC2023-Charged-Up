@@ -46,7 +46,7 @@ public interface Drive {
     );
 
     PIDConfig DRIVE_BALANCE_PID = new PIDConfig(
-            0,
+            0.5,
             0,
             0,
             Optional.empty(),

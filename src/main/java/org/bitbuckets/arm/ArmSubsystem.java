@@ -6,17 +6,20 @@ import org.bitbuckets.OperatorInput;
 import org.bitbuckets.auto.AutoFSM;
 import org.bitbuckets.auto.AutoSubsystem;
 import org.bitbuckets.lib.core.HasLoop;
+import org.bitbuckets.lib.debug.IDebuggable;
 
 public class ArmSubsystem implements HasLoop {
 
     final OperatorInput operatorInput;
     final ArmControl armControl;
     final AutoSubsystem autoSubsystem;
+    final IDebuggable debuggable;
 
-    public ArmSubsystem(OperatorInput operatorInput, ArmControl armControl, AutoSubsystem autoSubsystem) {
+    public ArmSubsystem(OperatorInput operatorInput, ArmControl armControl, AutoSubsystem autoSubsystem, IDebuggable debuggable) {
         this.operatorInput = operatorInput;
         this.armControl = armControl;
         this.autoSubsystem = autoSubsystem;
+        this.debuggable = debuggable;
     }
 
     ArmFSM shouldDoNext = ArmFSM.IDLE;
@@ -41,6 +44,7 @@ public class ArmSubsystem implements HasLoop {
         handleStateTransitions();
         handleLogic();
 
+        debuggable.log("state", shouldDoNext);
     }
 
 
@@ -75,6 +79,13 @@ public class ArmSubsystem implements HasLoop {
             }
             if (autoSubsystem.sampleHasEventStarted("arm-ground-intake")) {
                 shouldDoNext = ArmFSM.GROUND_INTAKE;
+                return;
+            }
+
+            //TODO legacy path event
+            if (autoSubsystem.sampleHasEventStarted("collect")) {
+                System.out.println("MOVEARM");
+                shouldDoNext = ArmFSM.STORAGE;
                 return;
             }
         }

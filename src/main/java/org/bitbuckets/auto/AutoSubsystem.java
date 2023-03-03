@@ -34,6 +34,8 @@ public class AutoSubsystem implements HasLogLoop, HasLoop {
 
     public boolean sampleHasEventStarted(String event) {
         if (instance == null) {
+
+
             return false; //Doesn't exist yet. Should log this.
         }
 

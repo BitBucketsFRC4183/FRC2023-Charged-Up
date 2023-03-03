@@ -41,6 +41,8 @@ public class AutoControl implements IAutoControl {
 
             for (PathPlannerTrajectory.EventMarker marker : segment.getMarkers()) {
                 for (String name : marker.names) {
+
+                    System.out.println(name);
                     eventMap.put(name, totalTime + marker.timeSeconds);
                 }
             }

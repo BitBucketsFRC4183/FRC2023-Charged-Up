@@ -36,6 +36,7 @@ public class TalonSteerMotorSetup implements ISetup<IMotorController> {
     double integralConstant = 0;
     double derivativeConstant = .1;
 
+
     public TalonSteerMotorSetup(int canId, SwerveModuleConfiguration moduleConfiguration) {
         this.canId = canId;
         this.moduleConfiguration = moduleConfiguration;

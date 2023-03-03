@@ -22,7 +22,8 @@ public class ArmSubsystemSetup implements ISetup<ArmSubsystem> {
         return new ArmSubsystem(
                 input,
                 self.childSetup("arm-ctrl", armControlSetup),
-                autoSubsystem
+                autoSubsystem,
+                self.getDebuggable()
         );
     }
 }

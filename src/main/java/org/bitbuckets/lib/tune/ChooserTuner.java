@@ -131,8 +131,6 @@ public class ChooserTuner<V extends Enum<V>> implements NTSendable, AutoCloseabl
             publisher.set(value.name());
         }
         m_selected = value.name();
-
-        System.out.println("done!");
     }
 
     @Override
