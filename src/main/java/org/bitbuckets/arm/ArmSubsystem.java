@@ -1,10 +1,10 @@
 package org.bitbuckets.arm;
 
 import config.Arm;
-import edu.wpi.first.math.util.Units;
 import org.bitbuckets.OperatorInput;
 import org.bitbuckets.auto.AutoFSM;
 import org.bitbuckets.auto.AutoSubsystem;
+import org.bitbuckets.cubeCone.GamePiece;
 import org.bitbuckets.lib.core.HasLoop;
 
 public class ArmSubsystem implements HasLoop {
@@ -12,6 +12,8 @@ public class ArmSubsystem implements HasLoop {
     final OperatorInput operatorInput;
     final ArmControl armControl;
     final AutoSubsystem autoSubsystem;
+
+    public GamePiece gamePiece;
 
     public ArmSubsystem(OperatorInput operatorInput, ArmControl armControl, AutoSubsystem autoSubsystem) {
         this.operatorInput = operatorInput;
@@ -119,6 +121,7 @@ public class ArmSubsystem implements HasLoop {
 
     //acts on shouldDoNext and then updates it to the result state if it has managed to complete it's task
     void handleLogic() {
+
         if (autoSubsystem.state() == AutoFSM.DISABLED) { //arm can move after auto fsm has ended, so that if we fuck up it can still win without us
             return;
         }
@@ -157,7 +160,7 @@ public class ArmSubsystem implements HasLoop {
 
 
         if (shouldDoNext == ArmFSM.SCORE_MID) {
-            if(cubeOrCone == ArmFSM.CONE)
+            if(gamePiece.isCone())
             {
                 armControl.commandArmToState(0.008, -0.227,true);
             }
@@ -165,7 +168,7 @@ public class ArmSubsystem implements HasLoop {
 
         }
         if (shouldDoNext == ArmFSM.SCORE_HIGH) {
-            if(cubeOrCone == ArmFSM.CONE) {
+            if(gamePiece.isCone()) {
                 armControl.commandArmToState(-0.126,0.0,  true);
             }
 

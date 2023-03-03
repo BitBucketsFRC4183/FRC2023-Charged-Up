@@ -170,6 +170,9 @@ public class OperatorInput {
     public boolean closeGripperPressed(){
         return operatorControl.getRawButton(XboxController.Button.kLeftBumper.value);
     }
+    public boolean conevscube(){
+        return operatorControl.getRawButton(XboxController.Button.kLeftBumper.value);
+    }
 
 
 }

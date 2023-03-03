@@ -9,6 +9,7 @@ import org.bitbuckets.arm.ArmSubsystemSetup;
 import org.bitbuckets.auto.AutoControlSetup;
 import org.bitbuckets.auto.AutoSubsystem;
 import org.bitbuckets.auto.AutoSubsystemSetup;
+import org.bitbuckets.cubeCone.gamePeiceSetup;
 import org.bitbuckets.drive.DriveSubsystem;
 import org.bitbuckets.drive.DriveSubsystemSetup;
 import org.bitbuckets.drive.IDriveControl;
@@ -25,6 +26,8 @@ import org.bitbuckets.odometry.PidgeonOdometryControlSetup;
 import org.bitbuckets.vision.IVisionControl;
 import org.bitbuckets.vision.VisionControlSetup;
 
+import java.nio.channels.SelectableChannel;
+
 public class RobotSetup implements ISetup<Void> {
 
 
@@ -34,13 +37,15 @@ public class RobotSetup implements ISetup<Void> {
     public Void build(IProcess self) {
 
 
-
         SwerveDriveKinematics KINEMATICS = DriveTurdSpecific.KINEMATICS; //TODO make this swappable
 
         OperatorInput operatorInput = new OperatorInput(
                 new Joystick(1),
                 new Joystick(0)
         );
+
+        self.childSetup("cone-cube", new gamePeiceSetup(operatorInput));
+
 
         //if only these could be children of the drive subsystem... TODO fix this in mattlib future editions
         IDriveControl driveControl = self.childSetup(
