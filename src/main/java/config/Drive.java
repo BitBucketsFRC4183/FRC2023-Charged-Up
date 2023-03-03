@@ -30,9 +30,9 @@ public interface Drive {
     );
 
     PIDConfig STEER_PID = new PIDConfig(
-            1,
+            2,
             0,
-            0,
+            0.1,
             Optional.empty(),
             Optional.empty()
     );

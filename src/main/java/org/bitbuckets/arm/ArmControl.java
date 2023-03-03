@@ -13,8 +13,6 @@ public class ArmControl {
     //needs a 1 by 3 mat describing correctness
     final ArmDynamics ff;
 
-
-
     final IMotorController lowerArm;
     final IMotorController upperArm;
 
@@ -94,8 +92,8 @@ public class ArmControl {
 
     public void zeroToStartingPosition() {
         //TODO these are random numbers and need to be accurate
-        lowerArm.forceOffset_mechanismRotations(0.391);
-        upperArm.forceOffset_mechanismRotations(-0.281);
+        lowerArm.forceOffset_mechanismRotations(.168);
+        upperArm.forceOffset_mechanismRotations(-.222);
         gripperActuator.forceOffset_mechanismRotations(0);
     }
 
