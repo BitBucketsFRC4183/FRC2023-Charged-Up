@@ -1,5 +1,6 @@
 package org.bitbuckets.gripper;
 
+import config.Arm;
 import org.bitbuckets.lib.hardware.IMotorController;
 import org.bitbuckets.lib.log.Debuggable;
 
@@ -14,7 +15,7 @@ public class GripperControl {
     }
 
     public void openGripper(){
-        gripper.moveToPosition_mechanismRotations(GripperConstants.GRIPPER_SETPOINT_MOTOR_ROTATIONS);
+        gripper.moveToPosition_mechanismRotations(Arm.GRIPPER_SETPOINT_MOTOR_ROTATIONS);
     }
 
     public void stopGripper(){
@@ -22,6 +23,6 @@ public class GripperControl {
     }
 
     public void closeGripper(){
-        gripper.moveToPosition_mechanismRotations(-GripperConstants.GRIPPER_SETPOINT_MOTOR_ROTATIONS);
+        gripper.moveToPosition_mechanismRotations(-Arm.GRIPPER_SETPOINT_MOTOR_ROTATIONS);
     }
 }
