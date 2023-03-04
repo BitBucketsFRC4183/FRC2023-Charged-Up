@@ -1,9 +1,11 @@
 package org.bitbuckets.lib.control;
 
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import org.bitbuckets.lib.ILogAs;
+import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.lib.ISetup;
-import org.bitbuckets.lib.ProcessPath;
-import org.bitbuckets.lib.tune.IValueTuner;
+import org.bitbuckets.lib.ITuneAs;
 
 public class ProfiledPIDFSetup implements ISetup<IPIDCalculator> {
 
@@ -16,21 +18,18 @@ public class ProfiledPIDFSetup implements ISetup<IPIDCalculator> {
     }
 
     @Override
-    public IPIDCalculator build(ProcessPath self) {
+    public IPIDCalculator build(IProcess self) {
+        return new ProfiledPIDFCalculator(
+                new ProfiledPIDController(pidConfig.kP, pidConfig.kI, pidConfig.kD, profile),
+                self.generateTuner(ITuneAs.DOUBLE_INPUT, "proportional", pidConfig.kP),
+                self.generateTuner(ITuneAs.DOUBLE_INPUT, "integral", pidConfig.kI),
+                self.generateTuner(ITuneAs.DOUBLE_INPUT, "derivative", pidConfig.kD),
+                self.generateTuner(ITuneAs.DOUBLE_INPUT, "max-velocity", profile.maxVelocity),
+                self.generateTuner(ITuneAs.DOUBLE_INPUT, "max-accel", profile.maxAcceleration),
+                self.generateLogger(ILogAs.DOUBLE, "last-setpoint"),
+                self.generateLogger(ILogAs.DOUBLE, "last-actual"),
+                self.generateLogger(ILogAs.DOUBLE, "last-output")
 
-        IValueTuner<double[]> tunerForAllValues = self.generateMultiTuner(
-                new String[]{"p", "i", "d", "kV", "kA"},
-                new double[]{pidConfig.kP, pidConfig.kI, pidConfig.kD, profile.maxVelocity, profile.maxAcceleration}
         );
-
-        double[] initial = tunerForAllValues.readValue();
-
-        //TODO make this use arjun ff
-
-        ProfiledPIDFController controller = new ProfiledPIDFController(initial[0], initial[1], initial[2], 0, new TrapezoidProfile.Constraints(initial[3], initial[4]));
-
-        var l = new ProfiledPIDFCalculator(controller, tunerForAllValues, self.generateDebugger());
-        self.registerLogLoop(l);
-        return l;
     }
 }
