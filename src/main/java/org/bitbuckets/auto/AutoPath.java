@@ -15,7 +15,11 @@ public enum AutoPath {
     SC1_CL1_BL(5),
     SC1_CL1_SC3_BL(6),
     SC9_CL4_BL(7),
-    SC9_CL4_SC7_BL(8);
+    SC9_CL4_SC7_BL(8),
+    SC1_CL1_SC3(9),
+    SCORE_TAXI_RIGHT(10);
+
+
     //creates an index to be used for calling each enum as a member of the PathPlannerTrajectory array
     final int index;
 

@@ -78,7 +78,6 @@ public interface ArmSetups {
     );
 
 
-
     ISetup<ArmControl> ARM_CONTROL = new ArmControlSetup(
             Arm.DOUBLE_JOINTED_FF,
             LOWER_ARM,
@@ -87,5 +86,6 @@ public interface ArmSetups {
             UPPER_PID,
             GRIPPER_JOINT
     );
+
 
 }

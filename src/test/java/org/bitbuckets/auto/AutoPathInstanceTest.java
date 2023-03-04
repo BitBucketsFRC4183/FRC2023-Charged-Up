@@ -17,17 +17,18 @@ class AutoPathInstanceTest {
     @Test
     void getSegmentTime() {
 
-        // make a 6s long path with two segements, one 2s long, one 4s long (starting at 2s)
+        // make a 6s long path with two segments, one 2s long, one 4s long (starting at 2s)
         var autoPath = new AutoPathInstance(List.of(
                 new PathPlannerTrajectory(),
                 new PathPlannerTrajectory()),
                 new HashMap<>(),
                 List.of(
-                        new AutoPathInstance.SegmentTime(0, 0),
-                        new AutoPathInstance.SegmentTime(1, 2)
+                        new AutoPathInstance.SegmentTime(0, 0, false),
+                        new AutoPathInstance.SegmentTime(1, 2, false)
                 ),
                 AutoPath.test_forwardright,
-                6);
+                6
+        );
 
 
         assertEquals(autoPath.segmentTimes.get(0), autoPath.getSegmentTime(0));
@@ -47,8 +48,8 @@ class AutoPathInstanceTest {
                         "event2", 3.
                 ),
                 List.of(
-                        new AutoPathInstance.SegmentTime(0, 0),
-                        new AutoPathInstance.SegmentTime(1, 2)
+                        new AutoPathInstance.SegmentTime(0, 0, false),
+                        new AutoPathInstance.SegmentTime(1, 2, false)
                 ),
                 AutoPath.test_forwardright,
                 6);

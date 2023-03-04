@@ -30,7 +30,8 @@ public class AutoPathInstance implements HasLifecycle {
         }
     }
 
-    record SegmentTime(int index, double startTime) { }
+    record SegmentTime(int index, double startTime, boolean stopped) {
+    }
 
     public AutoPathInstance(List<PathPlannerTrajectory> segments, Map<String, Double> eventToTimeMap, List<SegmentTime> segmentTimes, AutoPath type, double totalTime) {
         this.segments = segments;
@@ -38,6 +39,8 @@ public class AutoPathInstance implements HasLifecycle {
         this.segmentTimes = segmentTimes;
         this.type = type;
         this.totalTime = totalTime;
+
+
     }
 
     //this is dumb
@@ -51,7 +54,7 @@ public class AutoPathInstance implements HasLifecycle {
             }
         }
 
-        return new SegmentTime(0, 0);
+        return new SegmentTime(0, 0, true);
     }
 
 
@@ -73,20 +76,23 @@ public class AutoPathInstance implements HasLifecycle {
 
     public PathPlannerTrajectory.PathPlannerState sampleSpeeds() {
         if (type == AutoPath.NONE) {
-            return new PathPlannerTrajectory.PathPlannerState();
+            return null;
         }
 
         double secondsNow = pathTimer.get();
         SegmentTime lastTimestamp = getSegmentTime(secondsNow);
         double secondsInSegment = secondsNow - lastTimestamp.startTime;
-        
+
+        if (lastTimestamp.stopped()) {
+            return null;
+        }
+
         return (PathPlannerTrajectory.PathPlannerState) segments.get(lastTimestamp.index).sample(secondsInSegment);
     }
 
     public boolean isDone() {
         return pathTimer.hasElapsed(totalTime);
     }
-
 
 
 }
