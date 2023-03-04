@@ -1,7 +1,6 @@
 package org.bitbuckets.auto;
 
 import com.pathplanner.lib.PathPlannerTrajectory;
-import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.wpilibj.DriverStation;
 import org.bitbuckets.odometry.IOdometryControl;
 
@@ -9,7 +8,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Supplier;
 
 public class AutoControl implements IAutoControl {
 
@@ -35,14 +33,17 @@ public class AutoControl implements IAutoControl {
         List<AutoPathInstance.SegmentTime> segmentTimes = new ArrayList<>();
 
 
-
         for (int i = 0; i < trajectoryGroup.size(); i++) {
             PathPlannerTrajectory segment = trajectoryGroup.get(i);
-            segmentTimes.add(new AutoPathInstance.SegmentTime(i, totalTime));
+
+            if (segment.getStartStopEvent().names.size() > 0) {
+                segmentTimes.add(new AutoPathInstance.SegmentTime(i, totalTime, true));
+                eventMap.put(segment.getStartStopEvent().names.get(0), totalTime);
+                totalTime += segment.getStartStopEvent().waitTime;
+            }
+
+            segmentTimes.add(new AutoPathInstance.SegmentTime(i, totalTime, false));
             totalTime = totalTime + segment.getTotalTimeSeconds();
-
-            //sex time
-
 
             for (PathPlannerTrajectory.EventMarker marker : segment.getMarkers()) {
                 for (String name : marker.names) {
@@ -71,11 +72,9 @@ public class AutoControl implements IAutoControl {
         }
 
 
-
         var initialState = PathPlannerTrajectory.transformStateForAlliance(trajectoryGroup.get(0).getInitialState(), DriverStation.getAlliance());
         odometryControl.setPos(initialState.holonomicRotation, initialState.poseMeters);
         AutoPathInstance instance = new AutoPathInstance(transformedTrajectories, eventMap, segmentTimes, whichOne, totalTime);
-
 
 
         instance.onPhaseChangeEvent(AutoFSM.AUTO_RUN);
