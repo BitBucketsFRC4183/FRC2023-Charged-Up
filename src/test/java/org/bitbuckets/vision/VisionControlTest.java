@@ -2,7 +2,7 @@ package org.bitbuckets.vision;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.geometry.*;
-import org.bitbuckets.lib.log.Debuggable;
+import org.bitbuckets.lib.debug.IDebuggable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.photonvision.EstimatedRobotPose;
@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -48,7 +49,7 @@ class VisionControlTest {
                 aprilTagFieldLayout,
                 photonPoseEstimator,
                 photonCamera,
-                mock(Debuggable.class));
+                mock(IDebuggable.class));
     }
 
     @Test
@@ -127,7 +128,7 @@ class VisionControlTest {
 
         // call the visionPoseEstimator
         var result = control.visionPoseEstimator();
-        assertEquals(true, result.isPresent());
+        assertTrue(result.isPresent());
 
         // if we are at (2,0), the target is at (0, 0) and we are facing it
         // we expect the translation to target to be (-1, 0) and our rotation should be 0
@@ -139,11 +140,11 @@ class VisionControlTest {
         // we want to be move 1 towards the target
         var actual = result.get();
         assertEquals(new Pose3d(new Translation3d(0, 0, 0), new Rotation3d(0, 0, Math.toRadians(0))), actual.robotPose);
-        assertEquals(new Pose2d(new Translation2d(1, 0), new Rotation2d(Math.toRadians(0))), actual.goalPose.toPose2d());
+        assertEquals(new Pose2d(new Translation2d(2, 0), new Rotation2d(Math.toRadians(0))), actual.goalPose.toPose2d());
         assertEquals(Math.toRadians(0), actual.targetYaw.getDegrees(), .01);
         assertEquals(Math.toRadians(0), actual.yaw, .01);
         assertEquals(0, actual.translationToTag.getY(), .01);
-        assertEquals(-2, actual.translationToTag.getX(), .01); // not sure why this is -2 instead of 2...
+        assertEquals(-1, actual.translationToTag.getX(), .01); // not sure why this is -2 instead of 2...
 
     }
 

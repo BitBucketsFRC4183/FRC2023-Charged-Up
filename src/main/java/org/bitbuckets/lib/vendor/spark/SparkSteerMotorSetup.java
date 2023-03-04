@@ -5,10 +5,12 @@ import com.revrobotics.CANSparkMaxLowLevel;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import org.bitbuckets.drive.controlsds.sds.SwerveModuleConfiguration;
-import org.bitbuckets.lib.ProcessPath;
+import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.lib.control.PIDConfig;
 import org.bitbuckets.lib.hardware.IMotorController;
 import org.bitbuckets.lib.hardware.MotorConfig;
+
+import java.util.Optional;
 
 import static org.bitbuckets.lib.vendor.spark.RevUtils.checkNeoError;
 
@@ -21,12 +23,13 @@ public class SparkSteerMotorSetup extends SparkSetup {
 
 
     public SparkSteerMotorSetup(int canId, MotorConfig motorConfig, PIDConfig pidConfig, SwerveModuleConfiguration swerveModuleConfiguration) {
-        super(canId, motorConfig, pidConfig);
+        super(canId, motorConfig, pidConfig, Optional.empty());
         this.swerveModuleConfiguration = swerveModuleConfiguration;
     }
 
     @Override
-    public IMotorController build(ProcessPath self) {
+    public IMotorController build(IProcess self) {
+
         var motorController = super.build(self);
 
         // configure the raw motor with the same settings for SDS

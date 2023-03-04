@@ -1,6 +1,5 @@
 package org.bitbuckets.lib.control;
 
-import org.bitbuckets.lib.DontUseIncubating;
 import org.bitbuckets.lib.hardware.IRaw;
 
 /**
@@ -16,5 +15,11 @@ public interface IPIDCalculator extends IRaw {
      * @return the voltage, or whatever units this pid controller is in, that you want to go to
      */
     double calculateNext(double measurement, double setpoint);
+
+    /**
+     * Gets the last error of the PID algorithm
+     * @return error
+     */
+    double lastError();
 
 }

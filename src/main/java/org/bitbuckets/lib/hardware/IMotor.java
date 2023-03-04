@@ -68,4 +68,9 @@ public interface IMotor extends IRaw {
      */
     double getCurrent();
 
+    /**
+     * Does what it says on the tin (tells the motor to use no current and basically just act as an axle)
+     */
+    void goLimp();
+
 }

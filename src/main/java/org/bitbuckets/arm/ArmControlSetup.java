@@ -1,69 +1,37 @@
 package org.bitbuckets.arm;
 
-import com.revrobotics.CANSparkMax;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.lib.ISetup;
-import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.lib.control.IPIDCalculator;
-import org.bitbuckets.lib.control.PIDCalculatorSetup;
-import org.bitbuckets.lib.control.PIDConfig;
-import org.bitbuckets.lib.control.ProfiledPIDFSetup;
 import org.bitbuckets.lib.hardware.IMotorController;
-import org.bitbuckets.lib.log.Debuggable;
-
 
 public class ArmControlSetup implements ISetup<ArmControl> {
 
-    // Lower Device ID = 9
-    // Upper Device ID = 3
-    final ISetup<IMotorController> lowerJoint1;
-    final ISetup<IMotorController> lowerJoint2;
-    final ISetup<IMotorController> upperJoint;
+    final ArmDynamics feedFordward;
+    final ISetup<IMotorController> lowMotor;
+    final ISetup<IMotorController> upMotor;
+    final ISetup<IPIDCalculator> lowCalculator;
+    final ISetup<IPIDCalculator> highCalculator;
+    final ISetup<IMotorController> gripperMotor;
 
-    public ArmControlSetup(ISetup<IMotorController> lowerJoint1, ISetup<IMotorController> lowerJoint2, ISetup<IMotorController> upperJoint) {
-        this.lowerJoint1 = lowerJoint1;
-        this.lowerJoint2 = lowerJoint2;
-        this.upperJoint = upperJoint;
-
+    public ArmControlSetup(ArmDynamics feedFordward, ISetup<IMotorController> lowMotor, ISetup<IMotorController> upMotor, ISetup<IPIDCalculator> lowCalculator, ISetup<IPIDCalculator> highCalculator, ISetup<IMotorController> gripperMotor) {
+        this.feedFordward = feedFordward;
+        this.lowMotor = lowMotor;
+        this.upMotor = upMotor;
+        this.lowCalculator = lowCalculator;
+        this.highCalculator = highCalculator;
+        this.gripperMotor = gripperMotor;
     }
-
 
     @Override
-    public ArmControl build(ProcessPath self) {
-
-        var lower1 = lowerJoint1.build(self.addChild("lower-joint-1"));
-        var lower2 = lowerJoint2.build(self.addChild("lower-joint-2"));
-        var upper = upperJoint.build(self.addChild("upper-joint"));
-
-        var lowerJointSetupPID = new PIDCalculatorSetup(new PIDConfig(0.2, 0, 0, 0));
-        IPIDCalculator lowerJointPID = lowerJointSetupPID.build(self.addChild("lowerJointPID"));
-        var upperJointSetupPID = new PIDCalculatorSetup(new PIDConfig(0.2, 0, 0, 0));
-        IPIDCalculator upperJointPID = upperJointSetupPID.build(self.addChild("upperJointPID"));
-
-        lowerJointPID.rawAccess(PIDController.class).enableContinuousInput(0, Math.PI * 2.0);
-        upperJointPID.rawAccess(PIDController.class).enableContinuousInput(0, Math.PI * 2.0);
-
-
-        if (self.isReal()) {
-            var lowerSpark1 = lower1.rawAccess(CANSparkMax.class);
-            var lowerSpark2 = lower2.rawAccess(CANSparkMax.class);
-            var upperSpark = upper.rawAccess(CANSparkMax.class);
-
-            lowerSpark2.follow(lowerSpark1, true);
-        }
-
-        Debuggable debug = self.generateDebugger();
-
-        //stage a fake change
-
+    public ArmControl build(IProcess self) {
         return new ArmControl(
-                lower1,
-                upper,
-                debug,
-                lowerJointPID,
-                upperJointPID);
+                feedFordward,
+                self.childSetup("lower-joint", lowMotor),
+                self.childSetup("upper-joint", upMotor),
+                self.childSetup("lower-pid", lowCalculator),
+                self.childSetup("upper-pid", highCalculator),
+                self.childSetup("gripper-motor", gripperMotor)
+        );
     }
-
 }
-
