@@ -17,7 +17,7 @@ public enum AutoPath {
     SC9_CL4_BL(7),
     SC9_CL4_SC7_BL(8);
     //creates an index to be used for calling each enum as a member of the PathPlannerTrajectory array
-    int index;
+    final int index;
 
     //instatiates the index variable
     AutoPath(int index) {

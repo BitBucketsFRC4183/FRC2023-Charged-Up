@@ -70,14 +70,19 @@ public class SparkRelativeMotorController implements IMotorController {
 
     }
 
+    double cachedVoltage = 0;
     @Override
     public void moveAtVoltage(double voltage) {
+
+        cachedVoltage = voltage;
         lastControlMode = LastControlMode.VOLTAGE;
         sparkMax.setVoltage(voltage);
     }
 
+    double cachedPercent = 0;
     @Override
     public void moveAtPercent(double percent) {
+
         lastControlMode = LastControlMode.PERCENT;
         sparkMax.set(percent);
     }
@@ -103,6 +108,7 @@ public class SparkRelativeMotorController implements IMotorController {
 
     @Override
     public void moveAtVelocity(double velocity_encoderMetersPerSecond) {
+
         lastControlMode = LastControlMode.VELOCITY;
         double rotationsPerMinute = velocity_encoderMetersPerSecond / getRotationsToMetersFactor() * 60.0;
 
@@ -116,6 +122,7 @@ public class SparkRelativeMotorController implements IMotorController {
 
     @Override
     public double getVoltage() {
+
         throw new UnsupportedOperationException(); //what is Resistance?
         //need state space model to output
     }
@@ -125,9 +132,21 @@ public class SparkRelativeMotorController implements IMotorController {
         return sparkMax.getOutputCurrent();
     }
 
+    boolean isLimp = false;
+
+    @Override
+    public void goLimp() {
+
+    }
+
     @Override
     public <T> T rawAccess(Class<T> clazz) throws UnsupportedOperationException {
         return clazz.cast(sparkMax);
+    }
+
+    void disableExternalAccess() {
+        //disable external access lmao
+
     }
 
 }

@@ -3,25 +3,29 @@ package org.bitbuckets.auto;
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
+import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.lib.ISetup;
-import org.bitbuckets.lib.ProcessPath;
-import org.bitbuckets.lib.StartupProfiler;
+import org.bitbuckets.odometry.IOdometryControl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 public class AutoControlSetup implements ISetup<IAutoControl> {
 
+    final IOdometryControl odometryControl;
+
+    public AutoControlSetup(IOdometryControl odometryControl) {
+        this.odometryControl = odometryControl;
+    }
 
     @Override
-    public IAutoControl build(ProcessPath self) {
-        StartupProfiler load = self.generateSetupProfiler("load-auto-paths");
+    public IAutoControl build(IProcess self) {
 
-        load.markProcessing();
 
         List<List<PathPlannerTrajectory>> paths = new ArrayList<>();
         try {
-
 
             List<PathPlannerTrajectory> trajectory = PathPlanner.loadPathGroup("test-forwardright", new PathConstraints(1.25, 2.25), new PathConstraints(1.00, 1));
             List<PathPlannerTrajectory> trajectory1 = PathPlanner.loadPathGroup("taxi-right", new PathConstraints(4.0, 3.0));
@@ -44,14 +48,11 @@ public class AutoControlSetup implements ISetup<IAutoControl> {
             paths.add(trajectory8);
             paths.add(trajectory9);
         } catch (Exception e) {
-            load.markErrored(e);
+            throw new RuntimeException(e);
         }
-        //load paths
 
 
-        load.markCompleted();
 
-
-        return new AutoControl(paths);
+        return new AutoControl(paths, odometryControl);
     }
 }

@@ -1,7 +1,7 @@
 package org.bitbuckets.drive.controlsds.sds;
 
+import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.lib.ISetup;
-import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.lib.hardware.IAbsoluteEncoder;
 import org.bitbuckets.lib.hardware.IMotorController;
 
@@ -24,13 +24,17 @@ public class SteerControllerSetup implements ISetup<ISteerController> {
         this.sensorPositionCoefficient = sensorPositionCoefficient;
     }
 
+
     @Override
-    public ISteerController build(ProcessPath self) {
+    public ISteerController build(IProcess self) {
+
+
         var controller = new SteerController(
-                motor.build(self.addChild("motor")),
-                encoder.build(self.addChild("encoder")),
+                self.childSetup("motor", motor),
+                self.childSetup("encoder", encoder),
                 sensorPositionCoefficient
         );
+
 
         // this used to be: checkNeoError(integratedEncoder.setPosition(absoluteEncoder.getAbsoluteAngle()), "Failed to set NEO encoder position");
         // in the motor setup

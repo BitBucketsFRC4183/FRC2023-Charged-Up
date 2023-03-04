@@ -113,6 +113,11 @@ public class TalonRelativeMotorController implements IMotorController, Runnable 
     }
 
     @Override
+    public void goLimp() {
+        throw new UnsupportedOperationException(); //no
+    }
+
+    @Override
     public <T> T rawAccess(Class<T> clazz) throws UnsupportedOperationException {
         return clazz.cast(motor);
     }

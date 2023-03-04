@@ -5,20 +5,19 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import org.bitbuckets.lib.log.ILoggable;
 
-public class SwerveModule implements ISwerveModule, Runnable {
+public class SwerveModule implements ISwerveModule {
     private final IDriveController driveController;
     private final ISteerController steerController;
 
-    final ILoggable<double[]> swerveAngleVoltage;
-    private double steerAngle;
-    private double driveVoltage;
+    final ILoggable<Double> swerveAngleOut;
+    final ILoggable<Double> swervePercentOut;
 
-    public SwerveModule(IDriveController driveController, ISteerController steerController, ILoggable<double[]> swerveAngleVelocity) {
+    public SwerveModule(IDriveController driveController, ISteerController steerController, ILoggable<Double> swerveAngleOut, ILoggable<Double> swervePercentOut) {
         this.driveController = driveController;
         this.steerController = steerController;
-        this.swerveAngleVoltage = swerveAngleVelocity;
+        this.swerveAngleOut = swerveAngleOut;
+        this.swervePercentOut = swervePercentOut;
     }
-
 
     @Override
     public SwerveModulePosition getPosition() {
@@ -75,15 +74,8 @@ public class SwerveModule implements ISwerveModule, Runnable {
         driveController.setReferenceVoltage(driveVoltage);
         steerController.setReferenceAngle(steerAngle);
 
-        this.steerAngle = steerAngle;
-        this.driveVoltage = driveVoltage;
+        swervePercentOut.log(driveVoltage);
+        swerveAngleOut.log(steerAngle);
     }
 
-    @Override
-    public void run() {
-        swerveAngleVoltage.log(new double[]{
-                Math.toDegrees(steerAngle),
-                driveVoltage,
-        });
-    }
 }
