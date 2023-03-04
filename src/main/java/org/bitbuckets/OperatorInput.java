@@ -20,6 +20,7 @@ public class OperatorInput {
     }
 
 
+    //DRIVER
 
     /**
      * @param input a value
@@ -77,11 +78,11 @@ public class OperatorInput {
         return getInputX() == 0 && getInputY() == 0 && getInputRot() == 0;
     }
 
-    public boolean isDefaultPressed() {
+    public boolean isDefaultDrivePressed() {
         return driveControl.getRawButtonPressed(XboxController.Button.kX.value);
     }
 
-    public boolean isVisionGoPressed() {
+    public boolean isVisionDrivePressed() {
         return driveControl.getRawButton(XboxController.Button.kY.value);
     }
 
@@ -93,7 +94,7 @@ public class OperatorInput {
         return driveControl.getRawButtonPressed(XboxController.Button.kStart.value);
     }
 
-    public boolean isResetOdoPressed() {return driveControl.getRawButtonPressed(XboxController.Button.kLeftBumper.value);}
+    //OPERATOR
 
     public static double armDeadband(double input) {
         double value = input;
@@ -114,7 +115,7 @@ public class OperatorInput {
         return -armDeadband(operatorControl.getRawAxis(XboxController.Axis.kRightY.value));
     }
 
-    public boolean isStoragePressed() {
+    public boolean isHumanIntakePressed() {
         return operatorControl.getRawButton(XboxController.Button.kX.value);
     }
 
@@ -126,28 +127,30 @@ public class OperatorInput {
         return operatorControl.getRawButtonPressed(XboxController.Button.kA.value);
     }
 
-    //checks if operator for some reason wants to manually zero the shit
-    // checks if operator wants to move arms to intake for human player station (by pressing RIGHT DPAD)
-    public boolean isHumanIntakePressed() {
-        int pressed = operatorControl.getPOV();
-        return pressed == 90;
-    }
-
-
     public boolean isZeroArmPressed() {
         return operatorControl.getRawButtonPressed(XboxController.Button.kLeftStick.value);
     }
 
+    //checks if operator for some reason wants to manually zero the shit
+    // checks if operator wants to move arms to intake for human player station (by pressing RIGHT DPAD)
+    public boolean isStoragePressed() {
+        int pressed = operatorControl.getPOV();
+        return pressed == 270;
+    }
+
+
+
+
     //controlled by dPad Left
     public boolean isScoreLowPressed() {
         int pressed = operatorControl.getPOV();
-        return pressed == 270;
+        return pressed == 180;
     }
 
     // checks if operator wants to move arms to score in medium node position (by pressing DPad Down)
     public boolean isScoreMidPressed() {
         int pressed = operatorControl.getPOV();
-        return pressed == 180;
+        return pressed == 90;
     }
 
     // checks if operator wants to move arms to score in high node position (by pressing dPad Up)
@@ -165,6 +168,9 @@ public class OperatorInput {
     }
 
     public boolean closeGripperPressed(){
+        return operatorControl.getRawButton(XboxController.Button.kLeftBumper.value);
+    }
+    public boolean conevscube(){
         return operatorControl.getRawButton(XboxController.Button.kLeftBumper.value);
     }
 

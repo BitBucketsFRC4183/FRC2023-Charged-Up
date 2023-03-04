@@ -35,7 +35,7 @@ public interface DriveTurdSpecific {
             false
     );
     MotorConfig DRIVE_TURD = new MotorConfig(
-            (14.0 / 50.0) * (27.0 / 17.0) * (15.0 / 45.0),
+            (14.0 / 50.0) * (27.0 / 17.0) * (15.0 / 45.0), //1 / 6.75
             1,
             0.10033 * Math.PI,
             true,
@@ -46,7 +46,7 @@ public interface DriveTurdSpecific {
             false,
             false,
             OptimizationMode.GENERIC,
-            DCMotor.getNEO(1)
+            DCMotor.getNEO(2)
     );
     MotorConfig STEER_TURD = new MotorConfig(
             (14.0 / 50.0) * (10.0 / 60.0),
@@ -60,6 +60,6 @@ public interface DriveTurdSpecific {
             false,
             false,
             OptimizationMode.GENERIC,
-            DCMotor.getNEO(1)
+            DCMotor.getNeo550(1)
     );
 }

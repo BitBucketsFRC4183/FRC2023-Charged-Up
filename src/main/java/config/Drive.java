@@ -2,8 +2,12 @@ package config;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import org.bitbuckets.lib.control.PIDConfig;
 import org.bitbuckets.lib.vendor.sim.dc.SimInertiaConfig;
 
@@ -26,15 +30,15 @@ public interface Drive {
     );
 
     PIDConfig STEER_PID = new PIDConfig(
+            2,
             0,
-            0,
-            0,
+            0.1,
             Optional.empty(),
             Optional.empty()
     );
 
     PIDConfig STEER_SIM_PID = new PIDConfig(
-            0,
+            2,
             0,
             0,
             Optional.empty(),
@@ -42,7 +46,7 @@ public interface Drive {
     );
 
     PIDConfig DRIVE_BALANCE_PID = new PIDConfig(
-            0,
+            0.5,
             0,
             0,
             Optional.empty(),
@@ -56,6 +60,9 @@ public interface Drive {
                     Nat.N1()
             ).fill(0)
     );
+
+    Vector<N3> STD_VISION = VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(10));
+
     SimInertiaConfig STEER_DC_CONFIG = new SimInertiaConfig(0.025, Matrix.mat(Nat.N1(), Nat.N1()).fill(0));
     SimpleMotorFeedforward FF = new SimpleMotorFeedforward(0.65292, 2.3053, 0.37626); //converts velocity to voltage
 }

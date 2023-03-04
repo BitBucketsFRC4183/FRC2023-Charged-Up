@@ -27,8 +27,8 @@ public class DCSimController implements IMotorController, HasLoop, HasLogLoop {
 
     @Override
     public double getMechanismFactor() {
-        return config.encoderToMechanismCoefficient;
-    }
+        return 1;
+    } //shhh this needs to be fixed
 
     @Override
     public double getRotationsToMetersFactor() {
@@ -70,6 +70,7 @@ public class DCSimController implements IMotorController, HasLoop, HasLogLoop {
 
     @Override
     public void moveAtVoltage(double voltage) {
+
         //debuggable.out("moveAtVoltage called with" + voltage);
         lastVoltage = voltage;
 

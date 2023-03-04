@@ -74,14 +74,8 @@ public class ArmControl {
     }
 
     public void commandArmToPercent(double lowerArmPercent, double upperArmPercent, boolean gripperShouldOpen) {
-        System.out.println("Moving at perc: " + lowerArmPercent);
-
         lowerArm.moveAtPercent(lowerArmPercent);
         upperArm.moveAtPercent(upperArmPercent);
-
-        System.out.println("LOWER " + lowerArm.getMechanismPositionAccum_rot());
-        System.out.println("UPPER " + upperArm.getMechanismPositionAccum_rot());
-
 
         if (gripperShouldOpen) {
             //gripperActuator.moveToPosition_mechanismRotations(Arm.GRIPPER_SETPOINT_MOTOR_ROTATIONS);
@@ -98,8 +92,8 @@ public class ArmControl {
 
     public void zeroToStartingPosition() {
         //TODO these are random numbers and need to be accurate
-        lowerArm.forceOffset_mechanismRotations(0.391);
-        upperArm.forceOffset_mechanismRotations(-0.281);
+        lowerArm.forceOffset_mechanismRotations(.168);
+        upperArm.forceOffset_mechanismRotations(-.222);
         gripperActuator.forceOffset_mechanismRotations(0);
     }
 

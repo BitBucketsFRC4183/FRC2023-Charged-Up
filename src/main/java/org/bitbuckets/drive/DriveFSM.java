@@ -3,19 +3,14 @@ package org.bitbuckets.drive;
 public enum DriveFSM {
 
     IDLE,
-    TELEOP_NORMAL,
-    TELEOP_EXTERNAL_CONTROL, //Another subsystem is using the drivebase
+    MANUAL,
 
+    BALANCE,
 
-    //remove these
-    TELEOP_APPROACHING_CS,
-    TELEOP_BALANCING,
-    TELEOP_BALANCE_ENGAGED,
     TELEOP_AUTOHEADING,
-    TELEOP_VISION,
+    VISION,
 
-    AUTO_PATHFINDING,
-    AUTO_BALANCING
+    AUTO_PATHFINDING
 
 
 }

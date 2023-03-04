@@ -16,6 +16,8 @@ public enum ArmFSM {
     HUMAN_INTAKE,
     GROUND_INTAKE,
 
-    DEBUG_TO_DEGREES
+    DEBUG_TO_DEGREES,
+    CUBE,
+    CONE
 
 }

@@ -1,8 +1,10 @@
 package org.bitbuckets.lib;
 
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.networktables.NetworkTableEvent;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardContainer;
+import org.bitbuckets.lib.process.RegisterType;
 import org.bitbuckets.lib.tune.IValueTuner;
 import org.bitbuckets.lib.tune.ChooserTuner;
 import org.bitbuckets.lib.tune.ValueTuner;
@@ -11,15 +13,22 @@ import java.util.EnumSet;
 
 public interface ITuneAs<T> {
 
-    EnumSet<NetworkTableEvent.Kind> REMOTE = EnumSet.of(NetworkTableEvent.Kind.kValueAll);
-    IValueTuner<T> generate(String key, ShuffleboardContainer container, T data, IValueTuner<ProcessMode> self);
+    EnumSet<NetworkTableEvent.Kind> REMOTE = EnumSet.of(NetworkTableEvent.Kind.kValueRemote);
 
-    ITuneAs<Double> DOUBLE_INPUT = (k,c,d,s) -> {
+    IValueTuner<T> generate(String key, IDoWhenReady doWhenReady, T defaultData, IValueTuner<ProcessMode> self);
+
+    ITuneAs<Double> DOUBLE_INPUT = (k, dwr, df , s) -> {
 
 
-        var entry = c.add(k, d).getEntry();
-        var tuneable = new ValueTuner<>(entry, s, d);
-        NetworkTableInstance.getDefault().addListener(entry, REMOTE, tuneable);
+        var entry = dwr.doWhenReady(container -> {
+           return container.add(k, df).getEntry();
+        }, RegisterType.TUNE);
+
+        ValueTuner<Double> tuneable = new ValueTuner<>(entry, s, df);
+
+        entry.thenAccept( e -> {
+            NetworkTableInstance.getDefault().addListener(e, REMOTE, tuneable);
+        });
 
         return tuneable;
     };
@@ -27,23 +36,43 @@ public interface ITuneAs<T> {
 
     //lord this is cursed, networktables is a thing that causes me great pain
     static <E extends Enum<E>> ITuneAs<E> ENUM(Class<E> enumType) {
-        return (k,c,d,s) -> {
-            var chooser = new ChooserTuner<>(enumType, d);
+        return (k,dwr,df,s) -> {
+            var chooser = new ChooserTuner<>(enumType, df);
 
             for (E e : enumType.getEnumConstants()) {
                 chooser.addOption(e.name(), e);
             }
 
-            c.add(chooser);
+            dwr.doWhenReady(
+                    board -> {
+                        board.add(k, chooser);
+                    },
+                    RegisterType.TUNE
+            );
 
             return chooser;
         };
 
     }
 
-    class Random {
-        static int random = 0;
-    }
+    static <E extends Enum<E>> ITuneAs<E> SIDE_ENUM(Class<E> enumType) {
+        return (k,dwr,df,s) -> {
+            var chooser = new ChooserTuner<>(enumType, df);
 
+            for (E e : enumType.getEnumConstants()) {
+                chooser.addOption(e.name(), e);
+            }
+
+            dwr.doWhenReady(
+                    board -> {
+                        board.add(k, chooser);
+                    },
+                    RegisterType.SIDEBAR
+            );
+
+            return chooser;
+        };
+
+    }
 
 }

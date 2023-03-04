@@ -1,5 +1,6 @@
 package org.bitbuckets;
 
+import com.ctre.phoenix.sensors.Pigeon2;
 import config.*;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.wpilibj.Joystick;
@@ -8,6 +9,8 @@ import org.bitbuckets.arm.ArmSubsystemSetup;
 import org.bitbuckets.auto.AutoControlSetup;
 import org.bitbuckets.auto.AutoSubsystem;
 import org.bitbuckets.auto.AutoSubsystemSetup;
+import org.bitbuckets.cubeCone.GamePiece;
+import org.bitbuckets.cubeCone.GamePieceSetup;
 import org.bitbuckets.drive.DriveSubsystem;
 import org.bitbuckets.drive.DriveSubsystemSetup;
 import org.bitbuckets.drive.IDriveControl;
@@ -17,8 +20,9 @@ import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.SimulatorKiller;
 import org.bitbuckets.lib.ToggleableSetup;
+import org.bitbuckets.lib.vendor.ctre.PidgeonGyroSetup;
 import org.bitbuckets.odometry.IOdometryControl;
-import org.bitbuckets.odometry.PidgeonOdometryControlSetup;
+import org.bitbuckets.odometry.OdometryControlSetup;
 import org.bitbuckets.vision.IVisionControl;
 import org.bitbuckets.vision.VisionControlSetup;
 
@@ -34,10 +38,17 @@ public class RobotSetup implements ISetup<Void> {
 
         SwerveDriveKinematics KINEMATICS = DriveTurdSpecific.KINEMATICS; //TODO make this swappable
 
+
         OperatorInput operatorInput = new OperatorInput(
                 new Joystick(1),
                 new Joystick(0)
         );
+
+        GamePiece piece = self.childSetup("gp", new GamePieceSetup(operatorInput));
+
+
+        self.childSetup("cone-cube", new GamePieceSetup(operatorInput));
+
 
         //if only these could be children of the drive subsystem... TODO fix this in mattlib future editions
         IDriveControl driveControl = self.childSetup(
@@ -68,11 +79,22 @@ public class RobotSetup implements ISetup<Void> {
                 new ToggleableSetup<>(
                         Enabled.drive,
                         IOdometryControl.class,
-                        new PidgeonOdometryControlSetup( //needs to be swappable
+                        /*new PidgeonOdometryControlSetup( //needs to be swappable
                                 driveControl,
                                 visionControl,
                                 KINEMATICS,
                                 MotorIds.PIDGEON_IMU_ID
+                        )*/
+                        new OdometryControlSetup(
+                                Drive.STD_VISION,
+                                KINEMATICS,
+                                driveControl,
+                                visionControl,
+                                new PidgeonGyroSetup(
+                                        MotorIds.PIDGEON_IMU_ID,
+                                        Pigeon2.AxisDirection.PositiveY,
+                                        Pigeon2.AxisDirection.PositiveZ
+                                )
                         )
                 )
         );
@@ -83,7 +105,7 @@ public class RobotSetup implements ISetup<Void> {
                         Enabled.auto,
                         AutoSubsystem.class,
                         new AutoSubsystemSetup(
-                            new AutoControlSetup(driveControl::currentPositions)
+                            new AutoControlSetup(odometryControl)
                         )
                 )
         );
@@ -96,7 +118,8 @@ public class RobotSetup implements ISetup<Void> {
                         new ArmSubsystemSetup(
                                 operatorInput,
                                 autoSubsystem,
-                                ArmSetups.ARM_CONTROL
+                                ArmSetups.ARM_CONTROL,
+                                piece
                         )
                 )
 

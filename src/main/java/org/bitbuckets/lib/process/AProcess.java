@@ -1,5 +1,7 @@
 package org.bitbuckets.lib.process;
 
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardContainer;
+import org.bitbuckets.lib.IDoWhenReady;
 import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.lib.ProcessMode;
 import org.bitbuckets.lib.core.HasLogLoop;
@@ -10,10 +12,10 @@ import org.bitbuckets.lib.tune.IForceSendTuner;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class AProcess implements IProcess {
+public abstract class AProcess implements IProcess, IDoWhenReady {
 
     final Path selfPath;
-    final IForceSendTuner<ProcessMode> selfMode;
+    IForceSendTuner<ProcessMode> selfMode;
 
     final List<AProcess> children = new ArrayList<>();
     final List<HasLoop> hasLoop = new ArrayList<>();
@@ -72,15 +74,7 @@ public abstract class AProcess implements IProcess {
         }
     }
 
-    @Override
-    public int componentQuantity() {
-        int count = children.size();
-
-        for (AProcess process : children) {
-            count += process.componentQuantity();
-        }
+    protected abstract void internalReady(ShuffleboardContainer root, ShuffleboardContainer enablers);
 
 
-        return count;
-    }
 }

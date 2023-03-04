@@ -34,6 +34,8 @@ public class AutoSubsystem implements HasLogLoop, HasLoop {
 
     public boolean sampleHasEventStarted(String event) {
         if (instance == null) {
+
+
             return false; //Doesn't exist yet. Should log this.
         }
 
@@ -67,6 +69,7 @@ public class AutoSubsystem implements HasLogLoop, HasLoop {
         }
 
 
+        hasChanged = false;
         switch (state) {
             case DISABLED:
                 if (DriverStation.isTeleopEnabled() || DriverStation.isAutonomousEnabled()) {
@@ -137,7 +140,7 @@ public class AutoSubsystem implements HasLogLoop, HasLoop {
                 }
                 break;
         }
-        hasChanged = false;
+
 
     }
 

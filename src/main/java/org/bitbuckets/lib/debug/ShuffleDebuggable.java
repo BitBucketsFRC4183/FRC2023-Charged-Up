@@ -12,57 +12,70 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.bitbuckets.lib.ProcessMode;
 import org.bitbuckets.lib.tune.IValueTuner;
 
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
+import java.util.function.Consumer;
 
 public class ShuffleDebuggable implements IDebuggable {
 
-    final ShuffleboardContainer container;
+    final CompletableFuture<ShuffleboardContainer> container;
     final IValueTuner<ProcessMode> modeTuner;
 
     //incredibly stupid
     final ConcurrentMap<String, GenericEntry> cache = new ConcurrentHashMap<>();
 
-    public ShuffleDebuggable(ShuffleboardContainer container, IValueTuner<ProcessMode> modeTuner) {
+    public ShuffleDebuggable(CompletableFuture<ShuffleboardContainer> container, IValueTuner<ProcessMode> modeTuner) {
         this.modeTuner = modeTuner;
         this.container = container;
 
+        //TODO this is going to cause huge errors
         //container.add("debugged yet", false);
     }
 
-    static int test = 0;
+    void consume(Consumer<ShuffleboardContainer> consumer) {
+        if (container.isDone()) {
+            consumer.accept(container.join());
+        } else {
+            container.thenAccept(consumer);
+        }
+    }
 
     @Override
     public void log(String key, double number) {
         if (modeTuner.readValue().level > ProcessMode.LOG_DEBUG.level) return;
 
-        cache.computeIfAbsent(key, k -> container.add(k + ++test, number).getEntry()).setDouble(number);
+
+        consume(a-> {
+            cache.computeIfAbsent(key, k -> a.add(k, number).getEntry()).setDouble(number);
+        });
+
+
 
     }
 
     @Override
     public void log(String key, String word) {
         if (modeTuner.readValue().level > ProcessMode.LOG_DEBUG.level) return;
-
-        var e = cache.computeIfAbsent(key, k -> container.add(k, word).getEntry());
-        e.setString(word);
+        consume(a-> {
+            cache.computeIfAbsent(key, k -> a.add(k, word).getEntry()).setString(word);
+        });
     }
 
     @Override
     public void log(String key, Enum<?> num) {
         if (modeTuner.readValue().level > ProcessMode.LOG_DEBUG.level) return;
 
-        String name = num.name();
-        cache.computeIfAbsent(key, k -> container.add(k, name).getEntry()).setString(name);
+        consume(a-> {
+            cache.computeIfAbsent(key, k -> a.add(k, num.name()).getEntry()).setString(num.name());
+        });
     }
 
     @Override
     public void log(String key, boolean data) {
         if (modeTuner.readValue().level > ProcessMode.LOG_DEBUG.level) return;
 
-        cache.computeIfAbsent(key, k -> container.add(k, data).getEntry()).setBoolean(data);
+        consume(a-> {
+            cache.computeIfAbsent(key, k -> a.add(k, data).getEntry()).setBoolean(data);
+        });
 
     }
 
@@ -77,7 +90,9 @@ public class ShuffleDebuggable implements IDebuggable {
         data[5] = pose3d.getRotation().getQuaternion().getY();
         data[6] = pose3d.getRotation().getQuaternion().getZ();
 
-        cache.computeIfAbsent(key, k -> container.add(k, data).getEntry()).setDoubleArray(data);
+        consume(a-> {
+            cache.computeIfAbsent(key, k -> a.add(k, data).getEntry()).setDoubleArray(data);
+        });
 
     }
 
@@ -90,7 +105,9 @@ public class ShuffleDebuggable implements IDebuggable {
         data[1] = pose2.getY();
         data[2] = pose2.getRotation().getRadians();
 
-        cache.computeIfAbsent(key, k -> container.add(k, data).getEntry()).setDoubleArray(data);
+        consume(a-> {
+            cache.computeIfAbsent(key, k -> a.add(k, data).getEntry()).setDoubleArray(data);
+        });
 
 
     }
@@ -123,7 +140,9 @@ public class ShuffleDebuggable implements IDebuggable {
             data[i * 2 + 1] = value[i].speedMetersPerSecond;
         }
 
-        cache.computeIfAbsent(key, k -> container.add(k, data).getEntry()).setDoubleArray(data);
+        consume(a-> {
+            cache.computeIfAbsent(key, k -> a.add(k, data).getEntry()).setDoubleArray(data);
+        });
 
     }
 }
