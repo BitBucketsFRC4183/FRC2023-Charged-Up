@@ -84,7 +84,6 @@ public class ArmSubsystem implements HasLoop {
 
             //TODO legacy path event
             if (autoSubsystem.sampleHasEventStarted("collect")) {
-                System.out.println("MOVEARM");
                 shouldDoNext = ArmFSM.STORAGE;
                 return;
             }
