@@ -1,14 +1,22 @@
 package org.bitbuckets.lib.vendor.ctre;
 
+import com.ctre.phoenix.ErrorCode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.wpilibj.DriverStation;
 import org.bitbuckets.drive.controlsds.sds.SwerveModuleConfiguration;
+import org.bitbuckets.lib.ILogAs;
+import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.lib.ISetup;
-import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.lib.hardware.IMotorController;
+import org.bitbuckets.lib.hardware.MotorConfig;
+import org.bitbuckets.lib.hardware.OptimizationMode;
+
+import java.util.Optional;
 
 public class TalonDriveMotorSetup implements ISetup<IMotorController> {
 
@@ -28,7 +36,7 @@ public class TalonDriveMotorSetup implements ISetup<IMotorController> {
     }
 
     @Override
-    public IMotorController build(ProcessPath self) {
+    public IMotorController build(IProcess self) {
 
         TalonFXConfiguration motorConfiguration = new TalonFXConfiguration();
 
@@ -41,7 +49,10 @@ public class TalonDriveMotorSetup implements ISetup<IMotorController> {
         motorConfiguration.supplyCurrLimit.enable = true;
 
         WPI_TalonFX motor = new WPI_TalonFX(canId);
-        CtreUtils.checkCtreError(motor.configAllSettings(motorConfiguration), "Failed to configure Falcon 500");
+        ErrorCode errorCode1 = motor.configAllSettings(motorConfiguration);
+        if (errorCode1 != ErrorCode.OK) {
+            DriverStation.reportError(String.format("%s: %s", "Failed to configure Falcon 500", errorCode1.toString()), false);
+        }
 
         // Enable voltage compensation
         motor.enableVoltageCompensation(true);
@@ -52,15 +63,38 @@ public class TalonDriveMotorSetup implements ISetup<IMotorController> {
         motor.setSensorPhase(true);
 
         // Reduce CAN status frame rates
-        CtreUtils.checkCtreError(
-                motor.setStatusFramePeriod(
-                        StatusFrameEnhanced.Status_1_General,
-                        STATUS_FRAME_GENERAL_PERIOD_MS,
-                        CAN_TIMEOUT_MS
-                ),
-                "Failed to configure Falcon status frame period"
+        ErrorCode errorCode = motor.setStatusFramePeriod(
+                StatusFrameEnhanced.Status_1_General,
+                STATUS_FRAME_GENERAL_PERIOD_MS,
+                CAN_TIMEOUT_MS
+        );
+        if (errorCode != ErrorCode.OK) {
+            DriverStation.reportError(String.format("%s: %s", "Failed to configure Falcon status frame period", errorCode.toString()), false);
+        }
+
+        var ctrl = new TalonRelativeMotorController(motor, new MotorConfig(
+                moduleConfiguration.getDriveReduction(),
+                10,
+                moduleConfiguration.getWheelDiameter() * Math.PI,
+                moduleConfiguration.isDriveInverted(),
+                true,
+                moduleConfiguration.getDriveCurrentLimit(),
+                Optional.empty(),
+                Optional.empty(),
+                false,
+                false,
+                OptimizationMode.GENERIC,
+                DCMotor.getFalcon500(1)
+        ));
+
+        TalonLogger logger = new TalonLogger(
+                ctrl,
+                self.generateLogger(ILogAs.DOUBLE, "pos-setpoint-mechanism-rotations"),
+                self.generateLogger(ILogAs.DOUBLE,"encoder-mechanism-rotations"),
+                self.generateLogger(ILogAs.DOUBLE,"encoder-position-raw")
         );
 
-        return new TalonRelativeMotorController(motor);
+        self.registerLogLoop(logger);
+        return ctrl;
     }
 }

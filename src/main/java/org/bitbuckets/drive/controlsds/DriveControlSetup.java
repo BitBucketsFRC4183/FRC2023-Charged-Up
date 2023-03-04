@@ -1,22 +1,25 @@
 package org.bitbuckets.drive.controlsds;
 
-import org.bitbuckets.drive.controlsds.DriveControl;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import org.bitbuckets.drive.IDriveControl;
 import org.bitbuckets.drive.controlsds.sds.ISwerveModule;
+import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.lib.ISetup;
-import org.bitbuckets.lib.ProcessPath;
 
 /**
  * Sets up prereqs for a drive controller
  * <p>
  */
-public class DriveControlSetup implements ISetup<DriveControl> {
+public class DriveControlSetup implements ISetup<IDriveControl> {
 
+    final SwerveDriveKinematics kinematics;
     final ISetup<ISwerveModule> frontLeft;
     final ISetup<ISwerveModule> frontRight;
     final ISetup<ISwerveModule> backLeft;
     final ISetup<ISwerveModule> backRight;
 
-    public DriveControlSetup(ISetup<ISwerveModule> frontLeft, ISetup<ISwerveModule> frontRight, ISetup<ISwerveModule> backLeft, ISetup<ISwerveModule> backRight) {
+    public DriveControlSetup(SwerveDriveKinematics kinematics, ISetup<ISwerveModule> frontLeft, ISetup<ISwerveModule> frontRight, ISetup<ISwerveModule> backLeft, ISetup<ISwerveModule> backRight) {
+        this.kinematics = kinematics;
         this.frontLeft = frontLeft;
         this.frontRight = frontRight;
         this.backLeft = backLeft;
@@ -24,18 +27,19 @@ public class DriveControlSetup implements ISetup<DriveControl> {
     }
 
     @Override
-    public DriveControl build(ProcessPath self) {
+    public DriveControl build(IProcess self) {
 
 
         DriveControl control = new DriveControl(
-                self.generateDebugger(),
-                frontLeft.build(self.addChild("front-left")),
-                frontRight.build(self.addChild("front-right")),
-                backLeft.build(self.addChild("back-left")),
-                backRight.build(self.addChild("back-right"))
+                kinematics,
+                self.getDebuggable(),
+                self.childSetup("frontLeft",frontLeft),
+                self.childSetup("frontRight",frontRight),
+                self.childSetup("backLeft",backLeft),
+                self.childSetup("backRight",backRight)
         );
         
-        self.registerLoop(control::log, "logging-loop");
+        self.registerLogLoop(control);
 
         return control;
     }

@@ -1,11 +1,10 @@
 package org.bitbuckets.lib.control;
 
 import edu.wpi.first.math.controller.PIDController;
-import org.bitbuckets.lib.DontUseIncubating;
+import org.bitbuckets.lib.ILogAs;
+import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.lib.ISetup;
-import org.bitbuckets.lib.ProcessPath;
-import org.bitbuckets.lib.log.LoggingConstants;
-import org.bitbuckets.lib.tune.IValueTuner;
+import org.bitbuckets.lib.ITuneAs;
 
 public class PIDCalculatorSetup implements ISetup<IPIDCalculator> {
 
@@ -20,27 +19,16 @@ public class PIDCalculatorSetup implements ISetup<IPIDCalculator> {
     }
 
     @Override
-    public IPIDCalculator build(ProcessPath self) {
-        IValueTuner<double[]> pidf = self.generateMultiTuner(
-                new String[] {"p", "i", "d", "f"},
-                new double[] {pidConfig.kP, pidConfig.kI, pidConfig.kD, pidConfig.kF}
+    public IPIDCalculator build(IProcess self) {
+
+        return new PIDCalculator(
+                new PIDController(pidConfig.kP, pidConfig.kI, pidConfig.kD),
+                self.generateTuner(ITuneAs.DOUBLE_INPUT, "proportional", pidConfig.kP),
+                self.generateTuner(ITuneAs.DOUBLE_INPUT, "integral", pidConfig.kI),
+                self.generateTuner(ITuneAs.DOUBLE_INPUT, "derivative", pidConfig.kD),
+                self.generateLogger(ILogAs.DOUBLE, "last-setpoint"),
+                self.generateLogger(ILogAs.DOUBLE, "last-actual"),
+                self.generateLogger(ILogAs.DOUBLE, "last-output")
         );
-
-        double[] pidfNow = pidf.readValue();
-
-        PIDController use = new PIDController(
-                pidfNow[PIDConfig.P],
-                pidfNow[PIDConfig.I],
-                pidfNow[PIDConfig.D]
-        );
-
-        PIDCalculator pid = new PIDCalculator(
-                use,
-                pidf
-        );
-
-        self.registerLoop(pid, LoggingConstants.TUNING_PERIOD, "tuning-loop");
-
-        return pid;
     }
 }

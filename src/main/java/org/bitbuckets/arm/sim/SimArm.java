@@ -4,14 +4,14 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
-import org.bitbuckets.arm.ArmConstants;
+import org.bitbuckets.lib.core.HasLoop;
+import org.bitbuckets.lib.debug.IDebuggable;
 import org.bitbuckets.lib.hardware.IMotorController;
 import org.bitbuckets.lib.hardware.MotorConfig;
-import org.bitbuckets.lib.log.Debuggable;
 
-public class SimArm implements IMotorController {
+public class SimArm implements IMotorController, HasLoop {
 
-    final Debuggable debuggable;
+    final IDebuggable debuggable;
     final MechanismLigament2d ligament2d;
     final MotorConfig motorConfig;
     final SingleJointedArmSim sim;
@@ -19,7 +19,7 @@ public class SimArm implements IMotorController {
 
     double setpoint_mechanismPos = 0;
 
-    public SimArm(Debuggable debuggable, MechanismLigament2d ligament2d, MotorConfig motorConfig, SingleJointedArmSim sim, PIDController armPositionPid) {
+    public SimArm(IDebuggable debuggable, MechanismLigament2d ligament2d, MotorConfig motorConfig, SingleJointedArmSim sim, PIDController armPositionPid) {
         this.debuggable = debuggable;
         this.ligament2d = ligament2d;
         this.motorConfig = motorConfig;
@@ -111,13 +111,18 @@ public class SimArm implements IMotorController {
     }
 
     @Override
+    public void goLimp() {
+
+    }
+
+    @Override
     public <T> T rawAccess(Class<T> clazz) throws UnsupportedOperationException {
         throw new UnsupportedOperationException("bad");
     }
 
     double cachedInputVoltage = 0;
 
-    public void runSimulationLoop() {
+    public void loop() {
         sim.setInputVoltage(cachedInputVoltage);
         sim.update(0.02);
 

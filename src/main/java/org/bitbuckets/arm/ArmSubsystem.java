@@ -1,140 +1,192 @@
 package org.bitbuckets.arm;
 
+import config.Arm;
+import edu.wpi.first.math.util.Units;
+import org.bitbuckets.OperatorInput;
 import org.bitbuckets.auto.AutoFSM;
 import org.bitbuckets.auto.AutoSubsystem;
-import org.bitbuckets.lib.log.Debuggable;
+import org.bitbuckets.cubeCone.GamePiece;
+import org.bitbuckets.lib.core.HasLoop;
+import org.bitbuckets.lib.debug.IDebuggable;
 
-public class ArmSubsystem {
+public class ArmSubsystem implements HasLoop {
 
-    final ArmInput armInput;
+    final OperatorInput operatorInput;
     final ArmControl armControl;
-    final Debuggable debuggable;
     final AutoSubsystem autoSubsystem;
+    final IDebuggable debuggable;
+    final GamePiece gamePiece;
 
 
-    // state holds the current state of the FSM that the arm is in, with the default state being manual
-    ArmFSM state = ArmFSM.MANUAL;
-
-    // nextState holds the next state that the arm should go to AFTER it has completed the current actions commanded by state
-    // default of nextState is manual, but changes when operator presses button that causes the arm to independently move to a new position
-    ArmFSM nextState = ArmFSM.MANUAL;
-
-    public ArmSubsystem(ArmInput armInput, ArmControl armControl, Debuggable debuggable, AutoSubsystem autoSubsystem) {
-        this.armInput = armInput;
+    public ArmSubsystem(OperatorInput operatorInput, ArmControl armControl, AutoSubsystem autoSubsystem, IDebuggable debuggable, GamePiece gamePiece) {
+        this.gamePiece = gamePiece;
+        this.operatorInput = operatorInput;
         this.armControl = armControl;
+        this.autoSubsystem = autoSubsystem;
         this.debuggable = debuggable;
         this.autoSubsystem = autoSubsystem;
     }
 
-    // Holds the ArmFSM
-    public void teleopPeriodic() {
+    ArmFSM shouldDoNext = ArmFSM.IDLE;
 
-        // Checks if calibration button on operator controller is pressed to reset encoder position of all motors to 0
-        if (autoSubsystem.state() == AutoFSM.AUTO_RUN && autoSubsystem.lastRobotState() == AutoFSM.DISABLED) {
-            armControl.robotIsOn();
+    @Override
+    public void loop() {
+        //handle arm calibration
+        if (autoSubsystem.hasChanged() && autoSubsystem.state() == AutoFSM.INITIALIZATION) {
+            System.out.println("System zeroed to starting position");
+
+            armControl.zeroToStartingPosition(); //Assume it's at the starting position lmao
+        }
+        if (operatorInput.isZeroArmPressed()) {
+            System.out.println("System zeroed to user input");
+
+            armControl.zero(); //assume where we are is zero. Only do this if you really have to since zeroing needs
+            //to go outside frame perimeter, and you can only do that in a match L
         }
 
-        if (armInput.isCalibratedPressed()) {
-            armControl.calibrateLowerArm();
-            armControl.calibrateUpperArm();
-            System.out.println("Arms calibrated!");
-        }
 
-        // Switches the current state to manual mode if enable manual mode is pressed on operator controller
-        if (armInput.isDisablePositionControlPressed()) {
-            state = ArmFSM.MANUAL;
-        }
+        //handle inputs, which will calculate what the next input of the robot is
+        handleStateTransitions();
+        handleLogic();
 
-        // Arm finite state machine that dictates which case of commands the arm should follow based on its state
-        // the state changes the nextState
-        switch (state) {
-            //
-            case MANUAL:
-
-                armControl.manuallyMoveLowerArm(armInput.getLowerArm_PercentOutput());
-                armControl.manuallyMoveUpperArm(armInput.getUpperArm_PercentOutput());
-
-                debuggable.log("line 49", true);
-
-                if (armInput.isStoragePressed()) {
-                    state = ArmFSM.STORAGE;
-                } else if (armInput.isHumanIntakePressed()) {
-                    state = ArmFSM.PREPARE;
-                    nextState = ArmFSM.HUMAN_INTAKE;
-                } else if (armInput.isScoreMidPressed()) {
-                    debuggable.log("line 55", true);
-
-                    state = ArmFSM.PREPARE;
-                    nextState = ArmFSM.SCORE_MID;
-                } else if (armInput.isScoreHighPressed()) {
-                    state = ArmFSM.PREPARE;
-                    nextState = ArmFSM.SCORE_HIGH;
-                } else if (armInput.isScoreLowPressed()) {
-                    state = ArmFSM.PREPARE;
-                    nextState = ArmFSM.SCORE_LOW;
-                }
-                break;
-
-            //goes into this case if C is pressed in sim (on keyboard)
-            // Storage is the case that commands the arm to go into storage position, or the position the arm is not actively scoring or intaking pieces
-            // uses InverseKinematics to dictate the positions the arm should move to in order to achieve the storage coords
-            case STORAGE:
-
-                //goes into this if statement if X is pressed in sim (on keyboard)
-                /**
-                 * ONLY USEFUL FOR SIM (hopefully lol)
-                 * basically, when looking at the next if statement, the error before the arm exits the current state is some number
-                 * however, for small errors, the sim never thinks the error is small enough, hence it never exits the state
-                 * this function allows the user to press a button to tell the sim to go to manual
-                 */
-                if (armInput.isStopPidPressed()) {
-                    state = ArmFSM.MANUAL;
-                }
-                armControl.storeArm();
-                if (armControl.isErrorSmallEnough(.1)) {
-                    state = ArmFSM.MANUAL;
-                }
-                break;
-
-            // Prepare is the case that commands the arm to go backwards to avoid any obstacles when changing between any scoring mode and storage and vice versa
-            case PREPARE:
-                armControl.prepareArm();
-                if (armControl.isErrorSmallEnough(.1) || armInput.isStopPidPressed()) {
-                    state = nextState;
-                }
-
-                break;
-
-            case HUMAN_INTAKE:
-                armControl.humanIntake();
-                if (armControl.isErrorSmallEnough(.1) || armInput.isStopPidPressed()) {
-                    state = ArmFSM.MANUAL;
-                }
-                break;
-
-            case SCORE_LOW:
-                armControl.scoreLow();
-                if (armControl.isErrorSmallEnough(0.1) || armInput.isStopPidPressed()) {
-                    state = ArmFSM.MANUAL;
-                }
-                break;
-
-            case SCORE_MID:
-                armControl.scoreMid();
-                if (armControl.isErrorSmallEnough(.1) || armInput.isStopPidPressed()) {
-                    state = ArmFSM.MANUAL;
-                }
-                break;
-
-            case SCORE_HIGH:
-                armControl.scoreHigh();
-                if (armControl.isErrorSmallEnough(.1) || armInput.isStopPidPressed()) {
-                    state = ArmFSM.MANUAL;
-                }
-                break;
-        }
-        debuggable.log("state", state);
+        debuggable.log("state", shouldDoNext);
     }
 
 
+    //generates what the FSM should do. Will modify shouldDoNext if something has happened
+    void handleStateTransitions() {
+        if (operatorInput.isStopPidPressed() && autoSubsystem.state() != AutoFSM.AUTO_RUN) {
+            shouldDoNext = ArmFSM.IDLE;
+            return;
+        }
+
+        if (autoSubsystem.state() == AutoFSM.DISABLED) {
+            shouldDoNext = ArmFSM.IDLE;
+            return;
+        }
+
+        if (autoSubsystem.state() == AutoFSM.AUTO_RUN) {
+            if (autoSubsystem.sampleHasEventStarted("arm-storage")) {
+                shouldDoNext = ArmFSM.STORAGE;
+                return;
+            }
+            if (autoSubsystem.sampleHasEventStarted("arm-prepare")) {
+                shouldDoNext = ArmFSM.PREPARE;
+                return;
+            }
+            if (autoSubsystem.sampleHasEventStarted("arm-score-high")) {
+                shouldDoNext = ArmFSM.SCORE_HIGH;
+                return;
+            }
+            if (autoSubsystem.sampleHasEventStarted("arm-human-intake")) {
+                shouldDoNext = ArmFSM.HUMAN_INTAKE;
+                return;
+            }
+            if (autoSubsystem.sampleHasEventStarted("arm-ground-intake")) {
+                shouldDoNext = ArmFSM.GROUND_INTAKE;
+                return;
+            }
+
+            //TODO legacy path event
+            if (autoSubsystem.sampleHasEventStarted("collect")) {
+                System.out.println("MOVEARM");
+                shouldDoNext = ArmFSM.STORAGE;
+                return;
+            }
+        }
+
+        if (autoSubsystem.state() == AutoFSM.TELEOP) {
+
+            if (operatorInput.isHumanIntakePressed()) {
+                shouldDoNext = ArmFSM.HUMAN_INTAKE;
+                return;
+            }
+            //TODO ground intake button
+            if (operatorInput.isStoragePressed()) {
+                shouldDoNext = ArmFSM.STORAGE;
+                return;
+            }
+            if (operatorInput.isScoreHighPressed()) {
+                shouldDoNext = ArmFSM.SCORE_HIGH;
+                return;
+            }
+            if (operatorInput.isScoreMidPressed()) {
+                shouldDoNext = ArmFSM.SCORE_MID;
+                return;
+            }
+            if (operatorInput.isScoreLowPressed()) {
+                shouldDoNext = ArmFSM.SCORE_LOW;
+                return;
+            }
+            if (operatorInput.isDebugDegreesPressed()) {
+                shouldDoNext = ArmFSM.DEBUG_TO_DEGREES;
+                return;
+            }
+
+            if (operatorInput.isManualModePressed()) {
+                shouldDoNext = ArmFSM.MANUAL;
+                return;
+            }
+
+        }
+    }
+
+    //acts on shouldDoNext and then updates it to the result state if it has managed to complete it's task
+    void handleLogic() {
+        if (autoSubsystem.state() == AutoFSM.DISABLED) { //arm can move after auto fsm has ended, so that if we fuck up it can still win without us
+            return;
+        }
+
+        if (shouldDoNext == ArmFSM.MANUAL) {
+
+            System.out.println(operatorInput.getLowerArm_PercentOutput());
+
+            armControl.commandArmToPercent(
+                    operatorInput.getLowerArm_PercentOutput(),
+                    operatorInput.getUpperArm_PercentOutput(),
+                    !operatorInput.closeGripperPressed()
+            );
+        }
+
+        if (shouldDoNext == ArmFSM.STORAGE) {
+            armControl.commandArmToState(
+                    0.168,
+                    -0.222,
+                    !operatorInput.closeGripperPressed()
+            );
+        }
+
+        //TODO fix the numbers
+        if (shouldDoNext == ArmFSM.DEBUG_TO_DEGREES) {
+            armControl.commandArmToState(
+                    0,0,
+                    !operatorInput.closeGripperPressed()
+            );
+
+            if (armControl.getErrorQuantity() > Arm.ARM_TOLERANCE_TO_MOVE_ON) {
+                shouldDoNext = ArmFSM.IDLE;
+            }
+        }
+
+        if (shouldDoNext == ArmFSM.SCORE_MID) {
+            if(gamePiece.isCone())
+            {
+                armControl.commandArmToState(0.008, -0.227,true);
+            }
+
+
+        }
+        if (shouldDoNext == ArmFSM.SCORE_HIGH) {
+            if(gamePiece.isCone()) {
+                armControl.commandArmToState(-0.126,0.0,  true);
+            }
+
+        }
+        if (shouldDoNext == ArmFSM.GROUND_INTAKE) {
+            armControl.commandArmToState(0.581, -0.274,true);
+
+        }
+
+        //TODO fill out the rest
+    }
 }
