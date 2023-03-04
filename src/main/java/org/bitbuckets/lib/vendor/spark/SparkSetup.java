@@ -76,17 +76,26 @@ public class SparkSetup implements ISetup<IMotorController> {
             reverseSwitch.enableLimitSwitch(true);
         }
 
+        if (motorConfig.forwardSoftLimitMechanismAccum_rot.isPresent()) {
+            spark.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, motorConfig.forwardSoftLimitMechanismAccum_rot.get().floatValue());
+            spark.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, true);
+        }
+        if (motorConfig.reverseSoftLimitMechanismAccum_rot.isPresent()) {
+            spark.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, motorConfig.reverseSoftLimitMechanismAccum_rot.get().floatValue());
+            spark.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, true);
+
+        }
 
         IValueTuner<Double> p = self.generateTuner(ITuneAs.DOUBLE_INPUT, "p", pidConfig.kP);
         IValueTuner<Double> i = self.generateTuner(ITuneAs.DOUBLE_INPUT, "i", pidConfig.kI);
-        IValueTuner<Double> d = self.generateTuner(ITuneAs.DOUBLE_INPUT,"d", pidConfig.kD);
+        IValueTuner<Double> d = self.generateTuner(ITuneAs.DOUBLE_INPUT, "d", pidConfig.kD);
 
         spark.getPIDController().setP(p.readValue());
         spark.getPIDController().setI(i.readValue());
         spark.getPIDController().setD(d.readValue());
 
 
-        SparkTuner tuner = new SparkTuner(p,i,d, spark.getPIDController());
+        SparkTuner tuner = new SparkTuner(p, i, d, spark.getPIDController());
         self.registerLogicLoop(tuner);
 
         SparkRelativeMotorController ctrl = new SparkRelativeMotorController(motorConfig, spark);
@@ -95,7 +104,7 @@ public class SparkSetup implements ISetup<IMotorController> {
                 self.generateLogger(ILogAs.DOUBLE, "setpointMechanismRot"),
                 self.generateLogger(ILogAs.DOUBLE, "encoderMechanismRot"),
                 self.generateLogger(ILogAs.DOUBLE, "errorMechanismRot"),
-                self.generateLogger(ILogAs.ENUM(LastControlMode.class),"lastControlMode")
+                self.generateLogger(ILogAs.ENUM(LastControlMode.class), "lastControlMode")
         );
 
         self.registerLogLoop(onboardPidLogger);
@@ -112,7 +121,8 @@ public class SparkSetup implements ISetup<IMotorController> {
                     self.generateLogger(ILogAs.BOOLEAN, "limitRv"),
                     reverseSwitch
             );
-            self.registerLogLoop(loggingAspect);        }
+            self.registerLogLoop(loggingAspect);
+        }
 
         if (follower.isPresent()) {
 
