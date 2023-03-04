@@ -163,7 +163,7 @@ public class OperatorInput {
     public boolean isStopPidPressed() {
         return operatorControl.getRawButtonPressed(XboxController.Button.kB.value);
     }
-    public boolean ifGripperPressed() {
+    public boolean openGripperPressed() {
         return operatorControl.getRawButton(XboxController.Button.kRightBumper.value);
     }
 

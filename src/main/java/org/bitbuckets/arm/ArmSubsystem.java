@@ -129,7 +129,7 @@ public class ArmSubsystem implements HasLoop {
     void handleLogic() {
 
 
-        if (operatorInput.ifGripperPressed()) {
+        if (operatorInput.openGripperPressed()) {
             armControl.openGripper();
         } else if (operatorInput.closeGripperPressed()) {
             armControl.closeGripper();
