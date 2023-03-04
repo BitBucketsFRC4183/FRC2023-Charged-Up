@@ -4,7 +4,7 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import org.bitbuckets.lib.log.Debuggable;
+import org.bitbuckets.lib.debug.IDebuggable;
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
@@ -22,9 +22,9 @@ public class VisionControl implements IVisionControl {
     final AprilTagFieldLayout aprilTagFieldLayout;
     final PhotonPoseEstimator photonPoseEstimator;
 
-    final Debuggable debuggable;
+    final IDebuggable debuggable;
 
-    public VisionControl(Transform3d robotToCamera, AprilTagFieldLayout aprilTagFieldLayout, PhotonPoseEstimator photonPoseEstimator, PhotonCamera photonCamera, Debuggable debuggable) {
+    public VisionControl(Transform3d robotToCamera, AprilTagFieldLayout aprilTagFieldLayout, PhotonPoseEstimator photonPoseEstimator, PhotonCamera photonCamera, IDebuggable debuggable) {
         this.robotToCamera = robotToCamera;
         this.aprilTagFieldLayout = aprilTagFieldLayout;
         this.photonPoseEstimator = photonPoseEstimator;
@@ -35,6 +35,8 @@ public class VisionControl implements IVisionControl {
 
     public void logLoop() {
         debuggable.log("a", "a");
+
+
 
         var opt = estimateVisionTargetPose();
         opt.ifPresent(pose3d -> debuggable.log("target-pose", opt.get()));
@@ -98,6 +100,7 @@ public class VisionControl implements IVisionControl {
 
         // Transform the tag's pose to set our goal
         Pose3d goalPose = tagPose.transformBy(VisionConstants2.TAG_TO_GOAL);
+        debuggable.log("goal-pose", goalPose);
         // This is new target data, so recalculate the goal
         double range = PhotonUtils.calculateDistanceToTargetMeters(
                 VisionConstants2.CAMERA_HEIGHT,

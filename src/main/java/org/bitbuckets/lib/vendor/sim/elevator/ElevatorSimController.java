@@ -103,6 +103,11 @@ public class ElevatorSimController implements IMotorController, Runnable {
     }
 
     @Override
+    public void goLimp() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public <T> T rawAccess(Class<T> clazz) throws UnsupportedOperationException {
         throw new UnsupportedOperationException("Cannot do anything");
     }
