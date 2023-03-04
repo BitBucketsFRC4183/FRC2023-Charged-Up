@@ -52,7 +52,7 @@ public class AutoSubsystem implements HasLogLoop, HasLoop {
             return Optional.empty();
         }
 
-        return Optional.of(instance.sampleSpeeds());
+        return Optional.ofNullable(instance.sampleSpeeds());
     }
 
 
