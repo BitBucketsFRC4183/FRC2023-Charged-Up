@@ -34,10 +34,15 @@ public class AutoControl implements IAutoControl {
         double totalTime = 0;
         List<AutoPathInstance.SegmentTime> segmentTimes = new ArrayList<>();
 
+
+
         for (int i = 0; i < trajectoryGroup.size(); i++) {
             PathPlannerTrajectory segment = trajectoryGroup.get(i);
             segmentTimes.add(new AutoPathInstance.SegmentTime(i, totalTime));
             totalTime = totalTime + segment.getTotalTimeSeconds();
+
+            //sex time
+
 
             for (PathPlannerTrajectory.EventMarker marker : segment.getMarkers()) {
                 for (String name : marker.names) {
@@ -47,6 +52,16 @@ public class AutoControl implements IAutoControl {
                 }
             }
 
+            //add the stop events and wait time
+
+            PathPlannerTrajectory.StopEvent event = segment.getEndStopEvent();
+
+            for (String possibleEventName : event.names) {
+                eventMap.put(possibleEventName, totalTime);
+            }
+
+            //add wait time
+            totalTime = totalTime + segment.getEndStopEvent().waitTime;
         }
 
         var transformedTrajectories = new ArrayList<PathPlannerTrajectory>();
@@ -55,9 +70,13 @@ public class AutoControl implements IAutoControl {
             transformedTrajectories.add(transformTrajectory);
         }
 
+
+
         var initialState = PathPlannerTrajectory.transformStateForAlliance(trajectoryGroup.get(0).getInitialState(), DriverStation.getAlliance());
         odometryControl.setPos(initialState.holonomicRotation, initialState.poseMeters);
         AutoPathInstance instance = new AutoPathInstance(transformedTrajectories, eventMap, segmentTimes, whichOne, totalTime);
+
+
 
         instance.onPhaseChangeEvent(AutoFSM.AUTO_RUN);
         return instance;
