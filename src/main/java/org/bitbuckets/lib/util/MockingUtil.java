@@ -7,13 +7,13 @@ import net.bytebuddy.dynamic.DynamicType;
 import net.bytebuddy.dynamic.scaffold.subclass.ConstructorStrategy;
 import net.bytebuddy.implementation.MethodCall;
 import net.bytebuddy.implementation.StubMethod;
-import org.bitbuckets.lib.DontUseIncubating;
 import org.bitbuckets.lib.ISetup;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.Optional;
 
 import static net.bytebuddy.matcher.ElementMatchers.any;
 
@@ -35,9 +35,14 @@ public class MockingUtil {
 
         @Override
         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+
+            if (method.getReturnType().equals(Void.TYPE)) return null;
+            if (method.getReturnType().equals(Optional.class)) return Optional.empty();
+
+
             //System.out.println("invocation of: " + method.getName());
 
-            return null;
+            throw new UnsupportedOperationException("Tried to call method with return: " + method.getName() + " but it was on a mocked object!");
         }
     }
 

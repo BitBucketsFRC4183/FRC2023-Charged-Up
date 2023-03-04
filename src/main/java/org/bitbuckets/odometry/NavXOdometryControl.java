@@ -14,20 +14,22 @@ import edu.wpi.first.math.numbers.N7;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
 import org.bitbuckets.drive.IDriveControl;
-import org.bitbuckets.lib.log.Debuggable;
+import org.bitbuckets.lib.core.HasLogLoop;
+import org.bitbuckets.lib.core.HasLoop;
+import org.bitbuckets.lib.debug.IDebuggable;
 import org.bitbuckets.vision.IVisionControl;
 
 import java.util.Optional;
 
-public class NavXOdometryControl implements IOdometryControl {
+public class NavXOdometryControl implements IOdometryControl, HasLoop, HasLogLoop {
 
-    final Debuggable debuggable;
+    final IDebuggable debuggable;
     final IDriveControl driveControl;
     final SwerveDrivePoseEstimator swerveDrivePoseEstimator;
     final AHRS navigator;
     final IVisionControl visionControl;
 
-    public NavXOdometryControl(Debuggable debuggable, IDriveControl driveControl, SwerveDrivePoseEstimator swerveDrivePoseEstimator, AHRS navigator, IVisionControl visionControl) {
+    public NavXOdometryControl(IDebuggable debuggable, IDriveControl driveControl, SwerveDrivePoseEstimator swerveDrivePoseEstimator, AHRS navigator, IVisionControl visionControl) {
         this.debuggable = debuggable;
         this.driveControl = driveControl;
         this.swerveDrivePoseEstimator = swerveDrivePoseEstimator;
@@ -40,13 +42,15 @@ public class NavXOdometryControl implements IOdometryControl {
     private static final Vector<N5> localMeasurementStdDevs = VecBuilder.fill(Units.degreesToRadians(0.01), 0.01, 0.01, 0.01, 0.01);
     private static final Vector<N3> visionMeasurementStdDevs = VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(10));
 
-    public void updateOdometryLoop() {
+    @Override
+    public void loop() {
         Rotation2d gyroangle = (navigator.getRotation2d());
         double epoch = Timer.getFPGATimestamp();
         debuggable.log("raw-swerve-pose", swerveDrivePoseEstimator.update(gyroangle, driveControl.currentPositions()));
 
         //Todo: re add when vision is fixed
         Optional<Pose3d> res = visionControl.estimateVisionRobotPose();
+        if (res == null) return;
 
         if (res != null && res.isPresent()) {
             Pose2d realPose = res.get().toPose2d();
@@ -90,6 +94,7 @@ public class NavXOdometryControl implements IOdometryControl {
         navigator.reset();
     }
 
+    @Override
     public void logLoop() {
         debuggable.log("yaw", navigator.getYaw());
         debuggable.log("pitch", navigator.getPitch());
@@ -100,7 +105,7 @@ public class NavXOdometryControl implements IOdometryControl {
     }
 
     @Override
-    public void setPos(Rotation2d gyroAngle, SwerveModulePosition[] modulePositions, Pose2d poseMeters) {
-        swerveDrivePoseEstimator.resetPosition(gyroAngle, modulePositions, poseMeters);
+    public void setPos(Rotation2d gyroAngle, Pose2d poseMeters) {
+        swerveDrivePoseEstimator.resetPosition(gyroAngle, driveControl.currentPositions(), poseMeters);
     }
 }

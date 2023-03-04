@@ -1,8 +1,8 @@
 package org.bitbuckets.drive.controlsds.compress;
 
 import org.bitbuckets.drive.controlsds.sds.ISwerveModule;
+import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.lib.ISetup;
-import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.lib.hardware.IAbsoluteEncoder;
 import org.bitbuckets.lib.hardware.IMotorController;
 
@@ -21,15 +21,15 @@ public class CompressedSetup implements ISetup<ISwerveModule> {
     }
 
     @Override
-    public ISwerveModule build(ProcessPath self) {
+    public ISwerveModule build(IProcess self) {
         CompressedModule module = new CompressedModule(
-                driveSetup.build(self.addChild("drive")),
-                turnSetup.build(self.addChild("turn")),
-                encoder.build(self.addChild("absolute")),
+                self.childSetup("drive-motor", driveSetup),
+                self.childSetup("turn-motor", turnSetup),
+                self.childSetup("abs-encoder", encoder),
                 encoderCoefficient
         );
 
-        self.registerLoop(module, "logging-loop");
+        self.registerLogLoop(module);
 
         return module;
     }
