@@ -5,12 +5,11 @@ import com.revrobotics.CANSparkMaxLowLevel;
 import com.revrobotics.SparkMaxPIDController;
 import edu.wpi.first.hal.HAL;
 import org.bitbuckets.lib.tune.IValueTuner;
+import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 class SparkTunerTest {
-
 
     @Test
     public void shouldSetCanConstants_light() {
@@ -21,7 +20,7 @@ class SparkTunerTest {
         SparkMaxPIDController canSparkMax = Mockito.mock(SparkMaxPIDController.class);
         SparkTuner tuningAspect = new SparkTuner(tuner, tuner, tuner, canSparkMax);
 
-        tuningAspect.run(); //it's been ran
+        tuningAspect.loop(); //it's been ran
 
         Mockito.verify(canSparkMax, Mockito.times(1)).setP(1.0);
         Mockito.verify(canSparkMax, Mockito.times(1)).setI(1.0);
@@ -39,7 +38,7 @@ class SparkTunerTest {
         CANSparkMax sparkMax = new CANSparkMax(1, CANSparkMaxLowLevel.MotorType.kBrushless);
 
         SparkTuner tuningAspect = new SparkTuner(tuner, tuner, tuner, sparkMax.getPIDController());
-        tuningAspect.run(); //load ur data boy
+        tuningAspect.loop(); //load ur data boy
 
         Thread.sleep(500);
 

@@ -8,7 +8,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import org.bitbuckets.drive.controlsds.DriveControl;
-import org.bitbuckets.lib.log.Debuggable;
+import org.bitbuckets.lib.debug.IDebuggable;
 import org.bitbuckets.odometry.IOdometryControl;
 import org.bitbuckets.vision.IVisionControl;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,7 +24,7 @@ class HoloControlTest {
     IOdometryControl odometryControl;
     IVisionControl visionControl;
 
-    Debuggable debuggable;
+    IDebuggable debuggable;
 
     HoloControl control;
 
@@ -33,9 +33,9 @@ class HoloControlTest {
         driveControl = mock(DriveControl.class);
         odometryControl = mock(IOdometryControl.class);
         visionControl = mock(IVisionControl.class);
-        debuggable = mock(Debuggable.class);
+        debuggable = mock(IDebuggable.class);
 
-        control = new HoloControl(driveControl, visionControl, odometryControl,
+        control = new HoloControl(driveControl, odometryControl,
                 new HolonomicDriveController(new PIDController(1, 0, 0), new PIDController(1, 0, 0),
                         new ProfiledPIDController(1, 0, 0, new TrapezoidProfile.Constraints(1, 1)))
                 , debuggable);

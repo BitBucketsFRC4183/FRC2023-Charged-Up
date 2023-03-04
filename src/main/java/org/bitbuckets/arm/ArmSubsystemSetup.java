@@ -1,84 +1,33 @@
 package org.bitbuckets.arm;
 
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.util.Color;
-import edu.wpi.first.wpilibj.util.Color8Bit;
-import org.bitbuckets.arm.sim.ArmSimNew;
-import org.bitbuckets.arm.sim.SimArmSetup;
+import org.bitbuckets.OperatorInput;
 import org.bitbuckets.auto.AutoSubsystem;
-import org.bitbuckets.auto.AutoSubsystemSetup;
+import org.bitbuckets.cubeCone.GamePiece;
+import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.lib.ISetup;
-import org.bitbuckets.lib.ProcessPath;
-import org.bitbuckets.lib.hardware.IMotorController;
-import org.bitbuckets.lib.log.Debuggable;
-import org.bitbuckets.lib.util.MockingUtil;
-import org.bitbuckets.lib.vendor.spark.SparkSetup;
 
 public class ArmSubsystemSetup implements ISetup<ArmSubsystem> {
 
-    final boolean isEnabled;
-    AutoSubsystem autoSubsystem;
+    final OperatorInput input;
+    final AutoSubsystem autoSubsystem;
+    final ISetup<ArmControl> armControlSetup;
+    final GamePiece gamePiece;
 
-    public ArmSubsystemSetup(boolean isEnabled, AutoSubsystem autoSubsystem) {
-        this.isEnabled = isEnabled;
+    public ArmSubsystemSetup(OperatorInput input, AutoSubsystem autoSubsystem, ISetup<ArmControl> armControlSetup, GamePiece gamePiece) {
+        this.input = input;
         this.autoSubsystem = autoSubsystem;
+        this.armControlSetup = armControlSetup;
+        this.gamePiece = gamePiece;
     }
 
     @Override
-    public ArmSubsystem build(ProcessPath self) {
-        if (!isEnabled) {
-            return MockingUtil.buddy(ArmSubsystem.class);
-        }
-
-        ISetup<IMotorController> lowerArm1;
-        ISetup<IMotorController> lowerArm2;
-        ISetup<IMotorController> upperArm;
-
-        if (self.isReal()) {
-            lowerArm1 = new SparkSetup(9, ArmConstants.LOWER_CONFIG, ArmConstants.LOWER_PID);
-            lowerArm2 = new SparkSetup(10, ArmConstants.LOWER_CONFIG_FOLLOWER, ArmConstants.LOWER_PID);
-            upperArm = new SparkSetup(11, ArmConstants.UPPER_CONFIG, ArmConstants.UPPER_PID);
-
-        } else {
-           Mechanism2d mech = new Mechanism2d(3, 3);
-           // the mechanism root node
-           MechanismRoot2d root = mech.getRoot("basebetter", 1.5, 2);
-
-           MechanismLigament2d simLower = root.append(new MechanismLigament2d("lower-arm-sim", ArmConstants.LOWER_JOINT_LENGTH, 90, ArmConstants.LOWER_JOINT_WIDTH * 300, new Color8Bit(Color.kWhite)));
-           MechanismLigament2d simUpper  =
-                   simLower.append(
-                           new MechanismLigament2d("upper-arm-sim", ArmConstants.UPPER_JOINT_LENGTH + ArmConstants.GRABBER_LENGTH, 90, ArmConstants.UPPER_JOINT_WIDTH * 300, new Color8Bit(Color.kPurple)));
-
-
-           SmartDashboard.putData("sim-arm",mech);
-           Debuggable debuggable = self.generateDebugger();
-
-           var ff = new ArmFeedFordward();
-           var armSimNew = new ArmSimNew(simUpper, simLower, ArmConstants.UPPER_CONFIG, ArmConstants.LOWER_CONFIG, ff, debuggable);
-           lowerArm1 = armSimNew.getLowerArmSetup();
-           upperArm = armSimNew.getUpperArmSetup();
-           lowerArm2 = MockingUtil.noops(IMotorController.class);
-
-           self.registerLogicLoop(armSimNew::updateLoopDeltaTwenty);
-           self.registerLogLoop(armSimNew::logLoop);
-       }
-
-        ArmControlSetup armControlSetup = new ArmControlSetup(
-                lowerArm1,
-                lowerArm2,
-                upperArm
+    public ArmSubsystem build(IProcess self) {
+        return new ArmSubsystem(
+                input,
+                self.childSetup("arm-ctrl", armControlSetup),
+                autoSubsystem,
+                self.getDebuggable(),
+                gamePiece
         );
-
-        Debuggable debuggable = self.generateDebugger();
-
-        ArmControl armControl = armControlSetup.build(self.addChild("arm-control"));
-        ArmInput armInput = new ArmInput(new Joystick(1), self.generateDebugger());
-
-        return new ArmSubsystem(armInput, armControl, debuggable, autoSubsystem);
-
     }
 }

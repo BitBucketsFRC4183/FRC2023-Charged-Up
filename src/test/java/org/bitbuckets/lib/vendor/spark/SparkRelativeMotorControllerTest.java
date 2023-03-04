@@ -1,12 +1,12 @@
 package org.bitbuckets.lib.vendor.spark;
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 import com.revrobotics.SparkMaxPIDController;
 import edu.wpi.first.hal.HAL;
+import edu.wpi.first.math.system.plant.DCMotor;
 import org.bitbuckets.lib.hardware.MotorConfig;
-import org.bitbuckets.lib.hardware.PIDIndex;
+import org.bitbuckets.lib.hardware.OptimizationMode;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -16,8 +16,20 @@ import java.util.Optional;
 
 class SparkRelativeMotorControllerTest {
 
-    static double[] IGNORE = PIDIndex.CONSTANTS(0,0,0,0,0);
-    MotorConfig test = new MotorConfig(0.5, 1, 1, false, false, 20, false, false, Optional.empty());
+    MotorConfig test = new MotorConfig(
+            0.5,
+            1,
+            1,
+            false,
+            false,
+            20,
+            Optional.empty(),
+            Optional.empty(),
+            false,
+            false,
+            OptimizationMode.GENERIC,
+            DCMotor.getNEO(1)
+    );
 
 
     @Test

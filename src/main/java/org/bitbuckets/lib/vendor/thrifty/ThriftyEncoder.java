@@ -1,6 +1,7 @@
 package org.bitbuckets.lib.vendor.thrifty;
 
 import edu.wpi.first.wpilibj.AnalogInput;
+import org.bitbuckets.lib.core.HasLogLoop;
 import org.bitbuckets.lib.hardware.IAbsoluteEncoder;
 import org.bitbuckets.lib.log.ILoggable;
 
@@ -8,19 +9,24 @@ import org.bitbuckets.lib.log.ILoggable;
 /**
  * It works now don't touch it
  */
-public class ThriftyEncoder implements IAbsoluteEncoder, Runnable {
+public class ThriftyEncoder implements IAbsoluteEncoder, HasLogLoop {
 
     private static final double READ_VOLTAGE_MAX = 4.8;
     final AnalogInput input;
-    final ILoggable<double[]> allThriftyEncoderData;
     final double offset_radians;
+
+    final ILoggable<Double> rawPosition;
+    final ILoggable<Double> absoluteAngle;
+    final ILoggable<Double> voltage;
 
 
     // read voltage, get input
-    public ThriftyEncoder(AnalogInput input, ILoggable<double[]> allThriftyEncoderData, double offset_radians) {
+    public ThriftyEncoder(AnalogInput input, double offset_radians, ILoggable<Double> rawPosition, ILoggable<Double> absoluteAngle, ILoggable<Double> voltage) {
         this.input = input;
-        this.allThriftyEncoderData = allThriftyEncoderData;
         this.offset_radians = offset_radians;
+        this.rawPosition = rawPosition;
+        this.absoluteAngle = absoluteAngle;
+        this.voltage = voltage;
     }
 
     // get position
@@ -38,11 +44,9 @@ public class ThriftyEncoder implements IAbsoluteEncoder, Runnable {
     }
 
     @Override
-    public void run() {
-        allThriftyEncoderData.log(new double[] {
-                Math.toDegrees(getRawPositionRadians()),
-                Math.toDegrees(getAbsoluteAngle()),
-                input.getVoltage(),
-        });
+    public void logLoop() {
+        rawPosition.log(getRawPositionRadians());
+        absoluteAngle.log(getAbsoluteAngle());
+        voltage.log(input.getVoltage());
     }
 }

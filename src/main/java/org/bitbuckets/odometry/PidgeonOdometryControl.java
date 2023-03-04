@@ -14,21 +14,23 @@ import edu.wpi.first.math.numbers.N7;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
 import org.bitbuckets.drive.IDriveControl;
-import org.bitbuckets.lib.log.Debuggable;
+import org.bitbuckets.lib.core.HasLogLoop;
+import org.bitbuckets.lib.core.HasLoop;
+import org.bitbuckets.lib.debug.IDebuggable;
 import org.bitbuckets.vision.IVisionControl;
 
 import java.util.Optional;
 
-public class PidgeonOdometryControl implements IOdometryControl {
+public class PidgeonOdometryControl implements IOdometryControl, HasLoop, HasLogLoop {
 
-    final Debuggable debuggable;
+    final IDebuggable debuggable;
     final IDriveControl driveControl;
     final IVisionControl visionControl;
     final WPI_Pigeon2 pigeonIMU;
     final SwerveDrivePoseEstimator swerveDrivePoseEstimator;
 
 
-    public PidgeonOdometryControl(Debuggable debuggable, IDriveControl driveControl, IVisionControl visionControl, WPI_Pigeon2 pigeonIMU, SwerveDrivePoseEstimator swerveDrivePoseEstimator) {
+    public PidgeonOdometryControl(IDebuggable debuggable, IDriveControl driveControl, IVisionControl visionControl, WPI_Pigeon2 pigeonIMU, SwerveDrivePoseEstimator swerveDrivePoseEstimator) {
         this.debuggable = debuggable;
         this.driveControl = driveControl;
         this.pigeonIMU = pigeonIMU;
@@ -37,29 +39,23 @@ public class PidgeonOdometryControl implements IOdometryControl {
     }
 
     private static final Vector<N7> stateStdDevs = VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(5), 0.05, 0.05, 0.05, 0.05);
-
     private static final Vector<N5> localMeasurementStdDevs = VecBuilder.fill(Units.degreesToRadians(0.01), 0.01, 0.01, 0.01, 0.01);
     private static final Vector<N3> visionMeasurementStdDevs = VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(10));
 
 
-    public void updateOdometryLoop() {
-        Rotation2d gyroangle = (pigeonIMU.getRotation2d());
+    @Override
+    public void loop() {
+        Rotation2d gyroangle = pigeonIMU.getRotation2d();
         double epoch = Timer.getFPGATimestamp();
         debuggable.log("raw-swerve-pose", swerveDrivePoseEstimator.update(gyroangle, driveControl.currentPositions()));
 
         //Todo: re add when vision is fixed
         Optional<Pose3d> res = visionControl.estimateVisionRobotPose();
-        if (res == null) return;
+        if (res.isEmpty()) return;
 
-        if (res != null && res.isPresent()) {
-            Pose2d realPose = res.get().toPose2d();
-            swerveDrivePoseEstimator.addVisionMeasurement(realPose, epoch, visionMeasurementStdDevs);
+        Pose2d realPose = res.get().toPose2d();
+        swerveDrivePoseEstimator.addVisionMeasurement(realPose, epoch, visionMeasurementStdDevs);
 
-
-        } else {
-
-
-        }
 
     }
 
@@ -84,12 +80,18 @@ public class PidgeonOdometryControl implements IOdometryControl {
 
     @Override
     public double getYaw_deg() {
-        return pigeonIMU.getYaw();
+        return Units.radiansToDegrees(pigeonIMU.getYaw());
+    }
+
+    @Override
+    public double getPitch_deg() {
+        return pigeonIMU.getPitch();
     }
 
 
     @Override
     public double getRoll_deg() {
+
 
         double[] data = new double[4];
         pigeonIMU.getAccumGyro(data); //fill data
@@ -105,8 +107,8 @@ public class PidgeonOdometryControl implements IOdometryControl {
     }
 
     @Override
-    public void setPos(Rotation2d gyroAngle, SwerveModulePosition[] modulePositions, Pose2d poseMeters) {
-        swerveDrivePoseEstimator.resetPosition(gyroAngle, modulePositions, poseMeters);
+    public void setPos(Rotation2d gyroAngle, Pose2d poseMeters) {
+        swerveDrivePoseEstimator.resetPosition(gyroAngle, driveControl.currentPositions(), poseMeters);
     }
 
 
