@@ -20,7 +20,7 @@ public class SwapSetup<T> implements ISetup<T> {
     @Override
     public T build(IProcess self) {
         if (self.isReal()) {
-            return useOnAppa.build(self);
+            return useOnNew.build(self);
         } else {
             return useOnSim.build(self);
         }
