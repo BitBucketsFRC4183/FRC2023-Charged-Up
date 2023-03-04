@@ -69,6 +69,20 @@ public class ArmControl {
 
     }
 
+    public void openGripper() {
+        gripperActuator.moveAtPercent(-0.3);
+
+    }
+
+    public void closeGripper() {
+        gripperActuator.moveAtPercent(+0.3);
+    }
+
+    public void stopGripper() {
+        gripperActuator.moveAtPercent(0);
+    }
+
+
     public void commandArmToPercent(double lowerArmPercent, double upperArmPercent, boolean gripperShouldOpen) {
         lowerArm.moveAtPercent(lowerArmPercent);
         upperArm.moveAtPercent(upperArmPercent);

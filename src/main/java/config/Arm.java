@@ -125,13 +125,14 @@ public interface Arm {
             false,
             false,
             10,
-            Optional.empty(),
-            Optional.empty(),
-            true,
-            true,
+            Optional.of(0.0),
+            Optional.of(-85.0),
+            false,
+            false,
             OptimizationMode.GENERIC,
             DCMotor.getNeo550(1)
     );
+
 
     //PID
 

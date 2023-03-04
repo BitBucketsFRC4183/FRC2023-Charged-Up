@@ -68,7 +68,8 @@ public class ArmSubsystem implements HasLoop {
                 shouldDoNext = ArmFSM.PREPARE;
                 return;
             }
-            if (autoSubsystem.sampleHasEventStarted("arm-score-high")) {
+            //Only scoring high when moving arm in auto
+            if (autoSubsystem.sampleHasEventStarted("moveArm")) {
                 shouldDoNext = ArmFSM.SCORE_HIGH;
                 return;
             }
@@ -83,7 +84,6 @@ public class ArmSubsystem implements HasLoop {
 
             //TODO legacy path event
             if (autoSubsystem.sampleHasEventStarted("collect")) {
-                System.out.println("MOVEARM");
                 shouldDoNext = ArmFSM.STORAGE;
                 return;
             }
@@ -127,7 +127,18 @@ public class ArmSubsystem implements HasLoop {
 
     //acts on shouldDoNext and then updates it to the result state if it has managed to complete it's task
     void handleLogic() {
-        if (autoSubsystem.state() == AutoFSM.DISABLED) { //arm can move after auto fsm has ended, so that if we mess up it can still win without us
+
+
+        if (operatorInput.ifGripperPressed()) {
+            armControl.openGripper();
+        } else if (operatorInput.closeGripperPressed()) {
+            armControl.closeGripper();
+        } else {
+            armControl.stopGripper();
+        }
+
+        if (autoSubsystem.state() == AutoFSM.DISABLED) { //arm can move after auto fsm has ended, so that if we fuck up it can still win without us
+
             return;
         }
 
