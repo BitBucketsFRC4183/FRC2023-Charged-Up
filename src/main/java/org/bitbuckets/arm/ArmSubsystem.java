@@ -1,7 +1,6 @@
 package org.bitbuckets.arm;
 
 import config.Arm;
-import edu.wpi.first.math.util.Units;
 import org.bitbuckets.OperatorInput;
 import org.bitbuckets.auto.AutoFSM;
 import org.bitbuckets.auto.AutoSubsystem;
@@ -31,11 +30,7 @@ public class ArmSubsystem implements HasLoop {
     @Override
     public void loop() {
         //handle arm calibration
-        if (autoSubsystem.hasChanged() && autoSubsystem.state() == AutoFSM.INITIALIZATION) {
-            System.out.println("System zeroed to starting position");
 
-            armControl.zeroToStartingPosition(); //Assume it's at the starting position lmao
-        }
         if (operatorInput.isZeroArmPressed()) {
             System.out.println("System zeroed to user input");
 
@@ -158,7 +153,7 @@ public class ArmSubsystem implements HasLoop {
         //TODO fix the numbers
         if (shouldDoNext == ArmFSM.DEBUG_TO_DEGREES) {
             armControl.commandArmToState(
-                    0,0,
+                    0, 0,
                     !operatorInput.closeGripperPressed()
             );
 
@@ -168,21 +163,20 @@ public class ArmSubsystem implements HasLoop {
         }
 
         if (shouldDoNext == ArmFSM.SCORE_MID) {
-            if(gamePiece.isCone())
-            {
-                armControl.commandArmToState(0.008, -0.227,true);
+            if (gamePiece.isCone()) {
+                armControl.commandArmToState(0.008, -0.227, true);
             }
 
 
         }
         if (shouldDoNext == ArmFSM.SCORE_HIGH) {
-            if(gamePiece.isCone()) {
-                armControl.commandArmToState(-0.126,0.0,  true);
+            if (gamePiece.isCone()) {
+                armControl.commandArmToState(-0.126, 0.0, true);
             }
 
         }
         if (shouldDoNext == ArmFSM.GROUND_INTAKE) {
-            armControl.commandArmToState(0.581, -0.274,true);
+            armControl.commandArmToState(0.581, -0.274, true);
 
         }
 
