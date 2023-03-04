@@ -32,6 +32,7 @@ public class AutoControlSetup implements ISetup<IAutoControl> {
             List<PathPlannerTrajectory> trajectory4 = PathPlanner.loadPathGroup("taxi-middle-dock-alt", new PathConstraints(4.0, 3.0), new PathConstraints(4.0, 3.5), new PathConstraints(2.0, 1.5));
             List<PathPlannerTrajectory> trajectory5 = PathPlanner.loadPathGroup("SC1-CL1-BL", new PathConstraints(3.0, 2.5), new PathConstraints(4.0, 3.0), new PathConstraints(4.0, 3.0), new PathConstraints(2.0, 1.5));
             List<PathPlannerTrajectory> trajectory6 = PathPlanner.loadPathGroup("SC1-CL1-SC3-BL", new PathConstraints(3.0, 2.0), new PathConstraints(4.0, 3.0), new PathConstraints(4.0, 3.0), new PathConstraints(2.0, 1.5));
+            List<PathPlannerTrajectory> trajectory7 = PathPlanner.loadPathGroup("SC1-CL1-SC3", new PathConstraints(4.0, 3.0));
             List<PathPlannerTrajectory> trajectory8 = PathPlanner.loadPathGroup("SC9-CL4-BL", new PathConstraints(3.0, 2.5), new PathConstraints(4.0, 3.0), new PathConstraints(2.5, 2.0));
             List<PathPlannerTrajectory> trajectory9 = PathPlanner.loadPathGroup("SC9-CL4-SC7-BL", new PathConstraints(2.5, 2.0), new PathConstraints(4.0, 3.0), new PathConstraints(4.0, 3.0), new PathConstraints(3.0, 2.5), new PathConstraints(2.5, 2.0));
 
@@ -43,6 +44,7 @@ public class AutoControlSetup implements ISetup<IAutoControl> {
             paths.add(trajectory4);
             paths.add(trajectory5);
             paths.add(trajectory6);
+            paths.add(trajectory7);
             paths.add(trajectory8);
             paths.add(trajectory9);
             
