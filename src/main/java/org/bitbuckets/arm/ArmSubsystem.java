@@ -127,9 +127,7 @@ public class ArmSubsystem implements HasLoop {
 
     //acts on shouldDoNext and then updates it to the result state if it has managed to complete it's task
     void handleLogic() {
-<<<<<<< Updated upstream
-        if (autoSubsystem.state() == AutoFSM.DISABLED) { //arm can move after auto fsm has ended, so that if we mess up it can still win without us
-=======
+
 
         if (operatorInput.ifGripperPressed()) {
             armControl.openGripper();
@@ -140,7 +138,7 @@ public class ArmSubsystem implements HasLoop {
         }
 
         if (autoSubsystem.state() == AutoFSM.DISABLED) { //arm can move after auto fsm has ended, so that if we fuck up it can still win without us
->>>>>>> Stashed changes
+
             return;
         }
 

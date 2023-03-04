@@ -165,7 +165,7 @@ public class DriveSubsystem implements HasLoop {
     }
 
     void teleopVision() {
-        if (lastVisionTaget.isPresent()) {
+        if (lastVisionTarget.isPresent()) {
             ChassisSpeeds speeds = holoControl.calculatePose2D(lastVisionTarget.get().toPose2d(), 1, lastVisionTarget.get().toPose2d().getRotation());
             speeds.vxMetersPerSecond = -speeds.vxMetersPerSecond;
             speeds.vyMetersPerSecond = -speeds.vyMetersPerSecond;
