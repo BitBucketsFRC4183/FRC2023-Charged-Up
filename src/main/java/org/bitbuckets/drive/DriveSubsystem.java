@@ -1,9 +1,7 @@
 package org.bitbuckets.drive;
 
 import com.pathplanner.lib.PathPlannerTrajectory;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import org.bitbuckets.OperatorInput;
 import org.bitbuckets.auto.AutoFSM;
@@ -154,7 +152,6 @@ public class DriveSubsystem implements HasLoop {
     }
 
 
-
     void autoPathFinding() {
         Optional<PathPlannerTrajectory.PathPlannerState> opt = autoSubsystem.samplePathPlannerState();
         if (opt.isPresent()) {
@@ -168,7 +165,7 @@ public class DriveSubsystem implements HasLoop {
     }
 
     void teleopVision() {
-        if (lastVisionTarget.isPresent()) {
+        if (lastVisionTaget.isPresent()) {
             ChassisSpeeds speeds = holoControl.calculatePose2D(lastVisionTarget.get().toPose2d(), 1, lastVisionTarget.get().toPose2d().getRotation());
             speeds.vxMetersPerSecond = -speeds.vxMetersPerSecond;
             speeds.vyMetersPerSecond = -speeds.vyMetersPerSecond;
