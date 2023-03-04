@@ -41,7 +41,7 @@ public interface Arm {
 
     //FF
 
-    //TODO these are wrong as fuck
+    //TODO these are wrong
     double LOWER_ARM_FORWARD_LIMIT_MECHANISM = 0.98;
     double LOWER_ARM_REVERSE_LIMIT_MECHANISM = -0.494361111111;
     double UPPER_ARM_FORWARD_LIMIT_MECHANISM = 1.041;
@@ -125,13 +125,14 @@ public interface Arm {
             false,
             false,
             10,
-            Optional.empty(),
-            Optional.empty(),
-            true,
-            true,
+            Optional.of(0.0),
+            Optional.of(-85.0),
+            false,
+            false,
             OptimizationMode.GENERIC,
             DCMotor.getNeo550(1)
     );
+
 
     //PID
 
@@ -166,7 +167,7 @@ public interface Arm {
             Optional.empty()
     );
 
-    PIDConfig GRIPPER_PID = new PIDConfig(0.1,0,0,Optional.empty(), Optional.empty());
+    PIDConfig GRIPPER_PID = new PIDConfig(0.1, 0, 0, Optional.empty(), Optional.empty());
 
 
     TrapezoidProfile.Constraints LOWER_CONSTRAINT = new TrapezoidProfile.Constraints(
@@ -182,9 +183,6 @@ public interface Arm {
             LOWER_ARM,
             UPPER_ARM
     );
-
-
-
 
 
 }
