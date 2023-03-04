@@ -2,44 +2,69 @@ package org.bitbuckets.lib.control;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.math.util.Units;
-import org.bitbuckets.lib.log.Debuggable;
+import org.bitbuckets.lib.log.ILoggable;
 import org.bitbuckets.lib.tune.IValueTuner;
 
 public class ProfiledPIDFCalculator implements Runnable, IPIDCalculator {
 
     final ProfiledPIDController profiledPIDController;
-    final IValueTuner<double[]> tuner;
-    final Debuggable debuggable;
+    final IValueTuner<Double> p;
+    final IValueTuner<Double> i;
+    final IValueTuner<Double> d;
+    final IValueTuner<Double> kV;
+    final IValueTuner<Double> kA;
 
-    public ProfiledPIDFCalculator(ProfiledPIDController profiledPIDController, IValueTuner<double[]> tuner, Debuggable debuggable) {
+    final ILoggable<Double> lastSetpoint;
+    final ILoggable<Double> lastActual;
+    final ILoggable<Double> lastOutput;
+
+    public ProfiledPIDFCalculator(ProfiledPIDController profiledPIDController, IValueTuner<Double> p, IValueTuner<Double> i, IValueTuner<Double> d, IValueTuner<Double> kV, IValueTuner<Double> kA, ILoggable<Double> lastSetpoint, ILoggable<Double> lastActual, ILoggable<Double> lastOutput) {
         this.profiledPIDController = profiledPIDController;
-        this.tuner = tuner;
-        this.debuggable = debuggable;
+        this.p = p;
+        this.i = i;
+        this.d = d;
+        this.kV = kV;
+        this.kA = kA;
+        this.lastSetpoint = lastSetpoint;
+        this.lastActual = lastActual;
+        this.lastOutput = lastOutput;
     }
 
     @Override
     public void run() {
-        debuggable.log("logged", true);
-
-        if (tuner.hasUpdated()) {
-            double[] out = tuner.consumeValue();
-
-            profiledPIDController.setPID(out[0],
-                    out[1],
-                    out[2]);
-            profiledPIDController.setConstraints(new TrapezoidProfile.Constraints(out[3], out[4]));
+        if (p.hasUpdated()) {
+            profiledPIDController.setP(p.consumeValue());
+        }
+        if (i.hasUpdated()) {
+            profiledPIDController.setI(i.consumeValue());
+        }
+        if (d.hasUpdated()) {
+            profiledPIDController.setD(d.consumeValue());
+        }
+        if (kV.hasUpdated() || kA.hasUpdated()) {
+            profiledPIDController.setConstraints(new TrapezoidProfile.Constraints(kV.consumeValue(), kA.consumeValue()));
         }
 
-
-        debuggable.log("pos-setpoint", Units.radiansToDegrees(profiledPIDController.getSetpoint().position));
-        debuggable.log("pos-error", profiledPIDController.getPositionError());
-        debuggable.log("goal", profiledPIDController.getGoal().toString());
+        lastSetpoint.log(lastSetpointVal);
+        lastActual.log(lastMeasureVal);
+        lastOutput.log(lastVoltageVal);
     }
 
     @Override
     public double calculateNext(double measurement, double setpoint) {
-        return profiledPIDController.calculate(measurement, setpoint) * 12;
+        double output = profiledPIDController.calculate(measurement, setpoint) * 12;
+        lastVoltageVal = output;
+
+        return output;
+    }
+
+    double lastSetpointVal = 0;
+    double lastVoltageVal = 0;
+    double lastMeasureVal = 0;
+
+    @Override
+    public double lastError() {
+        return lastSetpointVal - lastMeasureVal;
     }
 
     @Override

@@ -4,10 +4,11 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import org.bitbuckets.drive.controlsds.sds.ISwerveModule;
+import org.bitbuckets.lib.core.HasLogLoop;
 import org.bitbuckets.lib.hardware.IAbsoluteEncoder;
 import org.bitbuckets.lib.hardware.IMotorController;
 
-public class CompressedModule implements ISwerveModule, Runnable {
+public class CompressedModule implements ISwerveModule, HasLogLoop {
 
     final IMotorController driveMotor;
     final IMotorController steerMotor;
@@ -122,8 +123,9 @@ public class CompressedModule implements ISwerveModule, Runnable {
         this.referenceAngleRadians = referenceAngleRadians;
     }
 
+
     @Override
-    public void run() {
+    public void logLoop() {
 
     }
 }

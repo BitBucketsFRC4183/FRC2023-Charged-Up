@@ -2,7 +2,7 @@ package org.bitbuckets.auto;
 
 import com.pathplanner.lib.PathPlannerTrajectory;
 import edu.wpi.first.wpilibj.Timer;
-import org.bitbuckets.lib.util.HasLifecycle;
+import org.bitbuckets.lib.core.HasLifecycle;
 
 import java.util.List;
 import java.util.Map;
@@ -15,8 +15,22 @@ public class AutoPathInstance implements HasLifecycle {
     final AutoPath type;
     final double totalTime;
 
-    record SegmentTime(int index, double startTime) {
+    @Override
+    public void onEvent(String autoEvent) {
+        //Do nothing, we are the ones who emit events
     }
+
+    @Override
+    public void onPhaseChangeEvent(AutoFSM phaseChangedTo) {
+        if (phaseChangedTo == AutoFSM.AUTO_RUN) {
+            pathTimer.start();
+            return;
+        } else {
+            pathTimer.stop();
+        }
+    }
+
+    record SegmentTime(int index, double startTime) { }
 
     public AutoPathInstance(List<PathPlannerTrajectory> segments, Map<String, Double> eventToTimeMap, List<SegmentTime> segmentTimes, AutoPath type, double totalTime) {
         this.segments = segments;
@@ -73,16 +87,6 @@ public class AutoPathInstance implements HasLifecycle {
         return pathTimer.hasElapsed(totalTime);
     }
 
-
-    @Override
-    public void start() {
-        pathTimer.start();
-    }
-
-    @Override
-    public void end() {
-        pathTimer.stop();
-    }
 
 
 }
