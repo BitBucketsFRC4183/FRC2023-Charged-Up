@@ -73,7 +73,8 @@ public class ArmSubsystem implements HasLoop {
                 shouldDoNext = ArmFSM.PREPARE;
                 return;
             }
-            if (autoSubsystem.sampleHasEventStarted("arm-score-high")) {
+            //Only scoring high when moving arm in auto
+            if (autoSubsystem.sampleHasEventStarted("moveArm")) {
                 shouldDoNext = ArmFSM.SCORE_HIGH;
                 return;
             }

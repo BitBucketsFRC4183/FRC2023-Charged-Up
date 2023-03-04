@@ -45,6 +45,7 @@ public class AutoControlSetup implements ISetup<IAutoControl> {
             paths.add(trajectory6);
             paths.add(trajectory8);
             paths.add(trajectory9);
+            
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
