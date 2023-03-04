@@ -76,7 +76,7 @@ public class AutoPathInstance implements HasLifecycle {
 
     public PathPlannerTrajectory.PathPlannerState sampleSpeeds() {
         if (type == AutoPath.NONE) {
-            return new PathPlannerTrajectory.PathPlannerState();
+            return null;
         }
 
         double secondsNow = pathTimer.get();
@@ -84,7 +84,7 @@ public class AutoPathInstance implements HasLifecycle {
         double secondsInSegment = secondsNow - lastTimestamp.startTime;
 
         if (lastTimestamp.stopped()) {
-            return new PathPlannerTrajectory.PathPlannerState();
+            return null;
         }
 
         return (PathPlannerTrajectory.PathPlannerState) segments.get(lastTimestamp.index).sample(secondsInSegment);
