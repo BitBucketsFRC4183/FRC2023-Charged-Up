@@ -30,7 +30,7 @@ public class DriveControl implements IDriveControl, HasLogLoop {
 
 
     //Speed factor that edits the max velocity and max angular velocity
-    double speedModifier = 1;
+    double speedModifier = 0.75;
 
     List<ISwerveModule> modules;
 
@@ -77,6 +77,7 @@ public class DriveControl implements IDriveControl, HasLogLoop {
         });
     }
 
+    
     public double getMaxVelocity() {
         return Drive.MAX_DRIVE_VELOCITY * speedModifier;
     }
