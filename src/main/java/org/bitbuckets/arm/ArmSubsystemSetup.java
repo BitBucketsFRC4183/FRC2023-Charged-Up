@@ -27,8 +27,7 @@ public class ArmSubsystemSetup implements ISetup<ArmSubsystem> {
                 input,
                 self.childSetup("arm-ctrl", armControlSetup),
                 autoSubsystem,
-                self.getDebuggable(),
-                gamePiece
+                self.getDebuggable()
         );
     }
 }

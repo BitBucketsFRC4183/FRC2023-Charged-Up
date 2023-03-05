@@ -23,6 +23,8 @@ public class MotorConfig {
     public final boolean isForwardHardLimitEnabled;
     public final boolean isBackwardHardLimitEnabled;
 
+    public final boolean isRampRateEnabled;
+
     public final OptimizationMode optimizationMode;
     public final DCMotor motorType;
 
@@ -37,10 +39,11 @@ public class MotorConfig {
      * @param reverseSoftLimitMechanismAccum_rot
      * @param isForwardHardLimitEnabled
      * @param isBackwardHardLimitEnabled
+     * @param isRampRateEnabled
      * @param optimizationMode
      * @param motorType
      */
-    public MotorConfig(double encoderToMechanismCoefficient, double timeCoefficient, double rotationToMeterCoefficient, boolean isInverted, boolean shouldBreakOnNoCommand, double currentLimit, Optional<Double> forwardSoftLimitMechanismAccum_rot, Optional<Double> reverseSoftLimitMechanismAccum_rot, boolean isForwardHardLimitEnabled, boolean isBackwardHardLimitEnabled, OptimizationMode optimizationMode, DCMotor motorType) {
+    public MotorConfig(double encoderToMechanismCoefficient, double timeCoefficient, double rotationToMeterCoefficient, boolean isInverted, boolean shouldBreakOnNoCommand, double currentLimit, Optional<Double> forwardSoftLimitMechanismAccum_rot, Optional<Double> reverseSoftLimitMechanismAccum_rot, boolean isForwardHardLimitEnabled, boolean isBackwardHardLimitEnabled, boolean isRampRateEnabled, OptimizationMode optimizationMode, DCMotor motorType) {
         this.encoderToMechanismCoefficient = encoderToMechanismCoefficient;
         this.timeCoefficient = timeCoefficient;
         this.rotationToMeterCoefficient = rotationToMeterCoefficient;
@@ -51,6 +54,7 @@ public class MotorConfig {
         this.reverseSoftLimitMechanismAccum_rot = reverseSoftLimitMechanismAccum_rot;
         this.isForwardHardLimitEnabled = isForwardHardLimitEnabled;
         this.isBackwardHardLimitEnabled = isBackwardHardLimitEnabled;
+        this.isRampRateEnabled = isRampRateEnabled;
         this.optimizationMode = optimizationMode;
         this.motorType = motorType;
     }
