@@ -140,9 +140,15 @@ public class DriveSubsystem implements HasLoop {
         }
 
         if (nextStateShould == DriveFSM.VISION) {
+            lastVisionTarget = visionControl.estimateVisionTargetPose();
             teleopVision();
+            if (!input.isVisionDrivePressed()) {
+                nextStateShould = DriveFSM.MANUAL;
+            }
             return;
+
         }
+
 
         if (nextStateShould == DriveFSM.IDLE) {
             driveControl.stop();
@@ -167,9 +173,9 @@ public class DriveSubsystem implements HasLoop {
     void teleopVision() {
         if (lastVisionTarget.isPresent()) {
             ChassisSpeeds speeds = holoControl.calculatePose2D(lastVisionTarget.get().toPose2d(), 1, lastVisionTarget.get().toPose2d().getRotation());
-            speeds.vxMetersPerSecond = -speeds.vxMetersPerSecond;
+            speeds.vxMetersPerSecond = speeds.vxMetersPerSecond;
             speeds.vyMetersPerSecond = -speeds.vyMetersPerSecond;
-            speeds.omegaRadiansPerSecond = -speeds.omegaRadiansPerSecond;
+            speeds.omegaRadiansPerSecond = speeds.omegaRadiansPerSecond;
 
 
             driveControl.drive(speeds);
