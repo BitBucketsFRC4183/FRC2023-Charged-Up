@@ -9,8 +9,6 @@ import org.bitbuckets.arm.ArmSubsystemSetup;
 import org.bitbuckets.auto.AutoControlSetup;
 import org.bitbuckets.auto.AutoSubsystem;
 import org.bitbuckets.auto.AutoSubsystemSetup;
-import org.bitbuckets.cubeCone.GamePiece;
-import org.bitbuckets.cubeCone.GamePieceSetup;
 import org.bitbuckets.drive.DriveSubsystem;
 import org.bitbuckets.drive.DriveSubsystemSetup;
 import org.bitbuckets.drive.IDriveControl;
@@ -44,10 +42,6 @@ public class RobotSetup implements ISetup<Void> {
                 new Joystick(0)
         );
 
-        GamePiece piece = self.childSetup("gp", new GamePieceSetup(operatorInput));
-
-
-        self.childSetup("cone-cube", new GamePieceSetup(operatorInput));
 
 
         //if only these could be children of the drive subsystem... TODO fix this in mattlib future editions
@@ -118,8 +112,7 @@ public class RobotSetup implements ISetup<Void> {
                         new ArmSubsystemSetup(
                                 operatorInput,
                                 autoSubsystem,
-                                ArmSetups.ARM_CONTROL,
-                                piece
+                                ArmSetups.ARM_CONTROL
                         )
                 )
 

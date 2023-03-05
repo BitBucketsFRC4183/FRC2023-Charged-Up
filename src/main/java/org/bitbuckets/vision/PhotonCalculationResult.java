@@ -6,14 +6,23 @@ import edu.wpi.first.math.geometry.Translation2d;
 
 public class PhotonCalculationResult {
     public final Pose3d robotPose;
-    public final Pose3d goalPose;
+    public final Pose3d cubeScorePose;
+
+    public final Pose3d coneLeftScorePose;
+    public final Pose3d coneRightScorePose;
+    public final Pose3d loadLeftPose;
+    public final Pose3d loadRightPose;
     public final Translation2d translationToTag;
     public final Rotation2d targetYaw;
     public final double yaw;
     public final boolean isTargetTrue;
-    public PhotonCalculationResult(Pose3d robotPose, Pose3d goalPose, Translation2d translationToTag, Rotation2d targetYaw, double yaw, boolean isTargetTrue) {
+    public PhotonCalculationResult(Pose3d robotPose, Pose3d goalPose, Pose3d coneLeftScorePose, Pose3d coneRightScorePose, Pose3d loadLeftPose, Pose3d loadRightPose, Translation2d translationToTag, Rotation2d targetYaw, double yaw, boolean isTargetTrue) {
         this.robotPose = robotPose;
-        this.goalPose = goalPose;
+        this.cubeScorePose = goalPose;
+        this.coneLeftScorePose = coneLeftScorePose;
+        this.coneRightScorePose = coneRightScorePose;
+        this.loadLeftPose = loadLeftPose;
+        this.loadRightPose = loadRightPose;
         this.translationToTag = translationToTag;
         this.targetYaw = targetYaw;
         this.yaw = yaw;
@@ -24,7 +33,7 @@ public class PhotonCalculationResult {
     public String toString() {
         return "PhotonCalculationResult{" +
                 "robotPose=" + robotPose +
-                ", goalPose=" + goalPose +
+                ", goalPose=" + cubeScorePose +
                 ", translationToTag=" + translationToTag +
                 ", targetYaw=" + targetYaw +
                 ", yaw=" + yaw +

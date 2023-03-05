@@ -1,10 +1,11 @@
 package org.bitbuckets.arm;
 
 import config.Arm;
+
 import org.bitbuckets.OperatorInput;
 import org.bitbuckets.auto.AutoFSM;
 import org.bitbuckets.auto.AutoSubsystem;
-import org.bitbuckets.cubeCone.GamePiece;
+
 import org.bitbuckets.lib.core.HasLoop;
 import org.bitbuckets.lib.debug.IDebuggable;
 
@@ -14,11 +15,9 @@ public class ArmSubsystem implements HasLoop {
     final ArmControl armControl;
     final AutoSubsystem autoSubsystem;
     final IDebuggable debuggable;
-    final GamePiece gamePiece;
 
 
-    public ArmSubsystem(OperatorInput operatorInput, ArmControl armControl, AutoSubsystem autoSubsystem, IDebuggable debuggable, GamePiece gamePiece) {
-        this.gamePiece = gamePiece;
+    public ArmSubsystem(OperatorInput operatorInput, ArmControl armControl, AutoSubsystem autoSubsystem, IDebuggable debuggable) {
         this.operatorInput = operatorInput;
         this.armControl = armControl;
         this.autoSubsystem = autoSubsystem;
@@ -30,7 +29,11 @@ public class ArmSubsystem implements HasLoop {
     @Override
     public void loop() {
         //handle arm calibration
+        if (autoSubsystem.hasChanged() && autoSubsystem.state() == AutoFSM.INITIALIZATION) {
+            System.out.println("System zeroed to starting position");
 
+            armControl.zeroToStartingPosition(); //Assume it's at the starting position lmao
+        }
         if (operatorInput.isZeroArmPressed()) {
             System.out.println("System zeroed to user input");
 
@@ -68,8 +71,7 @@ public class ArmSubsystem implements HasLoop {
                 shouldDoNext = ArmFSM.PREPARE;
                 return;
             }
-            //Only scoring high when moving arm in auto
-            if (autoSubsystem.sampleHasEventStarted("moveArm")) {
+            if (autoSubsystem.sampleHasEventStarted("arm-score-high")) {
                 shouldDoNext = ArmFSM.SCORE_HIGH;
                 return;
             }
@@ -84,6 +86,7 @@ public class ArmSubsystem implements HasLoop {
 
             //TODO legacy path event
             if (autoSubsystem.sampleHasEventStarted("collect")) {
+                System.out.println("MOVEARM");
                 shouldDoNext = ArmFSM.STORAGE;
                 return;
             }
@@ -127,18 +130,7 @@ public class ArmSubsystem implements HasLoop {
 
     //acts on shouldDoNext and then updates it to the result state if it has managed to complete it's task
     void handleLogic() {
-
-
-        if (operatorInput.ifGripperPressed()) {
-            armControl.openGripper();
-        } else if (operatorInput.closeGripperPressed()) {
-            armControl.closeGripper();
-        } else {
-            armControl.stopGripper();
-        }
-
         if (autoSubsystem.state() == AutoFSM.DISABLED) { //arm can move after auto fsm has ended, so that if we fuck up it can still win without us
-
             return;
         }
 
@@ -164,7 +156,7 @@ public class ArmSubsystem implements HasLoop {
         //TODO fix the numbers
         if (shouldDoNext == ArmFSM.DEBUG_TO_DEGREES) {
             armControl.commandArmToState(
-                    0, 0,
+                    0,0,
                     !operatorInput.closeGripperPressed()
             );
 
@@ -174,20 +166,20 @@ public class ArmSubsystem implements HasLoop {
         }
 
         if (shouldDoNext == ArmFSM.SCORE_MID) {
-            if (gamePiece.isCone()) {
-                armControl.commandArmToState(0.008, -0.227, true);
-            }
+
+                armControl.commandArmToState(0.008, -0.227,true);
+
 
 
         }
         if (shouldDoNext == ArmFSM.SCORE_HIGH) {
-            if (gamePiece.isCone()) {
-                armControl.commandArmToState(-0.126, 0.0, true);
-            }
+
+                armControl.commandArmToState(-0.126,0.0,  true);
+
 
         }
         if (shouldDoNext == ArmFSM.GROUND_INTAKE) {
-            armControl.commandArmToState(0.581, -0.274, true);
+            armControl.commandArmToState(0.581, -0.274,true);
 
         }
 

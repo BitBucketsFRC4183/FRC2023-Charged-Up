@@ -1,6 +1,8 @@
 package org.bitbuckets.arm;
 
+import config.Arm;
 import edu.wpi.first.math.VecBuilder;
+import org.bitbuckets.OperatorInput;
 import org.bitbuckets.lib.control.IPIDCalculator;
 import org.bitbuckets.lib.hardware.IMotorController;
 
@@ -17,21 +19,23 @@ public class ArmControl {
     final IPIDCalculator upperArmControl;
     final IMotorController gripperActuator;
 
+    final OperatorInput operatorInput;
 
-    public ArmControl(ArmDynamics ff, IMotorController lowerArm, IMotorController upperArm, IPIDCalculator lowerArmControl, IPIDCalculator upperArmControl, IMotorController gripperActuator) {
+
+    public ArmControl(ArmDynamics ff, IMotorController lowerArm, IMotorController upperArm, IPIDCalculator lowerArmControl, IPIDCalculator upperArmControl, IMotorController gripperActuator, OperatorInput operatorInput) {
         this.ff = ff;
         this.lowerArm = lowerArm;
         this.upperArm = upperArm;
         this.lowerArmControl = lowerArmControl;
         this.upperArmControl = upperArmControl;
         this.gripperActuator = gripperActuator;
+        this.operatorInput = operatorInput;
     }
 
     /**
      * Commands the gripper to certain places, independent of what the limb is doing right now
-     *
-     * @param lowerArm_rot      wrt zero as all the way out to the right
-     * @param upperArm_rot      wrt zero as all the way out to the right if lower arm is all the way out to the right
+     * @param lowerArm_rot wrt zero as all the way out to the right
+     * @param upperArm_rot wrt zero as all the way out to the right if lower arm is all the way out to the right
      * @param gripperShouldOpen
      */
     public void commandArmToState(double lowerArm_rot, double upperArm_rot, boolean gripperShouldOpen) {
@@ -39,13 +43,14 @@ public class ArmControl {
         var ffVoltageVector = ff.feedforward(VecBuilder.fill(lowerArm_rot * Math.PI * 2.0, upperArm_rot * Math.PI * 2.0));
 
 
-        var lowerArmFFVoltage = ffVoltageVector.get(0, 0);
+
+        var lowerArmFFVoltage = ffVoltageVector.get(0,0);
         var lowerArmFeedbackVoltage = lowerArmControl.calculateNext(
                 lowerArm.getMechanismPositionAccum_rot(),
                 lowerArm_rot
         );
 
-        var upperArmFFVoltage = ffVoltageVector.get(1, 0);
+        var upperArmFFVoltage = ffVoltageVector.get(1,0);
         var upperArmFeedbackVoltage = upperArmControl.calculateNext(
                 upperArm.getMechanismPositionAccum_rot(),
                 upperArm_rot
@@ -61,27 +66,16 @@ public class ArmControl {
         lowerArm.moveAtVoltage(lowerArmFFVoltage + lowerArmFeedbackVoltage);
         upperArm.moveAtVoltage(upperArmFFVoltage + upperArmFeedbackVoltage);
 
-        if (gripperShouldOpen) {
-            //gripperActuator.moveToPosition_mechanismRotations(Arm.GRIPPER_SETPOINT_MOTOR_ROTATIONS);
-        } else {
-            //gripperActuator.goLimp(); //let the ropes pull it back
+        if (gripperShouldOpen && !operatorInput.isCube()) {
+            gripperActuator.moveToPosition_mechanismRotations(Arm.GRIPPER_CONE_SETPOINT_MOTOR_ROTATIONS);
+        } else if (gripperShouldOpen && operatorInput.isCube()) {
+            gripperActuator.moveToPosition_mechanismRotations(Arm.GRIPPER_CUBE_SETPOINT_MOTOR_ROTATIONS);
+        }
+        else {
+            gripperActuator.goLimp(); //let the ropes pull it back
         }
 
     }
-
-    public void openGripper() {
-        gripperActuator.moveAtPercent(-0.3);
-
-    }
-
-    public void closeGripper() {
-        gripperActuator.moveAtPercent(+0.3);
-    }
-
-    public void stopGripper() {
-        gripperActuator.moveAtPercent(0);
-    }
-
 
     public void commandArmToPercent(double lowerArmPercent, double upperArmPercent, boolean gripperShouldOpen) {
         lowerArm.moveAtPercent(lowerArmPercent);
@@ -102,14 +96,15 @@ public class ArmControl {
 
     public void zeroToStartingPosition() {
         //TODO these are random numbers and need to be accurate
-        lowerArm.forceOffset_mechanismRotations(0);
-        upperArm.forceOffset_mechanismRotations(0.44);
+        lowerArm.forceOffset_mechanismRotations(.168);
+        upperArm.forceOffset_mechanismRotations(-.222);
         gripperActuator.forceOffset_mechanismRotations(0);
     }
 
     public double getErrorQuantity() {
         return 1;
     }
+
 
 
 }

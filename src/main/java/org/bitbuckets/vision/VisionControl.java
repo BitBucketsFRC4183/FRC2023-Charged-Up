@@ -38,7 +38,7 @@ public class VisionControl implements IVisionControl {
 
 
 
-        var opt = estimateVisionTargetPose();
+        var opt = estimateVisionScoreCubePose();
         opt.ifPresent(pose3d -> debuggable.log("target-pose", opt.get()));
         var op2 = estimateVisionRobotPose();
         op2.ifPresent(pose3d -> debuggable.log("robot-pose", op2.get()));
@@ -47,9 +47,27 @@ public class VisionControl implements IVisionControl {
 
 
     @Override
-    public Optional<Pose3d> estimateVisionTargetPose() {
-        return visionPoseEstimator().map(r -> r.goalPose);
+    public Optional<Pose3d> estimateVisionScoreCubePose() {
+        return visionPoseEstimator().map(r -> r.cubeScorePose);
     }
+
+    @Override
+    public Optional<Pose3d> estimateVisionScoreRightConePose() {
+        return visionPoseEstimator().map(r -> r.coneRightScorePose);
+    }
+    @Override
+    public Optional<Pose3d> estimateVisionLoadLeftPose() {
+        return visionPoseEstimator().map(r -> r.loadLeftPose);
+    }
+    @Override
+    public Optional<Pose3d> estimateVisionLoadRightPose() {
+        return visionPoseEstimator().map(r -> r.loadRightPose);
+    }
+    @Override
+    public Optional<Pose3d> estimateVisionScoreLeftConePose() {
+        return visionPoseEstimator().map(r -> r.coneLeftScorePose);
+    }
+
 
     @Override
     public Optional<Pose3d> estimateVisionRobotPose() {
@@ -61,6 +79,10 @@ public class VisionControl implements IVisionControl {
     public boolean isTargTrue() {
         return visionPoseEstimator().isPresent();
 
+    }
+    @Override
+    public int getTagID() {
+        return photonCamera.getLatestResult().getBestTarget().getFiducialId();
     }
 
 
@@ -98,8 +120,12 @@ public class VisionControl implements IVisionControl {
         Pose3d tagPose = cameraPose.transformBy(transformToTag);
 
         // Transform the tag's pose to set our goal
-        Pose3d goalPose = tagPose.transformBy(VisionConstants2.TAG_TO_GOAL);
-        debuggable.log("goal-pose", goalPose);
+        Pose3d cubeScorePose = tagPose.transformBy(VisionConstants2.TAG_TO_CUBE);
+        Pose3d coneLeftScorePose = tagPose.transformBy(VisionConstants2.TAG_TO_CONE_LEFT);
+        Pose3d coneRightScorePose = tagPose.transformBy(VisionConstants2.TAG_TO_CONE_RIGHT);
+        Pose3d loadLeftPose = tagPose.transformBy(VisionConstants2.TAG_TO_LOAD_LEFT);
+        Pose3d loadRightPose = tagPose.transformBy(VisionConstants2.TAG_TO_LOAD_RIGHT);
+        debuggable.log("goal-pose", cubeScorePose);
         // This is new target data, so recalculate the goal
         double range = PhotonUtils.calculateDistanceToTargetMeters(
                 VisionConstants2.CAMERA_HEIGHT,
@@ -119,12 +145,12 @@ public class VisionControl implements IVisionControl {
         Pose3d tagPossiblePose3d = aprilTagFieldLayout.getTagPose(aprilTagTarget.getFiducialId()).orElseThrow();
         Pose2d tagPossiblePose2d = tagPossiblePose3d.toPose2d();
 
-        Rotation2d targetYaw = PhotonUtils.getYawToPose(currentEstimatedPose2d, goalPose.toPose2d());
+        Rotation2d targetYaw = PhotonUtils.getYawToPose(currentEstimatedPose2d, cubeScorePose.toPose2d());
         Rotation2d robotYaw = currentEstimatedPose2d.getRotation();
         debuggable.log("robot-rotation", robotYaw.getDegrees());
 
         SmartDashboard.putString("targetYaw", targetYaw.toString());
-        return Optional.of(new PhotonCalculationResult(estimatedFieldRobotPose, goalPose, translationToTag, targetYaw, targetYaw.getRadians(), isTargetTrue));
+        return Optional.of(new PhotonCalculationResult(estimatedFieldRobotPose, cubeScorePose, coneLeftScorePose, coneRightScorePose, loadLeftPose, loadRightPose, translationToTag, targetYaw, targetYaw.getRadians(), isTargetTrue));
 
     }
 }

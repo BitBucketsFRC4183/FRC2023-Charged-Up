@@ -1,6 +1,7 @@
 package org.bitbuckets.drive;
 
 import com.pathplanner.lib.PathPlannerTrajectory;
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import org.bitbuckets.OperatorInput;
@@ -115,6 +116,26 @@ public class DriveSubsystem implements HasLoop {
         if (autoSubsystem.state() == AutoFSM.TELEOP) {
             if (input.isVisionDrivePressed() && visionControl.isTargTrue()) {
                 nextStateShould = DriveFSM.VISION;
+                if (visionControl.getTagID() != 5 && visionControl.getTagID() != 8) {
+                    if (!input.isCube()) {
+                        if ( !input.isLeft()) {
+                            lastVisionTarget = visionControl.estimateVisionScoreRightConePose();
+                        } else {
+                            lastVisionTarget = visionControl.estimateVisionScoreLeftConePose();
+                        }
+                    }
+                    else {
+                            lastVisionTarget = visionControl.estimateVisionScoreCubePose();
+                    }
+                }
+                else {
+                    if (!input.isLeft()) {
+                        lastVisionTarget = visionControl.estimateVisionLoadRightPose();
+                    }
+                    else {
+                        lastVisionTarget = visionControl.estimateVisionLoadLeftPose();
+                    }
+                }
                 return;
             }
 

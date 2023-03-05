@@ -93,6 +93,9 @@ public class OperatorInput {
     public boolean isResetGyroPressed() {
         return driveControl.getRawButtonPressed(XboxController.Button.kStart.value);
     }
+    public boolean isLeft() {
+        return driveControl.getRawButton(XboxController.Button.kRightBumper.value);
+    }
 
     //OPERATOR
 
@@ -170,9 +173,11 @@ public class OperatorInput {
     public boolean closeGripperPressed(){
         return operatorControl.getRawButton(XboxController.Button.kLeftBumper.value);
     }
-    public boolean conevscube(){
-        return operatorControl.getRawButton(XboxController.Button.kLeftBumper.value);
+    public boolean isCube(){
+        return operatorControl.getRawButton(XboxController.Button.kStart.value);
     }
+
+
 
 
 }

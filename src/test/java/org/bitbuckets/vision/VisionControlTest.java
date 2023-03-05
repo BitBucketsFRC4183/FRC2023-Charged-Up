@@ -140,7 +140,7 @@ class VisionControlTest {
         // we want to be move 1 towards the target
         var actual = result.get();
         assertEquals(new Pose3d(new Translation3d(0, 0, 0), new Rotation3d(0, 0, Math.toRadians(0))), actual.robotPose);
-        assertEquals(new Pose2d(new Translation2d(2, 0), new Rotation2d(Math.toRadians(0))), actual.goalPose.toPose2d());
+        assertEquals(new Pose2d(new Translation2d(2, 0), new Rotation2d(Math.toRadians(0))), actual.cubeScorePose.toPose2d());
         assertEquals(Math.toRadians(0), actual.targetYaw.getDegrees(), .01);
         assertEquals(Math.toRadians(0), actual.yaw, .01);
         assertEquals(0, actual.translationToTag.getY(), .01);

@@ -15,7 +15,9 @@ public interface Arm {
 
 
     //Need to get this value, (0.1) is wrong
-    double GRIPPER_SETPOINT_MOTOR_ROTATIONS = 135;
+    double GRIPPER_CUBE_SETPOINT_MOTOR_ROTATIONS = 135;
+
+    double GRIPPER_CONE_SETPOINT_MOTOR_ROTATIONS = 95;
 
     /**
      * How "correct" the arm's position has to be until the arm subsystem considers it at the position
