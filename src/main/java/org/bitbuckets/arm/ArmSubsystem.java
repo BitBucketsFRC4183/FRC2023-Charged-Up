@@ -35,6 +35,9 @@ public class ArmSubsystem implements HasLoop {
             armControl.zero(); //assume where we are is zero. Only do this if you really have to since zeroing needs
             //to go outside frame perimeter, and you can only do that in a match L
         }
+        if (operatorInput.zeroGripper()) {
+            armControl.zeroGripper();
+        }
 
 
         //handle inputs, which will calculate what the next input of the robot is
@@ -146,8 +149,8 @@ public class ArmSubsystem implements HasLoop {
 
 
             armControl.commandArmToPercent(
-                    operatorInput.getLowerArm_PercentOutput(),
-                    operatorInput.getUpperArm_PercentOutput(),
+                    operatorInput.getLowerArm_PercentOutput() * 0.35,
+                    operatorInput.getUpperArm_PercentOutput() * 0.35,
                     !operatorInput.closeGripperPressed()
             );
         }

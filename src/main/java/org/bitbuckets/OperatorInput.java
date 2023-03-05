@@ -174,5 +174,9 @@ public class OperatorInput {
         return false;//operatorControl.getRawButton(XboxController.Button.kLeftBumper.value);
     }
 
+    public boolean zeroGripper() {
+        return operatorControl.getRawButton(XboxController.Button.kRightStick.value);
+    }
+
 
 }

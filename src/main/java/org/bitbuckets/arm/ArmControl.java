@@ -70,13 +70,15 @@ public class ArmControl {
     }
 
     public void openGripper() {
+        // if (!gripperActuator.rawAccess(CANSparkMax.class).getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen).isPressed()) {
+        gripperActuator.moveAtPercent(-0.6);
 
-        gripperActuator.moveAtPercent(-0.3);
+        //     }
     }
 
 
     public void closeGripper() {
-        gripperActuator.moveAtPercent(+0.3);
+        gripperActuator.moveAtPercent(+0.6);
 
     }
 
@@ -99,7 +101,11 @@ public class ArmControl {
     public void zero() {
         lowerArm.forceOffset_mechanismRotations(0);
         upperArm.forceOffset_mechanismRotations(0);
+    }
+
+    public void zeroGripper() {
         gripperActuator.forceOffset_mechanismRotations(0);
+
     }
 
     public void zeroToStartingPosition() {
