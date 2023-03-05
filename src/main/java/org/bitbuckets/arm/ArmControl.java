@@ -51,12 +51,12 @@ public class ArmControl {
                 upperArm_rot
         );
 
-
-        System.out.println("FF LOW: " + lowerArmFFVoltage);
-        System.out.println("FB LOW: " + lowerArmFeedbackVoltage);
-
-        System.out.println("FF UP: " + upperArmFFVoltage);
-        System.out.println("FB UP: " + upperArmFeedbackVoltage);
+//
+//        System.out.println("FF LOW: " + lowerArmFFVoltage);
+//        System.out.println("FB LOW: " + lowerArmFeedbackVoltage);
+//
+//        System.out.println("FF UP: " + upperArmFFVoltage);
+//        System.out.println("FB UP: " + upperArmFeedbackVoltage);
 
         lowerArm.moveAtVoltage(lowerArmFFVoltage + lowerArmFeedbackVoltage);
         upperArm.moveAtVoltage(upperArmFFVoltage + upperArmFeedbackVoltage);
@@ -70,12 +70,14 @@ public class ArmControl {
     }
 
     public void openGripper() {
-        gripperActuator.moveAtPercent(-0.3);
 
+        gripperActuator.moveAtPercent(-0.3);
     }
+
 
     public void closeGripper() {
         gripperActuator.moveAtPercent(+0.3);
+
     }
 
     public void stopGripper() {

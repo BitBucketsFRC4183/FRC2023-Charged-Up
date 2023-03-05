@@ -39,27 +39,27 @@ public interface DriveTurdSpecific {
             1,
             0.10033 * Math.PI,
             true,
-            true,
-            20,
+            false,
+            80,
             Optional.empty(),
             Optional.empty(),
             false,
             false,
-            OptimizationMode.GENERIC,
-            DCMotor.getNEO(2)
+            true, OptimizationMode.GENERIC,
+            DCMotor.getNEO(1)
     );
     MotorConfig STEER_TURD = new MotorConfig(
             (14.0 / 50.0) * (10.0 / 60.0),
             1,
             Math.PI * 0.10033,
             true,
-            true,
+            false,
             20,
             Optional.empty(),
             Optional.empty(),
             false,
             false,
-            OptimizationMode.GENERIC,
+            true, OptimizationMode.GENERIC,
             DCMotor.getNeo550(1)
     );
 }
