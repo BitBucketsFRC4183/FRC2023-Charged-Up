@@ -23,6 +23,7 @@ public class ArmSubsystem implements HasLoop {
     }
 
     ArmFSM shouldDoNext = ArmFSM.IDLE;
+    AutoFSM autoStates = AutoFSM.INITIALIZATION;
 
     @Override
     public void loop() {
@@ -133,10 +134,10 @@ public class ArmSubsystem implements HasLoop {
         if (operatorInput.openGripperPressed()) {
             armControl.openGripper();
         }
-        if (operatorInput.closeGripperPressed()) {
+        else if (operatorInput.closeGripperPressed()) {
             armControl.closeGripper();
         }
-        if (!operatorInput.closeGripperPressed() && !operatorInput.ifGripperPressed()) {
+        else if (!operatorInput.closeGripperPressed() && !operatorInput.openGripperPressed()) {
             armControl.stopGripper();
         }
 
