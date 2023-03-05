@@ -83,15 +83,15 @@ public class TalonDriveMotorSetup implements ISetup<IMotorController> {
                 Optional.empty(),
                 false,
                 false,
-                OptimizationMode.GENERIC,
+                false, OptimizationMode.GENERIC,
                 DCMotor.getFalcon500(1)
         ));
 
         TalonLogger logger = new TalonLogger(
                 ctrl,
                 self.generateLogger(ILogAs.DOUBLE, "pos-setpoint-mechanism-rotations"),
-                self.generateLogger(ILogAs.DOUBLE,"encoder-mechanism-rotations"),
-                self.generateLogger(ILogAs.DOUBLE,"encoder-position-raw")
+                self.generateLogger(ILogAs.DOUBLE, "encoder-mechanism-rotations"),
+                self.generateLogger(ILogAs.DOUBLE, "encoder-position-raw")
         );
 
         self.registerLogLoop(logger);
