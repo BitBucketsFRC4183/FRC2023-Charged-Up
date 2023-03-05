@@ -90,17 +90,19 @@ public class VisionControl implements IVisionControl {
 
 
     public Optional<PhotonCalculationResult> visionPoseEstimator() {
-        PhotonPipelineResult result = photonCamera1.getLatestResult();
+        PhotonPipelineResult result;
         if (photonCamera1.getLatestResult().hasTargets()) {
             result = photonCamera1.getLatestResult();
         }
         else if (photonCamera2.getLatestResult().hasTargets()) {
             result = photonCamera2.getLatestResult();
         }
+        else {
+            return Optional.empty();
+        }
 
 
         boolean isTargetTrue = result.hasTargets();
-        if (!isTargetTrue) return Optional.empty();
         PhotonTrackedTarget aprilTagTarget = result.getBestTarget();
 
         Transform3d transformToTag = aprilTagTarget.getBestCameraToTarget();
