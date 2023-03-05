@@ -75,6 +75,9 @@ public class SparkSetup implements ISetup<IMotorController> {
             reverseSwitch = spark.getReverseLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
             reverseSwitch.enableLimitSwitch(true);
         }
+        if (motorConfig.isRampRateEnabled) {
+            spark.setOpenLoopRampRate(1);
+        }
 
         if (motorConfig.forwardSoftLimitMechanismAccum_rot.isPresent()) {
             spark.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, motorConfig.forwardSoftLimitMechanismAccum_rot.get().floatValue());

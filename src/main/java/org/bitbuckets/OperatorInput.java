@@ -139,8 +139,6 @@ public class OperatorInput {
     }
 
 
-
-
     //controlled by dPad Left
     public boolean isScoreLowPressed() {
         int pressed = operatorControl.getPOV();
@@ -167,11 +165,16 @@ public class OperatorInput {
         return operatorControl.getRawButton(XboxController.Button.kRightBumper.value);
     }
 
-    public boolean closeGripperPressed(){
+    public boolean closeGripperPressed() {
         return operatorControl.getRawButton(XboxController.Button.kLeftBumper.value);
     }
-    public boolean conevscube(){
-        return operatorControl.getRawButton(XboxController.Button.kLeftBumper.value);
+
+    public boolean conevscube() {
+        return false;//operatorControl.getRawButton(XboxController.Button.kLeftBumper.value);
+    }
+
+    public boolean zeroGripper() {
+        return operatorControl.getRawButton(XboxController.Button.kRightStick.value);
     }
 
 

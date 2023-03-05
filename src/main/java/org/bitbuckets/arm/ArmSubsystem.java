@@ -4,7 +4,6 @@ import config.Arm;
 import org.bitbuckets.OperatorInput;
 import org.bitbuckets.auto.AutoFSM;
 import org.bitbuckets.auto.AutoSubsystem;
-import org.bitbuckets.cubeCone.GamePiece;
 import org.bitbuckets.lib.core.HasLoop;
 import org.bitbuckets.lib.debug.IDebuggable;
 
@@ -14,11 +13,9 @@ public class ArmSubsystem implements HasLoop {
     final ArmControl armControl;
     final AutoSubsystem autoSubsystem;
     final IDebuggable debuggable;
-    final GamePiece gamePiece;
 
 
-    public ArmSubsystem(OperatorInput operatorInput, ArmControl armControl, AutoSubsystem autoSubsystem, IDebuggable debuggable, GamePiece gamePiece) {
-        this.gamePiece = gamePiece;
+    public ArmSubsystem(OperatorInput operatorInput, ArmControl armControl, AutoSubsystem autoSubsystem, IDebuggable debuggable) {
         this.operatorInput = operatorInput;
         this.armControl = armControl;
         this.autoSubsystem = autoSubsystem;
@@ -29,6 +26,7 @@ public class ArmSubsystem implements HasLoop {
 
     @Override
     public void loop() {
+
         //handle arm calibration
 
         if (operatorInput.isZeroArmPressed()) {
@@ -36,6 +34,9 @@ public class ArmSubsystem implements HasLoop {
 
             armControl.zero(); //assume where we are is zero. Only do this if you really have to since zeroing needs
             //to go outside frame perimeter, and you can only do that in a match L
+        }
+        if (operatorInput.zeroGripper()) {
+            armControl.zeroGripper();
         }
 
 
@@ -131,9 +132,11 @@ public class ArmSubsystem implements HasLoop {
 
         if (operatorInput.openGripperPressed()) {
             armControl.openGripper();
-        } else if (operatorInput.closeGripperPressed()) {
+        }
+        if (operatorInput.closeGripperPressed()) {
             armControl.closeGripper();
-        } else {
+        }
+        if (!operatorInput.closeGripperPressed() && !operatorInput.ifGripperPressed()) {
             armControl.stopGripper();
         }
 
@@ -144,11 +147,10 @@ public class ArmSubsystem implements HasLoop {
 
         if (shouldDoNext == ArmFSM.MANUAL) {
 
-            System.out.println(operatorInput.getLowerArm_PercentOutput());
 
             armControl.commandArmToPercent(
-                    operatorInput.getLowerArm_PercentOutput(),
-                    operatorInput.getUpperArm_PercentOutput(),
+                    operatorInput.getLowerArm_PercentOutput() * 0.35,
+                    operatorInput.getUpperArm_PercentOutput() * 0.35,
                     !operatorInput.closeGripperPressed()
             );
         }
@@ -174,16 +176,14 @@ public class ArmSubsystem implements HasLoop {
         }
 
         if (shouldDoNext == ArmFSM.SCORE_MID) {
-            if (gamePiece.isCone()) {
-                armControl.commandArmToState(0.008, -0.227, true);
-            }
+
+            armControl.commandArmToState(0.008, -0.227, true);
 
 
         }
         if (shouldDoNext == ArmFSM.SCORE_HIGH) {
-            if (gamePiece.isCone()) {
-                armControl.commandArmToState(-0.126, 0.0, true);
-            }
+            armControl.commandArmToState(-0.126, 0.0, true);
+
 
         }
         if (shouldDoNext == ArmFSM.GROUND_INTAKE) {

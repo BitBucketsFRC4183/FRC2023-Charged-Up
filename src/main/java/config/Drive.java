@@ -7,7 +7,6 @@ import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import org.bitbuckets.lib.control.PIDConfig;
 import org.bitbuckets.lib.vendor.sim.dc.SimInertiaConfig;
 

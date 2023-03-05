@@ -51,12 +51,12 @@ public class ArmControl {
                 upperArm_rot
         );
 
-
-        System.out.println("FF LOW: " + lowerArmFFVoltage);
-        System.out.println("FB LOW: " + lowerArmFeedbackVoltage);
-
-        System.out.println("FF UP: " + upperArmFFVoltage);
-        System.out.println("FB UP: " + upperArmFeedbackVoltage);
+//
+//        System.out.println("FF LOW: " + lowerArmFFVoltage);
+//        System.out.println("FB LOW: " + lowerArmFeedbackVoltage);
+//
+//        System.out.println("FF UP: " + upperArmFFVoltage);
+//        System.out.println("FB UP: " + upperArmFeedbackVoltage);
 
         lowerArm.moveAtVoltage(lowerArmFFVoltage + lowerArmFeedbackVoltage);
         upperArm.moveAtVoltage(upperArmFFVoltage + upperArmFeedbackVoltage);
@@ -70,12 +70,16 @@ public class ArmControl {
     }
 
     public void openGripper() {
-        gripperActuator.moveAtPercent(-0.3);
+        // if (!gripperActuator.rawAccess(CANSparkMax.class).getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen).isPressed()) {
+        gripperActuator.moveAtPercent(-0.6);
 
+        //     }
     }
 
+
     public void closeGripper() {
-        gripperActuator.moveAtPercent(+0.3);
+        gripperActuator.moveAtPercent(+0.6);
+
     }
 
     public void stopGripper() {
@@ -97,7 +101,11 @@ public class ArmControl {
     public void zero() {
         lowerArm.forceOffset_mechanismRotations(0);
         upperArm.forceOffset_mechanismRotations(0);
+    }
+
+    public void zeroGripper() {
         gripperActuator.forceOffset_mechanismRotations(0);
+
     }
 
     public void zeroToStartingPosition() {
