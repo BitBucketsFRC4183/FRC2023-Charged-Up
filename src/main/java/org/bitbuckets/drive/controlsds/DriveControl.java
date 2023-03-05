@@ -77,6 +77,7 @@ public class DriveControl implements IDriveControl, HasLogLoop {
         });
     }
 
+    
     public double getMaxVelocity() {
         return Drive.MAX_DRIVE_VELOCITY * speedModifier;
     }
