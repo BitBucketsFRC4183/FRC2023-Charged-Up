@@ -18,17 +18,19 @@ public class VisionControl implements IVisionControl {
 
 
     final Transform3d robotToCamera;
-    final PhotonCamera photonCamera;
+    final PhotonCamera photonCamera1;
+    final PhotonCamera photonCamera2;
     final AprilTagFieldLayout aprilTagFieldLayout;
     final PhotonPoseEstimator photonPoseEstimator;
 
     final IDebuggable debuggable;
 
-    public VisionControl(Transform3d robotToCamera, AprilTagFieldLayout aprilTagFieldLayout, PhotonPoseEstimator photonPoseEstimator, PhotonCamera photonCamera, IDebuggable debuggable) {
+    public VisionControl(Transform3d robotToCamera, PhotonCamera photonCamera2, AprilTagFieldLayout aprilTagFieldLayout, PhotonPoseEstimator photonPoseEstimator, PhotonCamera photonCamera, IDebuggable debuggable) {
         this.robotToCamera = robotToCamera;
+        this.photonCamera2 = photonCamera2;
         this.aprilTagFieldLayout = aprilTagFieldLayout;
         this.photonPoseEstimator = photonPoseEstimator;
-        this.photonCamera = photonCamera;
+        this.photonCamera1 = photonCamera;
         this.debuggable = debuggable;
     }
 
@@ -82,17 +84,23 @@ public class VisionControl implements IVisionControl {
     }
     @Override
     public int getTagID() {
-        return photonCamera.getLatestResult().getBestTarget().getFiducialId();
+        return photonCamera1.getLatestResult().getBestTarget().getFiducialId();
     }
 
 
 
     public Optional<PhotonCalculationResult> visionPoseEstimator() {
-        PhotonPipelineResult result = photonCamera.getLatestResult();
+        PhotonPipelineResult result = photonCamera1.getLatestResult();
+        if (photonCamera1.getLatestResult().hasTargets()) {
+            result = photonCamera1.getLatestResult();
+        }
+        else if (photonCamera2.getLatestResult().hasTargets()) {
+            result = photonCamera2.getLatestResult();
+        }
 
 
         boolean isTargetTrue = result.hasTargets();
-        if (!result.hasTargets()) return Optional.empty();
+        if (!isTargetTrue) return Optional.empty();
         PhotonTrackedTarget aprilTagTarget = result.getBestTarget();
 
         Transform3d transformToTag = aprilTagTarget.getBestCameraToTarget();

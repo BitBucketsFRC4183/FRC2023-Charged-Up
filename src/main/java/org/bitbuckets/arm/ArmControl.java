@@ -19,17 +19,15 @@ public class ArmControl {
     final IPIDCalculator upperArmControl;
     final IMotorController gripperActuator;
 
-    final OperatorInput operatorInput;
 
 
-    public ArmControl(ArmDynamics ff, IMotorController lowerArm, IMotorController upperArm, IPIDCalculator lowerArmControl, IPIDCalculator upperArmControl, IMotorController gripperActuator, OperatorInput operatorInput) {
+    public ArmControl(ArmDynamics ff, IMotorController lowerArm, IMotorController upperArm, IPIDCalculator lowerArmControl, IPIDCalculator upperArmControl, IMotorController gripperActuator) {
         this.ff = ff;
         this.lowerArm = lowerArm;
         this.upperArm = upperArm;
         this.lowerArmControl = lowerArmControl;
         this.upperArmControl = upperArmControl;
         this.gripperActuator = gripperActuator;
-        this.operatorInput = operatorInput;
     }
 
     /**
@@ -38,7 +36,7 @@ public class ArmControl {
      * @param upperArm_rot wrt zero as all the way out to the right if lower arm is all the way out to the right
      * @param gripperShouldOpen
      */
-    public void commandArmToState(double lowerArm_rot, double upperArm_rot, boolean gripperShouldOpen) {
+    public void commandArmToState(double lowerArm_rot, double upperArm_rot, boolean gripperShouldOpen, boolean isCube) {
 
         var ffVoltageVector = ff.feedforward(VecBuilder.fill(lowerArm_rot * Math.PI * 2.0, upperArm_rot * Math.PI * 2.0));
 
@@ -66,14 +64,25 @@ public class ArmControl {
         lowerArm.moveAtVoltage(lowerArmFFVoltage + lowerArmFeedbackVoltage);
         upperArm.moveAtVoltage(upperArmFFVoltage + upperArmFeedbackVoltage);
 
-        if (gripperShouldOpen && !operatorInput.isCube()) {
-            gripperActuator.moveToPosition_mechanismRotations(Arm.GRIPPER_CONE_SETPOINT_MOTOR_ROTATIONS);
-        } else if (gripperShouldOpen && operatorInput.isCube()) {
-            gripperActuator.moveToPosition_mechanismRotations(Arm.GRIPPER_CUBE_SETPOINT_MOTOR_ROTATIONS);
+        if (gripperShouldOpen && !isCube) {
+            openCone();
+        } else if (gripperShouldOpen && isCube) {
+            openCube();
         }
         else {
             gripperActuator.goLimp(); //let the ropes pull it back
         }
+
+    }
+    public void openCone()
+    {
+        gripperActuator.moveToPosition_mechanismRotations(Arm.GRIPPER_CONE_SETPOINT_MOTOR_ROTATIONS);
+
+    }
+
+    public void openCube()
+    {
+        gripperActuator.moveToPosition_mechanismRotations(Arm.GRIPPER_CUBE_SETPOINT_MOTOR_ROTATIONS);
 
     }
 

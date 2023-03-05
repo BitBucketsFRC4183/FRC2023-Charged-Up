@@ -33,7 +33,7 @@ public class VisionControlSetup implements ISetup<IVisionControl> {
         //TODO find the offset from robot to camera
         Transform3d robotToCamera = new Transform3d(new Translation3d(Units.inchesToMeters(13), 0, Units.inchesToMeters(11.5)), new Rotation3d());
         PhotonCamera photonCamera = new PhotonCamera("Arducam_OV9281_USB_Camera");
-        PhotonCamera secondPhotonCamera = new PhotonCamera("Second_OV9281_Camera");
+        PhotonCamera photonCamera2 = new PhotonCamera("Second_OV9281_Camera");
         PhotonPoseEstimator photonPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PhotonPoseEstimator.PoseStrategy.LOWEST_AMBIGUITY, photonCamera, robotToCamera);
         IDebuggable debuggable = self.getDebuggable();
 
@@ -60,7 +60,7 @@ public class VisionControlSetup implements ISetup<IVisionControl> {
             self.registerLogicLoop(() -> simVisionSystem.processFrame(new Pose3d()));
         }
 
-        VisionControl control = new VisionControl(robotToCamera, aprilTagFieldLayout, photonPoseEstimator, photonCamera, debuggable);
+        VisionControl control = new VisionControl(robotToCamera, photonCamera2, aprilTagFieldLayout, photonPoseEstimator, photonCamera, debuggable);
 
         self.registerLogLoop(control::logLoop);
 

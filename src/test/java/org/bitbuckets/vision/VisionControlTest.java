@@ -46,7 +46,7 @@ class VisionControlTest {
 
         control = new VisionControl(
                 robotToCameraTransform,
-                aprilTagFieldLayout,
+                photonCamera2, aprilTagFieldLayout,
                 photonPoseEstimator,
                 photonCamera,
                 mock(IDebuggable.class));

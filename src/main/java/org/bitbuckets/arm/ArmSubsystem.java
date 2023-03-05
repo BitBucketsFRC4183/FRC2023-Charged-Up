@@ -149,7 +149,7 @@ public class ArmSubsystem implements HasLoop {
             armControl.commandArmToState(
                     0.168,
                     -0.222,
-                    !operatorInput.closeGripperPressed()
+                    !operatorInput.closeGripperPressed(), operatorInput.isCube()
             );
         }
 
@@ -157,7 +157,7 @@ public class ArmSubsystem implements HasLoop {
         if (shouldDoNext == ArmFSM.DEBUG_TO_DEGREES) {
             armControl.commandArmToState(
                     0,0,
-                    !operatorInput.closeGripperPressed()
+                    !operatorInput.closeGripperPressed(), operatorInput.isCube()
             );
 
             if (armControl.getErrorQuantity() > Arm.ARM_TOLERANCE_TO_MOVE_ON) {
@@ -167,19 +167,19 @@ public class ArmSubsystem implements HasLoop {
 
         if (shouldDoNext == ArmFSM.SCORE_MID) {
 
-                armControl.commandArmToState(0.008, -0.227,true);
+                armControl.commandArmToState(0.008, -0.227,true, operatorInput.isCube());
 
 
 
         }
         if (shouldDoNext == ArmFSM.SCORE_HIGH) {
 
-                armControl.commandArmToState(-0.126,0.0,  true);
+                armControl.commandArmToState(-0.126,0.0,  true, operatorInput.isCube());
 
 
         }
         if (shouldDoNext == ArmFSM.GROUND_INTAKE) {
-            armControl.commandArmToState(0.581, -0.274,true);
+            armControl.commandArmToState(0.581, -0.274,true, operatorInput.isCube());
 
         }
 
