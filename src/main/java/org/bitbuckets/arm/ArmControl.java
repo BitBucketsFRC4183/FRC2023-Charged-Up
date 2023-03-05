@@ -54,12 +54,12 @@ public class ArmControl {
                 upperArm_rot
         );
 
-
-        System.out.println("FF LOW: " + lowerArmFFVoltage);
-        System.out.println("FB LOW: " + lowerArmFeedbackVoltage);
-
-        System.out.println("FF UP: " + upperArmFFVoltage);
-        System.out.println("FB UP: " + upperArmFeedbackVoltage);
+//
+//        System.out.println("FF LOW: " + lowerArmFFVoltage);
+//        System.out.println("FB LOW: " + lowerArmFeedbackVoltage);
+//
+//        System.out.println("FF UP: " + upperArmFFVoltage);
+//        System.out.println("FB UP: " + upperArmFeedbackVoltage);
 
         lowerArm.moveAtVoltage(lowerArmFFVoltage + lowerArmFeedbackVoltage);
         upperArm.moveAtVoltage(upperArmFFVoltage + upperArmFeedbackVoltage);
@@ -77,7 +77,6 @@ public class ArmControl {
     public void openCone()
     {
         gripperActuator.moveToPosition_mechanismRotations(Arm.GRIPPER_CONE_SETPOINT_MOTOR_ROTATIONS);
-
     }
 
     public void openCube()

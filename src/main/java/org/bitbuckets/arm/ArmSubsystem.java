@@ -5,7 +5,6 @@ import config.Arm;
 import org.bitbuckets.OperatorInput;
 import org.bitbuckets.auto.AutoFSM;
 import org.bitbuckets.auto.AutoSubsystem;
-
 import org.bitbuckets.lib.core.HasLoop;
 import org.bitbuckets.lib.debug.IDebuggable;
 
@@ -28,6 +27,7 @@ public class ArmSubsystem implements HasLoop {
 
     @Override
     public void loop() {
+
         //handle arm calibration
         if (autoSubsystem.hasChanged() && autoSubsystem.state() == AutoFSM.INITIALIZATION) {
             System.out.println("System zeroed to starting position");
@@ -136,7 +136,6 @@ public class ArmSubsystem implements HasLoop {
 
         if (shouldDoNext == ArmFSM.MANUAL) {
 
-            System.out.println(operatorInput.getLowerArm_PercentOutput());
 
             armControl.commandArmToPercent(
                     operatorInput.getLowerArm_PercentOutput(),
