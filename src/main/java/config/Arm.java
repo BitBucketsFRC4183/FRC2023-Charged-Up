@@ -84,7 +84,7 @@ public interface Arm {
             Optional.empty(),
             false,
             false,
-            OptimizationMode.GENERIC,
+            false, OptimizationMode.GENERIC,
             DCMotor.getNEO(1)
     );
     MotorConfig LOWER_CONFIG = new MotorConfig(
@@ -98,7 +98,7 @@ public interface Arm {
             Optional.empty(),
             false,
             false,
-            OptimizationMode.OFFBOARD_POS_PID,
+            false, OptimizationMode.OFFBOARD_POS_PID,
             DCMotor.getNEO(1)
     );
 
@@ -113,7 +113,7 @@ public interface Arm {
             Optional.empty(),
             false,
             false,
-            OptimizationMode.OFFBOARD_POS_PID,
+            false, OptimizationMode.OFFBOARD_POS_PID,
             DCMotor.getNEO(1)
 
     );
@@ -124,12 +124,12 @@ public interface Arm {
             1,
             false,
             false,
-            10,
-            Optional.of(0.0),
-            Optional.of(-85.0),
+            30,
+            Optional.empty(),
+            Optional.empty(),
             false,
             false,
-            OptimizationMode.GENERIC,
+            false, OptimizationMode.GENERIC,
             DCMotor.getNeo550(1)
     );
 
