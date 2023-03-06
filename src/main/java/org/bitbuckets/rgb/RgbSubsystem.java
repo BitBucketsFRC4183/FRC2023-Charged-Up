@@ -13,16 +13,23 @@ public class RgbSubsystem implements HasLoop {
 
 
 
+    RgbFSM state = RgbFSM.DEFAULT;
 
+    public RgbFSM state() {
+        return state;
+    }
 
     final IDebuggable debuggable;
 
+    final OperatorInput operatorInput;
 
 
-    public RgbSubsystem(CANdle candle, OperatorInput rgbInput, IDebuggable debuggable) {
+
+    public RgbSubsystem(CANdle candle, OperatorInput rgbInput, IDebuggable debuggable, OperatorInput operatorInput) {
         this.candle = candle;
         this.rgbInput = rgbInput;
         this.debuggable = debuggable;
+        this.operatorInput = operatorInput;
     }
 
     @Override

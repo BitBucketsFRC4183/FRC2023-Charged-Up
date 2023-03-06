@@ -129,7 +129,7 @@ public interface Arm {
             30,
             Optional.empty(),
             Optional.empty(),
-            false,
+            true,
             false,
             false, OptimizationMode.GENERIC,
             DCMotor.getNeo550(1)
