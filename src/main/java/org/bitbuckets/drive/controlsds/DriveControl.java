@@ -17,8 +17,7 @@ import java.util.List;
 /**
  * Represents a real drive controller that implements control of the drivetrain using a list of SwerveModule interfaces
  */
-public class
-DriveControl implements IDriveControl, HasLogLoop {
+public class DriveControl implements IDriveControl, HasLogLoop {
 
     final SwerveDriveKinematics kinematics;
     final IDebuggable debug;
