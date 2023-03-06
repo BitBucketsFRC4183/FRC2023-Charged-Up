@@ -137,13 +137,13 @@ public class ArmSubsystem implements HasLoop {
 
 
         if (operatorInput.openGripperPressed()) {
-            armControl.openGripper();
+          //  armControl.openGripper();
         }
         else if (operatorInput.closeGripperPressed()) {
-            armControl.closeGripper();
+          //  armControl.closeGripper();
         }
         else if (!operatorInput.closeGripperPressed() && !operatorInput.openGripperPressed()) {
-            armControl.stopGripper();
+          //  armControl.stopGripper();
         }
 
         if (autoSubsystem.state() == AutoFSM.DISABLED) { //arm can move after auto fsm has ended, so that if we fuck up it can still win without us

@@ -114,28 +114,9 @@ public class DriveSubsystem implements HasLoop {
         //handle inputs from user
 
         if (autoSubsystem.state() == AutoFSM.TELEOP) {
-            if (input.isVisionDrivePressed() && visionControl.isTargTrue()) {
+            if (input.isVisionDrivePressed()) {
                 nextStateShould = DriveFSM.VISION;
-                if (visionControl.getTagID() != 5 && visionControl.getTagID() != 8) {
-                    if (!input.isCube()) {
-                        if ( !input.isLeft()) {
-                            lastVisionTarget = visionControl.estimateVisionScoreRightConePose();
-                        } else {
-                            lastVisionTarget = visionControl.estimateVisionScoreLeftConePose();
-                        }
-                    }
-                    else {
-                            lastVisionTarget = visionControl.estimateVisionScoreCubePose();
-                    }
-                }
-                else {
-                    if (!input.isLeft()) {
-                        lastVisionTarget = visionControl.estimateVisionLoadRightPose();
-                    }
-                    else {
-                        lastVisionTarget = visionControl.estimateVisionLoadLeftPose();
-                    }
-                }
+
                 return;
             }
 
@@ -162,6 +143,25 @@ public class DriveSubsystem implements HasLoop {
         }
 
         if (nextStateShould == DriveFSM.VISION) {
+            if(visionControl.isTargTrue()) {
+                if (visionControl.getTagID() != 5 && visionControl.getTagID() != 8) {
+                    if (!input.isCube()) {
+                        if (!input.isLeft()) {
+                            lastVisionTarget = visionControl.estimateVisionScoreRightConePose();
+                        } else {
+                            lastVisionTarget = visionControl.estimateVisionScoreLeftConePose();
+                        }
+                    } else {
+                        lastVisionTarget = visionControl.estimateVisionScoreCubePose();
+                    }
+                } else {
+                    if (!input.isLeft()) {
+                        lastVisionTarget = visionControl.estimateVisionLoadRightPose();
+                    } else {
+                        lastVisionTarget = visionControl.estimateVisionLoadLeftPose();
+                    }
+                }
+            }
             teleopVision();
             if (!input.isVisionDrivePressed()) {
                 nextStateShould = DriveFSM.MANUAL;
