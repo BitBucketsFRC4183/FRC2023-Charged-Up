@@ -24,6 +24,7 @@ public class ArmSubsystem implements HasLoop {
     }
 
     ArmFSM shouldDoNext = ArmFSM.IDLE;
+    AutoFSM autoStates = AutoFSM.INITIALIZATION;
 
     @Override
     public void loop() {
@@ -35,6 +36,9 @@ public class ArmSubsystem implements HasLoop {
 
             armControl.zero(); //assume where we are is zero. Only do this if you really have to since zeroing needs
             //to go outside frame perimeter, and you can only do that in a match L
+        }
+        if (operatorInput.zeroGripper()) {
+            armControl.zeroGripper();
         }
 
 
@@ -128,13 +132,13 @@ public class ArmSubsystem implements HasLoop {
     void handleLogic() {
 
 
-        if (operatorInput.ifGripperPressed()) {
+        if (operatorInput.openGripperPressed()) {
             armControl.openGripper();
         }
-        if (operatorInput.closeGripperPressed()) {
+        else if (operatorInput.closeGripperPressed()) {
             armControl.closeGripper();
         }
-        if (!operatorInput.closeGripperPressed() && !operatorInput.ifGripperPressed()) {
+        else if (!operatorInput.closeGripperPressed() && !operatorInput.openGripperPressed()) {
             armControl.stopGripper();
         }
 
@@ -147,8 +151,8 @@ public class ArmSubsystem implements HasLoop {
 
 
             armControl.commandArmToPercent(
-                    operatorInput.getLowerArm_PercentOutput(),
-                    operatorInput.getUpperArm_PercentOutput(),
+                    operatorInput.getLowerArm_PercentOutput() * 0.35,
+                    operatorInput.getUpperArm_PercentOutput() * 0.35,
                     !operatorInput.closeGripperPressed()
             );
         }
