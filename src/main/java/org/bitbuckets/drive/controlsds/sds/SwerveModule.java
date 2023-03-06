@@ -40,6 +40,7 @@ public class SwerveModule implements ISwerveModule {
         return steerController.getStateAngle();
     }
 
+
     @Override
     public void set(double driveVoltage, double steerAngle) {
 
@@ -76,6 +77,11 @@ public class SwerveModule implements ISwerveModule {
 
         swervePercentOut.log(driveVoltage);
         swerveAngleOut.log(steerAngle);
+    }
+
+    public void stopMotor() {
+        driveController.setReferenceVoltage(0);
+        steerController.setReferenceAngle(0);
     }
 
 }
