@@ -6,10 +6,15 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 public interface IDriveControl {
 
     SwerveModulePosition[] currentPositions();
+
     void drive(ChassisSpeeds speeds);
+
     void stop();
 
+    void stopGentle();
+
     double getMaxVelocity();
+
     double getMaxAngularVelocity();
 
 }

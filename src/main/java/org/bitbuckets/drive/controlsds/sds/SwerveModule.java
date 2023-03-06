@@ -78,9 +78,9 @@ public class SwerveModule implements ISwerveModule {
         swerveAngleOut.log(steerAngle);
     }
 
-    public void disableAllMotors()
-    {
+    public void disableMotor() {
         driveController.setReferenceVoltage(0);
+        steerController.setReferenceAngle(0);
     }
 
 }

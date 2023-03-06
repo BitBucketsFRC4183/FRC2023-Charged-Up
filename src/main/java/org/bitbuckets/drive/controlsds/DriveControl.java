@@ -9,7 +9,6 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import org.bitbuckets.drive.IDriveControl;
 import org.bitbuckets.drive.controlsds.sds.ISwerveModule;
-import org.bitbuckets.drive.controlsds.sds.SwerveModule;
 import org.bitbuckets.lib.core.HasLogLoop;
 import org.bitbuckets.lib.debug.IDebuggable;
 
@@ -18,7 +17,8 @@ import java.util.List;
 /**
  * Represents a real drive controller that implements control of the drivetrain using a list of SwerveModule interfaces
  */
-public class DriveControl implements IDriveControl, HasLogLoop {
+public class
+DriveControl implements IDriveControl, HasLogLoop {
 
     final SwerveDriveKinematics kinematics;
     final IDebuggable debug;
@@ -79,24 +79,19 @@ public class DriveControl implements IDriveControl, HasLogLoop {
     }
 
     public void stopGentle() {
-        SwerveModule.
+        for (int i = 0; i < 4; i++) {
+            modules.get(i).stopMotor();
+
+        }
     }
 
-    
+
     public double getMaxVelocity() {
         return Drive.MAX_DRIVE_VELOCITY * speedModifier;
     }
 
     public double getMaxAngularVelocity() {
         return Drive.MAX_ANG_VELOCITY * speedModifier;
-    }
-
-
-
-    private void driveGentle()
-    {
-
-        
     }
 
 
