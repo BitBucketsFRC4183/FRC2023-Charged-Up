@@ -4,6 +4,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import org.bitbuckets.drive.controlsds.sds.ISwerveModule;
+import org.bitbuckets.drive.controlsds.sds.SteerController;
 import org.bitbuckets.lib.core.HasLogLoop;
 import org.bitbuckets.lib.hardware.IAbsoluteEncoder;
 import org.bitbuckets.lib.hardware.IMotorController;
@@ -46,6 +47,12 @@ public class CompressedModule implements ISwerveModule, HasLogLoop {
     @Override
     public double getSteerAngle() {
         return absoluteEncoder.getAbsoluteAngle();
+    }
+
+    @Override
+    public void stopMotor() {
+        driveMotor.moveAtVoltage(0);
+        steerMotor.moveAtVoltage(0);
     }
 
     double referenceAngleRadians = 0;
