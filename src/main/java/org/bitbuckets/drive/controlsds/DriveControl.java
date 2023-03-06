@@ -70,6 +70,15 @@ public class DriveControl implements IDriveControl, HasLogLoop {
     @Override
     public void stop() {
         doDriveWithStates(new SwerveModuleState[]{
+                new SwerveModuleState(0, Rotation2d.fromDegrees(0)),
+                new SwerveModuleState(0, Rotation2d.fromDegrees(0)),
+                new SwerveModuleState(0, Rotation2d.fromDegrees(0)),
+                new SwerveModuleState(0, Rotation2d.fromDegrees(0))
+        });
+    }
+
+    public void stopSticky() {
+        doDriveWithStates(new SwerveModuleState[]{
                 new SwerveModuleState(0, Rotation2d.fromDegrees(45)),
                 new SwerveModuleState(0, Rotation2d.fromDegrees(-45)),
                 new SwerveModuleState(0, Rotation2d.fromDegrees(-45)),
