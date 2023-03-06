@@ -2,7 +2,6 @@ package org.bitbuckets.rgb;
 
 import com.ctre.phoenix.led.CANdle;
 import org.bitbuckets.OperatorInput;
-import org.bitbuckets.cubeCone.GamePiece;
 import org.bitbuckets.lib.core.HasLoop;
 import org.bitbuckets.lib.debug.IDebuggable;
 
@@ -13,7 +12,6 @@ public class RgbSubsystem implements HasLoop {
     final OperatorInput rgbInput;
 
 
-    public GamePiece gamePiece;
 
 
 
@@ -30,10 +28,10 @@ public class RgbSubsystem implements HasLoop {
     @Override
     public void loop() {
         candle.setLEDs(0,255,0);
-        if(gamePiece.isCone()) {
+        if(!rgbInput.isCube()) {
             candle.setLEDs(0, 255, 255);
         }
-        if(!gamePiece.isCone()) {
+        if(rgbInput.isCube()) {
             candle.setLEDs(255, 0, 255);
         }
     }

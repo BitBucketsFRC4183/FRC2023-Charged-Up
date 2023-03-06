@@ -10,7 +10,7 @@ public interface VisionConstants2 {
 
     double TAG_HEIGHT = Units.inchesToMeters(24.63);
     double CAMERA_HEIGHT = Units.inchesToMeters(30);
-    double CAMERA_PITCH = Units.degreesToRadians(10);
+    double CAMERA_PITCH = Units.degreesToRadians(350);
 
     TrapezoidProfile.Constraints X_CONSTRAINTS = new TrapezoidProfile.Constraints(1, .75);
     TrapezoidProfile.Constraints Y_CONSTRAINTS = new TrapezoidProfile.Constraints(1, .75);

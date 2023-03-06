@@ -162,7 +162,6 @@ public class DriveSubsystem implements HasLoop {
         }
 
         if (nextStateShould == DriveFSM.VISION) {
-            lastVisionTarget = visionControl.estimateVisionTargetPose();
             teleopVision();
             if (!input.isVisionDrivePressed()) {
                 nextStateShould = DriveFSM.MANUAL;
