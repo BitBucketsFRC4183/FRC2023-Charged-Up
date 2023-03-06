@@ -5,7 +5,11 @@ package org.bitbuckets.lib.hardware;
  */
 public interface IMotorController extends IMotor, IEncoder {
 
+    default double getError_mechanismRotations(){
+        double setpoint = getSetpoint_mechanismRotations();
+        double actualPosition = getMechanismPositionAccum_rot();
+        return setpoint - actualPosition;
 
-
+    }
 
 }

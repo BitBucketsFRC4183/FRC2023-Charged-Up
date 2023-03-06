@@ -201,8 +201,12 @@ public class DriveSubsystem implements HasLoop {
             xOutput = input.getInputX() * driveControl.getMaxVelocity();
             yOutput = -input.getInputY() * driveControl.getMaxVelocity();
             rotationOutput = input.getInputRot() * driveControl.getMaxAngularVelocity();
-
         }
+
+        if(input.stopStickyPressed()){
+            driveControl.stopSticky();
+        }
+        
         debuggable.log("x-output", xOutput);
         debuggable.log("y-output", yOutput);
         debuggable.log("rot-output", rotationOutput);

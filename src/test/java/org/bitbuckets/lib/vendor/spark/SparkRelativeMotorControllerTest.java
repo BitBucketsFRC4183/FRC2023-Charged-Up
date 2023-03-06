@@ -27,7 +27,7 @@ class SparkRelativeMotorControllerTest {
             Optional.empty(),
             false,
             false,
-            isRampRateEnabled, OptimizationMode.GENERIC,
+            false, OptimizationMode.GENERIC,
             DCMotor.getNEO(1)
     );
 

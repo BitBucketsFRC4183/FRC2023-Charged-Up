@@ -161,8 +161,7 @@ public class OperatorInput {
     public boolean isStopPidPressed() {
         return operatorControl.getRawButtonPressed(XboxController.Button.kB.value);
     }
-
-    public boolean ifGripperPressed() {
+    public boolean openGripperPressed() {
         return operatorControl.getRawButton(XboxController.Button.kRightBumper.value);
     }
 
@@ -172,6 +171,13 @@ public class OperatorInput {
 
     public boolean conevscube() {
         return false;//operatorControl.getRawButton(XboxController.Button.kLeftBumper.value);
+    }
+
+    public boolean stopStickyPressed(){
+        return driveControl.getRawButton(XboxController.Button.kX.value);
+    }
+    public boolean zeroGripper() {
+        return operatorControl.getRawButton(XboxController.Button.kRightStick.value);
     }
 
 
