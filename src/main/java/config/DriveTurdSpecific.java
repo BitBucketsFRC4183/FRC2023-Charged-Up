@@ -45,7 +45,7 @@ public interface DriveTurdSpecific {
             Optional.empty(),
             false,
             false,
-            true, OptimizationMode.GENERIC,
+            true, OptimizationMode.VOLTAGE,
             DCMotor.getNEO(1)
     );
     MotorConfig STEER_TURD = new MotorConfig(
@@ -59,7 +59,7 @@ public interface DriveTurdSpecific {
             Optional.empty(),
             false,
             false,
-            true, OptimizationMode.GENERIC,
+            true, OptimizationMode.VOLTAGE,
             DCMotor.getNeo550(1)
     );
 }

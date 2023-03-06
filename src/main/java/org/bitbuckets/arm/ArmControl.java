@@ -99,7 +99,11 @@ public class ArmControl {
     public void zero() {
         lowerArm.forceOffset_mechanismRotations(0);
         upperArm.forceOffset_mechanismRotations(0);
+    }
+
+    public void zeroGripper() {
         gripperActuator.forceOffset_mechanismRotations(0);
+
     }
 
     public void zeroToStartingPosition() {
@@ -113,6 +117,8 @@ public class ArmControl {
         return 1;
     }
 
-
-
+    //probably doesn't work but I need something to test right now
+    public boolean isErrorSmallEnough(double delta) {
+        return Math.abs(lowerArm.getError_mechanismRotations()) < delta && Math.abs(upperArm.getError_mechanismRotations()) < delta;
+    }
 }

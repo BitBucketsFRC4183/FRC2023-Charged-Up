@@ -76,7 +76,7 @@ public class SparkSetup implements ISetup<IMotorController> {
             reverseSwitch.enableLimitSwitch(true);
         }
         if (motorConfig.isRampRateEnabled) {
-            spark.setOpenLoopRampRate(0.5);
+            spark.setOpenLoopRampRate(1);
         }
 
         if (motorConfig.forwardSoftLimitMechanismAccum_rot.isPresent()) {
