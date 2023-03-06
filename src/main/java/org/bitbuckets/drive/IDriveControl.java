@@ -9,6 +9,8 @@ public interface IDriveControl {
     void drive(ChassisSpeeds speeds);
     void stop();
 
+    void stopGentle();
+
     void stopSticky();
 
     double getMaxVelocity();
