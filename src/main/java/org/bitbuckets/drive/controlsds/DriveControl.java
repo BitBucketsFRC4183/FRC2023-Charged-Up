@@ -9,6 +9,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import org.bitbuckets.drive.IDriveControl;
 import org.bitbuckets.drive.controlsds.sds.ISwerveModule;
+import org.bitbuckets.drive.controlsds.sds.SwerveModule;
 import org.bitbuckets.lib.core.HasLogLoop;
 import org.bitbuckets.lib.debug.IDebuggable;
 
@@ -77,6 +78,10 @@ public class DriveControl implements IDriveControl, HasLogLoop {
         });
     }
 
+    public void stopGentle() {
+        SwerveModule.
+    }
+
     
     public double getMaxVelocity() {
         return Drive.MAX_DRIVE_VELOCITY * speedModifier;
@@ -84,6 +89,14 @@ public class DriveControl implements IDriveControl, HasLogLoop {
 
     public double getMaxAngularVelocity() {
         return Drive.MAX_ANG_VELOCITY * speedModifier;
+    }
+
+
+
+    private void driveGentle()
+    {
+
+        
     }
 
 
