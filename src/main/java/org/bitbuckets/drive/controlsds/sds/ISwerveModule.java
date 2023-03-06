@@ -6,9 +6,16 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 public interface ISwerveModule {
 
     SwerveModulePosition getPosition();
+
     SwerveModuleState getState();
+
     double getDriveVelocity();
+
     double getSteerAngle();
 
+    void stopMotor();
+
+
     void set(double driveVoltage, double steerAngle);
+//    void setVoltage(double driveVoltage);
 }

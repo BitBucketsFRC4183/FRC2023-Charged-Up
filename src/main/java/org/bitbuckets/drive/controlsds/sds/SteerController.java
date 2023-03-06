@@ -65,6 +65,12 @@ public class SteerController implements ISteerController {
         this.referenceAngleRadians = referenceAngleRadians;
     }
 
+    //@Override
+    public void setReferenceVoltage(double voltage) {
+        motor.moveAtVoltage(voltage);
+    }
+
+
     @Override
     public double getStateAngle() {
         double motorAngleRadians = motor.getPositionRaw() * sensorPositionCoefficient;
