@@ -1,6 +1,5 @@
 package org.bitbuckets.auto;
 
-import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import edu.wpi.first.wpilibj.DriverStation;
 import org.bitbuckets.odometry.IOdometryControl;
@@ -48,17 +47,6 @@ public class AutoControl implements IAutoControl {
             segmentTimes.add(new AutoPathInstance.SegmentTime(i, totalTime, false));
             totalTime = totalTime + segment.getTotalTimeSeconds();
 
-            if (segment.getEndStopEvent().names.size() > 0 && segmentGroup.size() - 1 == i){
-                segmentTimes.add(new AutoPathInstance.SegmentTime(i, totalTime, true));
-
-
-                for (String possibleEventName : segment.getEndStopEvent().names) {
-                    eventMap.put(possibleEventName, totalTime);
-                }
-
-
-                totalTime += segment.getEndStopEvent().waitTime;
-            }
 
             for (PathPlannerTrajectory.EventMarker marker : segment.getMarkers()) {
                 for (String name : marker.names) {
@@ -68,6 +56,14 @@ public class AutoControl implements IAutoControl {
                 }
             }
 
+            if (segment.getEndStopEvent().names.size() > 0 && segmentGroup.size() - 1 == i) {
+                segmentTimes.add(new AutoPathInstance.SegmentTime(i, totalTime, true));
+
+                for (String possibleEventName : segment.getEndStopEvent().names) {
+                    eventMap.put(possibleEventName, totalTime);
+                }
+                totalTime += segment.getEndStopEvent().waitTime;
+            }
         }
 
         var transformedTrajectories = new ArrayList<PathPlannerTrajectory>();
@@ -80,7 +76,6 @@ public class AutoControl implements IAutoControl {
         var initialState = PathPlannerTrajectory.transformStateForAlliance(segmentGroup.get(0).getInitialState(), DriverStation.getAlliance());
         odometryControl.setPos(initialState.holonomicRotation, initialState.poseMeters);
         AutoPathInstance instance = new AutoPathInstance(transformedTrajectories, eventMap, segmentTimes, whichOne, totalTime);
-
 
         instance.onPhaseChangeEvent(AutoFSM.AUTO_RUN);
         return instance;
