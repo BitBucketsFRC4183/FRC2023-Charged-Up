@@ -1,5 +1,6 @@
 package org.bitbuckets.arm;
 
+import config.Arm;
 import edu.wpi.first.math.VecBuilder;
 import org.bitbuckets.lib.control.IPIDCalculator;
 import org.bitbuckets.lib.hardware.IMotorController;
@@ -62,21 +63,23 @@ public class ArmControl {
         upperArm.moveAtVoltage(upperArmFFVoltage + upperArmFeedbackVoltage);
 
         if (gripperShouldOpen) {
-            //gripperActuator.moveToPosition_mechanismRotations(Arm.GRIPPER_SETPOINT_MOTOR_ROTATIONS);
+            gripperActuator.moveToPosition_mechanismRotations(Arm.GRIPPER_SETPOINT_MOTOR_ROTATIONS);
         } else {
-            //gripperActuator.goLimp(); //let the ropes pull it back
+            stopGripper();
         }
 
     }
 
     public void openGripper() {
+        // if (!gripperActuator.rawAccess(CANSparkMax.class).getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen).isPressed()) {
+        gripperActuator.moveAtPercent(-0.6);
 
-        gripperActuator.moveAtPercent(-0.3);
+        //     }
     }
 
 
     public void closeGripper() {
-        gripperActuator.moveAtPercent(+0.3);
+        gripperActuator.moveAtPercent(+0.6);
 
     }
 
@@ -99,7 +102,11 @@ public class ArmControl {
     public void zero() {
         lowerArm.forceOffset_mechanismRotations(0);
         upperArm.forceOffset_mechanismRotations(0);
+    }
+
+    public void zeroGripper() {
         gripperActuator.forceOffset_mechanismRotations(0);
+
     }
 
     public void zeroToStartingPosition() {
@@ -113,5 +120,8 @@ public class ArmControl {
         return 1;
     }
 
-
+    //probably doesn't work but I need something to test right now
+    public boolean isErrorSmallEnough(double delta) {
+        return Math.abs(lowerArm.getError_mechanismRotations()) < delta && Math.abs(upperArm.getError_mechanismRotations()) < delta;
+    }
 }

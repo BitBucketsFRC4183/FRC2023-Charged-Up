@@ -1,6 +1,9 @@
 package org.bitbuckets.rgb;
 
 public enum RgbFSM {
-    A, B,
-    DISABLED
+
+    // For testing shit
+    DEFAULT,
+    AUTO_HEADING
+
 }
