@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * SparkPIDSetup is for control based shit
+ * SparkPIDSetup is for control based control
  * SparkPercentSetup is for your normal drive or whatever
  */
 public class SparkSetup implements ISetup<IMotorController> {

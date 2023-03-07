@@ -203,10 +203,10 @@ public class DriveSubsystem implements HasLoop {
             rotationOutput = input.getInputRot() * driveControl.getMaxAngularVelocity();
         }
 
-        if(input.stopStickyPressed()){
+        if (input.stopStickyPressed()) {
             driveControl.stopSticky();
         }
-        
+
         debuggable.log("x-output", xOutput);
         debuggable.log("y-output", yOutput);
         debuggable.log("rot-output", rotationOutput);
@@ -244,12 +244,8 @@ public class DriveSubsystem implements HasLoop {
 
         double Pitch_deg = odometryControl.getPitch_deg();
 
-        System.out.println("WEENER");
-
         debuggable.log("pitch-now", Pitch_deg);
         if (Math.abs(Pitch_deg) > 0.1) {
-            System.out.println("HUGE WEENER");
-
             double output = balanceControl.calculateBalanceOutput(Pitch_deg, 0);
 
             debuggable.log("control-output-autobalance", output);
