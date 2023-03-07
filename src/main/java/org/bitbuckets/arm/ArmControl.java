@@ -1,8 +1,5 @@
 package org.bitbuckets.arm;
 
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.SparkMaxAbsoluteEncoder;
-import com.revrobotics.SparkMaxLimitSwitch;
 import config.Arm;
 import edu.wpi.first.math.VecBuilder;
 import org.bitbuckets.lib.control.IPIDCalculator;
@@ -20,8 +17,6 @@ public class ArmControl {
     final IPIDCalculator lowerArmControl;
     final IPIDCalculator upperArmControl;
     final IMotorController gripperActuator;
-
-
 
 
     public ArmControl(ArmDynamics ff, IMotorController lowerArm, IMotorController upperArm, IPIDCalculator lowerArmControl, IPIDCalculator upperArmControl, IMotorController gripperActuator) {
@@ -74,28 +69,22 @@ public class ArmControl {
         }
 
     }
-    public void gripperResetonLimit()
-    {
-        if(gripperActuator.rawAccess(CANSparkMax.class).getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen).isPressed())
-        {
+
+    public void gripperResetonLimit() {
+        if (gripperActuator.isForwardLimitSwitchPressed()) {
             gripperActuator.forceOffset_mechanismRotations(0);
         }
-
-
     }
-    public void zeroArmAbs()
-    {
-        double absAngleRot = (upperArm.rawAccess(CANSparkMax.class).getAbsoluteEncoder(SparkMaxAbsoluteEncoder.Type.kDutyCycle).getPosition()) - Arm.UPPER_ARM_OFFSET;
+
+    public void zeroArmAbs() {
+        double absAngleRot = upperArm.getAbsoluteEncoder_rotations() - Arm.UPPER_ARM_OFFSET;
 
         upperArm.forceOffset_mechanismRotations(-absAngleRot);
 
     }
 
-    public double getUpperAbsEncoderAngle()
-    {
-        return (upperArm.rawAccess(CANSparkMax.class).getAbsoluteEncoder(SparkMaxAbsoluteEncoder.Type.kDutyCycle).getPosition());
-
-
+    public double getUpperAbsEncoderAngle() {
+        return upperArm.getAbsoluteEncoder_rotations();
     }
 
 
@@ -131,7 +120,6 @@ public class ArmControl {
         lowerArm.forceOffset_mechanismRotations(0);
         upperArm.forceOffset_mechanismRotations(0);
     }
-
 
 
     public double getErrorQuantity() {

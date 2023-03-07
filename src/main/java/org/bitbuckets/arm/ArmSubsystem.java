@@ -27,9 +27,8 @@ public class ArmSubsystem implements HasLoop {
 
     @Override
     public void loop() {
-        debuggable.log("UPPERARMABS",armControl.getUpperAbsEncoderAngle());
+        debuggable.log("UPPERARMABS", armControl.getUpperAbsEncoderAngle());
         //handle arm calibration
-        armControl.gripperResetonLimit();
         armControl.gripperResetonLimit();
 
         if (operatorInput.isZeroArmPressed()) {
@@ -38,7 +37,6 @@ public class ArmSubsystem implements HasLoop {
             armControl.zero(); //assume where we are is zero. Only do this if you really have to since zeroing needs
             //to go outside frame perimeter, and you can only do that in a match L
         }
-
 
 
         //handle inputs, which will calculate what the next input of the robot is
