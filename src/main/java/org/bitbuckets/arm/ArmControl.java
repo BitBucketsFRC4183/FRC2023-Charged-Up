@@ -1,5 +1,8 @@
 package org.bitbuckets.arm;
 
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.SparkMaxAbsoluteEncoder;
+import com.revrobotics.SparkMaxLimitSwitch;
 import config.Arm;
 import edu.wpi.first.math.VecBuilder;
 import org.bitbuckets.lib.control.IPIDCalculator;
@@ -17,6 +20,8 @@ public class ArmControl {
     final IPIDCalculator lowerArmControl;
     final IPIDCalculator upperArmControl;
     final IMotorController gripperActuator;
+
+
 
 
     public ArmControl(ArmDynamics ff, IMotorController lowerArm, IMotorController upperArm, IPIDCalculator lowerArmControl, IPIDCalculator upperArmControl, IMotorController gripperActuator) {
@@ -69,17 +74,40 @@ public class ArmControl {
         }
 
     }
+    public void gripperResetonLimit()
+    {
+        if(gripperActuator.rawAccess(CANSparkMax.class).getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen).isPressed())
+        {
+            gripperActuator.forceOffset_mechanismRotations(0);
+        }
+
+
+    }
+    public void zeroArmAbs()
+    {
+        double absAngleRot = (upperArm.rawAccess(CANSparkMax.class).getAbsoluteEncoder(SparkMaxAbsoluteEncoder.Type.kDutyCycle).getPosition()) - Arm.UPPER_ARM_OFFSET;
+
+        upperArm.forceOffset_mechanismRotations(-absAngleRot);
+
+    }
+
+    public double getUpperAbsEncoderAngle()
+    {
+        return (upperArm.rawAccess(CANSparkMax.class).getAbsoluteEncoder(SparkMaxAbsoluteEncoder.Type.kDutyCycle).getPosition());
+
+
+    }
+
 
     public void openGripper() {
-        // if (!gripperActuator.rawAccess(CANSparkMax.class).getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen).isPressed()) {
-        gripperActuator.moveAtPercent(-0.6);
+        gripperActuator.moveAtPercent(0.6);
 
         //     }
     }
 
 
     public void closeGripper() {
-        gripperActuator.moveAtPercent(+0.6);
+        gripperActuator.moveAtPercent(-0.6);
 
     }
 
@@ -104,17 +132,7 @@ public class ArmControl {
         upperArm.forceOffset_mechanismRotations(0);
     }
 
-    public void zeroGripper() {
-        gripperActuator.forceOffset_mechanismRotations(0);
 
-    }
-
-    public void zeroToStartingPosition() {
-        //TODO these are random numbers and need to be accurate
-        lowerArm.forceOffset_mechanismRotations(0);
-        upperArm.forceOffset_mechanismRotations(0.44);
-        gripperActuator.forceOffset_mechanismRotations(0);
-    }
 
     public double getErrorQuantity() {
         return 1;
