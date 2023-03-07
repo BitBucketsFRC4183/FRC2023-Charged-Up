@@ -68,6 +68,10 @@ public class ArmSubsystem implements HasLoop {
                 shouldDoNext = ArmFSM.PREPARE;
                 return;
             }
+            if (autoSubsystem.sampleHasEventStarted("arm-unstow")) {
+                shouldDoNext = ArmFSM.UNSTOW;
+                return;
+            }
             //Only scoring high when moving arm in auto
             if (autoSubsystem.sampleHasEventStarted("moveArm")) {
                 shouldDoNext = ArmFSM.SCORE_HIGH;
@@ -184,6 +188,11 @@ public class ArmSubsystem implements HasLoop {
 
         }
 
+        if (shouldDoNext == ArmFSM.UNSTOW) {
+            armControl.commandArmToState(- 0.1,armControl.upperArm.getMechanismPositionAccum_rot(),false);
+
+
+        }
         //TODO fill out the rest
     }
 }
