@@ -119,9 +119,7 @@ public class OperatorInput {
         return operatorControl.getRawButton(XboxController.Button.kX.value);
     }
 
-    public boolean isDebugDegreesPressed() {
-        return operatorControl.getRawButtonPressed(XboxController.Button.kY.value);
-    }
+
 
     public boolean isManualModePressed() {
         return operatorControl.getRawButtonPressed(XboxController.Button.kA.value);
@@ -180,6 +178,5 @@ public class OperatorInput {
     public boolean zeroGripper() {
         return operatorControl.getRawButton(XboxController.Button.kRightStick.value);
     }
-
 
 }

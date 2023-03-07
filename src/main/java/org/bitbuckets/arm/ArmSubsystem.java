@@ -27,17 +27,15 @@ public class ArmSubsystem implements HasLoop {
 
     @Override
     public void loop() {
-
+        debuggable.log("UPPERARMABS", armControl.getUpperAbsEncoderAngle());
         //handle arm calibration
+        armControl.gripperResetonLimit();
 
         if (operatorInput.isZeroArmPressed()) {
             System.out.println("System zeroed to user input");
 
             armControl.zero(); //assume where we are is zero. Only do this if you really have to since zeroing needs
             //to go outside frame perimeter, and you can only do that in a match L
-        }
-        if (operatorInput.zeroGripper()) {
-            armControl.zeroGripper();
         }
 
 
@@ -112,10 +110,6 @@ public class ArmSubsystem implements HasLoop {
             }
             if (operatorInput.isScoreLowPressed()) {
                 shouldDoNext = ArmFSM.SCORE_LOW;
-                return;
-            }
-            if (operatorInput.isDebugDegreesPressed()) {
-                shouldDoNext = ArmFSM.DEBUG_TO_DEGREES;
                 return;
             }
 

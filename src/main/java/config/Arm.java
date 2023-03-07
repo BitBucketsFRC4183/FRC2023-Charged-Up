@@ -39,6 +39,10 @@ public interface Arm {
     double LOWER_ARM_GEAR_RATIO = 1.0 / LOWER_ARM_REDUCTION / LOWER_ARM_BELT; //divide again since calculator math
     double UPPER_ARM_GEAR_RATIO = 1.0 / UPPER_ARM_REDUCTION / UPPER_ARM_BELT;
 
+    double UPPER_ARM_OFFSET = 0.56;
+
+
+
     //FF
 
     //TODO these are wrong
@@ -122,11 +126,11 @@ public interface Arm {
             1,
             1,
             1,
-            false,
+            true,
             false,
             30,
             Optional.empty(),
-            Optional.empty(),
+            Optional.of(-134.8),
             true,
             false,
             false, OptimizationMode.GENERIC,

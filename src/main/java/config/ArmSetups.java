@@ -8,11 +8,15 @@ import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.SwapSetup;
 import org.bitbuckets.lib.control.IPIDCalculator;
 import org.bitbuckets.lib.control.PIDCalculatorSetup;
+import org.bitbuckets.lib.hardware.IAbsoluteEncoder;
 import org.bitbuckets.lib.hardware.IMotorController;
 import org.bitbuckets.lib.util.MockingUtil;
+import org.bitbuckets.lib.vendor.ctre.CANCoderAbsoluteSetup;
+import org.bitbuckets.lib.vendor.noops.NoopsAbsoluteEncoder;
 import org.bitbuckets.lib.vendor.sim.dc.DCSimSetup;
 import org.bitbuckets.lib.vendor.sim.dc.SimInertiaConfig;
 import org.bitbuckets.lib.vendor.spark.SparkSetup;
+import org.bitbuckets.lib.vendor.thrifty.ThriftyEncoderSetup;
 
 import java.util.Optional;
 
@@ -78,14 +82,14 @@ public interface ArmSetups {
     );
 
 
+
     ISetup<ArmControl> ARM_CONTROL = new ArmControlSetup(
             Arm.DOUBLE_JOINTED_FF,
             LOWER_ARM,
             UPPER_ARM,
             LOWER_PID,
             UPPER_PID,
-            GRIPPER_JOINT
-    );
+            GRIPPER_JOINT);
 
 
 }
