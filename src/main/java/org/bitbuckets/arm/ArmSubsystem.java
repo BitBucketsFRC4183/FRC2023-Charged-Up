@@ -189,7 +189,8 @@ public class ArmSubsystem implements HasLoop {
         }
 
         if (shouldDoNext == ArmFSM.UNSTOW) {
-            armControl.commandArmToState(-0.161,0,false);
+            armControl.commandArmToState(- 0.1,armControl.upperArm.getMechanismPositionAccum_rot(),false);
+
 
         }
         //TODO fill out the rest
