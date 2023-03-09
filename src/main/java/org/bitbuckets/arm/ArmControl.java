@@ -62,11 +62,6 @@ public class ArmControl {
         lowerArm.moveAtVoltage(lowerArmFFVoltage + lowerArmFeedbackVoltage);
         upperArm.moveAtVoltage(upperArmFFVoltage + upperArmFeedbackVoltage);
 
-//        if (gripperShouldOpen) {
-//            gripperActuator.moveToPosition_mechanismRotations(Arm.GRIPPER_SETPOINT_MOTOR_ROTATIONS);
-//        } else {
-//            stopGripper();
-//        }
 
     }
 

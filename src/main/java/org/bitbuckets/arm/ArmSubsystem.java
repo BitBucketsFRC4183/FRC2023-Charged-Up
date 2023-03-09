@@ -4,6 +4,8 @@ import config.Arm;
 import org.bitbuckets.OperatorInput;
 import org.bitbuckets.auto.AutoFSM;
 import org.bitbuckets.auto.AutoSubsystem;
+import org.bitbuckets.lib.control.IPIDCalculator;
+import org.bitbuckets.lib.control.PIDCalculator;
 import org.bitbuckets.lib.core.HasLoop;
 import org.bitbuckets.lib.debug.IDebuggable;
 

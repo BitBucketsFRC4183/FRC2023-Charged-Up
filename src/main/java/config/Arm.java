@@ -17,6 +17,12 @@ public interface Arm {
     //Need to get this value, (0.1) is wrong
     double GRIPPER_SETPOINT_MOTOR_ROTATIONS = 135;
 
+    // TODO GRIPPER VALUES NEED TO BE TUNED DURING OC ON FRIDAY; KEEP IN MIND CLOSE IN POSITIVE AND OPEN IS NEGATIVE
+    double GRIPPER_SETPOINT_MOTOR_ROTATIONS_OPEN = -50;
+    double GRIPPER_SETPOINT_MOTOR_ROTATIONS_CLOSE_CUBE = 10;
+    double GRIPPER_SETPOINT_MOTOR_ROTATIONS_CLOSE_CONE = 15;
+
+
     /**
      * How "correct" the arm's position has to be until the arm subsystem considers it at the position
      * Poor man's cost function
