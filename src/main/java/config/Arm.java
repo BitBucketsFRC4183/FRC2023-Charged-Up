@@ -48,7 +48,6 @@ public interface Arm {
     double UPPER_ARM_OFFSET = 0.56;
 
 
-
     //FF
 
     //TODO these are wrong
