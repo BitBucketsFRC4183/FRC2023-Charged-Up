@@ -53,7 +53,6 @@ public class SparkSetup implements ISetup<IMotorController> {
         spark.enableVoltageCompensation(12.0);
 
         if (motorConfig.shouldBreakOnNoCommand) {
-            System.out.println("break");
             spark.setIdleMode(CANSparkMax.IdleMode.kBrake);
         } else {
             spark.setIdleMode(CANSparkMax.IdleMode.kCoast);

@@ -23,7 +23,6 @@ public class ArmSubsystem implements HasLoop {
     }
 
     ArmFSM shouldDoNext = ArmFSM.IDLE;
-    AutoFSM autoStates = AutoFSM.INITIALIZATION;
 
     @Override
     public void loop() {
