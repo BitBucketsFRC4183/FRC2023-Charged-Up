@@ -49,6 +49,7 @@ public class ArmSubsystem implements HasLoop {
 
     //generates what the FSM should do. Will modify shouldDoNext if something has happened
     void handleStateTransitions() {
+
         if (operatorInput.isStopPidPressed() && autoSubsystem.state() != AutoFSM.AUTO_RUN) {
             shouldDoNext = ArmFSM.IDLE;
             return;
@@ -68,15 +69,13 @@ public class ArmSubsystem implements HasLoop {
                 shouldDoNext = ArmFSM.PREPARE;
                 return;
             }
-            if (autoSubsystem.sampleHasEventStarted("arm-unstow")) {
-                shouldDoNext = ArmFSM.UNSTOW;
-                return;
-            }
+
             //Only scoring high when moving arm in auto
             if (autoSubsystem.sampleHasEventStarted("moveArm")) {
                 shouldDoNext = ArmFSM.SCORE_HIGH;
                 return;
             }
+
             if (autoSubsystem.sampleHasEventStarted("arm-human-intake")) {
                 shouldDoNext = ArmFSM.HUMAN_INTAKE;
                 return;
@@ -89,6 +88,29 @@ public class ArmSubsystem implements HasLoop {
             //TODO legacy path event
             if (autoSubsystem.sampleHasEventStarted("collect")) {
                 shouldDoNext = ArmFSM.STORAGE;
+                return;
+            }
+
+            if (autoSubsystem.sampleHasEventStarted("gripper-open"))
+            {
+                shouldDoNext = ArmFSM.GRIPPER_OPEN;
+                return;
+            }
+
+            if (autoSubsystem.sampleHasEventStarted("gripper-close-cube"))
+            {
+                shouldDoNext = ArmFSM.GRIPPER_CLOSE_CUBE;
+                return;
+             }
+
+            if (autoSubsystem.sampleHasEventStarted("gripper-close-cone"))
+            {
+                shouldDoNext = ArmFSM.GRIPPER_CLOSE_CONE;
+                return;
+            }
+
+            if (autoSubsystem.sampleHasEventStarted("arm-unstow")) {
+                shouldDoNext = ArmFSM.UNSTOW;
                 return;
             }
         }
@@ -152,6 +174,7 @@ public class ArmSubsystem implements HasLoop {
             );
         }
 
+
         if (shouldDoNext == ArmFSM.STORAGE) {
             armControl.commandArmToState(
                     0.168,
@@ -188,11 +211,26 @@ public class ArmSubsystem implements HasLoop {
 
         }
 
-        if (shouldDoNext == ArmFSM.UNSTOW) {
-            armControl.commandArmToState(- 0.1,armControl.upperArm.getMechanismPositionAccum_rot(),false);
+        if (shouldDoNext == ArmFSM.GRIPPER_OPEN)
+        {
+            armControl.gripperActuator.moveToPosition_mechanismRotations(Arm.GRIPPER_SETPOINT_MOTOR_ROTATIONS_OPEN);
+        }
 
+        //differentiate different types of closeGripper()
+        if (shouldDoNext == ArmFSM.GRIPPER_CLOSE_CONE) {
+            armControl.gripperActuator.moveToPosition_mechanismRotations(Arm.GRIPPER_SETPOINT_MOTOR_ROTATIONS_CLOSE_CONE);
 
         }
+
+        if (shouldDoNext == ArmFSM.GRIPPER_CLOSE_CUBE)
+        {
+            armControl.gripperActuator.moveToPosition_mechanismRotations(Arm.GRIPPER_SETPOINT_MOTOR_ROTATIONS_CLOSE_CUBE);
+        }
+
+        if (shouldDoNext == ArmFSM.UNSTOW) {
+            armControl.commandArmToState(- 0.1,armControl.upperArm.getMechanismPositionAccum_rot(),false);
+        }
+
         //TODO fill out the rest
     }
 }

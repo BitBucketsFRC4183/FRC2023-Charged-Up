@@ -6,6 +6,6 @@ public enum AutoFSM {
     INITIALIZATION,
     AUTO_RUN,
     AUTO_ENDED,
-    TELEOP
+    TELEOP,
 
 }

@@ -19,7 +19,11 @@ public enum ArmFSM {
     GROUND_INTAKE,
 
     DEBUG_TO_DEGREES,
-    CUBE,
-    CONE
+
+
+    GRIPPER_OPEN,
+    GRIPPER_CLOSE_CONE,
+    GRIPPER_CLOSE_CUBE
+
 
 }
