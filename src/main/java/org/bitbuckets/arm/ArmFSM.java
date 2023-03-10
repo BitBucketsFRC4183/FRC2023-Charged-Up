@@ -9,6 +9,7 @@ public enum ArmFSM {
 
     PREPARE,
     UNSTOW,
+
     ACTUATE_GRIPPER,
 
     SCORE_MID,
