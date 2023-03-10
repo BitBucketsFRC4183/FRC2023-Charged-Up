@@ -20,19 +20,22 @@ public class SimArmCore implements HasLoop {
     Vector<N4> shoulderElbowStates;
     Vector<N2> voltageSetpoints = VecBuilder.fill(0,0);
 
-    double getArmPosition(SimJoint joint) {
+
+
+    double getArmPosition_rotations(SimJoint joint) {
         if (joint == SimJoint.SHOULDER) {
-            return shoulderElbowStates.get(0,0);
+            return shoulderElbowStates.get(0,0) / Math.PI / 2.0;
         } else {
-            return shoulderElbowStates.get(1,0);
+            return shoulderElbowStates.get(1,0) / Math.PI / 2.0;
         }
     }
 
-    double getArmVelocity(SimJoint joint) {
+
+    double getArmVelocity_rotationsPerSecond(SimJoint joint) {
         if (joint == SimJoint.SHOULDER) {
-            return shoulderElbowStates.get(2,0);
+            return shoulderElbowStates.get(2,0) / Math.PI / 2.0;
         } else {
-            return shoulderElbowStates.get(3,0);
+            return shoulderElbowStates.get(3,0) / Math.PI / 2.0;
         }
     }
 

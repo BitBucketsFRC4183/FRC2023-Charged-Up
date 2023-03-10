@@ -10,17 +10,16 @@ import org.bitbuckets.lib.hardware.MotorConfig;
 
 public class SimArmController implements IMotorController, HasLoop, HasLogLoop {
 
-    final boolean isUpper;
-    final MotorConfig motorConfig;
+    final SimJoint joint;
+    //final MotorConfig motorConfig;
+
     final SimArmCore core;
     final MechanismLigament2d ligament2d;
 
     final PIDController controller;
 
-
-    public SimArmController(boolean isUpper, MotorConfig motorConfig, SimArmCore core, MechanismLigament2d ligament2d, PIDController controller) {
-        this.isUpper = isUpper;
-        this.motorConfig = motorConfig;
+    public SimArmController(SimJoint joint, SimArmCore core, MechanismLigament2d ligament2d, PIDController controller) {
+        this.joint = joint;
         this.core = core;
         this.ligament2d = ligament2d;
         this.controller = controller;
@@ -28,12 +27,12 @@ public class SimArmController implements IMotorController, HasLoop, HasLogLoop {
 
     @Override
     public double getMechanismFactor() {
-        return 1;
+        return 1; //TODO this is already handled by the DCMotor
     }
 
     @Override
     public double getRotationsToMetersFactor() {
-        return motorConfig.rotationToMeterCoefficient;
+        return 1;
     }
 
     @Override
@@ -43,30 +42,18 @@ public class SimArmController implements IMotorController, HasLoop, HasLogLoop {
 
     @Override
     public double getTimeFactor() {
-        return motorConfig.timeCoefficient;
+        return 1;
     }
 
     @Override
     public double getPositionRaw() {
-
-        if (isUpper) {
-            return core.readLowerArmStates().get(1,0) / Math.PI / 2.0;
-        } else {
-            return core.readLowerArmStates().get(0,0) / Math.PI / 2.0;
-        }
-
+        return core.getArmPosition_rotations(joint);
     }
 
     @Override
     public double getVelocityRaw() {
-        if (isUpper) {
-            return core.readLowerArmStates().get(3,0) / Math.PI / 2.0 * getTimeFactor();
-        } else {
-            return core.readLowerArmStates().get(2,0) / Math.PI / 2.0 * getTimeFactor();
-        }
-
+        return core.getArmVelocity_rotationsPerSecond(joint);
     }
-
 
     @Override
     public void forceOffset(double offsetUnits_baseUnits) {
@@ -80,12 +67,12 @@ public class SimArmController implements IMotorController, HasLoop, HasLogLoop {
 
     @Override
     public void moveAtVoltage(double voltage) {
-        core.setDesiredLowVoltage(voltage);
+        core.setVoltage(joint, voltage);
     }
 
     @Override
     public void moveAtPercent(double percent) {
-        core.setDesiredLowVoltage(percent * 12.0);
+        core.setVoltage(joint, percent * 12.0);
     }
 
     @Override
@@ -95,6 +82,8 @@ public class SimArmController implements IMotorController, HasLoop, HasLogLoop {
 
     @Override
     public void moveToPosition_mechanismRotations(double position_mechanismRotations) {
+        //TODO pid that shit
+
         throw new UnsupportedOperationException();
     }
 
@@ -108,6 +97,7 @@ public class SimArmController implements IMotorController, HasLoop, HasLogLoop {
         throw new UnsupportedOperationException();
     }
 
+    //TODO we can add these lol
     @Override
     public double getVoltage() {
         throw new UnsupportedOperationException();
@@ -133,7 +123,7 @@ public class SimArmController implements IMotorController, HasLoop, HasLogLoop {
     public void logLoop() {
         //TODO log everything else
 
-        ligament2d.setAngle(Units.rotationsToDegrees(core.getLowerArmPosition()));
+        ligament2d.setAngle(Units.rotationsToDegrees(core.getArmPosition_rotations(joint)));
     }
 
     @Override
