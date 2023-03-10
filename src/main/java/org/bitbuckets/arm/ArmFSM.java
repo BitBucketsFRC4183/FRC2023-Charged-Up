@@ -8,8 +8,8 @@ public enum ArmFSM {
     STORAGE,
 
     PREPARE,
-
     UNSTOW,
+    ACTUATE_GRIPPER, //UNUSED
 
     SCORE_MID,
     SCORE_HIGH,

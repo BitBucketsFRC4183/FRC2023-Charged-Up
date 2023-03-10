@@ -27,12 +27,10 @@ public class ArmSubsystem implements HasLoop {
 
     @Override
     public void loop() {
-        debuggable.log("UPPERARMABS", armControl.getUpperAbsEncoderAngle());
         //handle arm calibration
         armControl.gripperResetonLimit();
 
         if (operatorInput.isZeroArmPressed()) {
-            System.out.println("System zeroed to user input");
 
             armControl.zero(); //assume where we are is zero. Only do this if you really have to since zeroing needs
             //to go outside frame perimeter, and you can only do that in a match L
@@ -64,19 +62,10 @@ public class ArmSubsystem implements HasLoop {
                 shouldDoNext = ArmFSM.STORAGE;
                 return;
             }
-            if (autoSubsystem.sampleHasEventStarted("arm-prepare")) {
-                shouldDoNext = ArmFSM.PREPARE;
-                return;
-            }
-            if (autoSubsystem.sampleHasEventStarted("arm-unstow")) {
-                shouldDoNext = ArmFSM.UNSTOW;
-                return;
-            }
+
+
             //Only scoring high when moving arm in auto
-            if (autoSubsystem.sampleHasEventStarted("moveArm")) {
-                shouldDoNext = ArmFSM.SCORE_HIGH;
-                return;
-            }
+
             if (autoSubsystem.sampleHasEventStarted("arm-human-intake")) {
                 shouldDoNext = ArmFSM.HUMAN_INTAKE;
                 return;
@@ -89,6 +78,25 @@ public class ArmSubsystem implements HasLoop {
             //TODO legacy path event
             if (autoSubsystem.sampleHasEventStarted("collect")) {
                 shouldDoNext = ArmFSM.STORAGE;
+                return;
+            }
+
+            if (autoSubsystem.sampleHasEventStarted("gripper-open")) {
+                armControl.openGripper();
+            }
+
+            if (autoSubsystem.sampleHasEventStarted("arm-scoreHigh")) {
+                shouldDoNext = ArmFSM.SCORE_HIGH;
+                return;
+            }
+
+            if (autoSubsystem.sampleHasEventStarted("arm-prepare")) {
+                shouldDoNext = ArmFSM.PREPARE;
+                return;
+            }
+
+            if (autoSubsystem.sampleHasEventStarted("arm-unstow")) {
+                shouldDoNext = ArmFSM.UNSTOW;
                 return;
             }
         }

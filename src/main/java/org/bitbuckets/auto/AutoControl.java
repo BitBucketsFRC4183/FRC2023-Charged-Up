@@ -57,6 +57,8 @@ public class AutoControl implements IAutoControl {
                 }
             }
 
+
+
             if (segment.getEndStopEvent().names.size() > 0 && segmentGroup.size() - 1 == i) {
                 segmentTimes.add(new AutoPathInstance.SegmentTime(i, totalTime, true));
 
