@@ -42,7 +42,7 @@
       "isStopPoint": true,
       "stopEvent": {
         "names": [
-          "unstow"
+          "arm-unstow"
         ],
         "executionBehavior": "parallel",
         "waitBehavior": "none",
