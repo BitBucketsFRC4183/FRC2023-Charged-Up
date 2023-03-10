@@ -48,8 +48,10 @@ public class Robot extends TimedRobot {
         try {
             if (Mattlib.SHOULD_FORCE_KILL) {
                 builtProcess=new ForceKillProcess();
+            } else {
+                builtProcess = RootProcess.root();
             }
-            builtProcess = RootProcess.root();
+
             buildRobot.build(builtProcess);
 
         } catch (Exception e) {
