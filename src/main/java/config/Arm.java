@@ -188,10 +188,10 @@ public interface Arm {
     );
 
     Mechanism2d SIM_MECHANISM = new Mechanism2d(3, 3);
-    MechanismRoot2d SIM_MECH_ROOT = SIM_MECHANISM.getRoot("base", 1.5, 0);
+    MechanismRoot2d SIM_MECH_ROOT = SIM_MECHANISM.getRoot("base", 1.5, 1.5);
 
     MechanismLigament2d SIM_MECH_LOWER = SIM_MECH_ROOT.append(new MechanismLigament2d("lower-arm-sim", Arm.LOWER_ARM.length_meters, 90, 10, new Color8Bit(Color.kWhite)));
-    MechanismLigament2d SIM_MECH_UPPER = SIM_MECH_ROOT.append(new MechanismLigament2d("upper-arm-sim", Arm.UPPER_ARM.length_meters, 90, 10, new Color8Bit(Color.kPurple)));
+    MechanismLigament2d SIM_MECH_UPPER = SIM_MECH_LOWER.append(new MechanismLigament2d("upper-arm-sim", Arm.UPPER_ARM.length_meters, 90, 10, new Color8Bit(Color.kPurple)));
 
 
 
