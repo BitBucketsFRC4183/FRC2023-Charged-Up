@@ -70,6 +70,15 @@ public class DriveControl implements IDriveControl, HasLogLoop {
     @Override
     public void stop() {
         doDriveWithStates(new SwerveModuleState[]{
+                new SwerveModuleState(0, Rotation2d.fromDegrees(0)),
+                new SwerveModuleState(0, Rotation2d.fromDegrees(0)),
+                new SwerveModuleState(0, Rotation2d.fromDegrees(0)),
+                new SwerveModuleState(0, Rotation2d.fromDegrees(0))
+        });
+    }
+
+    public void stopSticky() {
+        doDriveWithStates(new SwerveModuleState[]{
                 new SwerveModuleState(0, Rotation2d.fromDegrees(45)),
                 new SwerveModuleState(0, Rotation2d.fromDegrees(-45)),
                 new SwerveModuleState(0, Rotation2d.fromDegrees(-45)),
@@ -77,7 +86,14 @@ public class DriveControl implements IDriveControl, HasLogLoop {
         });
     }
 
-    
+    public void stopGentle() {
+        for (int i = 0; i < 4; i++) {
+            modules.get(i).stopMotor();
+
+        }
+    }
+
+
     public double getMaxVelocity() {
         return Drive.MAX_DRIVE_VELOCITY * speedModifier;
     }

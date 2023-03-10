@@ -7,7 +7,6 @@ import java.util.Optional;
 public class MotorConfig {
 
     //aparently this isnt the same as gearing LMAO, this is 1/gearing*othercoefficients like chains
-    //blame my shitty understanding of physix
     public final double encoderToMechanismCoefficient;
     public final double timeCoefficient;
     public final double rotationToMeterCoefficient;

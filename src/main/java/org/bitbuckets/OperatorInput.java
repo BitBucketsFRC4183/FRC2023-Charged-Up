@@ -119,9 +119,7 @@ public class OperatorInput {
         return operatorControl.getRawButton(XboxController.Button.kX.value);
     }
 
-    public boolean isDebugDegreesPressed() {
-        return operatorControl.getRawButtonPressed(XboxController.Button.kY.value);
-    }
+
 
     public boolean isManualModePressed() {
         return operatorControl.getRawButtonPressed(XboxController.Button.kA.value);
@@ -131,7 +129,6 @@ public class OperatorInput {
         return operatorControl.getRawButtonPressed(XboxController.Button.kLeftStick.value);
     }
 
-    //checks if operator for some reason wants to manually zero the shit
     // checks if operator wants to move arms to intake for human player station (by pressing RIGHT DPAD)
     public boolean isStoragePressed() {
         int pressed = operatorControl.getPOV();
@@ -162,7 +159,7 @@ public class OperatorInput {
         return operatorControl.getRawButtonPressed(XboxController.Button.kB.value);
     }
 
-    public boolean ifGripperPressed() {
+    public boolean openGripperPressed() {
         return operatorControl.getRawButton(XboxController.Button.kRightBumper.value);
     }
 
@@ -174,5 +171,12 @@ public class OperatorInput {
         return false;//operatorControl.getRawButton(XboxController.Button.kLeftBumper.value);
     }
 
+    public boolean stopStickyPressed() {
+        return driveControl.getRawButton(XboxController.Button.kX.value);
+    }
+
+    public boolean zeroGripper() {
+        return operatorControl.getRawButton(XboxController.Button.kRightStick.value);
+    }
 
 }

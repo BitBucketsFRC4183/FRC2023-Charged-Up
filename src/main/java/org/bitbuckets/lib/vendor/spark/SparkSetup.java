@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * SparkPIDSetup is for control based shit
+ * SparkPIDSetup is for control based control
  * SparkPercentSetup is for your normal drive or whatever
  */
 public class SparkSetup implements ISetup<IMotorController> {
@@ -76,7 +76,7 @@ public class SparkSetup implements ISetup<IMotorController> {
             reverseSwitch.enableLimitSwitch(true);
         }
         if (motorConfig.isRampRateEnabled) {
-            spark.setOpenLoopRampRate(0.5);
+            spark.setOpenLoopRampRate(1);
         }
 
         if (motorConfig.forwardSoftLimitMechanismAccum_rot.isPresent()) {

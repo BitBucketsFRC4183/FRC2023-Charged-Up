@@ -23,11 +23,13 @@ public class ArmSubsystem implements HasLoop {
     }
 
     ArmFSM shouldDoNext = ArmFSM.IDLE;
+    AutoFSM autoStates = AutoFSM.INITIALIZATION;
 
     @Override
     public void loop() {
-
+        debuggable.log("UPPERARMABS", armControl.getUpperAbsEncoderAngle());
         //handle arm calibration
+        armControl.gripperResetonLimit();
 
         if (operatorInput.isZeroArmPressed()) {
             System.out.println("System zeroed to user input");
@@ -64,6 +66,10 @@ public class ArmSubsystem implements HasLoop {
             }
             if (autoSubsystem.sampleHasEventStarted("arm-prepare")) {
                 shouldDoNext = ArmFSM.PREPARE;
+                return;
+            }
+            if (autoSubsystem.sampleHasEventStarted("arm-unstow")) {
+                shouldDoNext = ArmFSM.UNSTOW;
                 return;
             }
             //Only scoring high when moving arm in auto
@@ -110,10 +116,6 @@ public class ArmSubsystem implements HasLoop {
                 shouldDoNext = ArmFSM.SCORE_LOW;
                 return;
             }
-            if (operatorInput.isDebugDegreesPressed()) {
-                shouldDoNext = ArmFSM.DEBUG_TO_DEGREES;
-                return;
-            }
 
             if (operatorInput.isManualModePressed()) {
                 shouldDoNext = ArmFSM.MANUAL;
@@ -127,17 +129,15 @@ public class ArmSubsystem implements HasLoop {
     void handleLogic() {
 
 
-        if (operatorInput.ifGripperPressed()) {
+        if (operatorInput.openGripperPressed()) {
             armControl.openGripper();
-        }
-        if (operatorInput.closeGripperPressed()) {
+        } else if (operatorInput.closeGripperPressed()) {
             armControl.closeGripper();
-        }
-        if (!operatorInput.closeGripperPressed() && !operatorInput.ifGripperPressed()) {
+        } else if (!operatorInput.closeGripperPressed() && !operatorInput.openGripperPressed()) {
             armControl.stopGripper();
         }
 
-        if (autoSubsystem.state() == AutoFSM.DISABLED) { //arm can move after auto fsm has ended, so that if we fuck up it can still win without us
+        if (autoSubsystem.state() == AutoFSM.DISABLED) { //arm can move after auto fsm has ended, so that if we make a mistake it can still win without us
 
             return;
         }
@@ -146,8 +146,8 @@ public class ArmSubsystem implements HasLoop {
 
 
             armControl.commandArmToPercent(
-                    operatorInput.getLowerArm_PercentOutput(),
-                    operatorInput.getUpperArm_PercentOutput(),
+                    operatorInput.getLowerArm_PercentOutput() * 0.35,
+                    operatorInput.getUpperArm_PercentOutput() * 0.35,
                     !operatorInput.closeGripperPressed()
             );
         }
@@ -188,6 +188,11 @@ public class ArmSubsystem implements HasLoop {
 
         }
 
+        if (shouldDoNext == ArmFSM.UNSTOW) {
+            armControl.commandArmToState(- 0.1,armControl.upperArm.getMechanismPositionAccum_rot(),false);
+
+
+        }
         //TODO fill out the rest
     }
 }
