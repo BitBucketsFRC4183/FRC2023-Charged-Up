@@ -1,26 +1,33 @@
 package config;
 
 import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.numbers.N1;
 import org.bitbuckets.arm.ArmControl;
 import org.bitbuckets.arm.ArmControlSetup;
+import org.bitbuckets.arm.sim.SimArmControllerSetup;
+import org.bitbuckets.arm.sim.SimArmCore;
+import org.bitbuckets.arm.sim.SimArmCoreSetup;
+import org.bitbuckets.arm.sim.SimJoint;
 import org.bitbuckets.lib.ISetup;
+import org.bitbuckets.lib.SharedSetup;
 import org.bitbuckets.lib.SwapSetup;
 import org.bitbuckets.lib.control.IPIDCalculator;
 import org.bitbuckets.lib.control.PIDCalculatorSetup;
-import org.bitbuckets.lib.hardware.IAbsoluteEncoder;
 import org.bitbuckets.lib.hardware.IMotorController;
 import org.bitbuckets.lib.util.MockingUtil;
-import org.bitbuckets.lib.vendor.ctre.CANCoderAbsoluteSetup;
-import org.bitbuckets.lib.vendor.noops.NoopsAbsoluteEncoder;
 import org.bitbuckets.lib.vendor.sim.dc.DCSimSetup;
 import org.bitbuckets.lib.vendor.sim.dc.SimInertiaConfig;
 import org.bitbuckets.lib.vendor.spark.SparkSetup;
-import org.bitbuckets.lib.vendor.thrifty.ThriftyEncoderSetup;
 
 import java.util.Optional;
 
 public interface ArmSetups {
+
+    ISetup<SimArmCore> SIM_CORE = new SharedSetup<>(new SimArmCoreSetup(
+            Arm.DYNAMICS,
+            VecBuilder.fill(Math.PI / 2.0, Math.PI / 2.0, 0,0)
+    ));
 
     SparkSetup LOWER_ARM_FOLLOWER = new SparkSetup(
             MotorIds.LOWER_ARM_FOLLOWER,
@@ -28,6 +35,7 @@ public interface ArmSetups {
             Arm.LOWER_PID,
             Optional.empty()
     );
+
     ISetup<IMotorController> LOWER_ARM = new SwapSetup<>(
             MockingUtil.noops(IMotorController.class),
             new SparkSetup(
@@ -36,10 +44,11 @@ public interface ArmSetups {
                     Arm.LOWER_PID,
                     Optional.of(LOWER_ARM_FOLLOWER)
             ),
-            new DCSimSetup(
-                    Arm.LOWER_CONFIG,
-                    new SimInertiaConfig(0.025, Matrix.mat(N1.instance, N1.instance).fill(1)),
-                    Arm.LOWER_PID
+            new SimArmControllerSetup(
+                    SIM_CORE,
+                    Arm.SIM_MECH_LOWER,
+                    SimJoint.SHOULDER,
+                    Arm.LOWER_SIMPID
             )
     );
     ISetup<IMotorController> UPPER_ARM = new SwapSetup<>(
@@ -50,10 +59,11 @@ public interface ArmSetups {
                     Arm.UPPER_PID,
                     Optional.empty()
             ),
-            new DCSimSetup(
-                    Arm.UPPER_CONFIG,
-                    new SimInertiaConfig(0.025, Matrix.mat(N1.instance, N1.instance).fill(1)),
-                    Arm.UPPER_PID
+            new SimArmControllerSetup(
+                    SIM_CORE,
+                    Arm.SIM_MECH_UPPER,
+                    SimJoint.ELBOW,
+                    Arm.UPPER_SIMPID
             )
 
     );
@@ -84,7 +94,7 @@ public interface ArmSetups {
 
 
     ISetup<ArmControl> ARM_CONTROL = new ArmControlSetup(
-            Arm.DOUBLE_JOINTED_FF,
+            Arm.DYNAMICS,
             LOWER_ARM,
             UPPER_ARM,
             LOWER_PID,

@@ -3,6 +3,12 @@ package config;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj.util.Color8Bit;
 import org.bitbuckets.arm.ArmDynamics;
 import org.bitbuckets.arm.config.ArmJointConfig;
 import org.bitbuckets.lib.control.PIDConfig;
@@ -49,6 +55,9 @@ public interface Arm {
     double LOWER_ARM_REVERSE_LIMIT_MECHANISM = -0.494361111111;
     double UPPER_ARM_FORWARD_LIMIT_MECHANISM = 1.041;
     double UPPER_ARM_REVERSE_LIMIT_MECHANISM = -3.75;
+
+
+
 
     ArmJointConfig LOWER_ARM = new ArmJointConfig(
             0.686,
@@ -173,19 +182,17 @@ public interface Arm {
     PIDConfig GRIPPER_PID = new PIDConfig(0.1, 0, 0, Optional.empty(), Optional.empty());
 
 
-    TrapezoidProfile.Constraints LOWER_CONSTRAINT = new TrapezoidProfile.Constraints(
-            2,
-            2
-    );
-    TrapezoidProfile.Constraints UPPER_CONSTRAINTS = new TrapezoidProfile.Constraints(
-            2,
-            2
-    );
-
-    ArmDynamics DOUBLE_JOINTED_FF = new ArmDynamics(
+    ArmDynamics DYNAMICS = new ArmDynamics(
             LOWER_ARM,
             UPPER_ARM
     );
+
+    Mechanism2d SIM_MECHANISM = new Mechanism2d(3, 3);
+    MechanismRoot2d SIM_MECH_ROOT = SIM_MECHANISM.getRoot("base", 1.5, 0);
+
+    MechanismLigament2d SIM_MECH_LOWER = SIM_MECH_ROOT.append(new MechanismLigament2d("lower-arm-sim", Arm.LOWER_ARM.length_meters, 90, 10, new Color8Bit(Color.kWhite)));
+    MechanismLigament2d SIM_MECH_UPPER = SIM_MECH_ROOT.append(new MechanismLigament2d("upper-arm-sim", Arm.UPPER_ARM.length_meters, 90, 10, new Color8Bit(Color.kPurple)));
+
 
 
 }

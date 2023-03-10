@@ -1,5 +1,7 @@
 package org.bitbuckets.arm;
 
+import config.Arm;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.bitbuckets.OperatorInput;
 import org.bitbuckets.auto.AutoSubsystem;
 import org.bitbuckets.cubeCone.GamePiece;
@@ -22,6 +24,10 @@ public class ArmSubsystemSetup implements ISetup<ArmSubsystem> {
 
     @Override
     public ArmSubsystem build(IProcess self) {
+
+        //TODO shitty hack
+        SmartDashboard.putData("arm", Arm.SIM_MECHANISM);
+
         return new ArmSubsystem(
                 input,
                 self.childSetup("arm-ctrl", armControlSetup),
