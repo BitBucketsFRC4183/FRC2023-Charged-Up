@@ -7,7 +7,7 @@ public enum AutoPath {
     //each of these paths calls from a diff path in IB's pathplanner
     NONE(-1),
 
-    test_forwardright(0),
+    SCORE_TAXI_AUTOBALANCE(0),
     taxi_right(1),
     taxi_left(2),
     taxi_middle_dock(3),
