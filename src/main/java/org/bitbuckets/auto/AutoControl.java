@@ -26,7 +26,10 @@ public class AutoControl implements IAutoControl {
             return new AutoPathInstance(new ArrayList<>(), new HashMap<>(), new ArrayList<>(), whichOne, 0);
         }
 
+
+
         var segmentGroup = trajectories.get(whichOne.index);
+
 
         Map<String, Double> eventMap = new HashMap<>();
 
@@ -36,6 +39,8 @@ public class AutoControl implements IAutoControl {
 
         for (int i = 0; i < segmentGroup.size(); i++) {
             PathPlannerTrajectory segment = segmentGroup.get(i);
+
+            //if (true) throw new IllegalArgumentException(segment.getMarkers().toString());
 
             if (segment.getStartStopEvent().names.size() > 0) {
                 segmentTimes.add(new AutoPathInstance.SegmentTime(i, totalTime, true));
@@ -48,7 +53,7 @@ public class AutoControl implements IAutoControl {
             segmentTimes.add(new AutoPathInstance.SegmentTime(i, totalTime, false));
             totalTime = totalTime + segment.getTotalTimeSeconds();
 
-            if (segment.getMarkers().size() > 0) throw new UnsupportedOperationException();
+            //if (segment.getMarkers().size() > 0) throw new UnsupportedOperationException();
 
 
             for (PathPlannerTrajectory.EventMarker marker : segment.getMarkers()) {
