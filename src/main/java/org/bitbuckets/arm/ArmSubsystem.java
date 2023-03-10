@@ -82,7 +82,8 @@ public class ArmSubsystem implements HasLoop {
             }
 
             if (autoSubsystem.sampleHasEventStarted("gripper-open")) {
-                armControl.openGripper();
+                shouldDoNext = ArmFSM.ACTUATE_GRIPPER;
+                return;
             }
 
             if (autoSubsystem.sampleHasEventStarted("arm-scoreHigh")) {
@@ -166,6 +167,10 @@ public class ArmSubsystem implements HasLoop {
                     -0.222,
                     !operatorInput.closeGripperPressed()
             );
+        }
+
+        if (shouldDoNext == ArmFSM.ACTUATE_GRIPPER) {
+            armControl.openGripper();
         }
 
         //TODO fix the numbers

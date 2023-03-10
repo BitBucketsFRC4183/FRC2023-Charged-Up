@@ -17,11 +17,11 @@
       "isStopPoint": false,
       "stopEvent": {
         "names": [
-          "unstow"
+          "arm-unstow"
         ],
         "executionBehavior": "parallel",
         "waitBehavior": "before",
-        "waitTime": 5.0
+        "waitTime": 2.0
       }
     },
     {
@@ -44,11 +44,11 @@
       "isStopPoint": true,
       "stopEvent": {
         "names": [
-          "prepare"
+          "arm-prepare"
         ],
         "executionBehavior": "parallel",
         "waitBehavior": "none",
-        "waitTime": 0
+        "waitTime": 2
       }
     },
     {
@@ -71,11 +71,11 @@
       "isStopPoint": true,
       "stopEvent": {
         "names": [
-          "arm-scorehigh"
+          "arm-scoreHigh"
         ],
         "executionBehavior": "parallel",
         "waitBehavior": "none",
-        "waitTime": 0
+        "waitTime": 2
       }
     },
     {
@@ -102,7 +102,7 @@
         ],
         "executionBehavior": "parallel",
         "waitBehavior": "none",
-        "waitTime": 0
+        "waitTime": 2
       }
     },
     {
@@ -124,7 +124,7 @@
         "names": [],
         "executionBehavior": "parallel",
         "waitBehavior": "none",
-        "waitTime": 0
+        "waitTime": 1
       }
     }
   ],
