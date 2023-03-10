@@ -2,13 +2,13 @@
   "waypoints": [
     {
       "anchorPoint": {
-        "x": 1.7909542573913708,
+        "x": 1.83,
         "y": 3.280063768569377
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.740474376334495,
-        "y": 4.389877274980244
+        "x": 1.8428216823002657,
+        "y": 3.2746826667969744
       },
       "holonomicAngle": 180.0,
       "isReversal": false,
@@ -19,8 +19,62 @@
         "names": [
           "moveArm"
         ],
-        "executionBehavior": "sequential",
+        "executionBehavior": "parallel",
         "waitBehavior": "before",
+        "waitTime": 0
+      }
+    },
+    {
+      "anchorPoint": {
+        "x": 1.83,
+        "y": 3.28
+      },
+      "prevControl": {
+        "x": 1.796766350011597,
+        "y": 3.28
+      },
+      "nextControl": {
+        "x": 1.8632336499884032,
+        "y": 3.28
+      },
+      "holonomicAngle": 180.0,
+      "isReversal": false,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": true,
+      "stopEvent": {
+        "names": [
+          "moveArm"
+        ],
+        "executionBehavior": "parallel",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
+    },
+    {
+      "anchorPoint": {
+        "x": 1.83,
+        "y": 3.28
+      },
+      "prevControl": {
+        "x": 1.8041977555118076,
+        "y": 3.219443489780861
+      },
+      "nextControl": {
+        "x": 2.112441700530645,
+        "y": 3.9428758103707615
+      },
+      "holonomicAngle": 180.0,
+      "isReversal": false,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": true,
+      "stopEvent": {
+        "names": [
+          "gripper-open"
+        ],
+        "executionBehavior": "parallel",
+        "waitBehavior": "none",
         "waitTime": 0
       }
     },
@@ -47,5 +101,18 @@
       }
     }
   ],
-  "markers": []
+  "markers": [
+    {
+      "position": 0.0,
+      "names": [
+        "unstow"
+      ]
+    },
+    {
+      "position": 2.3819824218750014,
+      "names": [
+        "stow"
+      ]
+    }
+  ]
 }
