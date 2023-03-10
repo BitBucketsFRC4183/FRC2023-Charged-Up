@@ -150,7 +150,7 @@ public class SparkRelativeMotorController implements IMotorController {
 
     @Override
     public void goLimp() {
-
+        this.moveAtVoltage(0);
     }
 
     @Override
@@ -158,9 +158,6 @@ public class SparkRelativeMotorController implements IMotorController {
         return clazz.cast(sparkMax);
     }
 
-    void disableExternalAccess() {
-        //disable external access lmao
 
-    }
 
 }
