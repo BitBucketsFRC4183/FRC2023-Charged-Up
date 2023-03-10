@@ -39,6 +39,7 @@ public interface IProcess {
 
     //dont call this
     void run();
+    void ready();
 
 
     //dont call this

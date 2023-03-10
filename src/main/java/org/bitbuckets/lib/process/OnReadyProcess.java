@@ -226,6 +226,11 @@ public class OnReadyProcess extends AProcess implements IDoWhenReady {
     }
 
     @Override
+    public void ready() {
+        //do nothing, this is cascaded. I added this because... i dont know why i added this
+    }
+
+    @Override
     public HasLifecycle offerInternalLifecycler() {
         throw new UnsupportedOperationException();
     }
