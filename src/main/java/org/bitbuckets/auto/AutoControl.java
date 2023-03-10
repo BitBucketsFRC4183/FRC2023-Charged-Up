@@ -48,11 +48,15 @@ public class AutoControl implements IAutoControl {
             segmentTimes.add(new AutoPathInstance.SegmentTime(i, totalTime, false));
             totalTime = totalTime + segment.getTotalTimeSeconds();
 
+            if (segment.getMarkers().size() > 0) throw new UnsupportedOperationException();
+
 
             for (PathPlannerTrajectory.EventMarker marker : segment.getMarkers()) {
+
+
                 for (String name : marker.names) {
 
-                    System.out.println(name);
+                    System.out.println(name + "|" + totalTime + marker.timeSeconds);
                     eventMap.put(name, totalTime + marker.timeSeconds);
                 }
             }
