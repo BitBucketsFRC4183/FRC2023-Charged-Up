@@ -152,7 +152,7 @@ public class DriveSubsystem implements HasLoop {
 
 
         if (nextStateShould == DriveFSM.IDLE) {
-            driveControl.stopGentle();
+            driveControl.stopSticky();
         }
 
         //if idle it will do nothing..
@@ -214,7 +214,7 @@ public class DriveSubsystem implements HasLoop {
         switch (orientation.readValue()) {
             case FIELD_ORIENTED:
                 if (xOutput == 0 && yOutput == 0 && rotationOutput == 0) {
-                    driveControl.stopGentle();
+                    driveControl.stopSticky();
                 } else {
                     debuggable.log("y", yOutput);
                     debuggable.log("x", xOutput);
@@ -226,7 +226,7 @@ public class DriveSubsystem implements HasLoop {
                 break;
             case ROBOT_ORIENTED:
                 if (xOutput == 0 && yOutput == 0 && rotationOutput == 0) {
-                    driveControl.stopGentle();
+                    driveControl.stopSticky();
                 } else {
                     ChassisSpeeds robotOrient = new ChassisSpeeds(xOutput, yOutput, rotationOutput);
                     driveControl.drive(robotOrient);
