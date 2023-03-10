@@ -179,4 +179,8 @@ public class OperatorInput {
         return operatorControl.getRawButton(XboxController.Button.kRightStick.value);
     }
 
+    public boolean isLoadPresed(){
+        return operatorControl.getRawButtonPressed(XboxController.Button.kX.value);
+    }
+
 }

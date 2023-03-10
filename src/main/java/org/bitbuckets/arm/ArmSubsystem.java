@@ -125,11 +125,16 @@ public class ArmSubsystem implements HasLoop {
                 shouldDoNext = ArmFSM.SCORE_LOW;
                 return;
             }
+            if (operatorInput.isLoadPresed()) {
+                shouldDoNext = ArmFSM.LOAD;
+                return;
+            }
 
             if (operatorInput.isManualModePressed()) {
                 shouldDoNext = ArmFSM.MANUAL;
                 return;
             }
+
 
         }
     }
@@ -167,6 +172,12 @@ public class ArmSubsystem implements HasLoop {
                     -0.222,
                     !operatorInput.closeGripperPressed()
             );
+        }
+        if (shouldDoNext == ArmFSM.LOAD) {
+            armControl.commandArmToState(
+                    0.008,
+                    -0.23,
+                    true);
         }
 
         if (shouldDoNext == ArmFSM.ACTUATE_GRIPPER) {
