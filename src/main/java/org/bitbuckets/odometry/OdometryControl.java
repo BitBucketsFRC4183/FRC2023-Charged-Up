@@ -51,7 +51,9 @@ public class OdometryControl implements HasLoop, IOdometryControl {
         double epoch = Timer.getFPGATimestamp();
         Pose2d visionEstimatedPose = res.get().toPose2d();
         this.visionEstimatedPose.log(visionEstimatedPose);
-        swerveDrivePoseEstimator.addVisionMeasurement(visionEstimatedPose, epoch, visionMeasurementStdDevs);
+
+        //TODO ignore this
+        //swerveDrivePoseEstimator.addVisionMeasurement(visionEstimatedPose, epoch, visionMeasurementStdDevs);
     }
 
     @Override
