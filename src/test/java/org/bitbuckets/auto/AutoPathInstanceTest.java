@@ -26,7 +26,7 @@ class AutoPathInstanceTest {
                         new AutoPathInstance.SegmentTime(0, 0, false),
                         new AutoPathInstance.SegmentTime(1, 2, false)
                 ),
-                AutoPath.test_forwardright,
+                AutoPath.SCORE_TAXI_AUTOBALANCE,
                 6
         );
 
@@ -51,7 +51,7 @@ class AutoPathInstanceTest {
                         new AutoPathInstance.SegmentTime(0, 0, false),
                         new AutoPathInstance.SegmentTime(1, 2, false)
                 ),
-                AutoPath.test_forwardright,
+                AutoPath.SCORE_TAXI_AUTOBALANCE,
                 6);
 
         var timer = mock(Timer.class);
