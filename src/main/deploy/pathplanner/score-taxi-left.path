@@ -2,12 +2,12 @@
   "waypoints": [
     {
       "anchorPoint": {
-        "x": 1.833,
+        "x": 1.83,
         "y": 4.92
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.834,
+        "x": 1.8301,
         "y": 4.92
       },
       "holonomicAngle": 180.0,
@@ -26,15 +26,15 @@
     },
     {
       "anchorPoint": {
-        "x": 1.835,
+        "x": 1.8304,
         "y": 4.92
       },
       "prevControl": {
-        "x": 1.834,
+        "x": 1.8303,
         "y": 4.92
       },
       "nextControl": {
-        "x": 1.836,
+        "x": 1.8305,
         "y": 4.92
       },
       "holonomicAngle": 180.0,
@@ -48,20 +48,20 @@
         ],
         "executionBehavior": "parallel",
         "waitBehavior": "none",
-        "waitTime": 0
+        "waitTime": 2
       }
     },
     {
       "anchorPoint": {
-        "x": 1.837,
+        "x": 1.8306,
         "y": 4.92
       },
       "prevControl": {
-        "x": 1.836,
+        "x": 1.8305,
         "y": 4.92
       },
       "nextControl": {
-        "x": 1.838,
+        "x": 1.8307,
         "y": 4.92
       },
       "holonomicAngle": 180.0,
@@ -75,16 +75,43 @@
         ],
         "executionBehavior": "parallel",
         "waitBehavior": "none",
-        "waitTime": 0
+        "waitTime": 2
       }
     },
     {
       "anchorPoint": {
-        "x": 4.609839754645873,
+        "x": 1.8306,
         "y": 4.92
       },
       "prevControl": {
-        "x": 1.838,
+        "x": 1.8305,
+        "y": 4.92
+      },
+      "nextControl": {
+        "x": 1.8307,
+        "y": 4.92
+      },
+      "holonomicAngle": 180.0,
+      "isReversal": false,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": true,
+      "stopEvent": {
+        "names": [
+          "arm-stow"
+        ],
+        "executionBehavior": "parallel",
+        "waitBehavior": "none",
+        "waitTime": 2
+      }
+    },
+    {
+      "anchorPoint": {
+        "x": 3.9,
+        "y": 4.92
+      },
+      "prevControl": {
+        "x": 1.8307,
         "y": 4.92
       },
       "nextControl": null,
@@ -97,16 +124,9 @@
         "names": [],
         "executionBehavior": "parallel",
         "waitBehavior": "none",
-        "waitTime": 0
+        "waitTime": 1
       }
     }
   ],
-  "markers": [
-    {
-      "position": 2.4983109907670458,
-      "names": [
-        "stow"
-      ]
-    }
-  ]
+  "markers": []
 }

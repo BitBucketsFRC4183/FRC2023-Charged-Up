@@ -59,7 +59,7 @@ public class ArmSubsystem implements HasLoop {
 
         if (autoSubsystem.state() == AutoFSM.AUTO_RUN) {
             if (autoSubsystem.sampleHasEventStarted("arm-storage")) {
-                shouldDoNext = ArmFSM.STORAGE;
+                shouldDoNext = ArmFSM.STOW;
                 return;
             }
 
@@ -77,7 +77,7 @@ public class ArmSubsystem implements HasLoop {
 
             //TODO legacy path event
             if (autoSubsystem.sampleHasEventStarted("arm-stow")) {
-                shouldDoNext = ArmFSM.STORAGE;
+                shouldDoNext = ArmFSM.STOW;
                 return;
             }
 
@@ -110,7 +110,7 @@ public class ArmSubsystem implements HasLoop {
             }
             //TODO ground intake button
             if (operatorInput.isStoragePressed()) {
-                shouldDoNext = ArmFSM.STORAGE;
+                shouldDoNext = ArmFSM.STOW;
                 return;
             }
             if (operatorInput.isScoreHighPressed()) {
@@ -166,10 +166,10 @@ public class ArmSubsystem implements HasLoop {
             );
         }
 
-        if (shouldDoNext == ArmFSM.STORAGE) {
+        if (shouldDoNext == ArmFSM.STOW) {
             armControl.commandArmToState(
-                    0.168,
-                    -0.222,
+                    0.19,
+                    -0.24,
                     !operatorInput.closeGripperPressed()
             );
         }

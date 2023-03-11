@@ -5,7 +5,7 @@ public enum ArmFSM {
     IDLE,
 
     MANUAL,
-    STORAGE,
+    STOW,
 
     PREPARE,
     UNSTOW,

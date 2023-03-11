@@ -76,7 +76,7 @@
         ],
         "executionBehavior": "parallel",
         "waitBehavior": "none",
-        "waitTime": 1
+        "waitTime": 2
       }
     },
     {

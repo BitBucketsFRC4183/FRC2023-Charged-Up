@@ -116,7 +116,7 @@ public interface Arm {
             Optional.empty(),
             false,
             false,
-            false, OptimizationMode.OFFBOARD_POS_PID,
+            true, OptimizationMode.OFFBOARD_POS_PID,
             DCMotor.getNEO(1)
 
     );
