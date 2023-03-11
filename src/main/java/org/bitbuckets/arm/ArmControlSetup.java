@@ -3,6 +3,7 @@ package org.bitbuckets.arm;
 import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.control.IPIDCalculator;
+import org.bitbuckets.lib.hardware.IAbsoluteEncoder;
 import org.bitbuckets.lib.hardware.IMotorController;
 
 public class ArmControlSetup implements ISetup<ArmControl> {
@@ -13,6 +14,10 @@ public class ArmControlSetup implements ISetup<ArmControl> {
     final ISetup<IPIDCalculator> lowCalculator;
     final ISetup<IPIDCalculator> highCalculator;
     final ISetup<IMotorController> gripperMotor;
+
+
+
+
 
     public ArmControlSetup(ArmDynamics feedFordward, ISetup<IMotorController> lowMotor, ISetup<IMotorController> upMotor, ISetup<IPIDCalculator> lowCalculator, ISetup<IPIDCalculator> highCalculator, ISetup<IMotorController> gripperMotor) {
         this.feedFordward = feedFordward;
@@ -25,7 +30,7 @@ public class ArmControlSetup implements ISetup<ArmControl> {
 
     @Override
     public ArmControl build(IProcess self) {
-        return new ArmControl(
+        var control = new ArmControl(
                 feedFordward,
                 self.childSetup("lower-joint", lowMotor),
                 self.childSetup("upper-joint", upMotor),
@@ -33,5 +38,7 @@ public class ArmControlSetup implements ISetup<ArmControl> {
                 self.childSetup("upper-pid", highCalculator),
                 self.childSetup("gripper-motor", gripperMotor)
         );
+        control.zeroArmAbs();
+        return control;
     }
 }

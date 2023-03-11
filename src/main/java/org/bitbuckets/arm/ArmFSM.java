@@ -9,6 +9,8 @@ public enum ArmFSM {
 
     PREPARE,
 
+    UNSTOW,
+
     SCORE_MID,
     SCORE_HIGH,
     SCORE_LOW,
