@@ -12,6 +12,7 @@ public enum ArmFSM {
     ACTUATE_GRIPPER, //UNUSED
     LOAD,
 
+
     SCORE_MID,
     SCORE_HIGH,
     SCORE_LOW,
