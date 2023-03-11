@@ -28,6 +28,6 @@ public class SimArmControllerSetup implements ISetup<IMotorController> {
 
         //TODO this is dumb
 
-        return new SimArmController(which, simArmCore, ligament2d, new PIDController(config.kP, config.kI, config.kD));
+        return new SimArmController(self.getDebuggable(), which, simArmCore, ligament2d, new PIDController(config.kP, config.kI, config.kD));
     }
 }

@@ -5,10 +5,12 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import org.bitbuckets.lib.core.HasLogLoop;
 import org.bitbuckets.lib.core.HasLoop;
+import org.bitbuckets.lib.debug.IDebuggable;
 import org.bitbuckets.lib.hardware.IMotorController;
-import org.bitbuckets.lib.hardware.MotorConfig;
 
 public class SimArmController implements IMotorController, HasLoop, HasLogLoop {
+
+    final IDebuggable debuggable;
 
     final SimJoint joint;
     //final MotorConfig motorConfig;
@@ -18,7 +20,8 @@ public class SimArmController implements IMotorController, HasLoop, HasLogLoop {
 
     final PIDController controller;
 
-    public SimArmController(SimJoint joint, SimArmCore core, MechanismLigament2d ligament2d, PIDController controller) {
+    public SimArmController(IDebuggable debuggable, SimJoint joint, SimArmCore core, MechanismLigament2d ligament2d, PIDController controller) {
+        this.debuggable = debuggable;
         this.joint = joint;
         this.core = core;
         this.ligament2d = ligament2d;
@@ -131,6 +134,6 @@ public class SimArmController implements IMotorController, HasLoop, HasLogLoop {
 
     @Override
     public void loop() {
-
+        debuggable.log("current-angle", core.getArmPosition_rotations(joint));
     }
 }
