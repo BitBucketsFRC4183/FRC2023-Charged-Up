@@ -160,6 +160,7 @@ public class AutoSubsystem implements HasLogLoop, HasLoop {
         debug.log("current-state", state);
         debug.log("actual-path", toUseLogOnly);
         debug.log("dashboard-path", pathToUse.readValue());
+
     }
 
 }

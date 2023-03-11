@@ -2,13 +2,13 @@
   "waypoints": [
     {
       "anchorPoint": {
-        "x": 1.768242003118121,
-        "y": 4.984546102732071
+        "x": 1.8334558101679137,
+        "y": 4.918101410557204
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.7682420031181207,
-        "y": 4.984546102732071
+        "x": 1.8316541060301088,
+        "y": 4.923847655285372
       },
       "holonomicAngle": 180.0,
       "isReversal": false,
@@ -17,11 +17,65 @@
       "isStopPoint": false,
       "stopEvent": {
         "names": [
-          "moveArm"
+          "arm-unstow"
         ],
-        "executionBehavior": "sequential",
+        "executionBehavior": "parallel",
         "waitBehavior": "before",
         "waitTime": 2.0
+      }
+    },
+    {
+      "anchorPoint": {
+        "x": 1.83,
+        "y": 4.92
+      },
+      "prevControl": {
+        "x": 1.8172543364594054,
+        "y": 4.92
+      },
+      "nextControl": {
+        "x": 1.8427456635405957,
+        "y": 4.92
+      },
+      "holonomicAngle": 180.0,
+      "isReversal": false,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": true,
+      "stopEvent": {
+        "names": [
+          "arm-scoreHigh"
+        ],
+        "executionBehavior": "parallel",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
+    },
+    {
+      "anchorPoint": {
+        "x": 1.83,
+        "y": 4.92
+      },
+      "prevControl": {
+        "x": 1.818190841900889,
+        "y": 4.9205798796319815
+      },
+      "nextControl": {
+        "x": 2.1952716036475852,
+        "y": 4.902063618649289
+      },
+      "holonomicAngle": 180.0,
+      "isReversal": false,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": true,
+      "stopEvent": {
+        "names": [
+          "gripper-open"
+        ],
+        "executionBehavior": "parallel",
+        "waitBehavior": "none",
+        "waitTime": 0
       }
     },
     {
@@ -47,5 +101,12 @@
       }
     }
   ],
-  "markers": []
+  "markers": [
+    {
+      "position": 2.4983109907670458,
+      "names": [
+        "stow"
+      ]
+    }
+  ]
 }
