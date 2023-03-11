@@ -3,12 +3,12 @@
     {
       "anchorPoint": {
         "x": 1.83,
-        "y": 4.92
+        "y": 2.65
       },
       "prevControl": null,
       "nextControl": {
         "x": 1.8301,
-        "y": 4.92
+        "y": 2.65
       },
       "holonomicAngle": 180.0,
       "isReversal": false,
@@ -27,15 +27,15 @@
     {
       "anchorPoint": {
         "x": 1.8304,
-        "y": 4.92
+        "y": 2.65
       },
       "prevControl": {
         "x": 1.8303,
-        "y": 4.92
+        "y": 2.65
       },
       "nextControl": {
         "x": 1.8305,
-        "y": 4.92
+        "y": 2.65
       },
       "holonomicAngle": 180.0,
       "isReversal": false,
@@ -54,15 +54,15 @@
     {
       "anchorPoint": {
         "x": 1.8306,
-        "y": 4.92
+        "y": 2.65
       },
       "prevControl": {
         "x": 1.8305,
-        "y": 4.92
+        "y": 2.65
       },
       "nextControl": {
         "x": 1.8307,
-        "y": 4.92
+        "y": 2.65
       },
       "holonomicAngle": 180.0,
       "isReversal": false,
@@ -81,15 +81,15 @@
     {
       "anchorPoint": {
         "x": 1.8306,
-        "y": 4.92
+        "y": 2.65
       },
       "prevControl": {
         "x": 1.8305,
-        "y": 4.92
+        "y": 2.65
       },
       "nextControl": {
         "x": 1.8307,
-        "y": 4.92
+        "y": 2.65
       },
       "holonomicAngle": 180.0,
       "isReversal": false,
@@ -108,11 +108,11 @@
     {
       "anchorPoint": {
         "x": 3.9,
-        "y": 4.92
+        "y": 2.65
       },
       "prevControl": {
         "x": 1.8307,
-        "y": 4.92
+        "y": 2.65
       },
       "nextControl": null,
       "holonomicAngle": 180.0,
@@ -121,7 +121,9 @@
       "isLocked": false,
       "isStopPoint": false,
       "stopEvent": {
-        "names": [],
+        "names": [
+          "autoBalance"
+        ],
         "executionBehavior": "parallel",
         "waitBehavior": "none",
         "waitTime": 1

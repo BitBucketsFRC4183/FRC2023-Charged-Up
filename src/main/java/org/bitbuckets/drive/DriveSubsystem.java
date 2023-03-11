@@ -126,6 +126,10 @@ public class DriveSubsystem implements HasLoop {
             if (input.isAutoBalancePressed()) {
                 nextStateShould = DriveFSM.BALANCE;
             }
+
+            if (input.isManualDrivePressed()) {
+                nextStateShould = DriveFSM.MANUAL;
+            }
         }
     }
 
