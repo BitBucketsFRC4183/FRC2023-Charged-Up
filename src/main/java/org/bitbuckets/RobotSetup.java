@@ -2,6 +2,7 @@ package org.bitbuckets;
 
 import com.ctre.phoenix.sensors.Pigeon2;
 import config.*;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.wpilibj.Joystick;
 import org.bitbuckets.arm.ArmSubsystem;
@@ -20,6 +21,7 @@ import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.SimulatorKiller;
 import org.bitbuckets.lib.ToggleableSetup;
+import org.bitbuckets.lib.util.LateSupplier;
 import org.bitbuckets.lib.vendor.ctre.PidgeonGyroSetup;
 import org.bitbuckets.odometry.IOdometryControl;
 import org.bitbuckets.odometry.OdometryControlSetup;
@@ -45,10 +47,7 @@ public class RobotSetup implements ISetup<Void> {
         );
 
         GamePiece piece = self.childSetup("gp", new GamePieceSetup(operatorInput));
-
-
         self.childSetup("cone-cube", new GamePieceSetup(operatorInput));
-
 
         //if only these could be children of the drive subsystem... TODO fix this in mattlib future editions
         IDriveControl driveControl = self.childSetup(
@@ -66,12 +65,20 @@ public class RobotSetup implements ISetup<Void> {
                 )
 
         );
+
+        LateSupplier<Pose3d> robotPose = new LateSupplier<>();
         IVisionControl visionControl = self.childSetup(
                 "vision-ctrl",
                 new ToggleableSetup<>(
                         Enabled.vision,
                         IVisionControl.class,
-                        new VisionControlSetup()
+                        new VisionControlSetup(
+                              robotPose,
+                              Vision.CAMERA_NAME,
+                              Vision.LAYOUTCONTAINER.LAYOUT,
+                              Vision.CONFIG,
+                              Vision.STRATEGY
+                        )
                 )
         );
         IOdometryControl odometryControl = self.childSetup(
@@ -98,6 +105,7 @@ public class RobotSetup implements ISetup<Void> {
                         )
                 )
         );
+        robotPose.set(() -> new Pose3d(odometryControl.estimateFusedPose2d()));
 
         AutoSubsystem autoSubsystem = self.childSetup(
                 "auto-system",

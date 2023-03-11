@@ -11,6 +11,7 @@ public interface IOdometryControl {
 
 
     Pose2d estimateFusedPose2d();
+
     Rotation2d getRotation2d();
 
     double getYaw_deg();

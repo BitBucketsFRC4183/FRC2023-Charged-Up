@@ -51,7 +51,6 @@ public class DriveSubsystem implements HasLoop {
         this.debuggable = debuggable;
     }
 
-    Optional<Pose3d> lastVisionTarget;
 
     @Override
     public void loop() {
@@ -113,9 +112,13 @@ public class DriveSubsystem implements HasLoop {
         //handle inputs from user
 
         if (autoSubsystem.state() == AutoFSM.TELEOP) {
-            if (input.isVisionDrivePressed() && visionControl.isTargTrue()) {
+            if (input.isVisionDrivePressed() && visionControl.estimateBestVisionTarget().isPresent()) {
                 nextStateShould = DriveFSM.VISION;
                 return;
+            }
+
+            if (nextStateShould == DriveFSM.VISION && !input.isVisionDrivePressed()) {
+                nextStateShould = DriveFSM.MANUAL;
             }
 
             if (input.isAutoBalancePressed()) {
@@ -141,11 +144,7 @@ public class DriveSubsystem implements HasLoop {
         }
 
         if (nextStateShould == DriveFSM.VISION) {
-            lastVisionTarget = visionControl.estimateVisionTargetPose();
             teleopVision();
-            if (!input.isVisionDrivePressed()) {
-                nextStateShould = DriveFSM.MANUAL;
-            }
             return;
 
         }
@@ -173,15 +172,20 @@ public class DriveSubsystem implements HasLoop {
         }
     }
 
+
+
     void teleopVision() {
-        if (lastVisionTarget.isPresent()) {
-            ChassisSpeeds speeds = holoControl.calculatePose2D(lastVisionTarget.get().toPose2d(), 1, lastVisionTarget.get().toPose2d().getRotation());
-            speeds.vxMetersPerSecond = speeds.vxMetersPerSecond;
-            speeds.vyMetersPerSecond = -speeds.vyMetersPerSecond;
-            speeds.omegaRadiansPerSecond = speeds.omegaRadiansPerSecond;
+        var targetPose = visionControl.estimateBestVisionTarget();
+        if (targetPose.isPresent()) {
+            ChassisSpeeds speeds = holoControl.calculatePose2D(targetPose.get().toPose2d(), 1, targetPose.get().toPose2d().getRotation());
 
+            ChassisSpeeds inverted = new ChassisSpeeds(
+                    -speeds.vxMetersPerSecond,
+                    -speeds.vyMetersPerSecond,
+                    -speeds.omegaRadiansPerSecond
+            );//TODO fix this i have no idea why it works
 
-            driveControl.drive(speeds);
+            driveControl.drive(inverted);
         }
     }
 
@@ -247,7 +251,6 @@ public class DriveSubsystem implements HasLoop {
         debuggable.log("pitch-now", Pitch_deg);
         if (Math.abs(Pitch_deg) > 0.1) {
             double output = balanceControl.calculateBalanceOutput(Pitch_deg, 0);
-
             debuggable.log("control-output-autobalance", output);
 
             driveControl.drive(new ChassisSpeeds(output / 2.0, 0.0, 0.0));

@@ -83,7 +83,7 @@ public class OperatorInput {
     }
 
     public boolean isVisionDrivePressed() {
-        return driveControl.getRawButton(XboxController.Button.kY.value);
+        return driveControl.getRawButton(XboxController.Button.kX.value);
     }
 
     public boolean isAutoBalancePressed() {
