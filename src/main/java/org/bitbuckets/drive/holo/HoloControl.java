@@ -47,9 +47,6 @@ public class HoloControl {
         double Y_error =  controller.getYController().getPositionError();
         double theta_error = controller.getThetaController().getPositionError();
 
-
-
-
         if((X_error < 0.4 && X_error > -0.4) && (Y_error < 0.2 && Y_error > -0.2) && (theta_error < 5 && theta_error > -5))
         {
             return new ChassisSpeeds(0,0,0);
@@ -57,7 +54,8 @@ public class HoloControl {
         debuggable.log("rotation", speed.omegaRadiansPerSecond);
         debuggable.log("x-movement", speed.vxMetersPerSecond);
         debuggable.log("y-movement", speed.vyMetersPerSecond);
-    return speed;
+
+        return speed;
     }
 
     public ChassisSpeeds calculatePose2DFromState(PathPlannerTrajectory.PathPlannerState state) {

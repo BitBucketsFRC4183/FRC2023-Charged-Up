@@ -19,7 +19,7 @@ public class ProfiledPIDFSetup implements ISetup<IPIDCalculator> {
 
     @Override
     public IPIDCalculator build(IProcess self) {
-        return new ProfiledPIDFCalculator(
+        return new ProfiledPIDCalculator(
                 new ProfiledPIDController(pidConfig.kP, pidConfig.kI, pidConfig.kD, profile),
                 self.generateTuner(ITuneAs.DOUBLE_INPUT, "proportional", pidConfig.kP),
                 self.generateTuner(ITuneAs.DOUBLE_INPUT, "integral", pidConfig.kI),
