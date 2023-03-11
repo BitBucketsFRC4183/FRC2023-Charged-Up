@@ -202,7 +202,8 @@ public class ArmSubsystem implements HasLoop {
 
         }
         if (shouldDoNext == ArmFSM.SCORE_HIGH) {
-            armControl.commandArmToState(-0.126, 0.0, true);
+            //TODO technically upeprAmr should be 0 but because of slack we need to compensate for gravity that FF cant
+            armControl.commandArmToState(-0.126, -0.05, true);
 
 
         }
