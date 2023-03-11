@@ -1,5 +1,6 @@
 package org.bitbuckets.auto;
 
+import config.Auto;
 import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ITuneAs;
@@ -19,7 +20,7 @@ public class AutoSubsystemSetup implements ISetup<AutoSubsystem> {
     @Override
     public AutoSubsystem build(IProcess self) {
         return new AutoSubsystem(
-                self.generateTuner(ITuneAs.ENUM(AutoPath.class), "auto-path", AutoPath.NONE),
+                self.generateTuner(ITuneAs.ENUM(AutoPath.class), "auto-path", Auto.DEFAULT_NO_WIFI),
                 self.childSetup("auto-control", autoControlSetup),
                 self.getDebuggable()
         );

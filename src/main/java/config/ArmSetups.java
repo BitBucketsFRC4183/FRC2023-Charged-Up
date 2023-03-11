@@ -1,7 +1,7 @@
 package config;
 
 import edu.wpi.first.math.Matrix;
-import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.numbers.N1;
 import org.bitbuckets.arm.ArmControl;
 import org.bitbuckets.arm.ArmControlSetup;
@@ -75,7 +75,11 @@ public interface ArmSetups {
                     Arm.GRIPPER_PID,
                     Optional.empty()
             ),
-            MockingUtil.noops(IMotorController.class)
+            new DCSimSetup(
+                    Arm.GRIPPER_CONFIG,
+                    new SimInertiaConfig(0.005, Matrix.eye(Nat.N1())),
+                    Arm.GRIPPER_PID
+            )
 
     );
 

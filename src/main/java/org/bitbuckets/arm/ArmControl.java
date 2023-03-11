@@ -89,6 +89,16 @@ public class ArmControl {
     }
 
 
+    public void openGripperAuto() {
+        gripperActuator.moveToPosition_mechanismRotations(-50);
+    }
+
+    public void closeGripperAuto() {
+        gripperActuator.moveToPosition_mechanismRotations(-134);
+    }
+
+
+
     public void openGripper() {
         gripperActuator.moveAtPercent(0.6);
 
@@ -122,7 +132,6 @@ public class ArmControl {
 
     public void zero() {
         lowerArm.forceOffset_mechanismRotations(0);
-        upperArm.forceOffset_mechanismRotations(0);
     }
 
 
