@@ -38,19 +38,22 @@ public class MockingUtil {
 
             if (method.getReturnType().equals(Void.TYPE)) return null;
             if (method.getReturnType().equals(Optional.class)) return Optional.empty();
+            if (method.getReturnType().equals(Boolean.TYPE)) return false;
+            if (method.getReturnType().equals(Double.TYPE)) return 0d;
 
 
             //System.out.println("invocation of: " + method.getName());
 
-            throw new UnsupportedOperationException("Tried to call method with return: " + method.getName() + " but it was on a mocked object!");
+            throw new UnsupportedOperationException("Tried to call mocked method with unsupported return type: " + method.getName());
         }
     }
 
     /**
      * You can only use this on public classes, otherwise it will break
+     *
      * @param copy
+     * @param <T>  type of class you want
      * @return a dynamic generated version of your class that will do nothing and return 0 or null wheenver it is called
-     * @param <T> type of class you want
      */
 
     public static <T> T buddy(Class<T> copy) {
@@ -59,12 +62,12 @@ public class MockingUtil {
 
             return (T) Proxy.newProxyInstance(
                     MockingUtil.class.getClassLoader(),
-                    new Class[] { copy },
+                    new Class[]{copy},
                     new SelfHandler());
 
         }
 
-        Constructor<?> [] constructor = copy.getConstructors();
+        Constructor<?>[] constructor = copy.getConstructors();
         if (constructor.length == 0) throw new IllegalStateException();
 
 
@@ -72,20 +75,19 @@ public class MockingUtil {
         Object[] nulls = new Object[len];
 
 
-
         DynamicType.Unloaded<T> buddy = new ByteBuddy()
                 .subclass(copy, ConstructorStrategy.Default.NO_CONSTRUCTORS)
                 .defineConstructor(Visibility.PUBLIC)
                 .intercept(MethodCall.invoke(constructor[0])
                         .with(nulls)
-                        )
+                )
                 .method(any())
                 .intercept(StubMethod.INSTANCE)
                 .make();
 
 
         try {
-            Class<?> clazz =  buddy.load(MockingUtil.class.getClassLoader()).getLoaded();
+            Class<?> clazz = buddy.load(MockingUtil.class.getClassLoader()).getLoaded();
 
             return (T) clazz.newInstance();
 

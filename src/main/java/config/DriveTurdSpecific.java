@@ -19,14 +19,12 @@ public interface DriveTurdSpecific {
     double HALF_WIDTH = Units.inchesToMeters(18.25 / 2);
     double HALF_BASE = Units.inchesToMeters(20.5 / 2);
 
-
     SwerveDriveKinematics KINEMATICS = new SwerveDriveKinematics(
             new Translation2d(HALF_WIDTH, HALF_BASE),
             new Translation2d(HALF_WIDTH, -HALF_BASE),
             new Translation2d(-HALF_WIDTH, HALF_BASE),
             new Translation2d(-HALF_WIDTH, -HALF_BASE)
     );
-
     SwerveModuleConfiguration MK4I_L2 = new SwerveModuleConfiguration(
             0.10033,
             (14.0 / 50.0) * (27.0 / 17.0) * (15.0 / 45.0),
@@ -34,6 +32,7 @@ public interface DriveTurdSpecific {
             (14.0 / 50.0) * (10.0 / 60.0),
             false
     );
+
     MotorConfig DRIVE_TURD = new MotorConfig(
             (14.0 / 50.0) * (27.0 / 17.0) * (15.0 / 45.0), //1 / 6.75
             1,
@@ -60,6 +59,7 @@ public interface DriveTurdSpecific {
             false,
             false,
             true, OptimizationMode.VOLTAGE,
-            DCMotor.getNeo550(1)
+            DCMotor.getNeo550(1
+            )
     );
 }

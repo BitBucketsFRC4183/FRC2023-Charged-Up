@@ -17,7 +17,7 @@ public class DCSimController implements IMotorController, HasLoop, HasLogLoop {
     final PIDController simulatedPIDController;
     final IDebuggable debuggable;
 
-    public  DCSimController(MotorConfig config, DCMotorSim simulatedMotor, PIDController simulatedPIDController, IDebuggable debuggable) {
+    public DCSimController(MotorConfig config, DCMotorSim simulatedMotor, PIDController simulatedPIDController, IDebuggable debuggable) {
         this.config = config;
         this.simulatedMotor = simulatedMotor;
         this.simulatedPIDController = simulatedPIDController;
@@ -130,7 +130,7 @@ public class DCSimController implements IMotorController, HasLoop, HasLogLoop {
 
     @Override
     public <T> T rawAccess(Class<T> clazz) throws UnsupportedOperationException {
-        throw new IllegalStateException("it's a sim motor you buffoon");
+        throw new IllegalStateException("Cannot get rawAccess to a sim motor. If you are seeing this, you probably need to add functionality to the IMotorController interface to support your rawAccess needs.");
     }
 
     @Override
@@ -148,8 +148,8 @@ public class DCSimController implements IMotorController, HasLoop, HasLogLoop {
         debuggable.log("velocity-encoder", getVelocityEncoder_metersPerSecond());
         debuggable.log("velocity-raw", getVelocityRaw());
 
-        debuggable.log("rot-to-meter-coef",config.rotationToMeterCoefficient);
-        debuggable.log("enc-to-mech",config.encoderToMechanismCoefficient);
+        debuggable.log("rot-to-meter-coef", config.rotationToMeterCoefficient);
+        debuggable.log("enc-to-mech", config.encoderToMechanismCoefficient);
         debuggable.log("rpm", simulatedMotor.getAngularVelocityRPM());
     }
 }
