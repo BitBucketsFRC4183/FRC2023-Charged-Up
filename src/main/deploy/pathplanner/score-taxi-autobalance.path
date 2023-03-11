@@ -72,7 +72,7 @@
       "isStopPoint": true,
       "stopEvent": {
         "names": [
-          "arm-scoreHigh"
+          "arm-stow"
         ],
         "executionBehavior": "parallel",
         "waitBehavior": "none",

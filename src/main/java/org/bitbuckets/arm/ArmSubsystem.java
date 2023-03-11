@@ -168,14 +168,14 @@ public class ArmSubsystem implements HasLoop {
         if (shouldDoNext == ArmFSM.STOW) {
             armControl.commandArmToState(
                     0.19,
-                    -0.24,
+                    -0.4,
                     !operatorInput.closeGripperPressed()
             );
         }
         if (shouldDoNext == ArmFSM.LOAD) {
             armControl.commandArmToState(
                     0.008,
-                    -0.23,
+                    -0.25,
                     true);
         }
 
