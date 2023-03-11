@@ -29,6 +29,7 @@ public class VisionControl implements IVisionControl, HasLogLoop {
     @Override
     public Optional<Pose3d> estimateBestVisionTarget() {
 
+        //TODO new fn to check what we want
         return Optional.ofNullable(
                 camera.getLatestResult().getBestTarget()
         ).flatMap(tgt -> layout.getTagPose(tgt.getFiducialId()));
