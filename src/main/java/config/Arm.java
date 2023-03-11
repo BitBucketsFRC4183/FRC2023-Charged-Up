@@ -64,7 +64,7 @@ public interface Arm {
 
     //TODO should include gripper
     ArmJointConfig UPPER_ARM = new ArmJointConfig(
-            0.84,  //
+            0.99,  //
             1.474175,
             Units.rotationsToRadians(UPPER_ARM_FORWARD_LIMIT_MECHANISM),
             Units.rotationsToRadians(UPPER_ARM_REVERSE_LIMIT_MECHANISM),
@@ -116,7 +116,7 @@ public interface Arm {
             Optional.empty(),
             false,
             false,
-            false, OptimizationMode.OFFBOARD_POS_PID,
+            true, OptimizationMode.OFFBOARD_POS_PID,
             DCMotor.getNEO(1)
 
     );

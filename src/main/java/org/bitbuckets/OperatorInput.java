@@ -90,6 +90,10 @@ public class OperatorInput {
         return driveControl.getRawButtonPressed(XboxController.Button.kStart.value);
     }
 
+    public boolean isManualDrivePressed() {
+        return driveControl.getRawButtonPressed(XboxController.Button.kX.value);
+    }
+
     //OPERATOR
 
     public static double armDeadband(double input) {
@@ -173,6 +177,10 @@ public class OperatorInput {
 
     public boolean zeroGripper() {
         return operatorControl.getRawButton(XboxController.Button.kRightStick.value);
+    }
+
+    public boolean isLoadPresed(){
+        return operatorControl.getRawButtonPressed(XboxController.Button.kX.value);
     }
 
 }
