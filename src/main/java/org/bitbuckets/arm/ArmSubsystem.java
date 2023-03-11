@@ -28,14 +28,12 @@ public class ArmSubsystem implements HasLoop {
 
     @Override
     public void loop() {
-        debuggable.log("UPPERARMABS", armControl.getUpperAbsEncoderAngle());
         //handle arm calibration
         armControl.gripperResetonLimit();
 
             armControl.zeroToStartingPosition(); //Assume it's at the starting position lmao
         }
         if (operatorInput.isZeroArmPressed()) {
-            System.out.println("System zeroed to user input");
 
             armControl.zero(); //assume where we are is zero. Only do this if you really have to since zeroing needs
             //to go outside frame perimeter, and you can only do that in a match L
@@ -67,19 +65,10 @@ public class ArmSubsystem implements HasLoop {
                 shouldDoNext = ArmFSM.STORAGE;
                 return;
             }
-            if (autoSubsystem.sampleHasEventStarted("arm-prepare")) {
-                shouldDoNext = ArmFSM.PREPARE;
-                return;
-            }
-            if (autoSubsystem.sampleHasEventStarted("arm-unstow")) {
-                shouldDoNext = ArmFSM.UNSTOW;
-                return;
-            }
+
+
             //Only scoring high when moving arm in auto
-            if (autoSubsystem.sampleHasEventStarted("moveArm")) {
-                shouldDoNext = ArmFSM.SCORE_HIGH;
-                return;
-            }
+
             if (autoSubsystem.sampleHasEventStarted("arm-human-intake")) {
                 shouldDoNext = ArmFSM.HUMAN_INTAKE;
                 return;
@@ -93,6 +82,26 @@ public class ArmSubsystem implements HasLoop {
             if (autoSubsystem.sampleHasEventStarted("collect")) {
                 System.out.println("MOVEARM");
                 shouldDoNext = ArmFSM.STORAGE;
+                return;
+            }
+
+            if (autoSubsystem.sampleHasEventStarted("gripper-open")) {
+                shouldDoNext = ArmFSM.ACTUATE_GRIPPER;
+                return;
+            }
+
+            if (autoSubsystem.sampleHasEventStarted("arm-scoreHigh")) {
+                shouldDoNext = ArmFSM.SCORE_HIGH;
+                return;
+            }
+
+            if (autoSubsystem.sampleHasEventStarted("arm-prepare")) {
+                shouldDoNext = ArmFSM.PREPARE;
+                return;
+            }
+
+            if (autoSubsystem.sampleHasEventStarted("arm-unstow")) {
+                shouldDoNext = ArmFSM.UNSTOW;
                 return;
             }
         }
@@ -162,6 +171,10 @@ public class ArmSubsystem implements HasLoop {
                     -0.222,
                     !operatorInput.closeGripperPressed(), operatorInput.isCube()
             );
+        }
+
+        if (shouldDoNext == ArmFSM.ACTUATE_GRIPPER) {
+            armControl.openGripper();
         }
 
         //TODO fix the numbers
