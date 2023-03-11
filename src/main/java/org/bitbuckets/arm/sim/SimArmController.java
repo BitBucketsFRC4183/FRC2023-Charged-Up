@@ -62,11 +62,14 @@ public class SimArmController implements IMotorController, HasLoop, HasLogLoop {
 
     @Override
     public void forceOffset_mechanismRotations(double offsetUnits_mechanismRotations) {
-        throw new UnsupportedOperationException();
+        //ignore everything LOL
+
+
     }
 
     @Override
     public void moveAtVoltage(double voltage) {
+
         core.setVoltage(joint, voltage);
     }
 

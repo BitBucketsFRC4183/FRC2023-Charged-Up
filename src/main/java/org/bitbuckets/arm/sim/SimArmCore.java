@@ -6,12 +6,15 @@ import edu.wpi.first.math.numbers.N2;
 import edu.wpi.first.math.numbers.N4;
 import org.bitbuckets.arm.ArmDynamics;
 import org.bitbuckets.lib.core.HasLoop;
+import org.bitbuckets.lib.debug.IDebuggable;
 
 public class SimArmCore implements HasLoop {
 
     final ArmDynamics dynamics;
+    final IDebuggable debuggable;
 
-    public SimArmCore(ArmDynamics dynamics, Vector<N4> shoulderElbowStates) {
+    public SimArmCore(ArmDynamics dynamics, IDebuggable debuggable, Vector<N4> shoulderElbowStates) {
+        this.debuggable = debuggable;
         this.shoulderElbowStates = shoulderElbowStates;
         this.dynamics = dynamics;
     }
@@ -40,6 +43,7 @@ public class SimArmCore implements HasLoop {
     }
 
     void setVoltage(SimJoint joint, double voltage) {
+
         if (joint == SimJoint.SHOULDER) {
             voltageSetpoints.set(0, 0, voltage);
         } else {
@@ -50,6 +54,8 @@ public class SimArmCore implements HasLoop {
 
     @Override
     public void loop() {
+
+        debuggable.log("voltage", voltageSetpoints.toString());
         shoulderElbowStates = dynamics.simulate(
                 VecBuilder.fill(
                         shoulderElbowStates.get(0,0),

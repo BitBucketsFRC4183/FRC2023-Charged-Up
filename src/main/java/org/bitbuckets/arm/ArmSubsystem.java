@@ -27,6 +27,8 @@ public class ArmSubsystem implements HasLoop {
 
     @Override
     public void loop() {
+
+
         debuggable.log("UPPERARMABS", armControl.getUpperAbsEncoderAngle());
         //handle arm calibration
         armControl.gripperResetonLimit();
@@ -49,6 +51,8 @@ public class ArmSubsystem implements HasLoop {
 
     //generates what the FSM should do. Will modify shouldDoNext if something has happened
     void handleStateTransitions() {
+
+
         if (operatorInput.isStopPidPressed() && autoSubsystem.state() != AutoFSM.AUTO_RUN) {
             shouldDoNext = ArmFSM.IDLE;
             return;
@@ -94,6 +98,8 @@ public class ArmSubsystem implements HasLoop {
         }
 
         if (autoSubsystem.state() == AutoFSM.TELEOP) {
+
+            shouldDoNext = ArmFSM.MANUAL;
 
             if (operatorInput.isHumanIntakePressed()) {
                 shouldDoNext = ArmFSM.HUMAN_INTAKE;

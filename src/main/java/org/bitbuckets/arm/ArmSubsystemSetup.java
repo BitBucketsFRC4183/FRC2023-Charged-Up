@@ -28,6 +28,8 @@ public class ArmSubsystemSetup implements ISetup<ArmSubsystem> {
         //TODO shitty hack
         SmartDashboard.putData("arm", Arm.SIM_MECHANISM);
 
+
+
         return new ArmSubsystem(
                 input,
                 self.childSetup("arm-ctrl", armControlSetup),

@@ -20,6 +20,6 @@ public class SimArmCoreSetup implements ISetup<SimArmCore> {
 
     @Override
     public SimArmCore build(IProcess self) {
-        return new SimArmCore(dynamics, shoulderElbowInitialStates); //this is stupid
+        return new SimArmCore(dynamics, self.getDebuggable(), shoulderElbowInitialStates); //this is stupid
     }
 }

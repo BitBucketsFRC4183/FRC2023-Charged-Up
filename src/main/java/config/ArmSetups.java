@@ -26,7 +26,7 @@ public interface ArmSetups {
 
     ISetup<SimArmCore> SIM_CORE = new SharedSetup<>(new SimArmCoreSetup(
             Arm.DYNAMICS,
-            VecBuilder.fill(Math.PI / 2.0, Math.PI / 2.0, 0,0)
+            VecBuilder.fill(Math.PI / 2.0, 0.05, 0,0)
     ));
 
     SparkSetup LOWER_ARM_FOLLOWER = new SparkSetup(
