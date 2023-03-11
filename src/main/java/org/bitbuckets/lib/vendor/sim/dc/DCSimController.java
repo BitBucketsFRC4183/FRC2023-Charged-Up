@@ -80,8 +80,8 @@ public class DCSimController implements IMotorController, HasLoop, HasLogLoop {
     @Override
     public void moveAtPercent(double percent) {
 
-        throw new UnsupportedOperationException();
-        //simulatedMotor.setInputVoltage(percent * 12.0); //voltage time\
+
+        simulatedMotor.setInputVoltage(percent * 12.0); //voltage time\
     }
 
     double lastSetpoint = 0.0;
