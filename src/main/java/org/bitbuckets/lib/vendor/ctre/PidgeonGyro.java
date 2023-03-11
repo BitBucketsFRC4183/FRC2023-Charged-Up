@@ -2,9 +2,7 @@ package org.bitbuckets.lib.vendor.ctre;
 
 import com.ctre.phoenix.sensors.WPI_Pigeon2;
 import edu.wpi.first.math.geometry.Rotation2d;
-import org.bitbuckets.lib.core.HasLogLoop;
 import org.bitbuckets.lib.hardware.IGyro;
-import org.bitbuckets.lib.log.ILoggable;
 
 public class PidgeonGyro implements IGyro {
 
@@ -38,7 +36,7 @@ public class PidgeonGyro implements IGyro {
         return data[0];*/
     }
 
-    //Shitty hacks because the pidgeon doesnt let me reset these other values;
+    //hack because the pidgeon doesnt let me reset these other values;
     double rollTare = 0;
     double pitchTare = 0;
 

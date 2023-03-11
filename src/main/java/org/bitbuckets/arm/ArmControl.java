@@ -64,24 +64,42 @@ public class ArmControl {
         lowerArm.moveAtVoltage(lowerArmFFVoltage + lowerArmFeedbackVoltage);
         upperArm.moveAtVoltage(upperArmFFVoltage + upperArmFeedbackVoltage);
 
-        if (gripperShouldOpen && !isCube) {
-            openCone();
-        } else if (gripperShouldOpen && isCube) {
-            openCube();
-        }
-        else {
-            gripperActuator.goLimp(); //let the ropes pull it back
-        }
+//        if (gripperShouldOpen) {
+//            gripperActuator.moveToPosition_mechanismRotations(Arm.GRIPPER_SETPOINT_MOTOR_ROTATIONS);
+//        } else {
+//            stopGripper();
+//        }
 
     }
-    public void openCone()
-    {
-        gripperActuator.moveToPosition_mechanismRotations(Arm.GRIPPER_CONE_SETPOINT_MOTOR_ROTATIONS);
+
+
+    public void gripperResetonLimit() {
+        if (gripperActuator.isForwardLimitSwitchPressed()) {
+            gripperActuator.forceOffset_mechanismRotations(0);
+        }
     }
 
-    public void openCube()
-    {
-        gripperActuator.moveToPosition_mechanismRotations(Arm.GRIPPER_CUBE_SETPOINT_MOTOR_ROTATIONS);
+    public void zeroArmAbs() {
+        double absAngleRot = upperArm.getAbsoluteEncoder_rotations() - Arm.UPPER_ARM_OFFSET;
+
+        upperArm.forceOffset_mechanismRotations(-absAngleRot);
+
+    }
+
+    public double getUpperAbsEncoderAngle() {
+        return upperArm.getAbsoluteEncoder_rotations();
+    }
+
+
+    public void openGripper() {
+        gripperActuator.moveAtPercent(0.6);
+
+        //     }
+    }
+
+
+    public void closeGripper() {
+        gripperActuator.moveAtPercent(-0.6);
 
     }
 
@@ -101,17 +119,6 @@ public class ArmControl {
         upperArm.forceOffset_mechanismRotations(0);
     }
 
-    public void zeroGripper() {
-        gripperActuator.forceOffset_mechanismRotations(0);
-
-    }
-
-    public void zeroToStartingPosition() {
-        //TODO these are random numbers and need to be accurate
-        lowerArm.forceOffset_mechanismRotations(.168);
-        upperArm.forceOffset_mechanismRotations(-.222);
-        gripperActuator.forceOffset_mechanismRotations(0);
-    }
 
     public double getErrorQuantity() {
         return 1;

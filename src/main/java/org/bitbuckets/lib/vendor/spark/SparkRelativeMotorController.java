@@ -1,8 +1,6 @@
 package org.bitbuckets.lib.vendor.spark;
 
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.RelativeEncoder;
-import com.revrobotics.SparkMaxPIDController;
+import com.revrobotics.*;
 import org.bitbuckets.lib.hardware.IMotorController;
 import org.bitbuckets.lib.hardware.MotorConfig;
 
@@ -71,6 +69,7 @@ public class SparkRelativeMotorController implements IMotorController {
     }
 
     double cachedVoltage = 0;
+
     @Override
     public void moveAtVoltage(double voltage) {
 
@@ -80,13 +79,13 @@ public class SparkRelativeMotorController implements IMotorController {
     }
 
     double cachedPercent = 0;
+
     @Override
     public void moveAtPercent(double percent) {
 
         lastControlMode = LastControlMode.PERCENT;
         sparkMax.set(percent);
     }
-
 
 
     @Override
@@ -130,6 +129,21 @@ public class SparkRelativeMotorController implements IMotorController {
     @Override
     public double getCurrent() {
         return sparkMax.getOutputCurrent();
+    }
+
+    @Override
+    public double getAbsoluteEncoder_rotations() {
+        return sparkMax.getAbsoluteEncoder(SparkMaxAbsoluteEncoder.Type.kDutyCycle).getPosition();
+    }
+
+    @Override
+    public boolean isForwardLimitSwitchPressed() {
+        return sparkMax.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen).isPressed();
+    }
+
+    @Override
+    public boolean isReverseLimitSwitchPressed() {
+        return sparkMax.getReverseLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen).isPressed();
     }
 
     boolean isLimp = false;
