@@ -205,6 +205,10 @@ public class ArmSubsystem implements HasLoop {
 
 
         }
+
+        if (shouldDoNext == ArmFSM.HUMAN_INTAKE) {
+            armControl.commandArmToState(0.008, -0.230,true);
+        }
         //TODO fill out the rest
     }
 }
