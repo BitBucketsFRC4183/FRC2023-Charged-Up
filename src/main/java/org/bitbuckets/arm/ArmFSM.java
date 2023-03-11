@@ -5,12 +5,13 @@ public enum ArmFSM {
     IDLE,
 
     MANUAL,
-    STORAGE,
+    STOW,
 
     PREPARE,
     UNSTOW,
+    ACTUATE_GRIPPER, //UNUSED
+    LOAD,
 
-    ACTUATE_GRIPPER,
 
     SCORE_MID,
     SCORE_HIGH,
