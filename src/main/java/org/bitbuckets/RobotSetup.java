@@ -17,14 +17,13 @@ import org.bitbuckets.drive.DriveSubsystemSetup;
 import org.bitbuckets.drive.IDriveControl;
 import org.bitbuckets.drive.controlsds.DriveControlSetup;
 import org.bitbuckets.drive.holo.HoloControlSetup;
-import org.bitbuckets.lib.IProcess;
-import org.bitbuckets.lib.ISetup;
-import org.bitbuckets.lib.SimulatorKiller;
-import org.bitbuckets.lib.ToggleableSetup;
+import org.bitbuckets.lib.*;
 import org.bitbuckets.lib.util.LateSupplier;
+import org.bitbuckets.lib.util.MockingUtil;
 import org.bitbuckets.lib.vendor.ctre.PidgeonGyroSetup;
 import org.bitbuckets.odometry.IOdometryControl;
 import org.bitbuckets.odometry.OdometryControlSetup;
+import org.bitbuckets.odometry.SimOdometryControlSetup;
 import org.bitbuckets.vision.IVisionControl;
 import org.bitbuckets.vision.VisionControlSetup;
 
@@ -92,17 +91,25 @@ public class RobotSetup implements ISetup<Void> {
                                 KINEMATICS,
                                 MotorIds.PIDGEON_IMU_ID
                         )*/
-                        new OdometryControlSetup(
-                                Drive.STD_VISION,
-                                KINEMATICS,
-                                driveControl,
-                                visionControl,
-                                new PidgeonGyroSetup(
-                                        MotorIds.PIDGEON_IMU_ID,
-                                        Pigeon2.AxisDirection.PositiveY,
-                                        Pigeon2.AxisDirection.PositiveZ
+                        new SwapSetup<>(
+                                MockingUtil.noops(IOdometryControl.class),
+                                new OdometryControlSetup(
+                                        Drive.STD_VISION,
+                                        KINEMATICS,
+                                        driveControl,
+                                        visionControl,
+                                        new PidgeonGyroSetup(
+                                                MotorIds.PIDGEON_IMU_ID,
+                                                Pigeon2.AxisDirection.PositiveY,
+                                                Pigeon2.AxisDirection.PositiveZ
+                                        )
+                                ),
+                                new SimOdometryControlSetup(
+                                        KINEMATICS,
+                                        driveControl
                                 )
                         )
+
                 )
         );
         robotPose.set(() -> new Pose3d(odometryControl.estimateFusedPose2d()));

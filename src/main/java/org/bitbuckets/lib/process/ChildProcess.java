@@ -5,13 +5,11 @@ import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardContainer;
 import org.bitbuckets.lib.*;
-import org.bitbuckets.lib.core.HasLifecycle;
 import org.bitbuckets.lib.core.HasLogLoop;
 import org.bitbuckets.lib.core.HasLoop;
 import org.bitbuckets.lib.core.Path;
 import org.bitbuckets.lib.debug.IDebuggable;
 import org.bitbuckets.lib.debug.ShuffleDebuggable;
-import org.bitbuckets.lib.log.IConsole;
 import org.bitbuckets.lib.log.ILoggable;
 import org.bitbuckets.lib.tune.IForceSendTuner;
 import org.bitbuckets.lib.tune.IValueTuner;
@@ -41,6 +39,7 @@ public class ChildProcess extends AProcess implements IDoWhenReady {
     }
 
     Set<RegisterRecord> sort(RegisterType type) {
+
         Set<RegisterRecord> records = new HashSet<>();
 
         for (RegisterRecord record : this.onReady) {
@@ -186,10 +185,6 @@ public class ChildProcess extends AProcess implements IDoWhenReady {
         throw new UnsupportedOperationException();
     }
 
-    @Override
-    public IConsole getAssociatedConsole() {
-        throw new UnsupportedOperationException();
-    }
 
 
     ShuffleDebuggable cached = null;
@@ -215,12 +210,7 @@ public class ChildProcess extends AProcess implements IDoWhenReady {
 
     @Override
     public <T> ILoggable<T> generateLogger(ILogAs<T> logDataType, String key) {
-        return logDataType.generate(key, this, selfMode);
-    }
-
-    @Override
-    public void registerLifecycle(HasLifecycle lifecycle) {
-        throw new UnsupportedOperationException();
+        return logDataType.generate(key, selfPath, this, selfMode);
     }
 
     @Override
@@ -228,8 +218,4 @@ public class ChildProcess extends AProcess implements IDoWhenReady {
         //do nothing, this is cascaded. I added this because... i dont know why i added this
     }
 
-    @Override
-    public HasLifecycle offerInternalLifecycler() {
-        throw new UnsupportedOperationException();
-    }
 }

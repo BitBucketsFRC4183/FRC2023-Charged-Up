@@ -2,13 +2,20 @@ package org.bitbuckets.auto;
 
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.TransformUtil;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.DriverStation;
+import org.bitbuckets.auto.shim.CustomState;
 import org.bitbuckets.odometry.IOdometryControl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 
 public class AutoControl implements IAutoControl {
 
@@ -37,8 +44,6 @@ public class AutoControl implements IAutoControl {
 
         for (int i = 0; i < segmentGroup.size(); i++) {
             PathPlannerTrajectory segment = segmentGroup.get(i);
-
-            //if (true) throw new IllegalArgumentException(segment.getMarkers().toString());
 
             if (segment.getStartStopEvent().names.size() > 0) {
                 segmentTimes.add(new AutoPathInstance.SegmentTime(i, totalTime, true));
@@ -76,18 +81,23 @@ public class AutoControl implements IAutoControl {
             }
         }
 
+
         var transformedTrajectories = new ArrayList<PathPlannerTrajectory>();
         for (var trajectory : segmentGroup) {
-            var transformTrajectory = PathPlannerTrajectory.transformTrajectoryForAlliance(trajectory, DriverStation.getAlliance());
+
+            var transformTrajectory = TransformUtil.transform(trajectory, DriverStation.getAlliance());
             transformedTrajectories.add(transformTrajectory);
         }
 
 
-        var initialState = PathPlannerTrajectory.transformStateForAlliance(segmentGroup.get(0).getInitialState(), DriverStation.getAlliance());
+        var initialState = transformedTrajectories.get(0).getInitialState();
+
+
         odometryControl.setPos(initialState.holonomicRotation, initialState.poseMeters);
         AutoPathInstance instance = new AutoPathInstance(transformedTrajectories, eventMap, segmentTimes, whichOne, totalTime);
 
         instance.start();
         return instance;
     }
+
 }

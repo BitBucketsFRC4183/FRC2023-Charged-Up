@@ -6,11 +6,10 @@ import org.bitbuckets.lib.core.HasLogLoop;
 import org.bitbuckets.lib.core.HasLoop;
 import org.bitbuckets.lib.core.Path;
 import org.bitbuckets.lib.debug.IDebuggable;
-import org.bitbuckets.lib.log.IConsole;
 import org.bitbuckets.lib.log.ILoggable;
 import org.bitbuckets.lib.tune.IValueTuner;
 
-public interface IProcess {
+public interface IProcess extends HasLifecycle {
 
     default boolean isReal() {
         return HALUtil.getHALRuntimeType() != 2;
@@ -23,7 +22,6 @@ public interface IProcess {
     <T> T childSetup(String key, ISetup<T> setup);
     <T> T siblingSetup(String key, ISetup<T> setup); //parents this child to our parent
 
-    IConsole getAssociatedConsole();
     IDebuggable getDebuggable();
 
     <T> IValueTuner<T> generateTuner(ITuneAs<T> tuneDataType, String key, T dataWhenNotTuning);
@@ -41,8 +39,5 @@ public interface IProcess {
     void run();
     void ready();
 
-
-    //dont call this
-    HasLifecycle offerInternalLifecycler();
 
 }

@@ -1,5 +1,6 @@
 package org.bitbuckets.lib.process;
 
+import org.bitbuckets.auto.RobotEvent;
 import org.bitbuckets.lib.*;
 import org.bitbuckets.lib.core.HasLifecycle;
 import org.bitbuckets.lib.core.HasLogLoop;
@@ -7,7 +8,6 @@ import org.bitbuckets.lib.core.HasLoop;
 import org.bitbuckets.lib.core.Path;
 import org.bitbuckets.lib.debug.IDebuggable;
 import org.bitbuckets.lib.debug.NoopsDebuggable;
-import org.bitbuckets.lib.log.IConsole;
 import org.bitbuckets.lib.log.ILoggable;
 import org.bitbuckets.lib.tune.IValueTuner;
 import org.bitbuckets.lib.tune.NoopsTuner;
@@ -43,11 +43,6 @@ public class DisableProcess implements IProcess {
     }
 
     @Override
-    public IConsole getAssociatedConsole() {
-        throw new UnsupportedOperationException("no console");
-    }
-
-    @Override
     public IDebuggable getDebuggable() {
         return new NoopsDebuggable();
     }
@@ -77,10 +72,13 @@ public class DisableProcess implements IProcess {
         loops.add(loop);
     }
 
+    final List<HasLifecycle> lifecycles = new ArrayList<>();
     @Override
     public void registerLifecycle(HasLifecycle lifecycle) {
-
+        lifecycles.add(lifecycle);
     }
+
+
 
     @Override
     public void run() {
@@ -92,8 +90,15 @@ public class DisableProcess implements IProcess {
 
     }
 
+
     @Override
-    public HasLifecycle offerInternalLifecycler() {
-        throw new UnsupportedOperationException();
+    public void onPhaseChangeEvent(RobotEvent robotEvent) {
+        for (HasLifecycle hasLifecycle : children) {
+            hasLifecycle.onPhaseChangeEvent(robotEvent);
+        }
+
+        for (HasLifecycle hasLifecycle : lifecycles) {
+            hasLifecycle.onPhaseChangeEvent(robotEvent);
+        }
     }
 }

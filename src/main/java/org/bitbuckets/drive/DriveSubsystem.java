@@ -122,7 +122,7 @@ public class DriveSubsystem implements HasLoop {
 
 
         if (nextStateShould == DriveFSM.IDLE) {
-            driveControl.stopSticky();
+            driveControl.stop();
         }
 
         //if idle it will do nothing..
@@ -180,7 +180,7 @@ public class DriveSubsystem implements HasLoop {
         }
 
         if (input.stopStickyPressed()) {
-            driveControl.stopSticky();
+            driveControl.stop();
         }
 
         debuggable.log("x-output", xOutput);
@@ -190,7 +190,7 @@ public class DriveSubsystem implements HasLoop {
         switch (orientation.readValue()) {
             case FIELD_ORIENTED:
                 if (xOutput == 0 && yOutput == 0 && rotationOutput == 0) {
-                    driveControl.stopSticky();
+                    driveControl.stop();
                 } else {
                     debuggable.log("y", yOutput);
                     debuggable.log("x", xOutput);
@@ -202,7 +202,7 @@ public class DriveSubsystem implements HasLoop {
                 break;
             case ROBOT_ORIENTED:
                 if (xOutput == 0 && yOutput == 0 && rotationOutput == 0) {
-                    driveControl.stopSticky();
+                    driveControl.stop();
                 } else {
                     ChassisSpeeds robotOrient = new ChassisSpeeds(xOutput, yOutput, rotationOutput);
                     driveControl.drive(robotOrient);
@@ -213,11 +213,6 @@ public class DriveSubsystem implements HasLoop {
     }
 
     void balance() {
-
-        //TODO deadband only
-
-        //This is bad and should be shifted somewhere else
-
         double Pitch_deg = odometryControl.getPitch_deg();
 
         debuggable.log("pitch-now", Pitch_deg);

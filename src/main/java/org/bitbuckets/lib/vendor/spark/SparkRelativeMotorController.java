@@ -24,10 +24,19 @@ public class SparkRelativeMotorController implements IMotorController, HasLogLoo
         this.sparkMax = sparkMax;
         this.sparkMaxPIDController = sparkMax.getPIDController();
         this.sparkMaxRelativeEncoder = sparkMax.getEncoder();
-        this.absoluteEncoder = sparkMax.getAbsoluteEncoder(SparkMaxAbsoluteEncoder.Type.kDutyCycle);
+        if (motorConfig.hasAbsoluteEncoder) {
+            this.absoluteEncoder = sparkMax.getAbsoluteEncoder(SparkMaxAbsoluteEncoder.Type.kDutyCycle);
+        } else { this.absoluteEncoder = null; }
+
         this.debuggable = debuggable;
-        this.forward = sparkMax.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
-        this.reverse = sparkMax.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
+        if (motorConfig.isForwardHardLimitEnabled) {
+            this.forward = sparkMax.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
+        } else { this.forward = null; }
+        if (motorConfig.isBackwardHardLimitEnabled) {
+            this.reverse = sparkMax.getReverseLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
+        } else { this.reverse = null; }
+
+
     }
 
     LastControlMode lastControlMode = LastControlMode.NONE;
@@ -146,17 +155,33 @@ public class SparkRelativeMotorController implements IMotorController, HasLogLoo
 
     @Override
     public double getAbsoluteEncoder_rotations() {
-        return absoluteEncoder.getPosition();
+
+        if (motorConfig.hasAbsoluteEncoder) {
+            return absoluteEncoder.getPosition();
+        } else {
+            System.out.println("expected absolute encoder on soething configed without");
+            return 0.0; //oh... oh no
+        }
     }
 
     @Override
     public boolean isForwardLimitSwitchPressed() {
-        return forward.isPressed();
+        if (motorConfig.isForwardHardLimitEnabled) {
+            return forward.isPressed();
+        } else {
+            return false;
+        }
     }
 
     @Override
     public boolean isReverseLimitSwitchPressed() {
-        return reverse.isPressed();
+
+        if (motorConfig.isBackwardHardLimitEnabled) {
+            return reverse.isPressed();
+        } else {
+            return false;
+        }
+
     }
 
     @Override

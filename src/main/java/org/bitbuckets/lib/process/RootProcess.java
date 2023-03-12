@@ -6,12 +6,10 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardContainer;
 import org.bitbuckets.lib.*;
-import org.bitbuckets.lib.core.HasLifecycle;
 import org.bitbuckets.lib.core.HasLogLoop;
 import org.bitbuckets.lib.core.HasLoop;
 import org.bitbuckets.lib.core.Path;
 import org.bitbuckets.lib.debug.IDebuggable;
-import org.bitbuckets.lib.log.IConsole;
 import org.bitbuckets.lib.log.ILoggable;
 import org.bitbuckets.lib.tune.IForceSendTuner;
 import org.bitbuckets.lib.tune.IValueTuner;
@@ -88,12 +86,6 @@ public class RootProcess extends AProcess {
         throw new IllegalStateException("Illegal root sibling at: " + key);
     }
 
-
-    @Override
-    public IConsole getAssociatedConsole() {
-        throw new UnsupportedOperationException("cannot use console");
-    }
-
     @Override
     public IDebuggable getDebuggable() {
         throw new UnsupportedOperationException("cannot use debug");
@@ -109,15 +101,7 @@ public class RootProcess extends AProcess {
         throw new UnsupportedOperationException("cannot use logger");
     }
 
-    @Override
-    public void registerLifecycle(HasLifecycle lifecycle) {
 
-    }
-
-    @Override
-    public HasLifecycle offerInternalLifecycler() {
-        return null;
-    }
 
     public static RootProcess root() {
 

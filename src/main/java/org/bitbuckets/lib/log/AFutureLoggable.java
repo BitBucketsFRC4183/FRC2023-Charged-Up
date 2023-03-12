@@ -4,16 +4,19 @@ import edu.wpi.first.networktables.GenericEntry;
 
 import java.util.concurrent.CompletableFuture;
 
-public class FutureLoggable<T> implements ILoggable<T> {
+public abstract class AFutureLoggable<T> implements ILoggable<T> {
 
     final CompletableFuture<GenericEntry> ftr;
 
-    public FutureLoggable(CompletableFuture<GenericEntry> ftr) {
+    public AFutureLoggable(CompletableFuture<GenericEntry> ftr) {
         this.ftr = ftr;
     }
 
+    abstract void dealWith(T data);
+
     @Override
     public void log(T data) {
+        dealWith(data);
         if (ftr.isDone()) {
             ftr.join().setValue(data);
         } else {

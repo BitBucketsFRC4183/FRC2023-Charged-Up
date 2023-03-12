@@ -1,9 +1,11 @@
 package org.bitbuckets.lib.process;
 
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardContainer;
+import org.bitbuckets.auto.RobotEvent;
 import org.bitbuckets.lib.IDoWhenReady;
 import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.lib.ProcessMode;
+import org.bitbuckets.lib.core.HasLifecycle;
 import org.bitbuckets.lib.core.HasLogLoop;
 import org.bitbuckets.lib.core.HasLoop;
 import org.bitbuckets.lib.core.Path;
@@ -20,6 +22,7 @@ public abstract class AProcess implements IProcess, IDoWhenReady {
     final List<AProcess> children = new ArrayList<>();
     final List<HasLoop> hasLoop = new ArrayList<>();
     final List<HasLogLoop> hasLogLoop = new ArrayList<>();
+    final List<HasLifecycle> hasLifecycles = new ArrayList<>();
 
     protected AProcess(Path selfPath, IForceSendTuner<ProcessMode> selfMode) {
         this.selfPath = selfPath;
@@ -38,6 +41,11 @@ public abstract class AProcess implements IProcess, IDoWhenReady {
         for (AProcess aProcess : children) {
             aProcess.forceTo(mode);
         }
+    }
+
+    @Override
+    public void registerLifecycle(HasLifecycle lifecycle) {
+        hasLifecycles.add(lifecycle);
     }
 
     @Override
@@ -81,5 +89,14 @@ public abstract class AProcess implements IProcess, IDoWhenReady {
 
     protected abstract void internalReady(ShuffleboardContainer root, ShuffleboardContainer enablers);
 
+    @Override
+    public void onPhaseChangeEvent(RobotEvent robotEvent) {
+        for (AProcess child : children) {
+            child.onPhaseChangeEvent(robotEvent);
+        }
 
+        for (HasLifecycle cycle : hasLifecycles) {
+            cycle.onPhaseChangeEvent(robotEvent);
+        }
+    }
 }

@@ -3,68 +3,67 @@ package org.bitbuckets.lib;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.util.datalog.BooleanLogEntry;
-import edu.wpi.first.util.datalog.DataLog;
+import edu.wpi.first.util.datalog.DoubleArrayLogEntry;
 import edu.wpi.first.util.datalog.DoubleLogEntry;
 import edu.wpi.first.util.datalog.StringLogEntry;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardContainer;
-import org.bitbuckets.lib.log.EnumLoggable;
-import org.bitbuckets.lib.log.FutureLoggable;
-import org.bitbuckets.lib.log.ILoggable;
-import org.bitbuckets.lib.log.PoseLoggable;
+import org.bitbuckets.lib.core.Path;
+import org.bitbuckets.lib.log.*;
 import org.bitbuckets.lib.process.RegisterType;
 import org.bitbuckets.lib.tune.IValueTuner;
 
-import java.lang.annotation.Documented;
 import java.util.concurrent.CompletableFuture;
 
 public interface ILogAs<T> {
 
-    ILoggable<T> generate(String key, IDoWhenReady whenReady, IValueTuner<ProcessMode> mode);
+    ILoggable<T> generate(String key, Path p, IDoWhenReady whenReady, IValueTuner<ProcessMode> mode);
 
-    ILogAs<Boolean> BOOLEAN = (k, ct, m) -> {
+    ILogAs<Boolean> BOOLEAN = (k, p, ct, m) -> {
         CompletableFuture<GenericEntry> onReady = ct.doWhenReady(a -> {
             return a.add(k, false).getEntry();
         }, RegisterType.LOG);
 
-        return new FutureLoggable<>(onReady);
+        return new BooleanLoggable(
+                onReady,
+                new BooleanLogEntry(DataUtil.LOG, p.getAsTablePath())
+        );
+
     };
 
 
-    ILogAs<Double> DOUBLE = (key,ct, m) -> {
+    ILogAs<Double> DOUBLE = (key,p, ct, m) -> {
         CompletableFuture<GenericEntry> onReady = ct.doWhenReady(a -> {
             return a.add(key, 0).getEntry();
         }, RegisterType.LOG);
 
-        return new FutureLoggable<>(onReady);
+        return new DoubleLoggable(
+                onReady,
+                new DoubleLogEntry(DataUtil.LOG, p.getAsTablePath())
+        );
     };
 
-    ILogAs<Pose2d> POSE = (k,c,m) -> {
+    ILogAs<Pose2d> POSE = (k,p, c,m) -> {
 
         CompletableFuture<GenericEntry> onReady = c.doWhenReady(a -> {
 
             return a.add(k, new double[] {0,0,0}).getEntry();
         }, RegisterType.LOG);
 
-        return new PoseLoggable(onReady);
+        return new PoseLoggable(new DoubleArrayLogEntry(DataUtil.LOG, k), onReady);
     };
 
     static <T extends Enum<T>> ILogAs<T> ENUM(Class<T> clazz) {
-        return (k,ct, m) -> {
+        return (k,p, ct, m) -> {
             CompletableFuture<GenericEntry> onReady = ct.doWhenReady(a -> {
                 return a.add(k, "default enum").getEntry();
             }, RegisterType.LOG);
 
-            return new EnumLoggable<>(onReady);
-        };
-    }
-
-    static <T extends Enum<T>> ILogAs<T> ENUM_SIDEBAR(Class<T> clazz) {
-        return (k,ct, m) -> {
-            CompletableFuture<GenericEntry> onReady = ct.doWhenReady(a -> {
-                return a.add(k, "default enum").getEntry();
-            }, RegisterType.SIDEBAR);
-
-            return new FutureLoggable<>(onReady);
+            return new EnumLoggable<>(
+                    onReady,
+                    new StringLogEntry(
+                            DataUtil.LOG,
+                            p.getAsTablePath()
+                    )
+            );
         };
     }
 
