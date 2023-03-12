@@ -30,7 +30,9 @@ public class VisionControlSetup implements ISetup<IVisionControl> {
     @Override
     public VisionControl build(IProcess self) {
 
-        PhotonCamera photonCamera = new PhotonCamera(cameraName);
+
+            PhotonCamera photonCamera = new PhotonCamera(cameraName);
+
 
         if (!self.isReal()) {
             //i  have no idea why this works.

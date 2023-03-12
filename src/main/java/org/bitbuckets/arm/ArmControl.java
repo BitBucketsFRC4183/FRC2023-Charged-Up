@@ -75,6 +75,11 @@ public class ArmControl implements HasLogLoop {
 
     }
 
+    public void doNothing() {
+        lowerArm.moveAtVoltage(0);
+        upperArm.moveAtVoltage(0);
+    }
+
 
     public void gripperResetonLimit() {
         if (gripperActuator.isForwardLimitSwitchPressed()) {
@@ -105,6 +110,9 @@ public class ArmControl implements HasLogLoop {
 
 
     public void openGripper() {
+        upperArm.moveAtVoltage(0);
+        lowerArm.moveAtVoltage(0);
+
         gripperActuator.moveAtPercent(0.6);
 
         //     }

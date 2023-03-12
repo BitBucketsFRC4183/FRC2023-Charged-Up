@@ -35,7 +35,7 @@ class SparkRelativeMotorControllerTest {
     @Test
     void forceOffset() {
         assert HAL.initialize(500, 0);
-        SparkRelativeMotorController c = new SparkRelativeMotorController(test, new CANSparkMax(3, CANSparkMaxLowLevel.MotorType.kBrushless));
+        SparkRelativeMotorController c = new SparkRelativeMotorController(test, new CANSparkMax(3, CANSparkMaxLowLevel.MotorType.kBrushless), debuggable);
 
         c.forceOffset(2.0); //2 encoder rotations
 
@@ -45,7 +45,7 @@ class SparkRelativeMotorControllerTest {
     @Test
     void forceOffset_mechanismRotations() {
         assert HAL.initialize(500, 0);
-        SparkRelativeMotorController c = new SparkRelativeMotorController(test, new CANSparkMax(2, CANSparkMaxLowLevel.MotorType.kBrushless));
+        SparkRelativeMotorController c = new SparkRelativeMotorController(test, new CANSparkMax(2, CANSparkMaxLowLevel.MotorType.kBrushless), debuggable);
 
         c.forceOffset_mechanismRotations(1.0); //1 mechanism rotation is 2 encoder rotations according to our motor coefficient
 
@@ -56,7 +56,7 @@ class SparkRelativeMotorControllerTest {
     @Test
     void moveAtVoltage() {
         assert HAL.initialize(500, 0);
-        SparkRelativeMotorController c = new SparkRelativeMotorController(test, new CANSparkMax(4, CANSparkMaxLowLevel.MotorType.kBrushless));
+        SparkRelativeMotorController c = new SparkRelativeMotorController(test, new CANSparkMax(4, CANSparkMaxLowLevel.MotorType.kBrushless), debuggable);
 
         c.moveAtVoltage(12);
 
@@ -69,7 +69,7 @@ class SparkRelativeMotorControllerTest {
     @Test
     void moveAtPercent() {
         assert HAL.initialize(500, 0);
-        SparkRelativeMotorController c = new SparkRelativeMotorController(test, new CANSparkMax(2, CANSparkMaxLowLevel.MotorType.kBrushless));
+        SparkRelativeMotorController c = new SparkRelativeMotorController(test, new CANSparkMax(2, CANSparkMaxLowLevel.MotorType.kBrushless), debuggable);
 
         c.moveAtPercent(12);
 
@@ -87,7 +87,7 @@ class SparkRelativeMotorControllerTest {
         CANSparkMax spark = Mockito.mock(CANSparkMax.class);
         Mockito.when(spark.getPIDController()).thenReturn(Mockito.mock(SparkMaxPIDController.class));
 
-        SparkRelativeMotorController c = new SparkRelativeMotorController(test, spark);
+        SparkRelativeMotorController c = new SparkRelativeMotorController(test, spark, debuggable);
 
         c.moveToPosition_mechanismRotations(1); //should tell the motor to move to 2 encoder rotations if ratio is 2 encoder to 1 motor
 

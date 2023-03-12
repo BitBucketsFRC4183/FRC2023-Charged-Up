@@ -1,9 +1,11 @@
 package org.bitbuckets.drive;
 
 import com.pathplanner.lib.PathPlannerTrajectory;
+import config.Drive;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import org.bitbuckets.OperatorInput;
+import org.bitbuckets.arm.ArmFSM;
 import org.bitbuckets.auto.AutoFSM;
 import org.bitbuckets.auto.AutoSubsystem;
 import org.bitbuckets.drive.balance.BalanceControl;
@@ -70,50 +72,15 @@ public class DriveSubsystem implements HasLoop {
 
     void handleStateTransitions() {
 
-        //handle forced overrides from the auto subsystem
-
-
-        if (autoSubsystem.hasChanged() && autoSubsystem.state() == AutoFSM.DISABLED) {
-            nextStateShould = DriveFSM.IDLE;
-            return;
-        }
-
-        if (autoSubsystem.hasChanged() && autoSubsystem.state() == AutoFSM.AUTO_RUN) {
-            nextStateShould = DriveFSM.AUTO_PATHFINDING;
-            return;
-        }
-
-        if (autoSubsystem.hasChanged() && autoSubsystem.state() == AutoFSM.AUTO_ENDED) {
-            driveControl.stop();
-            nextStateShould = DriveFSM.IDLE; //Stop moving after the path says we are done
-            return;
-        }
-
-        if (autoSubsystem.hasChanged() && autoSubsystem.state() == AutoFSM.TELEOP) {
-            nextStateShould = DriveFSM.MANUAL;
-            return;
-        }
-
         //handle event overrides from the auto subsystem
 
-        if (autoSubsystem.state() == AutoFSM.AUTO_RUN) {
-            if (autoSubsystem.sampleHasEventStarted("autoBalance")) {
-                nextStateShould = DriveFSM.BALANCE;
-                return;
-            }
-
-//
-            if (autoSubsystem.sampleHasEventStarted("do-vision")) {
-                nextStateShould = DriveFSM.VISION;
-                return;
-            }
-        }
-
-
-
         //handle inputs from user
-
         if (autoSubsystem.state() == AutoFSM.TELEOP) {
+            if (nextStateShould == DriveFSM.AUTO_PATHFINDING || nextStateShould == DriveFSM.IDLE) {
+                nextStateShould = DriveFSM.MANUAL;
+                return;
+            }
+
             if (input.isVisionDrivePressed() && visionControl.estimateBestVisionTarget().isPresent()) {
                 nextStateShould = DriveFSM.VISION;
                 return;
@@ -123,14 +90,33 @@ public class DriveSubsystem implements HasLoop {
                 nextStateShould = DriveFSM.MANUAL;
             }
 
+            if (input.isManualDrivePressed()) {
+                nextStateShould = DriveFSM.MANUAL;
+            }
+
             if (input.isAutoBalancePressed()) {
                 nextStateShould = DriveFSM.BALANCE;
             }
 
-            if (input.isManualDrivePressed()) {
-                nextStateShould = DriveFSM.MANUAL;
+        }
+
+        if (autoSubsystem.state() == AutoFSM.AUTO_RUN) {
+
+            if (autoSubsystem.sampleHasEventStarted("autoBalance")) {
+                nextStateShould = DriveFSM.BALANCE;
+                return;
+            } else if (autoSubsystem.sampleHasEventStarted("do-vision")) {
+                nextStateShould = DriveFSM.VISION;
+                return;
+            } else {
+                nextStateShould = DriveFSM.AUTO_PATHFINDING;
+                return;
             }
         }
+
+
+
+
     }
 
     void handleLogic() {

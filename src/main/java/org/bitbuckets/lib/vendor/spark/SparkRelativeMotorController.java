@@ -1,22 +1,33 @@
 package org.bitbuckets.lib.vendor.spark;
 
 import com.revrobotics.*;
+import org.bitbuckets.lib.core.HasLogLoop;
+import org.bitbuckets.lib.debug.IDebuggable;
 import org.bitbuckets.lib.hardware.IMotorController;
 import org.bitbuckets.lib.hardware.MotorConfig;
 
-public class SparkRelativeMotorController implements IMotorController {
+public class SparkRelativeMotorController implements IMotorController, HasLogLoop {
 
 
     final MotorConfig motorConfig;
     final CANSparkMax sparkMax;
     final RelativeEncoder sparkMaxRelativeEncoder;
     final SparkMaxPIDController sparkMaxPIDController;
+    final IDebuggable debuggable;
 
-    SparkRelativeMotorController(MotorConfig motorConfig, CANSparkMax sparkMax) {
+    final AbsoluteEncoder absoluteEncoder;
+    final SparkMaxLimitSwitch forward;
+    final SparkMaxLimitSwitch reverse;
+
+    SparkRelativeMotorController(MotorConfig motorConfig, CANSparkMax sparkMax, IDebuggable debuggable) {
         this.motorConfig = motorConfig;
         this.sparkMax = sparkMax;
         this.sparkMaxPIDController = sparkMax.getPIDController();
         this.sparkMaxRelativeEncoder = sparkMax.getEncoder();
+        this.absoluteEncoder = sparkMax.getAbsoluteEncoder(SparkMaxAbsoluteEncoder.Type.kDutyCycle);
+        this.debuggable = debuggable;
+        this.forward = sparkMax.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
+        this.reverse = sparkMax.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
     }
 
     LastControlMode lastControlMode = LastControlMode.NONE;
@@ -84,6 +95,7 @@ public class SparkRelativeMotorController implements IMotorController {
     public void moveAtPercent(double percent) {
 
         lastControlMode = LastControlMode.PERCENT;
+        cachedPercent = percent;
         sparkMax.set(percent);
     }
 
@@ -133,20 +145,18 @@ public class SparkRelativeMotorController implements IMotorController {
 
     @Override
     public double getAbsoluteEncoder_rotations() {
-        return sparkMax.getAbsoluteEncoder(SparkMaxAbsoluteEncoder.Type.kDutyCycle).getPosition();
+        return absoluteEncoder.getPosition();
     }
 
     @Override
     public boolean isForwardLimitSwitchPressed() {
-        return sparkMax.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen).isPressed();
+        return forward.isPressed();
     }
 
     @Override
     public boolean isReverseLimitSwitchPressed() {
-        return sparkMax.getReverseLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen).isPressed();
+        return reverse.isPressed();
     }
-
-    boolean isLimp = false;
 
     @Override
     public void goLimp() {
@@ -158,9 +168,9 @@ public class SparkRelativeMotorController implements IMotorController {
         return clazz.cast(sparkMax);
     }
 
-    void disableExternalAccess() {
-        //disable external access lmao
-
+    @Override
+    public void logLoop() {
+        debuggable.log("last-voltage",  cachedVoltage);
+        debuggable.log("last-percent", cachedPercent);
     }
-
 }
