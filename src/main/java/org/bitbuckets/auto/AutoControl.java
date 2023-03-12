@@ -26,8 +26,6 @@ public class AutoControl implements IAutoControl {
             return new AutoPathInstance(new ArrayList<>(), new HashMap<>(), new ArrayList<>(), whichOne, 0);
         }
 
-
-
         var segmentGroup = trajectories.get(whichOne.index);
 
 
@@ -89,7 +87,7 @@ public class AutoControl implements IAutoControl {
         odometryControl.setPos(initialState.holonomicRotation, initialState.poseMeters);
         AutoPathInstance instance = new AutoPathInstance(transformedTrajectories, eventMap, segmentTimes, whichOne, totalTime);
 
-        instance.onPhaseChangeEvent(AutoFSM.AUTO_RUN);
+        instance.start();
         return instance;
     }
 }

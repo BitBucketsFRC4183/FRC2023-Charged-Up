@@ -62,60 +62,39 @@ public class DriveSubsystem implements HasLoop {
         }
 
         handleStateTransitions();
-        debuggable.log("state", nextStateShould.toString());
         handleLogic();
 
+
+        debuggable.log("state", nextStateShould.toString());
 
     }
 
     DriveFSM nextStateShould = DriveFSM.IDLE;
 
     void handleStateTransitions() {
-
-        //handle event overrides from the auto subsystem
-
-        //handle inputs from user
         if (autoSubsystem.state() == AutoFSM.TELEOP) {
             if (nextStateShould == DriveFSM.AUTO_PATHFINDING || nextStateShould == DriveFSM.IDLE) {
                 nextStateShould = DriveFSM.MANUAL;
-                return;
-            }
-
-            if (input.isVisionDrivePressed() && visionControl.estimateBestVisionTarget().isPresent()) {
+            } else if (input.isVisionDrivePressed() && visionControl.estimateBestVisionTarget().isPresent()) {
                 nextStateShould = DriveFSM.VISION;
-                return;
-            }
-
-            if (nextStateShould == DriveFSM.VISION && !input.isVisionDrivePressed()) {
+            } else if (nextStateShould == DriveFSM.VISION && !input.isVisionDrivePressed()) {
                 nextStateShould = DriveFSM.MANUAL;
-            }
-
-            if (input.isManualDrivePressed()) {
+            } else if (input.isManualDrivePressed()) {
                 nextStateShould = DriveFSM.MANUAL;
-            }
-
-            if (input.isAutoBalancePressed()) {
+            } else if (input.isAutoBalancePressed()) {
                 nextStateShould = DriveFSM.BALANCE;
+            } else if (nextStateShould == DriveFSM.BALANCE && !input.isAutoBalancePressed()) {
+                nextStateShould = DriveFSM.MANUAL;
             }
-
-        }
-
-        if (autoSubsystem.state() == AutoFSM.AUTO_RUN) {
-
+        } else if (autoSubsystem.state() == AutoFSM.AUTO_RUN) {
             if (autoSubsystem.sampleHasEventStarted("autoBalance")) {
                 nextStateShould = DriveFSM.BALANCE;
-                return;
             } else if (autoSubsystem.sampleHasEventStarted("do-vision")) {
                 nextStateShould = DriveFSM.VISION;
-                return;
             } else {
                 nextStateShould = DriveFSM.AUTO_PATHFINDING;
-                return;
             }
         }
-
-
-
 
     }
 

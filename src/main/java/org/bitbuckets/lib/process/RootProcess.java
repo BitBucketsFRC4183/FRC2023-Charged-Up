@@ -15,7 +15,7 @@ import org.bitbuckets.lib.log.IConsole;
 import org.bitbuckets.lib.log.ILoggable;
 import org.bitbuckets.lib.tune.IForceSendTuner;
 import org.bitbuckets.lib.tune.IValueTuner;
-import org.bitbuckets.lib.tune.PNoopsTuner;
+import org.bitbuckets.lib.tune.NoopsTuner;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -55,7 +55,7 @@ public class RootProcess extends AProcess {
         var path = this.selfPath.append(key);
 
         //TODO this is a terrible hack (setting to null then assigning late)
-        AProcess child = new OnReadyProcess(path, null);
+        AProcess child = new ChildProcess(path, null);
 
         IForceSendTuner<ProcessMode> childMode = (IForceSendTuner<ProcessMode>) ITuneAs.SIDE_ENUM(ProcessMode.class)
                 .generate(
@@ -122,7 +122,7 @@ public class RootProcess extends AProcess {
     public static RootProcess root() {
 
 
-        return new RootProcess(new Path(new String[0]), new PNoopsTuner());
+        return new RootProcess(new Path(new String[0]), new NoopsTuner<>(Mattlib.DEFAULT_MODE));
     }
 
     @Override

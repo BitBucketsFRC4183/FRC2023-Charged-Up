@@ -38,9 +38,8 @@ public class ArmControl implements HasLogLoop {
      *
      * @param lowerArm_rot      wrt zero as all the way out to the right
      * @param upperArm_rot      wrt zero as all the way out to the right if lower arm is all the way out to the right
-     * @param gripperShouldOpen
      */
-    public void commandArmToState(double lowerArm_rot, double upperArm_rot, boolean gripperShouldOpen) {
+    public void commandArmToState(double lowerArm_rot, double upperArm_rot) {
 
         var ffVoltageVector = ff.feedforward(VecBuilder.fill(lowerArm_rot * Math.PI * 2.0, upperArm_rot * Math.PI * 2.0));
 
@@ -56,13 +55,6 @@ public class ArmControl implements HasLogLoop {
                 upperArm.getMechanismPositionAccum_rot(),
                 upperArm_rot
         );
-
-//
-//        System.out.println("FF LOW: " + lowerArmFFVoltage);
-//        System.out.println("FB LOW: " + lowerArmFeedbackVoltage);
-//
-//        System.out.println("FF UP: " + upperArmFFVoltage);
-//        System.out.println("FB UP: " + upperArmFeedbackVoltage);
 
         lowerArm.moveAtVoltage(lowerArmFFVoltage + lowerArmFeedbackVoltage);
         upperArm.moveAtVoltage(upperArmFFVoltage + upperArmFeedbackVoltage);
@@ -114,8 +106,6 @@ public class ArmControl implements HasLogLoop {
         lowerArm.moveAtVoltage(0);
 
         gripperActuator.moveAtPercent(0.6);
-
-        //     }
     }
 
 
@@ -129,15 +119,10 @@ public class ArmControl implements HasLogLoop {
     }
 
 
-    public void commandArmToPercent(double lowerArmPercent, double upperArmPercent, boolean gripperShouldOpen) {
+    public void commandArmToPercent(double lowerArmPercent, double upperArmPercent) {
         lowerArm.moveAtPercent(lowerArmPercent);
         upperArm.moveAtPercent(upperArmPercent);
 
-        if (gripperShouldOpen) {
-            //gripperActuator.moveToPosition_mechanismRotations(Arm.GRIPPER_SETPOINT_MOTOR_ROTATIONS);
-        } else {
-            //gripperActuator.goLimp(); //let the ropes pull it back
-        }
     }
 
     public void zero() {
@@ -147,11 +132,6 @@ public class ArmControl implements HasLogLoop {
 
     public double getErrorQuantity() {
         return 1;
-    }
-
-    //probably doesn't work but I need something to test right now
-    public boolean isErrorSmallEnough(double delta) {
-        return Math.abs(lowerArm.getError_mechanismRotations()) < delta && Math.abs(upperArm.getError_mechanismRotations()) < delta;
     }
 
     @Override

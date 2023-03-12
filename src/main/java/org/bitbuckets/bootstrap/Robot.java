@@ -1,20 +1,14 @@
 package org.bitbuckets.bootstrap;
 
-import com.revrobotics.REVPhysicsSim;
 import config.Mattlib;
-import edu.wpi.first.networktables.GenericEntry;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Threads;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.log.LogRecord;
 import org.bitbuckets.lib.log.ProcessConsole;
-import org.bitbuckets.lib.process.ForceKillProcess;
+import org.bitbuckets.lib.process.DisableProcess;
 import org.bitbuckets.lib.process.RootProcess;
 
 import java.util.HashMap;
@@ -47,7 +41,7 @@ public class Robot extends TimedRobot {
 
         try {
             if (Mattlib.SHOULD_FORCE_KILL) {
-                builtProcess=new ForceKillProcess();
+                builtProcess=new DisableProcess();
             } else {
                 builtProcess = RootProcess.root();
             }

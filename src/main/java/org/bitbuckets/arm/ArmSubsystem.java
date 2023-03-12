@@ -146,8 +146,7 @@ public class ArmSubsystem implements HasLoop {
 
             armControl.commandArmToPercent(
                     operatorInput.getLowerArm_PercentOutput() * 0.35,
-                    operatorInput.getUpperArm_PercentOutput() * 0.35,
-                    !operatorInput.closeGripperPressed()
+                    operatorInput.getUpperArm_PercentOutput() * 0.35
             );
         }
 
@@ -155,8 +154,8 @@ public class ArmSubsystem implements HasLoop {
         if (shouldDoNext == ArmFSM.LOAD) {
             armControl.commandArmToState(
                     0.008,
-                    -0.25,
-                    true);
+                    -0.25
+            );
         }
 
         if (shouldDoNext == ArmFSM.ACTUATE_GRIPPER) {
@@ -171,8 +170,7 @@ public class ArmSubsystem implements HasLoop {
         //TODO fix the numbers
         if (shouldDoNext == ArmFSM.DEBUG_TO_DEGREES) {
             armControl.commandArmToState(
-                    0, 0,
-                    !operatorInput.closeGripperPressed()
+                    0, 0
             );
 
             if (armControl.getErrorQuantity() > Arm.ARM_TOLERANCE_TO_MOVE_ON) {
@@ -182,29 +180,29 @@ public class ArmSubsystem implements HasLoop {
 
         if (shouldDoNext == ArmFSM.SCORE_MID) {
 
-            armControl.commandArmToState(0.008, -0.227, true);
+            armControl.commandArmToState(0.008, -0.227);
 
 
         }
         if (shouldDoNext == ArmFSM.SCORE_HIGH) {
             //TODO technically upeprAmr should be 0 but because of slack we need to compensate for gravity that FF cant
-            armControl.commandArmToState(-0.126, -0.05, true);
+            armControl.commandArmToState(-0.126, -0.05);
 
 
         }
         if (shouldDoNext == ArmFSM.GROUND_INTAKE) {
-            armControl.commandArmToState(0.581, -0.274, true);
+            armControl.commandArmToState(0.581, -0.274);
 
         }
 
         if (shouldDoNext == ArmFSM.UNSTOW) {
-            armControl.commandArmToState(- 0.1,armControl.upperArm.getMechanismPositionAccum_rot(),false);
+            armControl.commandArmToState(- 0.1,armControl.upperArm.getMechanismPositionAccum_rot());
 
 
         }
 
         if (shouldDoNext == ArmFSM.HUMAN_INTAKE) {
-            armControl.commandArmToState(0.008, -0.230,true);
+            armControl.commandArmToState(0.008, -0.230);
         }
         //TODO fill out the rest
     }

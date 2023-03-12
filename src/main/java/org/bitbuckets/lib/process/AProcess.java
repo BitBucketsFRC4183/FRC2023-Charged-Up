@@ -63,7 +63,12 @@ public abstract class AProcess implements IProcess, IDoWhenReady {
 
         //run own logic loops
         for (HasLoop hasLoop : this.hasLoop) {
-            hasLoop.loop();
+            try {
+                hasLoop.loop();
+            } catch (Exception e) {
+                System.out.println("SOMETHING BAD HAPPENDE IN A MATTLIB LOOP: " + e.getLocalizedMessage());
+            }
+
         }
 
         //If allowed to, run logging loop

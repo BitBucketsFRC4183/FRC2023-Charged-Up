@@ -137,21 +137,6 @@ public class SparkSetup implements ISetup<IMotorController> {
 
         }
 
-        //dont care about sticky faults eevery 100ms
-        //spark.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus0, 200);
-
-        if (motorConfig.optimizationMode == OptimizationMode.OFFBOARD_VEL_PID || motorConfig.optimizationMode == OptimizationMode.LQR) {
-            //spark.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus1, 20);
-        } else {
-            //spark.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus1, 200);
-        }
-
-        if (motorConfig.optimizationMode == OptimizationMode.OFFBOARD_POS_PID || motorConfig.optimizationMode == OptimizationMode.LQR) {
-            //spark.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus2, 20);
-        } else {
-            //spark.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus2, 200);
-        }
-
         return ctrl;
     }
 

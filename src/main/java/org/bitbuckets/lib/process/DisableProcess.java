@@ -11,12 +11,11 @@ import org.bitbuckets.lib.log.IConsole;
 import org.bitbuckets.lib.log.ILoggable;
 import org.bitbuckets.lib.tune.IValueTuner;
 import org.bitbuckets.lib.tune.NoopsTuner;
-import org.bitbuckets.lib.tune.PNoopsTuner;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ForceKillProcess implements IProcess {
+public class DisableProcess implements IProcess {
 
     final List<HasLoop> loops = new ArrayList<>();
     final List<IProcess> children = new ArrayList<>();
@@ -29,7 +28,7 @@ public class ForceKillProcess implements IProcess {
     @Override
     public <T> T childSetup(String key, ISetup<T> setup) {
 
-        var child = new ForceKillProcess();
+        var child = new DisableProcess();
         children.add(child);
 
         return setup.build(child );
@@ -37,7 +36,7 @@ public class ForceKillProcess implements IProcess {
 
     @Override
     public <T> T siblingSetup(String key, ISetup<T> setup) {
-        var child = new ForceKillProcess();
+        var child = new DisableProcess();
         children.add(child);
 
         return setup.build(child );

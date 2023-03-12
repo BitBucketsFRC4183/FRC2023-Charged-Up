@@ -105,7 +105,7 @@ public class AutoSubsystem implements HasLogLoop, HasLoop {
                     break;
                 }
                 if (instance.isDone()) {
-                    instance.onPhaseChangeEvent(AutoFSM.AUTO_ENDED);
+                    instance.stop();
                     state = AutoFSM.AUTO_ENDED;
                     hasChanged = true;
                     break;

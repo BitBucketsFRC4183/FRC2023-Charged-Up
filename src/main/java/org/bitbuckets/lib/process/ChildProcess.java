@@ -4,14 +4,12 @@ import config.Mattlib;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardContainer;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import org.bitbuckets.lib.*;
 import org.bitbuckets.lib.core.HasLifecycle;
 import org.bitbuckets.lib.core.HasLogLoop;
 import org.bitbuckets.lib.core.HasLoop;
 import org.bitbuckets.lib.core.Path;
 import org.bitbuckets.lib.debug.IDebuggable;
-import org.bitbuckets.lib.debug.NoopsDebuggable;
 import org.bitbuckets.lib.debug.ShuffleDebuggable;
 import org.bitbuckets.lib.log.IConsole;
 import org.bitbuckets.lib.log.ILoggable;
@@ -23,10 +21,10 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public class OnReadyProcess extends AProcess implements IDoWhenReady {
+public class ChildProcess extends AProcess implements IDoWhenReady {
 
 
-    public OnReadyProcess(Path selfPath, IForceSendTuner<ProcessMode> selfMode) {
+    public ChildProcess(Path selfPath, IForceSendTuner<ProcessMode> selfMode) {
         super(selfPath, selfMode);
     }
 
@@ -166,7 +164,7 @@ public class OnReadyProcess extends AProcess implements IDoWhenReady {
                         selfMode
                 );
 
-        OnReadyProcess child = new OnReadyProcess(childPath, childMode);
+        ChildProcess child = new ChildProcess(childPath, childMode);
         childMode.bind(child::forceTo);
         this.children.add(child);
 
