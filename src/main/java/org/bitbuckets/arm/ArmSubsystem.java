@@ -58,7 +58,7 @@ public class ArmSubsystem implements HasLoop {
 
         if (autoSubsystem.state() == AutoFSM.AUTO_RUN) {
             if (autoSubsystem.sampleHasEventStarted("arm-storage")) {
-                shouldDoNext = ArmFSM.STOW;
+                //shouldDoNext = ArmFSM.STOW;
                 return;
             }
 
