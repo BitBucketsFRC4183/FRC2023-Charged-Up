@@ -53,7 +53,6 @@
     },
     {
       "anchorPoint": {
-
         "x": 1.8306,
         "y": 0.5
       },
@@ -96,7 +95,6 @@
       "isReversal": false,
       "velOverride": null,
       "isLocked": false,
-
       "isStopPoint": false,
       "stopEvent": {
         "names": [],
@@ -124,7 +122,6 @@
         "names": [],
         "executionBehavior": "parallel",
         "waitBehavior": "none",
-
         "waitTime": 0
       }
     }

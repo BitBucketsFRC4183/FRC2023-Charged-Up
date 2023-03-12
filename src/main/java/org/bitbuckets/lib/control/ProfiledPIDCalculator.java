@@ -5,7 +5,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import org.bitbuckets.lib.log.ILoggable;
 import org.bitbuckets.lib.tune.IValueTuner;
 
-public class ProfiledPIDFCalculator implements Runnable, IPIDCalculator {
+public class ProfiledPIDCalculator implements Runnable, IPIDCalculator {
 
     final ProfiledPIDController profiledPIDController;
     final IValueTuner<Double> p;
@@ -18,7 +18,7 @@ public class ProfiledPIDFCalculator implements Runnable, IPIDCalculator {
     final ILoggable<Double> lastActual;
     final ILoggable<Double> lastOutput;
 
-    public ProfiledPIDFCalculator(ProfiledPIDController profiledPIDController, IValueTuner<Double> p, IValueTuner<Double> i, IValueTuner<Double> d, IValueTuner<Double> kV, IValueTuner<Double> kA, ILoggable<Double> lastSetpoint, ILoggable<Double> lastActual, ILoggable<Double> lastOutput) {
+    public ProfiledPIDCalculator(ProfiledPIDController profiledPIDController, IValueTuner<Double> p, IValueTuner<Double> i, IValueTuner<Double> d, IValueTuner<Double> kV, IValueTuner<Double> kA, ILoggable<Double> lastSetpoint, ILoggable<Double> lastActual, ILoggable<Double> lastOutput) {
         this.profiledPIDController = profiledPIDController;
         this.p = p;
         this.i = i;
@@ -52,7 +52,8 @@ public class ProfiledPIDFCalculator implements Runnable, IPIDCalculator {
 
     @Override
     public double calculateNext(double measurement, double setpoint) {
-        double output = profiledPIDController.calculate(measurement, setpoint) * 12;
+        profiledPIDController.setGoal(setpoint);
+        double output = profiledPIDController.calculate(measurement) * 12;
         lastVoltageVal = output;
 
         return output;

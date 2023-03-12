@@ -3,9 +3,11 @@ package org.bitbuckets.arm;
 import config.Arm;
 import edu.wpi.first.math.VecBuilder;
 import org.bitbuckets.lib.control.IPIDCalculator;
+import org.bitbuckets.lib.core.HasLogLoop;
+import org.bitbuckets.lib.debug.IDebuggable;
 import org.bitbuckets.lib.hardware.IMotorController;
 
-public class ArmControl {
+public class ArmControl implements HasLogLoop {
 
     //needs a 1 by 3 mat describing correctness
     final ArmDynamics ff;
@@ -18,14 +20,17 @@ public class ArmControl {
     final IPIDCalculator upperArmControl;
     final IMotorController gripperActuator;
 
+    final IDebuggable debuggable;
 
-    public ArmControl(ArmDynamics ff, IMotorController lowerArm, IMotorController upperArm, IPIDCalculator lowerArmControl, IPIDCalculator upperArmControl, IMotorController gripperActuator) {
+
+    public ArmControl(ArmDynamics ff, IMotorController lowerArm, IMotorController upperArm, IPIDCalculator lowerArmControl, IPIDCalculator upperArmControl, IMotorController gripperActuator, IDebuggable debuggable) {
         this.ff = ff;
         this.lowerArm = lowerArm;
         this.upperArm = upperArm;
         this.lowerArmControl = lowerArmControl;
         this.upperArmControl = upperArmControl;
         this.gripperActuator = gripperActuator;
+        this.debuggable = debuggable;
     }
 
     /**
@@ -100,14 +105,14 @@ public class ArmControl {
 
 
     public void openGripper() {
-        gripperActuator.moveAtPercent(0.6);
+        gripperActuator.moveAtPercent(0.8);
 
         //     }
     }
 
 
     public void closeGripper() {
-        gripperActuator.moveAtPercent(-0.6);
+        gripperActuator.moveAtPercent(-0.8);
 
     }
 
@@ -116,6 +121,12 @@ public class ArmControl {
     }
 
 
+    public void stopTheArm()
+    {
+        lowerArm.moveAtVoltage(0);
+        upperArm.moveAtVoltage(0);
+
+    }
     public void commandArmToPercent(double lowerArmPercent, double upperArmPercent, boolean gripperShouldOpen) {
         lowerArm.moveAtPercent(lowerArmPercent);
         upperArm.moveAtPercent(upperArmPercent);
@@ -139,5 +150,10 @@ public class ArmControl {
     //probably doesn't work but I need something to test right now
     public boolean isErrorSmallEnough(double delta) {
         return Math.abs(lowerArm.getError_mechanismRotations()) < delta && Math.abs(upperArm.getError_mechanismRotations()) < delta;
+    }
+
+    @Override
+    public void logLoop() {
+        debuggable.log("abs-angle", upperArm.getAbsoluteEncoder_rotations());
     }
 }
