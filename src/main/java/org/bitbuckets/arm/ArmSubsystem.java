@@ -166,11 +166,11 @@ public class ArmSubsystem implements HasLoop {
         }
 
         if (shouldDoNext == ArmFSM.STOW) {
-            armControl.commandArmToState(
-                    0.19,
-                    -0.4,
-                    !operatorInput.closeGripperPressed()
-            );
+//            armControl.commandArmToState(
+//                    0.19,
+//                    -0.4,
+//                    !operatorInput.closeGripperPressed()
+//            );
         }
         if (shouldDoNext == ArmFSM.LOAD) {
             armControl.commandArmToState(
@@ -203,7 +203,7 @@ public class ArmSubsystem implements HasLoop {
         }
         if (shouldDoNext == ArmFSM.SCORE_HIGH) {
             //TODO technically upeprAmr should be 0 but because of slack we need to compensate for gravity that FF cant
-            armControl.commandArmToState(-0.126, -0.05, true);
+            armControl.commandArmToState(-0.126, 0.05, true);
 
 
         }
