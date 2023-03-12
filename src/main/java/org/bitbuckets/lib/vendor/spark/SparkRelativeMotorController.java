@@ -122,6 +122,7 @@ public class SparkRelativeMotorController implements IMotorController, HasLogLoo
 
         lastControlMode = LastControlMode.VELOCITY;
         double rotationsPerMinute = velocity_encoderMetersPerSecond / getRotationsToMetersFactor() * 60.0;
+        sparkMax.getBusVoltage();
 
         sparkMaxPIDController.setReference(rotationsPerMinute, CANSparkMax.ControlType.kVelocity);
     }
