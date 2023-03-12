@@ -37,8 +37,11 @@ public class AutoControlSetup implements ISetup<IAutoControl> {
             List<PathPlannerTrajectory> trajectory9 = PathPlanner.loadPathGroup("SC1-CL1-SC3", new PathConstraints(4.0, 3.0));
             List<PathPlannerTrajectory> trajectory10 = PathPlanner.loadPathGroup("score-taxi-right", new PathConstraints(3.0, 2.0), new PathConstraints(3.0, 2.0));
             List<PathPlannerTrajectory> trajectory11 = PathPlanner.loadPathGroup("score-taxi-left", new PathConstraints(3.0, 2.0), new PathConstraints(3.0, 2.0));
-            List<PathPlannerTrajectory> trajectory12 = PathPlanner.loadPathGroup("middle-scoring-1", new PathConstraints(3.0, 2.0), new PathConstraints(3.0, 2.0));
+            List<PathPlannerTrajectory> trajectory12 = PathPlanner.loadPathGroup("score-taxi-mid", new PathConstraints(3.0, 2.0), new PathConstraints(3.0, 2.0));
 
+            if(trajectory12.equals(null)){
+                System.out.println("null trajectory");
+            }
             paths.add(trajectory);
             paths.add(trajectory1);
             paths.add(trajectory2);

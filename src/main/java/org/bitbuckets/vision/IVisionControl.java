@@ -6,10 +6,8 @@ import java.util.Optional;
 
 public interface IVisionControl {
 
-    Optional<Pose3d> estimateVisionTargetPose();
+    Optional<Pose3d> estimateBestVisionTarget();
     Optional<Pose3d> estimateVisionRobotPose();
-
-    boolean isTargTrue();
 
 }
 

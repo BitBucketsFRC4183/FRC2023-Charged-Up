@@ -47,6 +47,7 @@ public class OdometryControl implements HasLoop, IOdometryControl {
         Optional<Pose3d> res = visionControl.estimateVisionRobotPose();
         if (res.isEmpty()) return;
 
+
         double epoch = Timer.getFPGATimestamp();
         Pose2d visionEstimatedPose = res.get().toPose2d();
         this.visionEstimatedPose.log(visionEstimatedPose);

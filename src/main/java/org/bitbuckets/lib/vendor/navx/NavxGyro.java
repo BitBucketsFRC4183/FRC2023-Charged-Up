@@ -2,9 +2,7 @@ package org.bitbuckets.lib.vendor.navx;
 
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.math.geometry.Rotation2d;
-import org.bitbuckets.lib.core.HasLogLoop;
 import org.bitbuckets.lib.hardware.IGyro;
-import org.bitbuckets.odometry.NavXOdometryControl;
 
 public class NavxGyro implements IGyro {
 

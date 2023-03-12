@@ -5,21 +5,17 @@ import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardContainer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import org.bitbuckets.auto.AutoFSM;
 import org.bitbuckets.lib.*;
 import org.bitbuckets.lib.core.HasLifecycle;
 import org.bitbuckets.lib.core.HasLogLoop;
 import org.bitbuckets.lib.core.HasLoop;
 import org.bitbuckets.lib.core.Path;
 import org.bitbuckets.lib.debug.IDebuggable;
-import org.bitbuckets.lib.debug.ShuffleDebuggable;
 import org.bitbuckets.lib.log.IConsole;
 import org.bitbuckets.lib.log.ILoggable;
-import org.bitbuckets.lib.log.ProcessConsole;
 import org.bitbuckets.lib.tune.IForceSendTuner;
 import org.bitbuckets.lib.tune.IValueTuner;
-import org.bitbuckets.lib.tune.NoopsTuner;
+import org.bitbuckets.lib.tune.PNoopsTuner;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -126,7 +122,7 @@ public class RootProcess extends AProcess {
     public static RootProcess root() {
 
 
-        return new RootProcess(new Path(new String[0]), new NoopsTuner());
+        return new RootProcess(new Path(new String[0]), new PNoopsTuner());
     }
 
     @Override

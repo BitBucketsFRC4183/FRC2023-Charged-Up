@@ -7,7 +7,6 @@ public enum DriveFSM {
 
     BALANCE,
 
-    TELEOP_AUTOHEADING,
     VISION,
 
     AUTO_PATHFINDING

@@ -7,7 +7,6 @@ import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.hardware.IGyro;
 import org.bitbuckets.lib.hardware.IGyroLogger;
-import org.bitbuckets.odometry.PidgeonOdometryControl;
 
 public class PidgeonGyroSetup implements ISetup<IGyro> {
 

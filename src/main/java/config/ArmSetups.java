@@ -3,12 +3,14 @@ package config;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import org.bitbuckets.arm.ArmControl;
 import org.bitbuckets.arm.ArmControlSetup;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.SwapSetup;
 import org.bitbuckets.lib.control.IPIDCalculator;
 import org.bitbuckets.lib.control.PIDCalculatorSetup;
+import org.bitbuckets.lib.control.ProfiledPIDFSetup;
 import org.bitbuckets.lib.hardware.IAbsoluteEncoder;
 import org.bitbuckets.lib.hardware.IMotorController;
 import org.bitbuckets.lib.util.MockingUtil;
@@ -84,6 +86,16 @@ public interface ArmSetups {
             MockingUtil.noops(IPIDCalculator.class),
             new PIDCalculatorSetup(Arm.UPPER_PID),
             new PIDCalculatorSetup(Arm.UPPER_SIMPID)
+    );
+
+    ISetup<IPIDCalculator> PROFILED_LOWER_PID = new ProfiledPIDFSetup(
+            Arm.LOWER_PID,
+            new TrapezoidProfile.Constraints(2,2)
+    );
+
+    ISetup<IPIDCalculator> PROFILED_UPPER_PID = new ProfiledPIDFSetup(
+            Arm.UPPER_PID,
+            new TrapezoidProfile.Constraints(2,2)
     );
 
 
