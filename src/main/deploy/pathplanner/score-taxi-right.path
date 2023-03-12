@@ -100,7 +100,7 @@
           "isStopPoint": true,
           "stopEvent": {
             "names": [
-              "arm-stow"
+              "arm-idle"
             ],
             "executionBehavior": "parallel",
             "waitBehavior": "none",
