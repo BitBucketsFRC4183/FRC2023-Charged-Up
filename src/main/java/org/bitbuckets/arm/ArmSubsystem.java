@@ -76,7 +76,7 @@ public class ArmSubsystem implements HasLoop {
 
             //TODO legacy path event
             if (autoSubsystem.sampleHasEventStarted("arm-stow")) {
-                shouldDoNext = ArmFSM.STOW;
+                //shouldDoNext = ArmFSM.STOW;
                 return;
             }
 
