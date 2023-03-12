@@ -105,14 +105,14 @@ public class ArmControl implements HasLogLoop {
 
 
     public void openGripper() {
-        gripperActuator.moveAtPercent(0.6);
+        gripperActuator.moveAtPercent(0.8);
 
         //     }
     }
 
 
     public void closeGripper() {
-        gripperActuator.moveAtPercent(-0.6);
+        gripperActuator.moveAtPercent(-0.8);
 
     }
 
@@ -121,6 +121,12 @@ public class ArmControl implements HasLogLoop {
     }
 
 
+    public void stopTheArm()
+    {
+        lowerArm.moveAtVoltage(0);
+        upperArm.moveAtVoltage(0);
+
+    }
     public void commandArmToPercent(double lowerArmPercent, double upperArmPercent, boolean gripperShouldOpen) {
         lowerArm.moveAtPercent(lowerArmPercent);
         upperArm.moveAtPercent(upperArmPercent);

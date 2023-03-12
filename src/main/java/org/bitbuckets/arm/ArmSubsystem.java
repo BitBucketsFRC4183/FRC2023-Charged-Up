@@ -75,8 +75,8 @@ public class ArmSubsystem implements HasLoop {
             }
 
             //TODO legacy path event
-            if (autoSubsystem.sampleHasEventStarted("arm-stow")) {
-                //shouldDoNext = ArmFSM.STOW;
+            if (autoSubsystem.sampleHasEventStarted("arm-idle")) {
+                shouldDoNext = ArmFSM.IDLE;
                 return;
             }
 
@@ -203,7 +203,7 @@ public class ArmSubsystem implements HasLoop {
         }
         if (shouldDoNext == ArmFSM.SCORE_HIGH) {
             //TODO technically upeprAmr should be 0 but because of slack we need to compensate for gravity that FF cant
-            armControl.commandArmToState(-0.126, -0.05, true);
+            armControl.commandArmToState(-0.126, 0.025, true);
 
 
         }
@@ -220,6 +220,10 @@ public class ArmSubsystem implements HasLoop {
 
         if (shouldDoNext == ArmFSM.HUMAN_INTAKE) {
             armControl.commandArmToState(0.008, -0.230,true);
+        }
+
+        if (shouldDoNext == ArmFSM.IDLE) {
+            armControl.stopTheArm();
         }
         //TODO fill out the rest
     }
