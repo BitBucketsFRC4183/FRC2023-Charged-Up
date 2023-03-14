@@ -85,7 +85,11 @@ public class SparkRelativeMotorController implements IMotorController {
 
         lastControlMode = LastControlMode.PERCENT;
         sparkMax.set(percent);
+
     }
+
+
+
 
 
     @Override

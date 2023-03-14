@@ -74,11 +74,11 @@ public interface Arm {
     //TODO should include gripper
     ArmJointConfig UPPER_ARM = new ArmJointConfig(
             0.99,  //
-            3.474175,
+            1.474175,
             Units.rotationsToRadians(UPPER_ARM_FORWARD_LIMIT_MECHANISM),
             Units.rotationsToRadians(UPPER_ARM_REVERSE_LIMIT_MECHANISM),
             1.08935696109,
-            0.9318, //TODO i strongly believe this is wrong
+            0.4318, //TODO i strongly believe this is wrong
             false,
             DCMotor.getNEO(1).withReduction(UPPER_ARM_REDUCTION)
     );
