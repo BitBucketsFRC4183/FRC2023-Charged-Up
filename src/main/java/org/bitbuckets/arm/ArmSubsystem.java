@@ -120,6 +120,8 @@ public class ArmSubsystem implements HasLoop {
 
     //acts on shouldDoNext and then updates it to the result state if it has managed to complete it's task
     void handleLogic() {
+
+
         if (operatorInput.openGripperPressed()) {
             armControl.openGripper();
         } else if (operatorInput.closeGripperPressed()) {
@@ -152,7 +154,7 @@ public class ArmSubsystem implements HasLoop {
         } else if (shouldDoNext == ArmFSM.SCORE_MID) {
             armControl.commandArmToState(0.008, -0.227);
         } else if (shouldDoNext == ArmFSM.SCORE_HIGH) {
-            armControl.commandArmToState(-0.126, -0.05);
+            armControl.commandArmToState(-0.126, 0.05);
         } else if (shouldDoNext == ArmFSM.GROUND_INTAKE) {
             armControl.commandArmToState(0.581, -0.274);
         } else if (shouldDoNext == ArmFSM.UNSTOW) {
