@@ -97,7 +97,7 @@ public class DriveSubsystem implements HasLoop {
         //handle event overrides from the auto subsystem
 
         if (autoSubsystem.state() == AutoFSM.AUTO_RUN) {
-            if (autoSubsystem.sampleHasEventStarted("autoBalance")) {
+            if (autoSubsystem.sampleHasEventStarted("auto-balance")) {
                 nextStateShould = DriveFSM.BALANCE;
                 return;
             }
