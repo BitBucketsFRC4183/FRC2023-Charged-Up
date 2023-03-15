@@ -45,10 +45,9 @@ class VisionControlTest {
         var robotToCameraTransform = new Transform3d();
 
         control = new VisionControl(
-                robotToCameraTransform,
+                photonCamera,
                 aprilTagFieldLayout,
                 photonPoseEstimator,
-                photonCamera,
                 mock(IDebuggable.class));
     }
 
