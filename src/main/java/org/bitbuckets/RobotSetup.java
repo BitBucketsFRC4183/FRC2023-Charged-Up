@@ -21,7 +21,7 @@ import org.bitbuckets.lib.*;
 import org.bitbuckets.lib.util.LateSupplier;
 import org.bitbuckets.lib.util.MockingUtil;
 import org.bitbuckets.lib.util.LateSupplier;
-import org.bitbuckets.lib.vendor.ctre.PidgeonGyroSetup;
+import org.bitbuckets.lib.vendor.ctre.PigeonGyroSetup;
 import org.bitbuckets.odometry.IOdometryControl;
 import org.bitbuckets.odometry.OdometryControlSetup;
 import org.bitbuckets.odometry.SimOdometryControlSetup;
@@ -99,8 +99,8 @@ public class RobotSetup implements ISetup<Void> {
                                         KINEMATICS,
                                         driveControl,
                                         visionControl,
-                                        new PidgeonGyroSetup(
-                                                MotorIds.PIDGEON_IMU_ID,
+                                        new PigeonGyroSetup(
+                                                MotorIds.PIGEON_IMU_ID,
                                                 Pigeon2.AxisDirection.PositiveY,
                                                 Pigeon2.AxisDirection.PositiveZ
                                         )
