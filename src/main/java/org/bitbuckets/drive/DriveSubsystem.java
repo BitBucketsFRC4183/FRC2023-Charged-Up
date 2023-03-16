@@ -2,6 +2,7 @@ package org.bitbuckets.drive;
 
 import com.pathplanner.lib.PathPlannerTrajectory;
 import config.Drive;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import org.bitbuckets.OperatorInput;
 import org.bitbuckets.auto.AutoFSM;
@@ -134,7 +135,14 @@ public class DriveSubsystem implements HasLoop {
     void autoPathFinding() {
         Optional<PathPlannerTrajectory.PathPlannerState> opt = autoSubsystem.samplePathPlannerState();
         if (opt.isPresent()) {
-            ChassisSpeeds targetSpeeds = holoControl.calculatePose2DFromState(opt.get());
+            PathPlannerTrajectory.PathPlannerState state = opt.get();
+
+            Pose2d filtered = new Pose2d(
+                    state.poseMeters.getTranslation(),
+                    state.holonomicRotation
+            );
+
+            ChassisSpeeds targetSpeeds = holoControl.calculatePose2D(filtered, state.velocityMetersPerSecond);
             targetSpeeds.vxMetersPerSecond = -targetSpeeds.vxMetersPerSecond;
             targetSpeeds.vyMetersPerSecond = -targetSpeeds.vyMetersPerSecond;
             targetSpeeds.omegaRadiansPerSecond = -targetSpeeds.omegaRadiansPerSecond;
@@ -151,7 +159,7 @@ public class DriveSubsystem implements HasLoop {
 
         var targetPose = visionControl.estimateBestVisionTarget();
         if (targetPose.isPresent()) {
-            ChassisSpeeds speeds = holoControl.calculatePose2D(targetPose.get().toPose2d(), 1, targetPose.get().toPose2d().getRotation());
+            ChassisSpeeds speeds = holoControl.calculatePose2D(targetPose.get().toPose2d(), 1);
 
             ChassisSpeeds inverted = new ChassisSpeeds(
                     -speeds.vxMetersPerSecond,

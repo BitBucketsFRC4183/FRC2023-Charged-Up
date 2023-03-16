@@ -1,14 +1,11 @@
 package org.bitbuckets.auto;
 
-import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.TransformUtil;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.DriverStation;
-import org.bitbuckets.auto.shim.CustomState;
+import org.bitbuckets.lib.log.ILoggable;
 import org.bitbuckets.odometry.IOdometryControl;
 
 import java.util.ArrayList;
@@ -22,10 +19,14 @@ public class AutoControl implements IAutoControl {
     final List<List<PathPlannerTrajectory>> trajectories;
     final IOdometryControl odometryControl;
 
-    public AutoControl(List<List<PathPlannerTrajectory>> trajectories, IOdometryControl odometryControl) {
+    public AutoControl(List<List<PathPlannerTrajectory>> trajectories, IOdometryControl odometryControl, ILoggable<Pose2d[]> poses) {
         this.trajectories = trajectories;
         this.odometryControl = odometryControl;
+        this.poses = poses;
     }
+
+
+    final ILoggable<Pose2d[]> poses;
 
     @Override
     public AutoPathInstance generateAndStartPath(AutoPath whichOne) {
@@ -86,14 +87,17 @@ public class AutoControl implements IAutoControl {
         for (var trajectory : segmentGroup) {
 
             var transformTrajectory = TransformUtil.transform(trajectory, DriverStation.getAlliance());
+
+
             transformedTrajectories.add(transformTrajectory);
         }
 
+        System.out.println(DriverStation.getAlliance());
 
         var initialState = transformedTrajectories.get(0).getInitialState();
 
 
-        odometryControl.setPos(initialState.holonomicRotation, initialState.poseMeters);
+        odometryControl.setPos(initialState.poseMeters);
         AutoPathInstance instance = new AutoPathInstance(transformedTrajectories, eventMap, segmentTimes, whichOne, totalTime);
 
         instance.start();

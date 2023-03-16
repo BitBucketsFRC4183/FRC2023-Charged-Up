@@ -90,9 +90,9 @@ public class OdometryControl implements HasLoop, IOdometryControl {
     }
 
     @Override
-    public void setPos(Rotation2d gyroAngle, Pose2d poseMeters)
+    public void setPos(Pose2d poseMeters)
 
     {
-        this.swerveDrivePoseEstimator.resetPosition(gyroAngle, driveControl.currentPositions(), poseMeters);
+        this.swerveDrivePoseEstimator.resetPosition(poseMeters.getRotation(), driveControl.currentPositions(), poseMeters);
     }
 }

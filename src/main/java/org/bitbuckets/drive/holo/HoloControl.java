@@ -31,18 +31,20 @@ public class HoloControl {
     /**
      * @param target setpoint global
      */
-    public ChassisSpeeds calculatePose2D(Pose2d target, double desiredVelocity, Rotation2d desiredRotation) {
+    public ChassisSpeeds calculatePose2D(Pose2d target, double desiredVelocity) {
 
 
         var speed = controller.calculate(
                 odometryControl.estimateFusedPose2d(),
                 target,
                 desiredVelocity,
-                desiredRotation
+                target.getRotation()
 
 
 
         );
+        debuggable.log("last-target", target);
+
         double X_error = controller.getXController().getPositionError();
         double Y_error =  controller.getYController().getPositionError();
         double theta_error = controller.getThetaController().getPositionError();
@@ -58,11 +60,4 @@ public class HoloControl {
         return speed;
     }
 
-    public ChassisSpeeds calculatePose2DFromState(PathPlannerTrajectory.PathPlannerState state) {
-        return controller.calculate(
-                odometryControl.estimateFusedPose2d(),
-                state,
-                state.holonomicRotation
-        );
-    }
 }

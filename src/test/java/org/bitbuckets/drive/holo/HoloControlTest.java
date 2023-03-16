@@ -49,9 +49,7 @@ class HoloControlTest {
         // get chassis speeds for a target that is at 1, 0
         var chassisSpeeds = control.calculatePose2D(
                 new Pose2d(1, 0, Rotation2d.fromDegrees(0)),
-                1,
-                Rotation2d.fromDegrees(0)
-        );
+                1);
         assertEquals(2, chassisSpeeds.vxMetersPerSecond);
         assertEquals(0, chassisSpeeds.vyMetersPerSecond);
         assertEquals(0, chassisSpeeds.omegaRadiansPerSecond);

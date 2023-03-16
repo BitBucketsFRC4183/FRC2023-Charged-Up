@@ -20,7 +20,6 @@ import org.bitbuckets.drive.holo.HoloControlSetup;
 import org.bitbuckets.lib.*;
 import org.bitbuckets.lib.util.LateSupplier;
 import org.bitbuckets.lib.util.MockingUtil;
-import org.bitbuckets.lib.util.LateSupplier;
 import org.bitbuckets.lib.vendor.ctre.PigeonGyroSetup;
 import org.bitbuckets.odometry.IOdometryControl;
 import org.bitbuckets.odometry.OdometryControlSetup;
@@ -39,6 +38,7 @@ public class RobotSetup implements ISetup<Void> {
 
 
         SwerveDriveKinematics KINEMATICS = DriveTurdSpecific.KINEMATICS; //TODO make this swappable
+
 
 
         OperatorInput operatorInput = new OperatorInput(
@@ -154,7 +154,11 @@ public class RobotSetup implements ISetup<Void> {
                                 DriveSetups.BALANCE_SETUP,
                                 new HoloControlSetup(
                                         driveControl,
-                                        odometryControl
+                                        odometryControl,
+                                        Drive.X_HOLO_PID,
+                                        Drive.Y_HOLO_PID,
+                                        Drive.THETA_HOLO_PID,
+                                        Drive.THETA_CONSTRAINTS
                                 ),
                                 driveControl
                         )
