@@ -69,7 +69,7 @@ class HoloControlTest {
         state.velocityMetersPerSecond = 1;
         state.accelerationMetersPerSecondSq = 1;
 
-        var chassisSpeeds = control.calculatePose2DFromState(state);
+        var chassisSpeeds = control.calculatePose2D(state.poseMeters, 1);
         assertEquals(2, chassisSpeeds.vxMetersPerSecond);
         assertEquals(-1, chassisSpeeds.vyMetersPerSecond);
         assertEquals(0, chassisSpeeds.omegaRadiansPerSecond);
@@ -89,7 +89,7 @@ class HoloControlTest {
         state.velocityMetersPerSecond = 1;
         state.accelerationMetersPerSecondSq = 1;
 
-        var chassisSpeeds = control.calculatePose2DFromState(state);
+        var chassisSpeeds = control.calculatePose2D(state.poseMeters, 1);
         assertEquals(0, chassisSpeeds.vxMetersPerSecond, .01);
         assertEquals(1, chassisSpeeds.vyMetersPerSecond);
         assertEquals(0, chassisSpeeds.omegaRadiansPerSecond);
