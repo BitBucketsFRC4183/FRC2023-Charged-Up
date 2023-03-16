@@ -11,11 +11,11 @@ public class GripperInput {
         this.operatorControl = operatorControl;
     }
 
-    public boolean ifOpenGripperPressed() {
+    public boolean ifGripperPressed() {
         return operatorControl.getRawButton(XboxController.Button.kRightBumper.value);
     }
 
-    public boolean ifCloseGripperPressed(){
+    public boolean closeGripperPressed(){
         return operatorControl.getRawButton(XboxController.Button.kLeftBumper.value);
     }
 }

@@ -19,11 +19,11 @@ public class GripperControlSetup implements ISetup<GripperControl> {
         var gripper = gripperJoint.build(self.addChild("gripper"));
         var gripperSpark = gripper.rawAccess(CANSparkMax.class);
 
-//        gripperSpark.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, true);
-//        gripperSpark.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, true);
+        gripperSpark.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, true);
+        gripperSpark.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, true);
 
-//        gripperSpark.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, (float) 200);
-//        gripperSpark.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, (float) 10);
+        gripperSpark.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, (float) 1000);
+        gripperSpark.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, (float) 1000);
 
         return new GripperControl(self.generateDebugger(), gripper);
     }

@@ -92,7 +92,8 @@ public class DriveSubsystem {
     void teleopLoop() {
         switch (state) {
             case TELEOP_NORMAL:
-                if (input.isVisionGoPressed()) {
+                if (input.isVisionGoPressed() && visionControl.isTargTrue()) {
+                    visionTarget = visionControl.estimateVisionTargetPose();
                     state = DriveFSM.TELEOP_VISION;
                     break;
                 }
@@ -120,7 +121,6 @@ public class DriveSubsystem {
                     state = DriveFSM.TELEOP_NORMAL;
                     break;
                 }
-                visionTarget = visionControl.estimateVisionTargetPose();
                 teleopVision();
                 break;
 

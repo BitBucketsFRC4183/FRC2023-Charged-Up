@@ -28,7 +28,7 @@ public interface VisionConstants2 {
 
     Transform3d TAG_TO_GOAL =
             new Transform3d(
-                    new Translation3d(0.2, 0, 0.0),
+                    new Translation3d(0, 0, 0.0),
                     new Rotation3d(0.0, 0, Math.PI));
 
 
