@@ -8,6 +8,10 @@ public interface IVisionControl {
 
     Optional<Pose3d> estimateBestVisionTarget();
     Optional<Pose3d> estimateVisionRobotPose();
+    Optional<Pose3d> estimateLoadLeftTarget();
+    Optional<Pose3d> estimateLoadRightTarget();
+    Optional<Pose3d> estimateConeLeftTarget();
+    Optional<Pose3d> estimateConeRightTarget();
 
 }
 
