@@ -17,11 +17,11 @@ public class GripperControl {
         gripper.moveToPosition_mechanismRotations(GripperConstants.GRIPPER_SETPOINT_MOTOR_ROTATIONS);
     }
 
-    public void closeGripper(){
+    public void stopGripper(){
         gripper.moveAtPercent(0);
     }
 
-    public void manuallyCloseGripper(){
-        gripper.moveToPosition_mechanismRotations(GripperConstants.CLOSE_DA_GRIPPA);
+    public void closeGripper(){
+        gripper.moveAtPercent(GripperConstants.GRIPPER_CLOSE_PERCENT_OUTPUT);
     }
 }

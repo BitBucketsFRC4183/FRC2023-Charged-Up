@@ -19,6 +19,6 @@ public interface GripperConstants {
     //Need to get this value, (0.1) is wrong
     double GRIPPER_SETPOINT_MOTOR_ROTATIONS = 135;
 
-    double CLOSE_DA_GRIPPA = -10;
+    double GRIPPER_CLOSE_PERCENT_OUTPUT = -1;
 
 }
