@@ -120,7 +120,6 @@ public class OperatorInput {
     }
 
 
-
     public boolean isManualModePressed() {
         return operatorControl.getRawButtonPressed(XboxController.Button.kA.value);
     }
@@ -159,27 +158,24 @@ public class OperatorInput {
         return operatorControl.getRawButtonPressed(XboxController.Button.kB.value);
     }
 
-    public boolean openGripperPressed() {
+    public boolean intakeGripper() {
         return operatorControl.getRawButton(XboxController.Button.kRightBumper.value);
     }
 
-    public boolean closeGripperPressed() {
+    public boolean outtakeGripper() {
         return operatorControl.getRawButton(XboxController.Button.kLeftBumper.value);
     }
 
-    public boolean conevscube() {
-        return false;//operatorControl.getRawButton(XboxController.Button.kLeftBumper.value);
+    public boolean isCube() {
+        return operatorControl.getRawButton(XboxController.Button.kStart.value);
     }
 
     public boolean stopStickyPressed() {
         return driveControl.getRawButton(XboxController.Button.kX.value);
     }
 
-    public boolean zeroGripper() {
-        return operatorControl.getRawButton(XboxController.Button.kRightStick.value);
-    }
 
-    public boolean isLoadPresed(){
+    public boolean isLoadPresed() {
         return operatorControl.getRawButtonPressed(XboxController.Button.kX.value);
     }
 

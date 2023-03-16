@@ -18,29 +18,30 @@ public class ArmControl implements HasLogLoop {
     //these must be continuous and bound (i.e. wrap from 2pi to 0)
     final IPIDCalculator lowerArmControl;
     final IPIDCalculator upperArmControl;
-    final IMotorController gripperActuator;
+    final IMotorController gripperWheelMotor;
+    final IMotorController gripperClawMotor;
 
     final IDebuggable debuggable;
 
 
-    public ArmControl(ArmDynamics ff, IMotorController lowerArm, IMotorController upperArm, IPIDCalculator lowerArmControl, IPIDCalculator upperArmControl, IMotorController gripperActuator, IDebuggable debuggable) {
+    public ArmControl(ArmDynamics ff, IMotorController lowerArm, IMotorController upperArm, IPIDCalculator lowerArmControl, IPIDCalculator upperArmControl, IMotorController gripperActuator, IMotorController gripperClawMotor, IDebuggable debuggable) {
         this.ff = ff;
         this.lowerArm = lowerArm;
         this.upperArm = upperArm;
         this.lowerArmControl = lowerArmControl;
         this.upperArmControl = upperArmControl;
-        this.gripperActuator = gripperActuator;
+        this.gripperWheelMotor = gripperActuator;
+        this.gripperClawMotor = gripperClawMotor;
         this.debuggable = debuggable;
     }
 
     /**
      * Commands the gripper to certain places, independent of what the limb is doing right now
      *
-     * @param lowerArm_rot      wrt zero as all the way out to the right
-     * @param upperArm_rot      wrt zero as all the way out to the right if lower arm is all the way out to the right
-     * @param gripperShouldOpen
+     * @param lowerArm_rot wrt zero as all the way out to the right
+     * @param upperArm_rot wrt zero as all the way out to the right if lower arm is all the way out to the right
      */
-    public void commandArmToState(double lowerArm_rot, double upperArm_rot, boolean gripperShouldOpen) {
+    public void commandArmToState(double lowerArm_rot, double upperArm_rot) {
 
         var ffVoltageVector = ff.feedforward(VecBuilder.fill(lowerArm_rot * Math.PI * 2.0, upperArm_rot * Math.PI * 2.0));
 
@@ -67,20 +68,8 @@ public class ArmControl implements HasLogLoop {
         lowerArm.moveAtVoltage(lowerArmFFVoltage + lowerArmFeedbackVoltage);
         upperArm.moveAtVoltage(upperArmFFVoltage + upperArmFeedbackVoltage);
 
-//        if (gripperShouldOpen) {
-//            gripperActuator.moveToPosition_mechanismRotations(Arm.GRIPPER_SETPOINT_MOTOR_ROTATIONS);
-//        } else {
-//            stopGripper();
-//        }
-
     }
 
-
-    public void gripperResetonLimit() {
-        if (gripperActuator.isForwardLimitSwitchPressed()) {
-            gripperActuator.forceOffset_mechanismRotations(0);
-        }
-    }
 
     public void zeroArmAbs() {
         double absAngleRot = upperArm.getAbsoluteEncoder_rotations() - Arm.UPPER_ARM_OFFSET;
@@ -89,53 +78,51 @@ public class ArmControl implements HasLogLoop {
 
     }
 
+    public void gripperLoop() {
+        gripperWheelMotor.moveAtPercent(-0.1);
+    }
+
     public double getUpperAbsEncoderAngle() {
         return upperArm.getAbsoluteEncoder_rotations();
     }
 
 
-    public void openGripperAuto() {
-        gripperActuator.moveToPosition_mechanismRotations(-50);
-    }
-
-    public void closeGripperAuto() {
-        gripperActuator.moveToPosition_mechanismRotations(-134);
-    }
-
-
-
-    public void openGripper() {
-        gripperActuator.moveAtPercent(0.8);
+    public void outtakeGripper() {
+        gripperWheelMotor.moveAtPercent(0.5);
 
         //     }
     }
 
 
-    public void closeGripper() {
-        gripperActuator.moveAtPercent(-0.8);
+    public void intakeGripperCone() {
+        gripperWheelMotor.moveAtPercent(-1.0);
+        gripperWheelMotor.moveToPosition_mechanismRotations(-0.5);
+
+
+    }
+
+    public void intakeGripperCube() {
+        gripperWheelMotor.moveToPosition_mechanismRotations(0);
+        gripperWheelMotor.moveAtPercent(-1.0);
 
     }
 
     public void stopGripper() {
-        gripperActuator.moveAtPercent(0);
+        gripperWheelMotor.moveAtPercent(0);
     }
 
 
-    public void stopTheArm()
-    {
+    public void stopTheArm() {
         lowerArm.moveAtVoltage(0);
         upperArm.moveAtVoltage(0);
 
     }
-    public void commandArmToPercent(double lowerArmPercent, double upperArmPercent, boolean gripperShouldOpen) {
+
+    public void commandArmToPercent(double lowerArmPercent, double upperArmPercent) {
         lowerArm.moveAtPercent(lowerArmPercent);
         upperArm.moveAtPercent(upperArmPercent);
 
-        if (gripperShouldOpen) {
-            //gripperActuator.moveToPosition_mechanismRotations(Arm.GRIPPER_SETPOINT_MOTOR_ROTATIONS);
-        } else {
-            //gripperActuator.goLimp(); //let the ropes pull it back
-        }
+
     }
 
     public void zero() {

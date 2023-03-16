@@ -21,7 +21,9 @@ public interface MotorIds {
     int LOWER_ARM_ID_1 = 9;
     int LOWER_ARM_FOLLOWER = 10;
     int UPPER_ARM_ID = 11;
-    int GRIPPER_ARM_ID = 12;
+    int GRIPPER_WHEEL_ID = 12;
+
+    int GRIPPER_CLAW_ID = 13;
 
     //APPA
     int FRONT_LEFT_DRIVE_APPA = 1;

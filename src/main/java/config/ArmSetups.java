@@ -11,15 +11,11 @@ import org.bitbuckets.lib.SwapSetup;
 import org.bitbuckets.lib.control.IPIDCalculator;
 import org.bitbuckets.lib.control.PIDCalculatorSetup;
 import org.bitbuckets.lib.control.ProfiledPIDFSetup;
-import org.bitbuckets.lib.hardware.IAbsoluteEncoder;
 import org.bitbuckets.lib.hardware.IMotorController;
 import org.bitbuckets.lib.util.MockingUtil;
-import org.bitbuckets.lib.vendor.ctre.CANCoderAbsoluteSetup;
-import org.bitbuckets.lib.vendor.noops.NoopsAbsoluteEncoder;
 import org.bitbuckets.lib.vendor.sim.dc.DCSimSetup;
 import org.bitbuckets.lib.vendor.sim.dc.SimInertiaConfig;
 import org.bitbuckets.lib.vendor.spark.SparkSetup;
-import org.bitbuckets.lib.vendor.thrifty.ThriftyEncoderSetup;
 
 import java.util.Optional;
 
@@ -60,18 +56,34 @@ public interface ArmSetups {
             )
 
     );
-    ISetup<IMotorController> GRIPPER_JOINT = new SwapSetup<>(
+    ISetup<IMotorController> GRIPPER_WHEEL = new SwapSetup<>(
             MockingUtil.noops(IMotorController.class),
             new SparkSetup(
-                    MotorIds.GRIPPER_ARM_ID,
-                    Arm.GRIPPER_CONFIG,
-                    Arm.GRIPPER_PID,
+                    MotorIds.GRIPPER_WHEEL_ID,
+                    Arm.GRIPPER_WHEEL_CONFIG,
+                    Arm.GRIPPER_WHEEL_PID,
                     Optional.empty()
             ),
             new DCSimSetup(
-                    Arm.GRIPPER_CONFIG,
+                    Arm.GRIPPER_WHEEL_CONFIG,
                     new SimInertiaConfig(0.005, Matrix.eye(Nat.N1())),
-                    Arm.GRIPPER_PID
+                    Arm.GRIPPER_WHEEL_PID
+            )
+
+    );
+
+    ISetup<IMotorController> GRIPPER_CLAW = new SwapSetup<>(
+            MockingUtil.noops(IMotorController.class),
+            new SparkSetup(
+                    MotorIds.GRIPPER_CLAW_ID,
+                    Arm.GRIPPER_CLAW_CONFIG,
+                    Arm.GRIPPER_CLAW_PID,
+                    Optional.empty()
+            ),
+            new DCSimSetup(
+                    Arm.GRIPPER_CLAW_CONFIG,
+                    new SimInertiaConfig(0.005, Matrix.eye(Nat.N1())),
+                    Arm.GRIPPER_CLAW_PID
             )
 
     );
@@ -90,14 +102,13 @@ public interface ArmSetups {
 
     ISetup<IPIDCalculator> PROFILED_LOWER_PID = new ProfiledPIDFSetup(
             Arm.LOWER_PID,
-            new TrapezoidProfile.Constraints(2,2)
+            new TrapezoidProfile.Constraints(2, 2)
     );
 
     ISetup<IPIDCalculator> PROFILED_UPPER_PID = new ProfiledPIDFSetup(
             Arm.UPPER_PID,
-            new TrapezoidProfile.Constraints(2,2)
+            new TrapezoidProfile.Constraints(2, 2)
     );
-
 
 
     ISetup<ArmControl> ARM_CONTROL = new ArmControlSetup(
@@ -106,7 +117,7 @@ public interface ArmSetups {
             UPPER_ARM,
             LOWER_PID,
             UPPER_PID,
-            GRIPPER_JOINT);
+            GRIPPER_WHEEL, GRIPPER_CLAW);
 
 
 }
