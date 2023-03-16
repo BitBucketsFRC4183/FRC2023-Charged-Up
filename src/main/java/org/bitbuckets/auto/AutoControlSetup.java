@@ -41,6 +41,7 @@ public class AutoControlSetup implements ISetup<IAutoControl> {
             List<PathPlannerTrajectory> trajectory11 = PathPlanner.loadPathGroup("score-taxi-left", new PathConstraints(3.0, 2.0), new PathConstraints(3.0, 2.0));
             List<PathPlannerTrajectory> trajectory12 = PathPlanner.loadPathGroup("score-taxi-mid", new PathConstraints(3.0, 2.0), new PathConstraints(3.0, 2.0));
 
+
             paths.add(trajectory);
             paths.add(trajectory1);
             paths.add(trajectory2);

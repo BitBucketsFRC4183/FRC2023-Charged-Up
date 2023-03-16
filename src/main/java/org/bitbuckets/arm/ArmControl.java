@@ -4,7 +4,7 @@ import config.Arm;
 import edu.wpi.first.math.VecBuilder;
 import org.bitbuckets.lib.control.IPIDCalculator;
 import org.bitbuckets.lib.core.HasLogLoop;
-import org.bitbuckets.lib.debug.IDebuggable;
+import org.bitbuckets.lib.log.IDebuggable;
 import org.bitbuckets.lib.hardware.IMotorController;
 
 public class ArmControl implements HasLogLoop {

@@ -7,7 +7,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import org.bitbuckets.drive.IDriveControl;
 import org.bitbuckets.lib.core.HasLoop;
-import org.bitbuckets.lib.debug.IDebuggable;
+import org.bitbuckets.lib.log.IDebuggable;
 import org.bitbuckets.lib.log.ILoggable;
 
 public class SimOdometryControl implements IOdometryControl, HasLoop {

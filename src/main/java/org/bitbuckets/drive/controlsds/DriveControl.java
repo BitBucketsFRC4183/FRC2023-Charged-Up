@@ -10,7 +10,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import org.bitbuckets.drive.IDriveControl;
 import org.bitbuckets.drive.controlsds.sds.ISwerveModule;
 import org.bitbuckets.lib.core.HasLogLoop;
-import org.bitbuckets.lib.debug.IDebuggable;
+import org.bitbuckets.lib.log.IDebuggable;
 
 import java.util.List;
 

@@ -25,10 +25,6 @@ public class NoopsTuner<T> implements IForceSendTuner<T> {
         return false;
     }
 
-    @Override
-    public void bind(Consumer<T> data) {
-        //do nothing
-    }
 
     @Override
     public void forceToValue(T value) {
