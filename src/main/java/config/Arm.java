@@ -88,7 +88,8 @@ public interface Arm {
             false,
             false,
             false, OptimizationMode.GENERIC,
-            DCMotor.getNEO(1)
+            DCMotor.getNEO(1),
+            false
     );
     MotorConfig LOWER_CONFIG = new MotorConfig(
             LOWER_ARM_GEAR_RATIO,
@@ -102,7 +103,8 @@ public interface Arm {
             false,
             false,
             false, OptimizationMode.OFFBOARD_POS_PID,
-            DCMotor.getNEO(1)
+            DCMotor.getNEO(1),
+            false
     );
 
     MotorConfig UPPER_CONFIG = new MotorConfig(
@@ -117,8 +119,8 @@ public interface Arm {
             false,
             false,
             true, OptimizationMode.OFFBOARD_POS_PID,
-            DCMotor.getNEO(1)
-
+            DCMotor.getNEO(1),
+            true
     );
 
     MotorConfig GRIPPER_CONFIG = new MotorConfig(
@@ -133,7 +135,8 @@ public interface Arm {
             true,
             false,
             false, OptimizationMode.GENERIC,
-            DCMotor.getNeo550(1)
+            DCMotor.getNeo550(1),
+            false
     );
 
 

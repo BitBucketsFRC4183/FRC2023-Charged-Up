@@ -7,7 +7,7 @@ import org.bitbuckets.lib.core.HasLifecycle;
 import java.util.List;
 import java.util.Map;
 
-public class AutoPathInstance implements HasLifecycle {
+public class AutoPathInstance {
 
     final List<PathPlannerTrajectory> segments;
     final Map<String, Double> eventToTimeMap;
@@ -15,20 +15,16 @@ public class AutoPathInstance implements HasLifecycle {
     final AutoPath type;
     final double totalTime;
 
-    @Override
-    public void onEvent(String autoEvent) {
-        //Do nothing, we are the ones who emit events
+
+
+    public void start() {
+        pathTimer.start();
     }
 
-    @Override
-    public void onPhaseChangeEvent(AutoFSM phaseChangedTo) {
-        if (phaseChangedTo == AutoFSM.AUTO_RUN) {
-            pathTimer.start();
-            return;
-        } else {
-            pathTimer.stop();
-        }
+    public void stop() {
+        pathTimer.stop();
     }
+
 
     record SegmentTime(int index, double startTime, boolean stopped) {
     }
