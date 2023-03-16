@@ -13,7 +13,6 @@ import org.bitbuckets.lib.tune.IValueTuner;
 import org.bitbuckets.odometry.IOdometryControl;
 import org.bitbuckets.vision.IVisionControl;
 
-import java.util.ArrayList;
 import java.util.Optional;
 
 
@@ -84,7 +83,7 @@ public class DriveSubsystem implements HasLoop {
                 nextStateShould = DriveFSM.MANUAL;
             }
         } else if (autoSubsystem.state() == AutoFSM.AUTO_RUN) {
-            if (autoSubsystem.sampleHasEventStarted("autoBalance")) {
+            if (autoSubsystem.sampleHasEventStarted("auto-balance")) {
                 nextStateShould = DriveFSM.BALANCE;
             } else if (autoSubsystem.sampleHasEventStarted("do-vision")) {
                 nextStateShould = DriveFSM.VISION;
@@ -92,7 +91,6 @@ public class DriveSubsystem implements HasLoop {
                 nextStateShould = DriveFSM.AUTO_PATHFINDING;
             }
         }
-
 
 
         //handle inputs from user
@@ -161,7 +159,6 @@ public class DriveSubsystem implements HasLoop {
             driveControl.stop();
         }
     }
-
 
 
     void teleopVision() {

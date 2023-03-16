@@ -21,7 +21,7 @@
         ],
         "executionBehavior": "parallel",
         "waitBehavior": "before",
-        "waitTime": 2.0
+        "waitTime": 0.5
       }
     },
     {
@@ -71,7 +71,7 @@
       "isStopPoint": true,
       "stopEvent": {
         "names": [
-          "arm-scoreHigh"
+          "gripper-open"
         ],
         "executionBehavior": "parallel",
         "waitBehavior": "none",
@@ -119,7 +119,9 @@
       "isLocked": false,
       "isStopPoint": false,
       "stopEvent": {
-        "names": [],
+        "names": [
+          "auto-balance"
+        ],
         "executionBehavior": "parallel",
         "waitBehavior": "none",
         "waitTime": 0
