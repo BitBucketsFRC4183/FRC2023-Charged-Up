@@ -4,7 +4,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import org.bitbuckets.lib.core.HasLogLoop;
 import org.bitbuckets.lib.core.HasLoop;
-import org.bitbuckets.lib.debug.IDebuggable;
+import org.bitbuckets.lib.log.IDebuggable;
 import org.bitbuckets.lib.hardware.IMotorController;
 import org.bitbuckets.lib.hardware.MotorConfig;
 
@@ -143,6 +143,8 @@ public class DCSimController implements IMotorController, HasLoop, HasLogLoop {
 
     @Override
     public void logLoop() {
+
+
         debuggable.log("position-mechanism", getPositionMechanism_meters());
         debuggable.log("velocity-mechanism", getVelocityMechanism_metersPerSecond());
         debuggable.log("velocity-encoder", getVelocityEncoder_metersPerSecond());

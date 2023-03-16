@@ -27,6 +27,5 @@ public interface IValueTuner<T> {
      */
     boolean hasUpdated();
 
-    void bind(Consumer<T> data);
 
 }

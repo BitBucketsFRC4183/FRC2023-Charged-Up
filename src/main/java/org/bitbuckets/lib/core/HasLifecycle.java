@@ -1,11 +1,10 @@
 package org.bitbuckets.lib.core;
 
-import org.bitbuckets.auto.AutoFSM;
+import org.bitbuckets.auto.RobotEvent;
 
 @AutoTrait
 public interface HasLifecycle {
 
-    void onEvent(String autoEvent);
-    void onPhaseChangeEvent(AutoFSM phase);
+    void onRobotEvent(RobotEvent robotEvent);
 
 }
