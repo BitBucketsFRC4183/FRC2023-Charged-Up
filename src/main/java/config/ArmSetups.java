@@ -62,12 +62,14 @@ public interface ArmSetups {
     );
     ISetup<IMotorController> GRIPPER_JOINT = new SwapSetup<>(
             MockingUtil.noops(IMotorController.class),
-            new SparkSetup(
+            //TODO add back motor when gripper is back
+            /*new SparkSetup(
                     MotorIds.GRIPPER_ARM_ID,
                     Arm.GRIPPER_CONFIG,
                     Arm.GRIPPER_PID,
                     Optional.empty()
-            ),
+            ),*/
+            MockingUtil.noops(IMotorController.class),
             new DCSimSetup(
                     Arm.GRIPPER_CONFIG,
                     new SimInertiaConfig(0.005, Matrix.eye(Nat.N1())),
@@ -75,7 +77,6 @@ public interface ArmSetups {
             )
 
     );
-
 
     ISetup<IPIDCalculator> LOWER_PID = new SwapSetup<>(
             MockingUtil.noops(IPIDCalculator.class),

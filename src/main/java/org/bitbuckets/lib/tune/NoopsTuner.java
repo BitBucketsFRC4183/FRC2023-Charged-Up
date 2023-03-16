@@ -26,8 +26,4 @@ public class NoopsTuner<T> implements IValueTuner<T> {
     }
 
 
-    @Override
-    public void bind(Consumer<T> data) {
-        //do nothing
-    }
 }
