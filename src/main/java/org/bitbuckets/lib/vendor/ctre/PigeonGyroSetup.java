@@ -8,15 +8,15 @@ import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.hardware.IGyro;
 import org.bitbuckets.lib.hardware.IGyroLogger;
 
-public class PidgeonGyroSetup implements ISetup<IGyro> {
+public class PigeonGyroSetup implements ISetup<IGyro> {
 
-    final int pidgeonId;
+    final int pigeonId;
     final Pigeon2.AxisDirection forward; //y
     final Pigeon2.AxisDirection up; //z
 
 
-    public PidgeonGyroSetup(int pidgeonId, Pigeon2.AxisDirection forward, Pigeon2.AxisDirection up) {
-        this.pidgeonId = pidgeonId;
+    public PigeonGyroSetup(int pigeonId, Pigeon2.AxisDirection forward, Pigeon2.AxisDirection up) {
+        this.pigeonId = pigeonId;
         this.forward = forward;
         this.up = up;
     }
@@ -24,11 +24,11 @@ public class PidgeonGyroSetup implements ISetup<IGyro> {
     @Override
     public IGyro build(IProcess self) {
 
-        WPI_Pigeon2 pigeonIMU = new WPI_Pigeon2(pidgeonId);
+        WPI_Pigeon2 pigeonIMU = new WPI_Pigeon2(pigeonId);
         pigeonIMU.configFactoryDefault();
         pigeonIMU.configMountPose(forward, up);
 
-        PidgeonGyro gyro = new PidgeonGyro(
+        PigeonGyro gyro = new PigeonGyro(
                 pigeonIMU
         );
 

@@ -4,11 +4,11 @@ import com.ctre.phoenix.sensors.WPI_Pigeon2;
 import edu.wpi.first.math.geometry.Rotation2d;
 import org.bitbuckets.lib.hardware.IGyro;
 
-public class PidgeonGyro implements IGyro {
+public class PigeonGyro implements IGyro {
 
     final WPI_Pigeon2 pigeon2;
 
-    public PidgeonGyro(WPI_Pigeon2 pigeon2) {
+    public PigeonGyro(WPI_Pigeon2 pigeon2) {
         this.pigeon2 = pigeon2;
     }
 
