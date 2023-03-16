@@ -4,7 +4,7 @@ import com.ctre.phoenix.led.CANdle;
 import org.bitbuckets.OperatorInput;
 import org.bitbuckets.cubeCone.GamePiece;
 import org.bitbuckets.lib.core.HasLoop;
-import org.bitbuckets.lib.debug.IDebuggable;
+import org.bitbuckets.lib.log.IDebuggable;
 
 public class RgbSubsystem implements HasLoop {
 

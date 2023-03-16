@@ -84,7 +84,8 @@ public class TalonDriveMotorSetup implements ISetup<IMotorController> {
                 false,
                 false,
                 false, OptimizationMode.GENERIC,
-                DCMotor.getFalcon500(1)
+                DCMotor.getFalcon500(1),
+                false
         ));
 
         TalonLogger logger = new TalonLogger(
