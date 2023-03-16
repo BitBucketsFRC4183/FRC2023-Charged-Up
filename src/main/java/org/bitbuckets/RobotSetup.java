@@ -1,6 +1,5 @@
 package org.bitbuckets;
 
-import com.ctre.phoenix.sensors.Pigeon2;
 import config.*;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -10,8 +9,6 @@ import org.bitbuckets.arm.ArmSubsystemSetup;
 import org.bitbuckets.auto.AutoControlSetup;
 import org.bitbuckets.auto.AutoSubsystem;
 import org.bitbuckets.auto.AutoSubsystemSetup;
-import org.bitbuckets.cubeCone.GamePiece;
-import org.bitbuckets.cubeCone.GamePieceSetup;
 import org.bitbuckets.drive.DriveSubsystem;
 import org.bitbuckets.drive.DriveSubsystemSetup;
 import org.bitbuckets.drive.IDriveControl;
@@ -22,7 +19,7 @@ import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.SimulatorKiller;
 import org.bitbuckets.lib.ToggleableSetup;
 import org.bitbuckets.lib.util.LateSupplier;
-import org.bitbuckets.lib.vendor.ctre.PidgeonGyroSetup;
+import org.bitbuckets.lib.vendor.navx.NavxGyroSetup;
 import org.bitbuckets.odometry.IOdometryControl;
 import org.bitbuckets.odometry.OdometryControlSetup;
 import org.bitbuckets.vision.IVisionControl;
@@ -31,11 +28,8 @@ import org.bitbuckets.vision.VisionControlSetup;
 public class RobotSetup implements ISetup<Void> {
 
 
-
-
     @Override
     public Void build(IProcess self) {
-
 
 
         SwerveDriveKinematics KINEMATICS = DriveTurdSpecific.KINEMATICS; //TODO make this swappable
@@ -46,8 +40,6 @@ public class RobotSetup implements ISetup<Void> {
                 new Joystick(0)
         );
 
-        GamePiece piece = self.childSetup("gp", new GamePieceSetup(operatorInput));
-        self.childSetup("cone-cube", new GamePieceSetup(operatorInput));
 
         //if only these could be children of the drive subsystem... TODO fix this in mattlib future editions
         IDriveControl driveControl = self.childSetup(
@@ -73,11 +65,11 @@ public class RobotSetup implements ISetup<Void> {
                         Enabled.vision,
                         IVisionControl.class,
                         new VisionControlSetup(
-                              robotPose,
-                              Vision.CAMERA_NAME,
-                              Vision.LAYOUTCONTAINER.LAYOUT,
-                              Vision.CONFIG,
-                              Vision.STRATEGY
+                                robotPose,
+                                Vision.CAMERA_NAME,
+                                Vision.LAYOUTCONTAINER.LAYOUT,
+                                Vision.CONFIG,
+                                Vision.STRATEGY
                         )
                 )
         );
@@ -113,7 +105,7 @@ public class RobotSetup implements ISetup<Void> {
                         Enabled.auto,
                         AutoSubsystem.class,
                         new AutoSubsystemSetup(
-                            new AutoControlSetup(odometryControl)
+                                new AutoControlSetup(odometryControl)
                         )
                 )
         );
@@ -126,8 +118,8 @@ public class RobotSetup implements ISetup<Void> {
                         new ArmSubsystemSetup(
                                 operatorInput,
                                 autoSubsystem,
-                                ArmSetups.ARM_CONTROL,
-                                piece
+                                ArmSetups.ARM_CONTROL
+
                         )
                 )
 

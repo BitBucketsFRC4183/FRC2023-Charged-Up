@@ -1,8 +1,5 @@
 package org.bitbuckets.lib;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-
 public class SwapSetup<T> implements ISetup<T> {
 
     //do stuff based on the robot

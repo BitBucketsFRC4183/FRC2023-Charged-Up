@@ -79,7 +79,7 @@ public class ArmControl implements HasLogLoop {
     }
 
     public void gripperLoop() {
-        gripperWheelMotor.moveAtPercent(-0.1);
+        gripperWheelMotor.moveAtPercent(-0.2);
     }
 
     public double getUpperAbsEncoderAngle() {

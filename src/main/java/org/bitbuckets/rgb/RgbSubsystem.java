@@ -2,7 +2,6 @@ package org.bitbuckets.rgb;
 
 import com.ctre.phoenix.led.CANdle;
 import org.bitbuckets.OperatorInput;
-import org.bitbuckets.cubeCone.GamePiece;
 import org.bitbuckets.lib.core.HasLoop;
 import org.bitbuckets.lib.debug.IDebuggable;
 
@@ -13,8 +12,6 @@ public class RgbSubsystem implements HasLoop {
     final OperatorInput rgbInput;
 
 
-    public GamePiece gamePiece;
-
     RgbFSM state = RgbFSM.DEFAULT;
 
     public RgbFSM state() {
@@ -24,7 +21,6 @@ public class RgbSubsystem implements HasLoop {
     final IDebuggable debuggable;
 
     final OperatorInput operatorInput;
-
 
 
     public RgbSubsystem(CANdle candle, OperatorInput rgbInput, IDebuggable debuggable, OperatorInput operatorInput) {
@@ -41,21 +37,21 @@ public class RgbSubsystem implements HasLoop {
         // but can also be used for extra spice during certain maneuvers ;)
         switch (state) {
             case DEFAULT:
-                candle.setLEDs(0,255,0);
-                if (gamePiece.isCone()) {
+                candle.setLEDs(0, 255, 0);
+                if (rgbInput.isCube()) {
                     candle.setLEDs(0, 255, 255);
                 } else {
                     candle.setLEDs(255, 0, 255);
                 }
 
-                if (operatorInput.isAutoHeadingPressed() ) {
+                if (operatorInput.isAutoHeadingPressed()) {
                     state = RgbFSM.AUTO_HEADING;
                 }
 
             case AUTO_HEADING:
-                candle.setLEDs(255,255,255);
+                candle.setLEDs(255, 255, 255);
 
-                if (!operatorInput.isAutoHeadingPressed() ) {
+                if (!operatorInput.isAutoHeadingPressed()) {
                     state = RgbFSM.DEFAULT;
                 }
 
