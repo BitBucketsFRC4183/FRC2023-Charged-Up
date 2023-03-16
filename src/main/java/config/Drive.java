@@ -37,9 +37,9 @@ public interface Drive {
     );
 
     PIDConfig STEER_SIM_PID = new PIDConfig(
-            2,
+            30,
             0,
-            0,
+            0.1,
             Optional.empty(),
             Optional.empty()
     );
@@ -62,6 +62,6 @@ public interface Drive {
 
     Vector<N3> STD_VISION = VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(10));
 
-    SimInertiaConfig STEER_DC_CONFIG = new SimInertiaConfig(0.025, Matrix.mat(Nat.N1(), Nat.N1()).fill(0));
+    SimInertiaConfig STEER_DC_CONFIG = new SimInertiaConfig(0.002, Matrix.mat(Nat.N1(), Nat.N1()).fill(0));
     SimpleMotorFeedforward FF = new SimpleMotorFeedforward(0.65292, 2.3053, 0.37626); //converts velocity to voltage
 }

@@ -41,6 +41,7 @@ public class SparkSetup implements ISetup<IMotorController> {
     @Override
     public IMotorController build(IProcess self) {
 
+
         //check id for duplicate usage
         if (seen.contains(canId)) {
             throw new IllegalStateException();
@@ -100,7 +101,7 @@ public class SparkSetup implements ISetup<IMotorController> {
         SparkTuner tuner = new SparkTuner(p, i, d, spark.getPIDController());
         self.registerLogicLoop(tuner);
 
-        SparkRelativeMotorController ctrl = new SparkRelativeMotorController(motorConfig, spark);
+        SparkRelativeMotorController ctrl = new SparkRelativeMotorController(motorConfig, spark, self.getDebuggable());
         OnboardPidLogger onboardPidLogger = new OnboardPidLogger(
                 ctrl,
                 self.generateLogger(ILogAs.DOUBLE, "setpointMechanismRot"),
@@ -137,20 +138,7 @@ public class SparkSetup implements ISetup<IMotorController> {
 
         }
 
-        //dont care about sticky faults eevery 100ms
-        spark.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus0, 200);
 
-        if (motorConfig.optimizationMode == OptimizationMode.OFFBOARD_VEL_PID || motorConfig.optimizationMode == OptimizationMode.LQR) {
-            spark.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus1, 20);
-        } else {
-            spark.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus1, 200);
-        }
-
-        if (motorConfig.optimizationMode == OptimizationMode.OFFBOARD_POS_PID || motorConfig.optimizationMode == OptimizationMode.LQR) {
-            spark.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus2, 20);
-        } else {
-            spark.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus2, 200);
-        }
 
         return ctrl;
     }
