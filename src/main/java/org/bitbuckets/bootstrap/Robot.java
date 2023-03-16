@@ -41,6 +41,8 @@ public class Robot extends TimedRobot {
     @Override
     public void robotPeriodic() {
         builtProcess.loop();
+
+
         if (Mattlib.DEFAULT_MODE == ProcessMode.DEBUG) {
             builtProcess.logLoop();
         }

@@ -18,6 +18,8 @@ public interface IOdometryControl {
     double getPitch_deg();
     double getRoll_deg();
 
+    double getAccelerationZ();
+
     void zero();
     void setPos(Rotation2d gyroAngle, Pose2d poseMeters);
 }

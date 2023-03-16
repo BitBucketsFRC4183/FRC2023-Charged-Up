@@ -1,6 +1,7 @@
 package org.bitbuckets.drive;
 
 import com.pathplanner.lib.PathPlannerTrajectory;
+import config.Drive;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import org.bitbuckets.OperatorInput;
 import org.bitbuckets.auto.AutoFSM;
@@ -69,6 +70,8 @@ public class DriveSubsystem implements HasLoop {
     DriveFSM nextStateShould = DriveFSM.IDLE;
 
     void handleStateTransitions() {
+
+
         if (autoSubsystem.state() == AutoFSM.TELEOP) {
             if (nextStateShould == DriveFSM.AUTO_PATHFINDING || nextStateShould == DriveFSM.IDLE) {
                 nextStateShould = DriveFSM.MANUAL;
@@ -95,26 +98,6 @@ public class DriveSubsystem implements HasLoop {
 
 
 
-        //handle inputs from user
-
-        if (autoSubsystem.state() == AutoFSM.TELEOP) {
-            if (input.isVisionDrivePressed() && visionControl.estimateBestVisionTarget().isPresent()) {
-                nextStateShould = DriveFSM.VISION;
-                return;
-            }
-
-            if (nextStateShould == DriveFSM.VISION && !input.isVisionDrivePressed()) {
-                nextStateShould = DriveFSM.MANUAL;
-            }
-
-            if (input.isAutoBalancePressed()) {
-                nextStateShould = DriveFSM.BALANCE;
-            }
-
-            if (input.isManualDrivePressed()) {
-                nextStateShould = DriveFSM.MANUAL;
-            }
-        }
     }
 
     void handleLogic() {
@@ -235,11 +218,18 @@ public class DriveSubsystem implements HasLoop {
         double Pitch_deg = odometryControl.getPitch_deg();
 
         debuggable.log("pitch-now", Pitch_deg);
-        if (Math.abs(Pitch_deg) > 0.1) {
-            double output = balanceControl.calculateBalanceOutput(Pitch_deg, 0);
-            debuggable.log("control-output-autobalance", output);
+        if (Math.abs(Pitch_deg) > 2) {
 
-            driveControl.drive(new ChassisSpeeds(output / 2.0, 0.0, 0.0));
+            if (odometryControl.getAccelerationZ() > Drive.ACCEL_THRESHOLD_AUTOBALANCE) {
+                return;
+            } else {
+                double output = balanceControl.calculateBalanceOutput(Pitch_deg, 0);
+                debuggable.log("control-output-autobalance", output);
+
+                driveControl.drive(new ChassisSpeeds(-output / 3.0, 0.0, 0.0));
+            }
+
+
         } else {
             debuggable.log("is-running-ab-2", false);
             driveControl.stop();

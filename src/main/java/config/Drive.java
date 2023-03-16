@@ -45,9 +45,9 @@ public interface Drive {
     );
 
     PIDConfig DRIVE_BALANCE_PID = new PIDConfig(
-            0.5,
+            0.001,
             0,
-            0,
+            0.000,
             Optional.empty(),
             Optional.empty()
     );
@@ -59,6 +59,8 @@ public interface Drive {
                     Nat.N1()
             ).fill(0)
     );
+
+    double ACCEL_THRESHOLD_AUTOBALANCE = 1.5; //1.5 Gs
 
     Vector<N3> STD_VISION = VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(10));
 

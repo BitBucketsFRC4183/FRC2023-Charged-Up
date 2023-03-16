@@ -52,6 +52,11 @@ public class SimOdometryControl implements IOdometryControl, HasLoop {
     }
 
     @Override
+    public double getAccelerationZ() {
+        return 0;
+    }
+
+    @Override
     public void zero() {
         //reset
         lastAngle_fieldRelative = Rotation2d.fromDegrees(0);
