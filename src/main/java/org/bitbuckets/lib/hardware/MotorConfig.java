@@ -26,6 +26,7 @@ public class MotorConfig {
 
     public final OptimizationMode optimizationMode;
     public final DCMotor motorType;
+    public final boolean hasAbsoluteEncoder;
 
     /**
      * @param encoderToMechanismCoefficient
@@ -41,8 +42,9 @@ public class MotorConfig {
      * @param isRampRateEnabled
      * @param optimizationMode
      * @param motorType
+     * @param hasAbsoluteEncoder
      */
-    public MotorConfig(double encoderToMechanismCoefficient, double timeCoefficient, double rotationToMeterCoefficient, boolean isInverted, boolean shouldBreakOnNoCommand, double currentLimit, Optional<Double> forwardSoftLimitMechanismAccum_rot, Optional<Double> reverseSoftLimitMechanismAccum_rot, boolean isForwardHardLimitEnabled, boolean isBackwardHardLimitEnabled, boolean isRampRateEnabled, OptimizationMode optimizationMode, DCMotor motorType) {
+    public MotorConfig(double encoderToMechanismCoefficient, double timeCoefficient, double rotationToMeterCoefficient, boolean isInverted, boolean shouldBreakOnNoCommand, double currentLimit, Optional<Double> forwardSoftLimitMechanismAccum_rot, Optional<Double> reverseSoftLimitMechanismAccum_rot, boolean isForwardHardLimitEnabled, boolean isBackwardHardLimitEnabled, boolean isRampRateEnabled, OptimizationMode optimizationMode, DCMotor motorType, boolean hasAbsoluteEncoder) {
         this.encoderToMechanismCoefficient = encoderToMechanismCoefficient;
         this.timeCoefficient = timeCoefficient;
         this.rotationToMeterCoefficient = rotationToMeterCoefficient;
@@ -56,6 +58,7 @@ public class MotorConfig {
         this.isRampRateEnabled = isRampRateEnabled;
         this.optimizationMode = optimizationMode;
         this.motorType = motorType;
+        this.hasAbsoluteEncoder = hasAbsoluteEncoder;
     }
 
 }

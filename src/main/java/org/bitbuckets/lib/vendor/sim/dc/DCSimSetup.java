@@ -27,6 +27,8 @@ public class DCSimSetup implements ISetup<IMotorController> {
 
     @Override
     public IMotorController build(IProcess self) {
+
+
         DCMotorSim motorSim = new DCMotorSim(config.motorType, 1.0 / config.encoderToMechanismCoefficient, simInertiaConfig.momentOfInertia);
         PIDController pidController = new PIDController(pidConfig.kP, pidConfig.kI, pidConfig.kD);
 
