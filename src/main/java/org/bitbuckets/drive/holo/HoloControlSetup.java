@@ -39,11 +39,16 @@ public class HoloControlSetup implements ISetup<HoloControl> {
         IPIDCalculator y = self.childSetup("y-pid", new PIDCalculatorSetup(Y_PID));
         IPIDCalculator theta = self.childSetup("theta-pid", new ProfiledPIDFCalculatorSetup(THETA_PID, THETA_CONSTRAINTS));
 
+        ProfiledPIDController ctrl = theta.rawAccess(ProfiledPIDController.class);
+        ctrl.enableContinuousInput(0, Math.PI * 2.0);
+
         HolonomicDriveController holonomicDriveController = new HolonomicDriveController(
                 x.rawAccess(PIDController.class),
                 y.rawAccess(PIDController.class),
-                theta.rawAccess(ProfiledPIDController.class)
+                ctrl
+
         );
+
         holonomicDriveController.setTolerance(
                 new Pose2d(0.1, 0.1, Rotation2d.fromDegrees(1))
         );

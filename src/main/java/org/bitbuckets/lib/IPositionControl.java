@@ -6,7 +6,6 @@ package org.bitbuckets.lib;
 public interface IPositionControl {
 
     void moveToPositionSetpoint(double setpoint_mechanismRot);
-
     double getPositionError();
 
 }

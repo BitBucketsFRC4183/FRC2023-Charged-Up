@@ -34,7 +34,6 @@ public class DriveSubsystemSetup implements ISetup<DriveSubsystem> {
 
     @Override
     public DriveSubsystem build(IProcess self) {
-
         return new DriveSubsystem(
                 operatorInput,
                 odometryControl,
