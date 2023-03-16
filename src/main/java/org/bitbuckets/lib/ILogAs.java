@@ -16,9 +16,12 @@ public interface ILogAs<T> {
     ILoggable<T> generate(String key, Path p);
 
     ILogAs<Boolean> BOOLEAN = (k, p) -> {
-        String fullPath = p.getAsTablePath() + k;
-        NetworkTableEntry netEntry = NetworkTableInstance.getDefault().getEntry(fullPath);
+        String fullPath = p.getAsTablePath() + "log-" + k;
+
+        NetworkTableEntry netEntry = NetworkTableInstance.getDefault().getTable("mattlib").getEntry(fullPath);
         BooleanLogEntry logEntry = new BooleanLogEntry(DataUtil.LOG, fullPath);
+
+        netEntry.setBoolean(false);
 
         return a -> {
             netEntry.setBoolean(a);
@@ -28,9 +31,12 @@ public interface ILogAs<T> {
 
 
     ILogAs<Double> DOUBLE = (k,p) -> {
-        String fullPath = p.getAsTablePath() + k;
-        NetworkTableEntry netEntry = NetworkTableInstance.getDefault().getEntry(fullPath);
+        String fullPath = p.getAsTablePath() + "log-"+ k;
+
+        NetworkTableEntry netEntry = NetworkTableInstance.getDefault().getTable("mattlib").getEntry(fullPath);
         DoubleLogEntry logEntry = new DoubleLogEntry(DataUtil.LOG, fullPath);
+
+        netEntry.setDouble(0.0);
 
         return a -> {
             netEntry.setDouble(a);
@@ -39,9 +45,11 @@ public interface ILogAs<T> {
     };
 
     ILogAs<Pose2d> POSE = (k,p) -> {
-        String fullPath = p.getAsTablePath() + k;
-        NetworkTableEntry netEntry = NetworkTableInstance.getDefault().getEntry(fullPath);
+        String fullPath = p.getAsTablePath() + "log-"+ k;
+        NetworkTableEntry netEntry = NetworkTableInstance.getDefault().getTable("mattlib").getEntry(fullPath);
         DoubleArrayLogEntry logEntry = new DoubleArrayLogEntry(DataUtil.LOG, fullPath);
+
+        netEntry.setDoubleArray(new double[] {0,0,0});
 
         return a -> {
             double[] array = new double[] {a.getX(), a.getY(), a.getRotation().getRadians()};
@@ -52,9 +60,11 @@ public interface ILogAs<T> {
     };
 
     ILogAs<String> STRING = (k,p) -> {
-        String fullPath = p.getAsTablePath() + k;
-        NetworkTableEntry netEntry = NetworkTableInstance.getDefault().getEntry(fullPath);
+        String fullPath = p.getAsTablePath() + "log-"+ k;
+        NetworkTableEntry netEntry = NetworkTableInstance.getDefault().getTable("mattlib").getEntry(fullPath);
         StringLogEntry logEntry = new StringLogEntry(DataUtil.LOG, fullPath);
+
+        netEntry.setString("default str");
 
         return a -> {
             netEntry.setString(a);
@@ -70,9 +80,11 @@ public interface ILogAs<T> {
 
 
         return (k,p) -> {
-            String fullPath = p.getAsTablePath() + k;
-            NetworkTableEntry netEntry = NetworkTableInstance.getDefault().getEntry(fullPath);
+            String fullPath = p.getAsTablePath() + "log-" + k;
+            NetworkTableEntry netEntry = NetworkTableInstance.getDefault().getTable("mattlib").getEntry(fullPath);
             StringLogEntry logEntry = new StringLogEntry(DataUtil.LOG, fullPath);
+
+            netEntry.setString("default enum");
 
             return a -> {
                 netEntry.setString(a.name());

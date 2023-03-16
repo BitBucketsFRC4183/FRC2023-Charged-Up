@@ -39,7 +39,21 @@ public class SimpleProcess implements IProcess {
     <T> T setup(String key, ISetup<T> setup) {
         SimpleProcess child = new SimpleProcess(isReal, selfPath.append(key));
         processes.add(child);
-        return setup.build(child);
+        T toReg =  setup.build(child);
+
+        if (toReg instanceof HasLoop) {
+            this.loops.add((HasLoop) toReg);
+        }
+
+        if (toReg instanceof  HasLogLoop) {
+            this.logLoops.add((HasLogLoop) toReg);
+        }
+
+        if (toReg instanceof HasLifecycle) {
+            this.lifecycles.add((HasLifecycle) toReg);
+        }
+
+        return toReg;
     }
 
     @Override

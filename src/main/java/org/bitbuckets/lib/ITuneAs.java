@@ -3,6 +3,7 @@ package org.bitbuckets.lib;
 import config.Mattlib;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.bitbuckets.lib.core.Path;
 import org.bitbuckets.lib.tune.*;
 
@@ -13,7 +14,9 @@ public interface ITuneAs<T> {
     ITuneAs<Double> DOUBLE_INPUT = (key, path, dat) -> {
 
         if (Mattlib.DEFAULT_MODE == ProcessMode.DEBUG) {
-            var entry = NetworkTableInstance.getDefault().getEntry(path.getAsTablePath() + key);
+            var entry = NetworkTableInstance.getDefault().getTable("mattlib").getEntry(path.getAsTablePath() + "tune-"+ key);
+            entry.setDouble(0.0);
+
             return new CorrectnessTuner<>(entry);
         } else {
             return new NoopsTuner<>(dat);
@@ -34,6 +37,8 @@ public interface ITuneAs<T> {
             for (E e : enumType.getEnumConstants()) {
                 sendablechooser.addOption(e.name(), e);
             }
+
+            SmartDashboard.putData(k, sendablechooser);
 
 
             return new ChooserTuner<>(sendablechooser);

@@ -25,7 +25,11 @@ public class SimpleDebuggable implements IDebuggable {
 
     @Override
     public void log(String key, double number) {
-        map.computeIfAbsent(key, k-> process.generateLogger(ILogAs.DOUBLE, k)).log(number);
+
+        map.computeIfAbsent(key, k-> {
+            System.out.println("called for: " + k);
+            return process.generateLogger(ILogAs.DOUBLE, k);
+        } ).log(number);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package org.bitbuckets.bootstrap;
 
+import config.Drive;
 import config.Mattlib;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -7,6 +8,8 @@ import org.bitbuckets.auto.RobotEvent;
 import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessMode;
+import org.bitbuckets.lib.core.Path;
+import org.bitbuckets.lib.process.SimpleProcess;
 
 /**
  * Launchpoint for the robot (It's like the launchpoint for the robot or something)
@@ -25,6 +28,8 @@ public class Robot extends TimedRobot {
 
     @Override
     public void robotInit() {
+
+        builtProcess = new SimpleProcess(isReal(), new Path(new String[] {"root"}));
         try {
             buildRobot.build(builtProcess);
 

@@ -41,6 +41,7 @@ public class SparkSetup implements ISetup<IMotorController> {
     @Override
     public IMotorController build(IProcess self) {
 
+
         //check id for duplicate usage
         if (seen.contains(canId)) {
             throw new IllegalStateException();

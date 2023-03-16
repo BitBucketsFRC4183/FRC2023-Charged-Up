@@ -143,6 +143,8 @@ public class DCSimController implements IMotorController, HasLoop, HasLogLoop {
 
     @Override
     public void logLoop() {
+
+
         debuggable.log("position-mechanism", getPositionMechanism_meters());
         debuggable.log("velocity-mechanism", getVelocityMechanism_metersPerSecond());
         debuggable.log("velocity-encoder", getVelocityEncoder_metersPerSecond());
