@@ -12,7 +12,7 @@ import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.control.IPIDCalculator;
 import org.bitbuckets.lib.control.PIDCalculatorSetup;
 import org.bitbuckets.lib.control.PIDConfig;
-import org.bitbuckets.lib.control.ProfiledPIDFSetup;
+import org.bitbuckets.lib.control.ProfiledPIDFCalculatorSetup;
 import org.bitbuckets.odometry.IOdometryControl;
 
 import java.util.Optional;
@@ -37,7 +37,7 @@ public class HoloControlSetup implements ISetup<HoloControl> {
 
         IPIDCalculator x = self.childSetup("x-pid", new PIDCalculatorSetup(X_PID));
         IPIDCalculator y = self.childSetup("y-pid", new PIDCalculatorSetup(Y_PID));
-        IPIDCalculator theta = self.childSetup("theta-pid", new ProfiledPIDFSetup(THETA_PID, THETA_CONSTRAINTS));
+        IPIDCalculator theta = self.childSetup("theta-pid", new ProfiledPIDFCalculatorSetup(THETA_PID, THETA_CONSTRAINTS));
 
         HolonomicDriveController holonomicDriveController = new HolonomicDriveController(
                 x.rawAccess(PIDController.class),
