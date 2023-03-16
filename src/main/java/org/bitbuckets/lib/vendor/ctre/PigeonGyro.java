@@ -7,12 +7,12 @@ import org.bitbuckets.lib.core.HasLogLoop;
 import org.bitbuckets.lib.hardware.IGyro;
 import org.bitbuckets.lib.log.IDebuggable;
 
-public class PidgeonGyro implements IGyro, HasLogLoop {
+public class PigeonGyro implements IGyro, HasLogLoop {
 
     final WPI_Pigeon2 pigeon2;
     final IDebuggable debuggable;
 
-    public PidgeonGyro(WPI_Pigeon2 pigeon2, IDebuggable debuggable) {
+    public PigeonGyro(WPI_Pigeon2 pigeon2, IDebuggable debuggable) {
         this.pigeon2 = pigeon2;
         this.debuggable = debuggable;
     }

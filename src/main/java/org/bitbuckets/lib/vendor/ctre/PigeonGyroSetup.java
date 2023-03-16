@@ -9,14 +9,14 @@ import org.bitbuckets.lib.hardware.IGyro;
 import org.bitbuckets.lib.hardware.IGyroLogger;
 import org.bitbuckets.lib.log.IDebuggable;
 
-public class PidgeonGyroSetup implements ISetup<IGyro> {
+public class PigeonGyroSetup implements ISetup<IGyro> {
 
     final int pidgeonId;
     final Pigeon2.AxisDirection forward; //y
     final Pigeon2.AxisDirection up; //z
 
 
-    public PidgeonGyroSetup(int pidgeonId, Pigeon2.AxisDirection forward, Pigeon2.AxisDirection up) {
+    public PigeonGyroSetup(int pidgeonId, Pigeon2.AxisDirection forward, Pigeon2.AxisDirection up) {
         this.pidgeonId = pidgeonId;
         this.forward = forward;
         this.up = up;
@@ -33,7 +33,7 @@ public class PidgeonGyroSetup implements ISetup<IGyro> {
         pigeonIMU.configMountPose(forward, up);
 
 
-        PidgeonGyro gyro = new PidgeonGyro(
+        PigeonGyro gyro = new PigeonGyro(
                 pigeonIMU,
                 self.getDebuggable());
 
