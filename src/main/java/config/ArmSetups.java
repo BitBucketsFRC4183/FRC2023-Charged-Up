@@ -84,7 +84,6 @@ public interface ArmSetups {
             new PIDCalculatorSetup(Arm.UPPER_PID),
             new PIDCalculatorSetup(Arm.UPPER_SIMPID)
     );
-     */
 
 
     ISetup<IPIDCalculator> PROFILED_LOWER_PID = new SwapSetup<>(
