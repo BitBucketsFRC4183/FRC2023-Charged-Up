@@ -1,11 +1,5 @@
 package org.bitbuckets.bootstrap;
 
-import com.revrobotics.REVPhysicsSim;
-import config.Mattlib;
-import edu.wpi.first.networktables.GenericEntry;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableInstance;
-import config.Drive;
 import config.Mattlib;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -14,7 +8,6 @@ import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessMode;
 import org.bitbuckets.lib.core.Path;
-import org.bitbuckets.lib.process.ForceKillProcess;
 import org.bitbuckets.lib.process.SimpleProcess;
 
 /**
