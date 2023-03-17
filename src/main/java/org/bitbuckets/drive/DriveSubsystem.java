@@ -226,6 +226,7 @@ public class DriveSubsystem implements HasLoop {
         double Pitch_deg = odometryControl.getPitch_deg();
 
         debuggable.log("pitch-now", Pitch_deg);
+        debuggable.log("accel", odometryControl.getAccelerationZ());
         if (Math.abs(Pitch_deg) > 2) {
 
             if (odometryControl.getAccelerationZ() > Drive.ACCEL_THRESHOLD_AUTOBALANCE) {
