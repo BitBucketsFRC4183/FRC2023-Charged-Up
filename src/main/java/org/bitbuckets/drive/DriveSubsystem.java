@@ -15,7 +15,6 @@ import org.bitbuckets.lib.tune.IValueTuner;
 import org.bitbuckets.odometry.IOdometryControl;
 import org.bitbuckets.vision.IVisionControl;
 
-import java.util.ArrayList;
 import java.util.Optional;
 
 
@@ -65,6 +64,7 @@ public class DriveSubsystem implements HasLoop {
 
 
         debuggable.log("state", nextStateShould.toString());
+        debuggable.log("stop", shouldStop);
 
     }
 
@@ -85,6 +85,7 @@ public class DriveSubsystem implements HasLoop {
             } else if (input.isAutoBalancePressed()) {
                 nextStateShould = DriveFSM.BALANCE;
             } else if (nextStateShould == DriveFSM.BALANCE && !input.isAutoBalancePressed()) {
+                shouldStop = false;
                 nextStateShould = DriveFSM.MANUAL;
             }
         } else if (autoSubsystem.state() == AutoFSM.AUTO_RUN) {
@@ -222,6 +223,8 @@ public class DriveSubsystem implements HasLoop {
 
     }
 
+    boolean shouldStop = false;
+
     void balance() {
         double Pitch_deg = odometryControl.getPitch_deg();
 
@@ -229,13 +232,22 @@ public class DriveSubsystem implements HasLoop {
         debuggable.log("accel", odometryControl.getAccelerationZ());
         if (Math.abs(Pitch_deg) > 2) {
 
+            if (shouldStop) {
+                driveControl.drive(new ChassisSpeeds(0, 0, 0));
+                return;
+            }
+
             if (odometryControl.getAccelerationZ() > Drive.ACCEL_THRESHOLD_AUTOBALANCE) {
+                shouldStop = true;
+                System.out.println("AAAAAAAAAAAAAAA");
+
+                driveControl.drive(new ChassisSpeeds(Math.signum(Pitch_deg) *1.80,0,0));
                 return;
             } else {
                 double output = balanceControl.calculateBalanceOutput(Pitch_deg, 0);
                 debuggable.log("control-output-autobalance", output);
 
-                driveControl.drive(new ChassisSpeeds(-output / 3.0, 0.0, 0.0));
+                driveControl.drive(new ChassisSpeeds(-output , 0.0, 0.0));
             }
 
 
