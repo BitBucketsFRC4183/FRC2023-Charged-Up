@@ -6,11 +6,11 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import org.bitbuckets.OperatorInput;
-import org.bitbuckets.auto.AutoFSM;
 import org.bitbuckets.auto.AutoSubsystem;
 import org.bitbuckets.drive.balance.BalanceControl;
 import org.bitbuckets.drive.holo.HoloControl;
-import org.bitbuckets.lib.core.HasLoop;
+import org.bitbuckets.lib.core.HasLifecycle;
+import org.bitbuckets.lib.core.HasLogLoop;
 import org.bitbuckets.lib.log.IDebuggable;
 import org.bitbuckets.lib.tune.IValueTuner;
 import org.bitbuckets.odometry.IOdometryControl;
@@ -23,7 +23,7 @@ import java.util.Optional;
  * tags: high priority
  * TODO this is becoming a sort of god class, some of this logic has to break out into smaller subsystems
  */
-public class DriveSubsystem implements HasLoop {
+public class DriveSubsystem implements HasLifecycle, HasLogLoop {
 
 
     final OperatorInput input;
@@ -53,85 +53,74 @@ public class DriveSubsystem implements HasLoop {
         this.debuggable = debuggable;
     }
 
-
     @Override
-    public void loop() {
-
-        //TODO DONT USE THIS HSIT
-        if (input.isResetGyroPressed()) {
-            odometryControl.zero(); //THIS ONLY WORKS IF YOU ARE FACING AN ALLIANCE WALL OTHERWISE BAD THINGS
-        }
-
-        handleStateTransitions();
-        handleLogic();
-
-
+    public void logLoop() {
         debuggable.log("state", nextStateShould.toString());
         debuggable.log("stop", shouldStop);
-
     }
 
     DriveFSM nextStateShould = DriveFSM.IDLE;
 
-    void handleStateTransitions() {
-
-        if (autoSubsystem.state() == AutoFSM.TELEOP) {
-            if (nextStateShould == DriveFSM.AUTO_PATHFINDING || nextStateShould == DriveFSM.IDLE) {
-                nextStateShould = DriveFSM.MANUAL;
-            } else if (input.isVisionDrivePressed() && visionControl.estimateBestVisionTarget().isPresent()) {
-                nextStateShould = DriveFSM.VISION;
-            } else if (nextStateShould == DriveFSM.VISION && !input.isVisionDrivePressed()) {
-                nextStateShould = DriveFSM.MANUAL;
-            } else if (input.isManualDrivePressed()) {
-                nextStateShould = DriveFSM.MANUAL;
-            } else if (input.isAutoBalancePressed()) {
-                nextStateShould = DriveFSM.BALANCE;
-            } else if (nextStateShould == DriveFSM.BALANCE && !input.isAutoBalancePressed()) {
-                shouldStop = false;
-                nextStateShould = DriveFSM.MANUAL;
-            }
-        } else if (autoSubsystem.state() == AutoFSM.AUTO_RUN) {
-            if (autoSubsystem.sampleHasEventStarted("auto-balance")) {
-                nextStateShould = DriveFSM.BALANCE;
-            } else if (autoSubsystem.sampleHasEventStarted("do-vision")) {
-                nextStateShould = DriveFSM.VISION;
-            } else {
-                nextStateShould = DriveFSM.AUTO_PATHFINDING;
-            }
-
-
+    @Override
+    public void autonomousPeriodic() {
+        // auto mode will balance at the end, stop when the path is done, or do path finding by default
+        if (autoSubsystem.sampleHasEventStarted("auto-balance")) {
+            nextStateShould = DriveFSM.BALANCE;
+            balance();
+        } else if (autoSubsystem.isPathDone()) {
+            nextStateShould = DriveFSM.IDLE;
+            driveControl.stop();
+        } else {
+            autoPathFinding();
         }
-
-
 
     }
 
-    void handleLogic() {
-        if (nextStateShould == DriveFSM.AUTO_PATHFINDING) {
-            autoPathFinding();
-            return;
+    @Override
+    public void teleopPeriodic() {
+
+        //TODO DONT USE THIS
+        if (input.isResetGyroPressed()) {
+            odometryControl.zero(); //THIS ONLY WORKS IF YOU ARE FACING AN ALLIANCE WALL OTHERWISE BAD THINGS
         }
 
-        if (nextStateShould == DriveFSM.MANUAL) {
-            teleopNormal();
-            return;
+        if (input.isVisionDrivePressed() && visionControl.estimateBestVisionTarget().isPresent()) {
+            nextStateShould = DriveFSM.VISION;
+        } else if (nextStateShould == DriveFSM.VISION && !input.isVisionDrivePressed()) {
+            nextStateShould = DriveFSM.MANUAL;
+        } else if (input.isManualDrivePressed()) {
+            nextStateShould = DriveFSM.MANUAL;
+        } else if (input.isAutoBalancePressed()) {
+            nextStateShould = DriveFSM.BALANCE;
+        } else if (nextStateShould == DriveFSM.BALANCE && !input.isAutoBalancePressed()) {
+            shouldStop = false;
+            nextStateShould = DriveFSM.MANUAL;
         }
 
-        if (nextStateShould == DriveFSM.BALANCE) {
-            balance();
-            return;
+        // call based on state
+        switch (nextStateShould) {
+            case MANUAL -> teleopNormal();
+            case BALANCE -> balance();
+            case VISION -> teleopVision();
+            default -> driveControl.stop();
         }
+    }
 
-        if (nextStateShould == DriveFSM.VISION) {
-            teleopVision();
-            return;
+    @Override
+    public void teleopInit() {
+        nextStateShould = DriveFSM.MANUAL;
+    }
 
-        }
+    @Override
+    public void disabledInit() {
+        nextStateShould = DriveFSM.IDLE;
+        driveControl.stop();
+    }
 
-
-        if (nextStateShould == DriveFSM.IDLE) {
-            driveControl.stop();
-        }
+    @Override
+    public void disabledPeriodic() {
+        nextStateShould = DriveFSM.IDLE;
+        driveControl.stop();
     }
 
 
@@ -157,8 +146,7 @@ public class DriveSubsystem implements HasLoop {
     }
 
 
-
-    public static ChassisSpeeds trueFieldRelativeToInitializationRelative(ChassisSpeeds robotSpeeds_trueFieldRelative, Rotation2d robotAngle_initializationRelative ) {
+    public static ChassisSpeeds trueFieldRelativeToInitializationRelative(ChassisSpeeds robotSpeeds_trueFieldRelative, Rotation2d robotAngle_initializationRelative) {
 
         //true field relative's zero is in the direction from the blue wall to red wall
         //initialization relative's zero is either the direction facing the blue wall or the direction facing the red wall
@@ -178,12 +166,11 @@ public class DriveSubsystem implements HasLoop {
 
         double vx_initializationRelative =
                 trueFieldRelative.getCos() * robotSpeeds_trueFieldRelative.vxMetersPerSecond
-                + trueFieldRelative.getSin() * robotSpeeds_trueFieldRelative.vxMetersPerSecond;
+                        + trueFieldRelative.getSin() * robotSpeeds_trueFieldRelative.vxMetersPerSecond;
 
         double vy_initializationRelative =
                 -trueFieldRelative.getCos() * robotSpeeds_trueFieldRelative.vyMetersPerSecond
-                + trueFieldRelative.getSin() * robotSpeeds_trueFieldRelative.vyMetersPerSecond;
-
+                        + trueFieldRelative.getSin() * robotSpeeds_trueFieldRelative.vyMetersPerSecond;
 
 
         return new ChassisSpeeds(vx_initializationRelative, vy_initializationRelative, robotSpeeds_trueFieldRelative.omegaRadiansPerSecond);
@@ -193,7 +180,6 @@ public class DriveSubsystem implements HasLoop {
     public static ChassisSpeeds allianceRelativeToInitializationRelative(ChassisSpeeds robotSpeeds_allianceRelative, Rotation2d initializationRelative) {
         return ChassisSpeeds.fromFieldRelativeSpeeds(robotSpeeds_allianceRelative.vxMetersPerSecond, robotSpeeds_allianceRelative.vyMetersPerSecond, robotSpeeds_allianceRelative.omegaRadiansPerSecond, initializationRelative);
     }
-
 
 
     //NOT WORKING DONT USE
@@ -221,11 +207,10 @@ public class DriveSubsystem implements HasLoop {
         }
 
         ChassisSpeeds desiredSpeeds_allianceRelative = new ChassisSpeeds(
-               input.getDesiredX_fieldRelative(),
+                input.getDesiredX_fieldRelative(),
                 input.getDesiredY_fieldRelative(),
                 input.getDesiredRotation_initializationRelative()
         );
-
 
 
         debuggable.log("x-field", desiredSpeeds_allianceRelative.vxMetersPerSecond);
@@ -244,7 +229,7 @@ public class DriveSubsystem implements HasLoop {
                 debuggable.log("y-robot", desiredSpeeds_robotRelative.vyMetersPerSecond);
 
                 driveControl.drive(
-                    desiredSpeeds_robotRelative
+                        desiredSpeeds_robotRelative
                 );
 
                 break;
@@ -277,13 +262,13 @@ public class DriveSubsystem implements HasLoop {
                 shouldStop = true;
 
                 //all initialization relative. Is t
-                driveControl.drive(new ChassisSpeeds(Math.signum(Pitch_deg) *1.80,0,0));
+                driveControl.drive(new ChassisSpeeds(Math.signum(Pitch_deg) * 1.80, 0, 0));
                 return;
             } else {
                 double output = balanceControl.calculateBalanceOutput(Pitch_deg, 0);
                 debuggable.log("control-output-autobalance", output);
 
-                driveControl.drive(new ChassisSpeeds(-output , 0.0, 0.0));
+                driveControl.drive(new ChassisSpeeds(-output, 0.0, 0.0));
             }
 
 

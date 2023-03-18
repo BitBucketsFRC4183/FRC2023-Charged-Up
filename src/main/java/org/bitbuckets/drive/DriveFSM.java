@@ -9,7 +9,4 @@ public enum DriveFSM {
 
     VISION,
 
-    AUTO_PATHFINDING
-
-
 }
