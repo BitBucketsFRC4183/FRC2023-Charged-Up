@@ -25,7 +25,7 @@ public class DriveController implements IDriveController {
         // backwards. When we go "forward" the encoder is actually going backwards. Invert here so our position updates
         // correctly
 
-        //TODO remove the craig hack (commit specific and probably bad idea)
+        //TODO remove the craig hack (removing it was commit specific and probably bad idea)
         return motor.getPositionMechanism_meters();
     }
 
