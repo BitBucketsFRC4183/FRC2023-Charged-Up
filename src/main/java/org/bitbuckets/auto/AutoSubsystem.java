@@ -2,6 +2,7 @@ package org.bitbuckets.auto;
 
 import com.pathplanner.lib.PathPlannerTrajectory;
 import edu.wpi.first.wpilibj.DriverStation;
+import org.bitbuckets.lib.core.HasLifecycle;
 import org.bitbuckets.lib.core.HasLogLoop;
 import org.bitbuckets.lib.core.HasLoop;
 import org.bitbuckets.lib.log.IDebuggable;
@@ -9,7 +10,7 @@ import org.bitbuckets.lib.tune.IValueTuner;
 
 import java.util.Optional;
 
-public class AutoSubsystem implements HasLogLoop, HasLoop {
+public class AutoSubsystem implements HasLogLoop, HasLoop, HasLifecycle {
 
     final IValueTuner<AutoPath> pathToUse;
     final IAutoControl autoControl;
@@ -60,6 +61,41 @@ public class AutoSubsystem implements HasLogLoop, HasLoop {
 
     @Override
     public void loop() {
+
+
+    }
+
+    AutoPath toUseLogOnly = AutoPath.NONE;
+
+    void transitionToAutoRun() {
+        AutoPath toUse = pathToUse.readValue();
+        toUseLogOnly = toUse;
+        instance = autoControl.generateAndStartPath(toUse);
+        iteration++;
+
+    }
+
+    @Override
+    public void logLoop() {
+        debug.log("current-state", state);
+        debug.log("actual-path", toUseLogOnly);
+        debug.log("dashboard-path", pathToUse.readValue());
+
+    }
+
+    @Override
+    public void autonomousInit() {
+        state = AutoFSM.AUTO_RUN;
+    }
+
+    @Override
+    public void teleopInit() {
+        state = AutoFSM.TELEOP;
+    }
+
+    @Override
+    public void autonomousPeriodic() {
+        state = AutoFSM.AUTO_RUN;
 
         var opt = samplePathPlannerState();
 
@@ -140,26 +176,5 @@ public class AutoSubsystem implements HasLogLoop, HasLoop {
                 }
                 break;
         }
-
-
     }
-
-    AutoPath toUseLogOnly = AutoPath.NONE;
-
-    void transitionToAutoRun() {
-        AutoPath toUse = pathToUse.readValue();
-        toUseLogOnly = toUse;
-        instance = autoControl.generateAndStartPath(toUse);
-        iteration++;
-
-    }
-
-    @Override
-    public void logLoop() {
-        debug.log("current-state", state);
-        debug.log("actual-path", toUseLogOnly);
-        debug.log("dashboard-path", pathToUse.readValue());
-
-    }
-
 }

@@ -1,7 +1,9 @@
 package org.bitbuckets.lib.process;
 
-import org.bitbuckets.auto.RobotEvent;
-import org.bitbuckets.lib.*;
+import org.bitbuckets.lib.ILogAs;
+import org.bitbuckets.lib.IProcess;
+import org.bitbuckets.lib.ISetup;
+import org.bitbuckets.lib.ITuneAs;
 import org.bitbuckets.lib.core.HasLifecycle;
 import org.bitbuckets.lib.core.HasLogLoop;
 import org.bitbuckets.lib.core.HasLoop;
@@ -39,13 +41,13 @@ public class SimpleProcess implements IProcess {
     <T> T setup(String key, ISetup<T> setup) {
         SimpleProcess child = new SimpleProcess(isReal, selfPath.append(key));
         processes.add(child);
-        T toReg =  setup.build(child);
+        T toReg = setup.build(child);
 
         if (toReg instanceof HasLoop) {
             this.loops.add((HasLoop) toReg);
         }
 
-        if (toReg instanceof  HasLogLoop) {
+        if (toReg instanceof HasLogLoop) {
             this.logLoops.add((HasLogLoop) toReg);
         }
 
@@ -83,32 +85,24 @@ public class SimpleProcess implements IProcess {
 
 
     final List<HasLogLoop> logLoops = new ArrayList<>();
+
     @Override
     public void registerLogLoop(HasLogLoop loop) {
         logLoops.add(loop);
     }
 
     final List<HasLoop> loops = new ArrayList<>();
+
     @Override
     public void registerLogicLoop(HasLoop loop) {
         loops.add(loop);
     }
 
     final List<HasLifecycle> lifecycles = new ArrayList<>();
+
     @Override
     public void registerLifecycle(HasLifecycle lifecycle) {
         lifecycles.add(lifecycle);
-    }
-
-    @Override
-    public void onRobotEvent(RobotEvent robotEvent) {
-        for (IProcess process : processes) {
-            process.onRobotEvent(robotEvent);
-        }
-
-        for (HasLifecycle lifecycle : lifecycles) {
-            lifecycle.onRobotEvent(robotEvent);
-        }
     }
 
     @Override

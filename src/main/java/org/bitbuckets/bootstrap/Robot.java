@@ -3,7 +3,6 @@ package org.bitbuckets.bootstrap;
 import config.Mattlib;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
-import org.bitbuckets.auto.RobotEvent;
 import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ProcessMode;
@@ -28,7 +27,7 @@ public class Robot extends TimedRobot {
     @Override
     public void robotInit() {
 
-        builtProcess = new SimpleProcess(isReal(), new Path(new String[] {"root"}));
+        builtProcess = new SimpleProcess(isReal(), new Path(new String[]{"root"}));
         try {
             buildRobot.build(builtProcess);
 
@@ -51,26 +50,26 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousPeriodic() {
-        builtProcess.onRobotEvent(RobotEvent.AUTO_PERIODIC);
+        builtProcess.autonomousPeriodic();
     }
 
     @Override
     public void teleopPeriodic() {
-        builtProcess.onRobotEvent(RobotEvent.TELEOP_PERIODIC);
+        builtProcess.teleopPeriodic();
     }
 
     @Override
     public void autonomousInit() {
-        builtProcess.onRobotEvent(RobotEvent.AUTO_INIT);
+        builtProcess.autonomousInit();
     }
 
     @Override
     public void teleopInit() {
-        builtProcess.onRobotEvent(RobotEvent.TELEOP_INIT);
+        builtProcess.teleopInit();
     }
 
-
-
-
-
+    @Override
+    public void disabledInit() {
+        super.disabledInit();
+    }
 }
