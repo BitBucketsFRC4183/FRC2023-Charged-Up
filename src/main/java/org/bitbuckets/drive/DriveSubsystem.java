@@ -78,6 +78,10 @@ public class DriveSubsystem implements HasLoop, HasLifecycle {
         } else {
             nextStateShould = DriveFSM.AUTO_PATHFINDING;
         }
+
+        if (nextStateShould == DriveFSM.AUTO_PATHFINDING) {
+            autoPathFinding();
+        }
     }
 
     @Override
@@ -93,6 +97,10 @@ public class DriveSubsystem implements HasLoop, HasLifecycle {
         } else if (nextStateShould == DriveFSM.BALANCE && !input.isAutoBalancePressed()) {
             shouldStop = false;
             nextStateShould = DriveFSM.MANUAL;
+        }
+
+        if (nextStateShould == DriveFSM.MANUAL) {
+            teleopNormal();
         }
     }
 
@@ -116,16 +124,8 @@ public class DriveSubsystem implements HasLoop, HasLifecycle {
         nextStateShould = DriveFSM.IDLE;
     }
 
-    void handleLogic() {
-        if (nextStateShould == DriveFSM.AUTO_PATHFINDING) {
-            autoPathFinding();
-            return;
-        }
 
-        if (nextStateShould == DriveFSM.MANUAL) {
-            teleopNormal();
-            return;
-        }
+    void handleLogic() {
 
         if (nextStateShould == DriveFSM.BALANCE) {
             balance();
@@ -142,8 +142,6 @@ public class DriveSubsystem implements HasLoop, HasLifecycle {
         if (nextStateShould == DriveFSM.IDLE) {
             driveControl.stop();
         }
-
-        //if idle it will do nothing..
     }
 
 
