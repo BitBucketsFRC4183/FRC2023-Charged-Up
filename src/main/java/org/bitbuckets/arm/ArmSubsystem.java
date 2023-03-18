@@ -126,8 +126,7 @@ public class ArmSubsystem implements HasLoop {
             armControl.openGripper();
         } else if (operatorInput.closeGripperPressed()) {
             armControl.closeGripper();
-        } else if (!operatorInput.closeGripperPressed() && !operatorInput.openGripperPressed()) {
-            armControl.stopGripper();
+
         } else if (shouldDoNext == ArmFSM.MANUAL) {
             armControl.commandArmToPercent(
                     operatorInput.getLowerArm_PercentOutput() * 0.35,

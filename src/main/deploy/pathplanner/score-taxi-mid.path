@@ -21,7 +21,11 @@
         ],
         "executionBehavior": "parallel",
         "waitBehavior": "before",
+<<<<<<< HEAD
         "waitTime": 0.5
+=======
+        "waitTime": 1
+>>>>>>> main
       }
     },
     {
@@ -48,7 +52,7 @@
         ],
         "executionBehavior": "parallel",
         "waitBehavior": "none",
-        "waitTime": 2
+        "waitTime": 0
       }
     },
     {
@@ -75,7 +79,7 @@
         ],
         "executionBehavior": "parallel",
         "waitBehavior": "none",
-        "waitTime": 2
+        "waitTime": 1
       }
     },
     {
@@ -102,7 +106,7 @@
         ],
         "executionBehavior": "parallel",
         "waitBehavior": "none",
-        "waitTime": 2
+        "waitTime": 0
       }
     },
     {
@@ -121,10 +125,16 @@
       "isLocked": false,
       "isStopPoint": false,
       "stopEvent": {
+<<<<<<< HEAD
         "names": [],
+=======
+        "names": [
+          "auto-balance"
+        ],
+>>>>>>> main
         "executionBehavior": "parallel",
         "waitBehavior": "none",
-        "waitTime": 1
+        "waitTime": 0
       }
     }
   ],

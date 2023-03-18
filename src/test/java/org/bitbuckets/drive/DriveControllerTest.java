@@ -23,15 +23,14 @@ class DriveControllerTest {
         encoder = mock();
     }
 
-    @Disabled
     @Test
     void setReferenceVoltage() {
         var controller = new DriveController(motor);
 
         controller.setReferenceVoltage(9);
 
-        // should have called set with 9/12th voltage
-        verify(motor).moveAtPercent(eq(9.0 / 12));
+        // should have called set with 9 voltage
+        verify(motor).moveAtVoltage(eq(9.0));
     }
 
     /*

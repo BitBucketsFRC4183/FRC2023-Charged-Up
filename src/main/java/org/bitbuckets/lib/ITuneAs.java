@@ -15,7 +15,7 @@ public interface ITuneAs<T> {
 
         if (Mattlib.DEFAULT_MODE == ProcessMode.DEBUG) {
             var entry = NetworkTableInstance.getDefault().getTable("mattlib").getEntry(path.getAsTablePath() + "tune-"+ key);
-            entry.setDouble(0.0);
+            entry.setDouble(dat);
 
             return new CorrectnessTuner<>(entry);
         } else {
