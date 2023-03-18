@@ -2,7 +2,6 @@ package org.bitbuckets.auto;
 
 import com.pathplanner.lib.PathPlannerTrajectory;
 import edu.wpi.first.wpilibj.Timer;
-import org.bitbuckets.lib.core.HasLifecycle;
 
 import java.util.List;
 import java.util.Map;
@@ -14,7 +13,6 @@ public class AutoPathInstance {
     final List<AutoPathInstance.SegmentTime> segmentTimes; //needs to be inserted highest back
     final AutoPath type;
     final double totalTime;
-
 
 
     public void start() {
