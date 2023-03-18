@@ -39,7 +39,7 @@ public interface Arm {
     double LOWER_ARM_GEAR_RATIO = 1.0 / LOWER_ARM_REDUCTION / LOWER_ARM_BELT; //divide again since calculator math
     double UPPER_ARM_GEAR_RATIO = 1.0 / UPPER_ARM_REDUCTION / UPPER_ARM_BELT;
 
-    double UPPER_ARM_OFFSET = 0.08;
+    double UPPER_ARM_OFFSET = 0.403;
 
 
     //FF
