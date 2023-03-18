@@ -4,7 +4,6 @@ import com.ctre.phoenix.sensors.WPI_Pigeon2;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 import edu.wpi.first.wpilibj.DriverStation;
-import org.bitbuckets.auto.RobotEvent;
 import org.bitbuckets.lib.core.HasLifecycle;
 import org.bitbuckets.lib.core.HasLogLoop;
 import org.bitbuckets.lib.hardware.IGyro;
@@ -77,7 +76,6 @@ public class PigeonGyro implements IGyro, HasLogLoop, HasLifecycle {
     }
 
 
-
     BuiltInAccelerometer builtInAccelerometer = new BuiltInAccelerometer();
 
     @Override
@@ -93,9 +91,8 @@ public class PigeonGyro implements IGyro, HasLogLoop, HasLifecycle {
     }
 
     @Override
-    public void onRobotEvent(RobotEvent robotEvent) {
-        if (robotEvent == RobotEvent.AUTO_INIT) {
-            zero(); //no matter what, the robot starts at 0.
-        }
+    public void autonomousInit() {
+        zero(); //no matter what, the robot starts at 0.
     }
+
 }
