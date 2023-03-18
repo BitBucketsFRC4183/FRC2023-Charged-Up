@@ -1,22 +1,42 @@
 package org.bitbuckets.lib.vendor.spark;
 
 import com.revrobotics.*;
+import org.bitbuckets.lib.core.HasLogLoop;
+import org.bitbuckets.lib.log.IDebuggable;
 import org.bitbuckets.lib.hardware.IMotorController;
 import org.bitbuckets.lib.hardware.MotorConfig;
 
-public class SparkRelativeMotorController implements IMotorController {
+public class SparkRelativeMotorController implements IMotorController, HasLogLoop {
 
 
     final MotorConfig motorConfig;
     final CANSparkMax sparkMax;
     final RelativeEncoder sparkMaxRelativeEncoder;
     final SparkMaxPIDController sparkMaxPIDController;
+    final IDebuggable debuggable;
 
-    SparkRelativeMotorController(MotorConfig motorConfig, CANSparkMax sparkMax) {
+    final AbsoluteEncoder absoluteEncoder;
+    final SparkMaxLimitSwitch forward;
+    final SparkMaxLimitSwitch reverse;
+
+    SparkRelativeMotorController(MotorConfig motorConfig, CANSparkMax sparkMax, IDebuggable debuggable) {
         this.motorConfig = motorConfig;
         this.sparkMax = sparkMax;
         this.sparkMaxPIDController = sparkMax.getPIDController();
         this.sparkMaxRelativeEncoder = sparkMax.getEncoder();
+        if (motorConfig.hasAbsoluteEncoder) {
+            this.absoluteEncoder = sparkMax.getAbsoluteEncoder(SparkMaxAbsoluteEncoder.Type.kDutyCycle);
+        } else { this.absoluteEncoder = null; }
+
+        this.debuggable = debuggable;
+        if (motorConfig.isForwardHardLimitEnabled) {
+            this.forward = sparkMax.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
+        } else { this.forward = null; }
+        if (motorConfig.isBackwardHardLimitEnabled) {
+            this.reverse = sparkMax.getReverseLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
+        } else { this.reverse = null; }
+
+
     }
 
     LastControlMode lastControlMode = LastControlMode.NONE;
@@ -84,6 +104,7 @@ public class SparkRelativeMotorController implements IMotorController {
     public void moveAtPercent(double percent) {
 
         lastControlMode = LastControlMode.PERCENT;
+        cachedPercent = percent;
         sparkMax.set(percent);
 
     }
@@ -114,6 +135,7 @@ public class SparkRelativeMotorController implements IMotorController {
 
         lastControlMode = LastControlMode.VELOCITY;
         double rotationsPerMinute = velocity_encoderMetersPerSecond / getRotationsToMetersFactor() * 60.0;
+        sparkMax.getBusVoltage();
 
         sparkMaxPIDController.setReference(rotationsPerMinute, CANSparkMax.ControlType.kVelocity);
     }
@@ -137,20 +159,34 @@ public class SparkRelativeMotorController implements IMotorController {
 
     @Override
     public double getAbsoluteEncoder_rotations() {
-        return sparkMax.getAbsoluteEncoder(SparkMaxAbsoluteEncoder.Type.kDutyCycle).getPosition();
+
+        if (motorConfig.hasAbsoluteEncoder) {
+            return absoluteEncoder.getPosition();
+        } else {
+            System.out.println("expected absolute encoder on soething configed without");
+            return 0.0; //oh... oh no
+        }
     }
 
     @Override
     public boolean isForwardLimitSwitchPressed() {
-        return sparkMax.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen).isPressed();
+        if (motorConfig.isForwardHardLimitEnabled) {
+            return forward.isPressed();
+        } else {
+            return false;
+        }
     }
 
     @Override
     public boolean isReverseLimitSwitchPressed() {
-        return sparkMax.getReverseLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen).isPressed();
-    }
 
-    boolean isLimp = false;
+        if (motorConfig.isBackwardHardLimitEnabled) {
+            return reverse.isPressed();
+        } else {
+            return false;
+        }
+
+    }
 
     @Override
     public void goLimp() {
@@ -162,6 +198,9 @@ public class SparkRelativeMotorController implements IMotorController {
         return clazz.cast(sparkMax);
     }
 
-
-
+    @Override
+    public void logLoop() {
+        debuggable.log("last-voltage",  cachedVoltage);
+        debuggable.log("last-percent", cachedPercent);
+    }
 }

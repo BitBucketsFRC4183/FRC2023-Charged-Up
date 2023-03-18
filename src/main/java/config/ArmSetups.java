@@ -16,8 +16,7 @@ import org.bitbuckets.lib.SharedSetup;
 import org.bitbuckets.lib.SwapSetup;
 import org.bitbuckets.lib.control.IPIDCalculator;
 import org.bitbuckets.lib.control.PIDCalculatorSetup;
-import org.bitbuckets.lib.control.ProfiledPIDFSetup;
-import org.bitbuckets.lib.hardware.IAbsoluteEncoder;
+import org.bitbuckets.lib.control.ProfiledPIDFCalculatorSetup;
 import org.bitbuckets.lib.hardware.IMotorController;
 import org.bitbuckets.lib.util.MockingUtil;
 import org.bitbuckets.lib.vendor.sim.dc.DCSimSetup;
@@ -73,12 +72,14 @@ public interface ArmSetups {
     );
     ISetup<IMotorController> GRIPPER_JOINT = new SwapSetup<>(
             MockingUtil.noops(IMotorController.class),
-            new SparkSetup(
+            //TODO add back motor when gripper is back
+            /*new SparkSetup(
                     MotorIds.GRIPPER_ARM_ID,
                     Arm.GRIPPER_CONFIG,
                     Arm.GRIPPER_PID,
                     Optional.empty()
-            ),
+            ),*/
+            MockingUtil.noops(IMotorController.class),
             new DCSimSetup(
                     Arm.GRIPPER_CONFIG,
                     new SimInertiaConfig(0.005, Matrix.eye(Nat.N1())),
@@ -86,7 +87,6 @@ public interface ArmSetups {
             )
 
     );
-
 
     ISetup<IPIDCalculator> LOWER_PID = new SwapSetup<>(
             MockingUtil.noops(IPIDCalculator.class),
@@ -99,15 +99,30 @@ public interface ArmSetups {
             new PIDCalculatorSetup(Arm.UPPER_SIMPID)
     );
 
-    ISetup<IPIDCalculator> PROFILED_LOWER_PID = new ProfiledPIDFSetup(
+
+    ISetup<IPIDCalculator> PROFILED_LOWER_PID = new SwapSetup<>(
+            MockingUtil.noops(IPIDCalculator.class),
+            new ProfiledPIDFCalculatorSetup(Arm.LOWER_PID, Arm.LOWER_CONSTRAINT),
+            new ProfiledPIDFCalculatorSetup(Arm.LOWER_SIMPID, Arm.LOWER_CONSTRAINT)
+    );
+    ISetup<IPIDCalculator> PROFILED_UPPER_PID = new SwapSetup<>(
+            MockingUtil.noops(IPIDCalculator.class),
+            new ProfiledPIDFCalculatorSetup(Arm.UPPER_PID, Arm.UPPER_CONSTRAINTS),
+            new ProfiledPIDFCalculatorSetup(Arm.UPPER_SIMPID, Arm.UPPER_CONSTRAINTS)
+    );
+
+    /**
+
+    ISetup<IPIDCalculator> PROFILED_LOWER_PID = new ProfiledPIDFCalculatorSetup(
             Arm.LOWER_PID,
             new TrapezoidProfile.Constraints(2,2)
     );
 
-    ISetup<IPIDCalculator> PROFILED_UPPER_PID = new ProfiledPIDFSetup(
+    ISetup<IPIDCalculator> PROFILED_UPPER_PID = new ProfiledPIDFCalculatorSetup(
             Arm.UPPER_PID,
             new TrapezoidProfile.Constraints(2,2)
     );
+     */
 
 
 
@@ -115,8 +130,8 @@ public interface ArmSetups {
             Arm.DYNAMICS,
             LOWER_ARM,
             UPPER_ARM,
-            LOWER_PID,
-            UPPER_PID,
+            PROFILED_LOWER_PID,
+            PROFILED_UPPER_PID,
             GRIPPER_JOINT);
 
 
