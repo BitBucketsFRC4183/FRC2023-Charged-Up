@@ -1,15 +1,17 @@
 package org.bitbuckets.lib.hardware;
 
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.interfaces.Gyro;
 
 public interface IGyro {
 
-    Rotation2d getRotation2d();
+    Rotation2d getRotation2d_initializationRelative();
+    //void forceToRotation(Rotation2d rotation2d);
 
-    double getYaw_deg();
-    double getPitch_deg();
-    double getRoll_deg();
+    double getAllianceRelativeYaw_deg();
+    double getAllianceRelativePitch_deg();
+    double getAllianceRelativeRoll_deg();
+
+
 
     /**
      * Get acceleration on the Z axis. Confusing as heck and i wish i knew what the Z axis
@@ -17,6 +19,5 @@ public interface IGyro {
      */
     double getAccelerationZ();
 
-    void zero();
 
 }

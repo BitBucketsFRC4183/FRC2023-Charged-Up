@@ -31,6 +31,7 @@ public interface Drive {
     PIDConfig THETA_HOLO_PID = new PIDConfig(1,0,0,Optional.empty(),Optional.empty());
     TrapezoidProfile.Constraints THETA_CONSTRAINTS = new TrapezoidProfile.Constraints(2,2);
 
+    double SLOW_MODE_COEFFICIENT = 0.3;
 
     PIDConfig DRIVE_SIM_PID = new PIDConfig(
             0,

@@ -4,6 +4,7 @@ import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.numbers.N3;
@@ -37,9 +38,6 @@ public class OdometryControlSetup implements ISetup<IOdometryControl> {
         IGyro gyro = self.childSetup("gyro", gyroSetup);
 
 
-
-
-
         return new OdometryControl(
                 stdDevs,
                 new SwerveDrivePoseEstimator( //will be reset by auto path anyways
@@ -57,7 +55,7 @@ public class OdometryControlSetup implements ISetup<IOdometryControl> {
                 visionControl,
                 gyro,
                 self.generateLogger(ILogAs.POSE, "odoEstimatePose"),
-                self.generateLogger(ILogAs.POSE, "visionEstimatePose")
-        );
+                self.generateLogger(ILogAs.POSE, "visionEstimatePose"),
+                self.getDebuggable());
     }
 }

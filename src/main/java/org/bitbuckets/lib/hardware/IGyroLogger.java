@@ -20,9 +20,9 @@ public class IGyroLogger implements HasLogLoop {
 
     @Override
     public void logLoop() {
-        yaw.log(gyro.getYaw_deg());
-        pitch.log(gyro.getPitch_deg());
-        roll.log(gyro.getRoll_deg());
+        yaw.log(gyro.getAllianceRelativeYaw_deg());
+        pitch.log(gyro.getAllianceRelativePitch_deg());
+        roll.log(gyro.getAllianceRelativeRoll_deg());
     }
 
 }

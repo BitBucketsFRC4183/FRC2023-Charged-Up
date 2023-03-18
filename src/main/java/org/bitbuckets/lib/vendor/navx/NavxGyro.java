@@ -13,22 +13,22 @@ public class NavxGyro implements IGyro {
     }
 
     @Override
-    public Rotation2d getRotation2d() {
+    public Rotation2d getRotation2d_initializationRelative() {
         return ahrs.getRotation2d();
     }
 
     @Override
-    public double getYaw_deg() {
+    public double getAllianceRelativeYaw_deg() {
         return ahrs.getYaw();
     }
 
     @Override
-    public double getPitch_deg() {
+    public double getAllianceRelativePitch_deg() {
         return ahrs.getPitch();
     }
 
     @Override
-    public double getRoll_deg() {
+    public double getAllianceRelativeRoll_deg() {
         return ahrs.getRoll();
     }
 
@@ -37,10 +37,7 @@ public class NavxGyro implements IGyro {
         return ahrs.getRawAccelZ();
     }
 
-    @Override
-    public void zero() {
-        ahrs.calibrate();
-    }
+
 
 
 }

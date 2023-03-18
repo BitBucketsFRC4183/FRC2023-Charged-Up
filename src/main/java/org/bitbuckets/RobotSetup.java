@@ -113,7 +113,7 @@ public class RobotSetup implements ISetup<Void> {
 
                 )
         );
-        robotPose.set(() -> new Pose3d(odometryControl.estimateFusedPose2d()));
+        robotPose.set(() -> new Pose3d(odometryControl.estimatePose_trueFieldPose()));
 
         AutoSubsystem autoSubsystem = self.childSetup(
                 "auto-system",

@@ -2,8 +2,9 @@ package org.bitbuckets.drive;
 
 import com.pathplanner.lib.PathPlannerTrajectory;
 import config.Drive;
-import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.DriverStation;
 import org.bitbuckets.OperatorInput;
 import org.bitbuckets.auto.AutoFSM;
 import org.bitbuckets.auto.AutoSubsystem;
@@ -35,6 +36,7 @@ public class DriveSubsystem implements HasLoop {
     final IValueTuner<OrientationChooser> orientation;
     final IDebuggable debuggable;
 
+
     public enum OrientationChooser {
         FIELD_ORIENTED,
         ROBOT_ORIENTED,
@@ -55,8 +57,10 @@ public class DriveSubsystem implements HasLoop {
 
     @Override
     public void loop() {
+
+        //TODO DONT USE THIS HSIT
         if (input.isResetGyroPressed()) {
-            odometryControl.zero();
+            odometryControl.zero(); //THIS ONLY WORKS IF YOU ARE FACING AN ALLIANCE WALL OTHERWISE BAD THINGS
         }
 
         handleStateTransitions();
@@ -128,8 +132,6 @@ public class DriveSubsystem implements HasLoop {
         if (nextStateShould == DriveFSM.IDLE) {
             driveControl.stop();
         }
-
-        //if idle it will do nothing..
     }
 
 
@@ -138,86 +140,119 @@ public class DriveSubsystem implements HasLoop {
         if (opt.isPresent()) {
             PathPlannerTrajectory.PathPlannerState state = opt.get();
 
-            Pose2d filtered = new Pose2d(
-                    state.poseMeters.getTranslation(),
-                    state.holonomicRotation
+            ChassisSpeeds targetSpeeds_trueField = holoControl.calculateTrueFieldControlEffort(
+                    state.poseMeters,
+                    state.velocityMetersPerSecond
             );
 
-            ChassisSpeeds targetSpeeds = holoControl.calculatePose2D(filtered, state.velocityMetersPerSecond);
-            targetSpeeds.vxMetersPerSecond = -targetSpeeds.vxMetersPerSecond;
-            targetSpeeds.vyMetersPerSecond = -targetSpeeds.vyMetersPerSecond;
-            targetSpeeds.omegaRadiansPerSecond = -targetSpeeds.omegaRadiansPerSecond;
+            ChassisSpeeds targetSpeeds_robotRelative = trueFieldRelativeToInitializationRelative(
+                    targetSpeeds_trueField,
+                    odometryControl.getRotation2d_initializationRelative()
+            );
+            driveControl.drive(targetSpeeds_robotRelative);
 
-            driveControl.drive(targetSpeeds);
         } else {
             driveControl.stop();
         }
     }
 
+    public ChassisSpeeds trueFieldRelativeToInitializationRelative(ChassisSpeeds robotSpeeds_trueFieldRelative, Rotation2d robotAngle_initializationRelative ) {
+
+        //true field relative's zero is in the direction from the blue wall to red wall
+        //initialization relative's zero is either the direction facing the blue wall or the direction facing the red wall
+
+        Rotation2d trueFieldRelative;
+        //we have to switch this because the robot always considers facing the alliance wall as 0, which isn't true field relative
+        //its only  true field relative when red.
+
+        if (DriverStation.getAlliance() == DriverStation.Alliance.Blue) {
+            //The initialization relative angle thinks zero is in the direction of the blue wall, so flip so that 0 is in the direction of the red wall
+            trueFieldRelative = robotAngle_initializationRelative.plus(Rotation2d.fromDegrees(180));
+        } else {
+            //the initialization relative angle thinks zero is in the direction of the red wall, so do nothing
+            trueFieldRelative = robotAngle_initializationRelative;
+        }
 
 
+        double vx_initializationRelative =
+                trueFieldRelative.getCos() * robotSpeeds_trueFieldRelative.vxMetersPerSecond
+                + trueFieldRelative.getSin() * robotSpeeds_trueFieldRelative.vxMetersPerSecond;
+
+        double vy_initializationRelative =
+                trueFieldRelative.getCos() * robotSpeeds_trueFieldRelative.vyMetersPerSecond
+                + trueFieldRelative.getSin() * robotSpeeds_trueFieldRelative.vyMetersPerSecond;
+
+
+
+        return new ChassisSpeeds(vx_initializationRelative, vy_initializationRelative, robotSpeeds_trueFieldRelative.omegaRadiansPerSecond);
+
+    }
+
+    public ChassisSpeeds allianceRelativeToInitializationRelative(ChassisSpeeds robotSpeeds_allianceRelative, Rotation2d initializationRelative) {
+        Rotation2d allianceRelative = initializationRelative; //We can say this because the gyro starts always considering 0 to be alliance-relative
+
+        double vx_initializationRelative =
+                allianceRelative.getCos() * robotSpeeds_allianceRelative.vxMetersPerSecond
+                        + allianceRelative.getSin() * robotSpeeds_allianceRelative.vxMetersPerSecond;
+
+        double vy_initializationRelative =
+                allianceRelative.getCos() * robotSpeeds_allianceRelative.vyMetersPerSecond
+                        + allianceRelative.getSin() * robotSpeeds_allianceRelative.vyMetersPerSecond;
+
+        return new ChassisSpeeds(vx_initializationRelative, vy_initializationRelative, robotSpeeds_allianceRelative.omegaRadiansPerSecond);
+    }
+
+
+
+    //NOT WORKING DONT USE
     void teleopVision() {
 
         var targetPose = visionControl.estimateBestVisionTarget();
         if (targetPose.isPresent()) {
-            ChassisSpeeds speeds = holoControl.calculatePose2D(targetPose.get().toPose2d(), 1);
+            ChassisSpeeds controlEffort_trueFieldRelative = holoControl.calculateTrueFieldControlEffort(targetPose.get().toPose2d(), 1);
 
-            ChassisSpeeds inverted = new ChassisSpeeds(
-                    -speeds.vxMetersPerSecond,
-                    -speeds.vyMetersPerSecond,
-                    -speeds.omegaRadiansPerSecond
-            );//TODO fix this i have no idea why it works
+            driveControl.drive(
+                    trueFieldRelativeToInitializationRelative(
+                            controlEffort_trueFieldRelative,
+                            odometryControl.getRotation2d_initializationRelative()
 
-            driveControl.drive(inverted);
+                    )
+            );
         }
     }
 
     void teleopNormal() {
 
-
-        double xOutput;
-        double yOutput;
-        double rotationOutput;
-
-        if (input.isSlowDrivePressed()) {
-            xOutput = input.getInputX() * driveControl.getMaxVelocity() * 0.1;
-            yOutput = -input.getInputY() * driveControl.getMaxVelocity() * 0.1;
-            rotationOutput = input.getInputRot() * driveControl.getMaxAngularVelocity() * 0.1;
-
-        } else {
-            xOutput = input.getInputX() * driveControl.getMaxVelocity();
-            yOutput = -input.getInputY() * driveControl.getMaxVelocity();
-            rotationOutput = input.getInputRot() * driveControl.getMaxAngularVelocity();
-        }
-
         if (input.stopStickyPressed()) {
             driveControl.stop();
+            return;
         }
 
-        debuggable.log("x-output", xOutput);
-        debuggable.log("y-output", yOutput);
-        debuggable.log("rot-output", rotationOutput);
+        ChassisSpeeds desiredSpeeds_allianceRelative = new ChassisSpeeds(
+               input.getDesiredX_fieldRelative(),
+                input.getDesiredY_fieldRelative(),
+                input.getDesiredRotation_initializationRelative()
+        );
+
+
 
         switch (orientation.readValue()) {
             case FIELD_ORIENTED:
-                if (xOutput == 0 && yOutput == 0 && rotationOutput == 0) {
-                    driveControl.stop();
-                } else {
-                    debuggable.log("y", yOutput);
-                    debuggable.log("x", xOutput);
 
-                    driveControl.drive(
-                            ChassisSpeeds.fromFieldRelativeSpeeds(yOutput, xOutput, rotationOutput, odometryControl.getRotation2d())
-                    );
-                }
+                driveControl.drive(
+                        allianceRelativeToInitializationRelative(
+                                desiredSpeeds_allianceRelative,
+                                odometryControl.getRotation2d_initializationRelative()
+                        )
+                );
+
                 break;
             case ROBOT_ORIENTED:
-                if (xOutput == 0 && yOutput == 0 && rotationOutput == 0) {
-                    driveControl.stop();
-                } else {
-                    ChassisSpeeds robotOrient = new ChassisSpeeds(xOutput, yOutput, rotationOutput);
-                    driveControl.drive(robotOrient);
-                }
+
+                driveControl.drive(
+                        desiredSpeeds_allianceRelative //this is considering alliance relative speeds as initialization relative speeds, which is wrong.
+                );
+
                 break;
         }
 
@@ -239,8 +274,8 @@ public class DriveSubsystem implements HasLoop {
 
             if (odometryControl.getAccelerationZ() > Drive.ACCEL_THRESHOLD_AUTOBALANCE) {
                 shouldStop = true;
-                System.out.println("AAAAAAAAAAAAAAA");
 
+                //all initialization relative. Is t
                 driveControl.drive(new ChassisSpeeds(Math.signum(Pitch_deg) *1.80,0,0));
                 return;
             } else {

@@ -1,9 +1,7 @@
 package org.bitbuckets.drive.holo;
 
-import com.pathplanner.lib.PathPlannerTrajectory;
 import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import org.bitbuckets.drive.IDriveControl;
 import org.bitbuckets.lib.log.IDebuggable;
@@ -29,21 +27,22 @@ public class HoloControl {
     //TODO this is dangerous
 
     /**
-     * @param target setpoint global
+     * @param target_trueFieldPose setpoint global
+     * @return true field relative chassis speeds
      */
-    public ChassisSpeeds calculatePose2D(Pose2d target, double desiredVelocity) {
+    public ChassisSpeeds calculateTrueFieldControlEffort(Pose2d target_trueFieldPose, double desiredVelocity) {
 
 
         var speed = controller.calculate(
-                odometryControl.estimateFusedPose2d(),
-                target,
+                odometryControl.estimatePose_trueFieldPose(),
+                target_trueFieldPose,
                 desiredVelocity,
-                target.getRotation()
+                target_trueFieldPose.getRotation()
 
 
 
         );
-        debuggable.log("last-target", target);
+        debuggable.log("last-target-pose", target_trueFieldPose);
 
         double X_error = controller.getXController().getPositionError();
         double Y_error =  controller.getYController().getPositionError();

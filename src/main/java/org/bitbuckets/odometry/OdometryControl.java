@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.Timer;
 import org.bitbuckets.drive.IDriveControl;
 import org.bitbuckets.lib.core.HasLoop;
 import org.bitbuckets.lib.hardware.IGyro;
+import org.bitbuckets.lib.log.IDebuggable;
 import org.bitbuckets.lib.log.ILoggable;
 import org.bitbuckets.vision.IVisionControl;
 
@@ -25,8 +26,9 @@ public class OdometryControl implements HasLoop, IOdometryControl {
 
     final ILoggable<Pose2d> odoEstimatedPose;
     final ILoggable<Pose2d> visionEstimatedPose;
+    final IDebuggable debuggable;
 
-    public OdometryControl(Vector<N3> visionMeasurementStdDevs, SwerveDrivePoseEstimator swerveDrivePoseEstimator, IDriveControl driveControl, IVisionControl visionControl, IGyro gyro, ILoggable<Pose2d> odoEstimatedPose, ILoggable<Pose2d> visionEstimatedPose) {
+    public OdometryControl(Vector<N3> visionMeasurementStdDevs, SwerveDrivePoseEstimator swerveDrivePoseEstimator, IDriveControl driveControl, IVisionControl visionControl, IGyro gyro, ILoggable<Pose2d> odoEstimatedPose, ILoggable<Pose2d> visionEstimatedPose, IDebuggable debuggable) {
         this.visionMeasurementStdDevs = visionMeasurementStdDevs;
         this.swerveDrivePoseEstimator = swerveDrivePoseEstimator;
         this.driveControl = driveControl;
@@ -35,13 +37,17 @@ public class OdometryControl implements HasLoop, IOdometryControl {
 
         this.odoEstimatedPose = odoEstimatedPose;
         this.visionEstimatedPose = visionEstimatedPose;
+        this.debuggable = debuggable;
     }
 
     @Override
     public void loop() {
-        Rotation2d gyroangle = gyro.getRotation2d();
+        Pose2d estimatedPose = swerveDrivePoseEstimator.update(
+                gyro.getRotation2d_initializationRelative(),
+                driveControl.currentPositions_initializationRelative()
+        );
 
-        Pose2d estimatedPose = swerveDrivePoseEstimator.update(gyroangle, driveControl.currentPositions());
+
         odoEstimatedPose.log(estimatedPose);
 
         Optional<Pose3d> res = visionControl.estimateVisionRobotPose();
@@ -55,28 +61,28 @@ public class OdometryControl implements HasLoop, IOdometryControl {
     }
 
     @Override
-    public Pose2d estimateFusedPose2d() {
+    public Pose2d estimatePose_trueFieldPose() {
         return swerveDrivePoseEstimator.getEstimatedPosition();
     }
 
     @Override
-    public Rotation2d getRotation2d() {
-        return gyro.getRotation2d();
+    public Rotation2d getRotation2d_initializationRelative() {
+        return gyro.getRotation2d_initializationRelative();
     }
 
     @Override
     public double getYaw_deg() {
-        return gyro.getYaw_deg();
+        return gyro.getAllianceRelativeYaw_deg();
     }
 
     @Override
     public double getPitch_deg() {
-        return gyro.getPitch_deg();
+        return gyro.getAllianceRelativePitch_deg();
     }
 
     @Override
     public double getRoll_deg() {
-        return gyro.getRoll_deg();
+        return gyro.getAllianceRelativeRoll_deg();
     }
 
     @Override
@@ -86,13 +92,23 @@ public class OdometryControl implements HasLoop, IOdometryControl {
 
     @Override
     public void zero() {
-        this.swerveDrivePoseEstimator.resetPosition(Rotation2d.fromDegrees(0), driveControl.currentPositions(), new Pose2d());
+
+        this.swerveDrivePoseEstimator.resetPosition(
+                gyro.getRotation2d_initializationRelative(),
+                driveControl.currentPositions_initializationRelative(),
+                new Pose2d()
+        );
     }
 
     @Override
-    public void setPos(Pose2d poseMeters)
-
+    public void setPos(Pose2d pose_trueFieldRelative)
     {
-        this.swerveDrivePoseEstimator.resetPosition(poseMeters.getRotation(), driveControl.currentPositions(), poseMeters);
+
+
+        this.swerveDrivePoseEstimator.resetPosition(
+                gyro.getRotation2d_initializationRelative(),
+                driveControl.currentPositions_initializationRelative(),
+                pose_trueFieldRelative
+        );
     }
 }

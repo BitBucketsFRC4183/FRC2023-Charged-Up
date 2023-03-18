@@ -27,13 +27,13 @@ public class SimOdometryControl implements IOdometryControl, HasLoop {
     }
 
     @Override
-    public Pose2d estimateFusedPose2d() {
+    public Pose2d estimatePose_trueFieldPose() {
         return estimator.getEstimatedPosition();
     }
 
     @Override
-    public Rotation2d getRotation2d() {
-        return estimator.getEstimatedPosition().getRotation();
+    public Rotation2d getRotation2d_initializationRelative() {
+        return lastAngle_initializationRelative;
     }
 
     @Override
@@ -59,15 +59,15 @@ public class SimOdometryControl implements IOdometryControl, HasLoop {
     @Override
     public void zero() {
         //reset
-        estimator.resetPosition(Rotation2d.fromDegrees(0), driveControl.currentPositions(), new Pose2d());
+        estimator.resetPosition(Rotation2d.fromDegrees(0), driveControl.currentPositions_initializationRelative(), new Pose2d());
     }
 
     @Override
-    public void setPos(Pose2d poseMeters) {
-        estimator.resetPosition(poseMeters.getRotation(), driveControl.currentPositions(), poseMeters);
+    public void setPos(Pose2d pose_trueFieldRelative) {
+        estimator.resetPosition(pose_trueFieldRelative.getRotation(), driveControl.currentPositions_initializationRelative(), pose_trueFieldRelative);
     }
 
-    Rotation2d lastAngle_fieldRelative = Rotation2d.fromDegrees(0);
+    Rotation2d lastAngle_initializationRelative = Rotation2d.fromDegrees(0);
     SwerveModulePosition[] lastPositions = new SwerveModulePosition[] {
             new SwerveModulePosition(),
             new SwerveModulePosition(),
@@ -86,20 +86,22 @@ public class SimOdometryControl implements IOdometryControl, HasLoop {
 
     @Override
     public void loop() {
-        var currentPositions = driveControl.currentPositions();
+        var currentPositions = driveControl.currentPositions_initializationRelative();
         var deltaPositions = delta(currentPositions, lastPositions);
 
         Rotation2d dTheta = new Rotation2d(kinematics.toTwist2d(deltaPositions).dtheta);
 
-        lastAngle_fieldRelative = lastAngle_fieldRelative.plus(dTheta);
+        lastAngle_initializationRelative = lastAngle_initializationRelative.plus(dTheta);
         lastPositions = currentPositions;
 
         debuggable.log("dTheta", dTheta.getDegrees());
-        debuggable.log("theta", lastAngle_fieldRelative.getDegrees());
+        debuggable.log("theta", lastAngle_initializationRelative.getDegrees());
 
 
-        estimator.update(lastAngle_fieldRelative, currentPositions);
-        odoEstimatedPose.log(estimateFusedPose2d());
+        estimator.update(lastAngle_initializationRelative, currentPositions);
+        odoEstimatedPose.log(estimatePose_trueFieldPose());
+
+
 
 
     }

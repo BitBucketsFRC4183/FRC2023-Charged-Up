@@ -1,5 +1,6 @@
 package org.bitbuckets;
 
+import config.Drive;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.Joystick;
@@ -37,27 +38,50 @@ public class OperatorInput {
     }
 
     /**
-     * @return the desired x velocity from joystick modified by an accel. limiter and a deadband
+     * @return the desired field relative Y velocity from joystick x axis modified by an accel. limiter and a deadband
      * @units m/s
      */
-    public double getInputX() {
-        return x.calculate(driveDeadband(driveControl.getRawAxis(0)));
+    public double getDesiredY_fieldRelative() {
+        if (isSlowDrivePressed()) {
+            return driveDeadband(
+                    driveControl.getRawAxis(0) //This is the X axis on the joystick, which corresponds to the field relative Y
+            ) * Drive.SLOW_MODE_COEFFICIENT;
+        } else {
+            return driveDeadband(
+                    driveControl.getRawAxis(0)
+            );
+        }
+
     }
 
     /**
-     * @return the desired y velocity from joystick modified by an accel. limiter and a deadband
+     * @return the desired field relative x velocity from joystick y axis modified by an accel. limiter and a deadband
      * @units m/s
      */
-    public double getInputY() {
-        return -y.calculate(driveDeadband(driveControl.getRawAxis(1)));
+    public double getDesiredX_fieldRelative() {
+        if (isSlowDrivePressed()) {
+            return driveDeadband(
+                    driveControl.getRawAxis(1)
+            ) * Drive.SLOW_MODE_COEFFICIENT;
+        } else {
+            return driveDeadband(
+                    driveControl.getRawAxis(1)
+            );
+        }
     }
 
     /**
      * @return gets the user desired rotation with a deadband
      * @units unknown
      */
-    public double getInputRot() {
-        return driveDeadband(driveControl.getRawAxis(4));
+    public double getDesiredRotation_initializationRelative() {
+
+        if (isSlowDrivePressed()) {
+            return driveDeadband(driveControl.getRawAxis(4)) * Drive.SLOW_MODE_COEFFICIENT;
+        } else {
+            return driveDeadband(driveControl.getRawAxis(4));
+        }
+
     }
 
     /**
@@ -75,7 +99,7 @@ public class OperatorInput {
     }
 
     public boolean isUserInputNone() {
-        return getInputX() == 0 && getInputY() == 0 && getInputRot() == 0;
+        return getDesiredY_fieldRelative() == 0 && getDesiredX_fieldRelative() == 0 && getDesiredRotation_initializationRelative() == 0;
     }
 
     public boolean isVisionDrivePressed() {

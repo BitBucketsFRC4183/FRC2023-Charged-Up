@@ -62,8 +62,8 @@ public class DriveControl implements IDriveControl, HasLogLoop {
     }
 
     @Override
-    public void drive(ChassisSpeeds chassisSpeeds) {
-        doDriveWithStates(kinematics.toSwerveModuleStates(chassisSpeeds));
+    public void drive(ChassisSpeeds speeds_robotRelative) {
+        doDriveWithStates(kinematics.toSwerveModuleStates(speeds_robotRelative));
     }
 
 
@@ -87,26 +87,24 @@ public class DriveControl implements IDriveControl, HasLogLoop {
     }
 
 
-    private void doDriveWithStates(SwerveModuleState[] states) {
+    private void doDriveWithStates(SwerveModuleState[] robotRelativeStates) {
 
-        if (states != null) {
-            cachedSetpoint = states;
-            SwerveDriveKinematics.desaturateWheelSpeeds(states, getMaxVelocity());
+        if (robotRelativeStates != null) {
+            cachedSetpoint = robotRelativeStates;
+            SwerveDriveKinematics.desaturateWheelSpeeds(robotRelativeStates, getMaxVelocity());
 
             for (int i = 0; i < 4; i++) {
                 //System.out.println("Module " + i + ": " + states[i].angle.getDegrees());
                 int maxVoltage = 12;
-                double ff = Drive.FF.calculate(states[i].speedMetersPerSecond);
-                modules.get(i).set(MathUtil.clamp(ff, -maxVoltage, maxVoltage), states[i].angle.getRadians());
+                double ff = Drive.FF.calculate(robotRelativeStates[i].speedMetersPerSecond);
+                modules.get(i).set(MathUtil.clamp(ff, -maxVoltage, maxVoltage), robotRelativeStates[i].angle.getRadians());
             }
         }
     }
 
     //microoptimization: do this without stream()
-    public SwerveModulePosition[] currentPositions() {
+    public SwerveModulePosition[] currentPositions_initializationRelative() {
 
-        debug.log("Pos 0 Dis", this.modules.get(3).getPosition().distanceMeters);
-        debug.log("Pos 0 Angle", this.modules.get(3).getPosition().angle.getDegrees());
         return new SwerveModulePosition[]
                 {
                         this.modules.get(0).getPosition(),
@@ -118,14 +116,14 @@ public class DriveControl implements IDriveControl, HasLogLoop {
     }
 
 
-    SwerveModuleState[] currentStates() {
+    SwerveModuleState[] currentStates_robotRelative() {
         return this.modules.stream().map(ISwerveModule::getState).toArray(SwerveModuleState[]::new);
     }
 
     @Override
     public void logLoop() {
-        debug.log("command-modules", cachedSetpoint);
-        debug.log("actual-modules", currentStates());
-        debug.log("actual-positions", currentPositions());
+        debug.log("command-robot-relative", cachedSetpoint);
+        debug.log("actual-robot-relative", currentStates_robotRelative());
+        debug.log("actual-positions", currentPositions_initializationRelative());
     }
 }

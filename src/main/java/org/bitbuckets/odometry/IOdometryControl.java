@@ -2,7 +2,6 @@ package org.bitbuckets.odometry;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.kinematics.SwerveModulePosition;
 
 /**
  * Extends IGyro and offers pose estimation
@@ -10,9 +9,9 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 public interface IOdometryControl {
 
 
-    Pose2d estimateFusedPose2d();
+    Pose2d estimatePose_trueFieldPose();
 
-    Rotation2d getRotation2d();
+    Rotation2d getRotation2d_initializationRelative();
 
     double getYaw_deg();
     double getPitch_deg();
@@ -21,5 +20,5 @@ public interface IOdometryControl {
     double getAccelerationZ();
 
     void zero();
-    void setPos(Pose2d poseMeters);
+    void setPos(Pose2d pose_trueFieldRelative);
 }
