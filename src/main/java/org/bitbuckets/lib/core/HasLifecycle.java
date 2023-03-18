@@ -5,6 +5,6 @@ import org.bitbuckets.auto.RobotEvent;
 @AutoTrait
 public interface HasLifecycle {
 
-    void onPhaseChangeEvent(RobotEvent robotEvent);
+    void onRobotEvent(RobotEvent robotEvent);
 
 }

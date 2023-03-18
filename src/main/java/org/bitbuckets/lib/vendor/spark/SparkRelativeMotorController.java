@@ -2,7 +2,7 @@ package org.bitbuckets.lib.vendor.spark;
 
 import com.revrobotics.*;
 import org.bitbuckets.lib.core.HasLogLoop;
-import org.bitbuckets.lib.debug.IDebuggable;
+import org.bitbuckets.lib.log.IDebuggable;
 import org.bitbuckets.lib.hardware.IMotorController;
 import org.bitbuckets.lib.hardware.MotorConfig;
 
@@ -106,7 +106,11 @@ public class SparkRelativeMotorController implements IMotorController, HasLogLoo
         lastControlMode = LastControlMode.PERCENT;
         cachedPercent = percent;
         sparkMax.set(percent);
+
     }
+
+
+
 
 
     @Override

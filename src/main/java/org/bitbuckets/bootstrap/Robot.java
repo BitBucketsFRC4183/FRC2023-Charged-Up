@@ -2,19 +2,13 @@ package org.bitbuckets.bootstrap;
 
 import config.Mattlib;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Threads;
 import edu.wpi.first.wpilibj.TimedRobot;
 import org.bitbuckets.auto.RobotEvent;
 import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.lib.ISetup;
-import org.bitbuckets.lib.log.LogRecord;
-import org.bitbuckets.lib.process.DisableProcess;
-import org.bitbuckets.lib.process.RootProcess;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import static java.lang.String.format;
+import org.bitbuckets.lib.ProcessMode;
+import org.bitbuckets.lib.core.Path;
+import org.bitbuckets.lib.process.SimpleProcess;
 
 /**
  * Launchpoint for the robot (It's like the launchpoint for the robot or something)
@@ -33,19 +27,9 @@ public class Robot extends TimedRobot {
 
     @Override
     public void robotInit() {
-        try {
-            Thread.sleep(2000); //i dont know why this works, but if you dont do it networktables literally expldoes
-        } catch (InterruptedException ex) {
-            throw new RuntimeException(ex);
-        }
 
+        builtProcess = new SimpleProcess(isReal(), new Path(new String[] {"root"}));
         try {
-            if (Mattlib.SHOULD_FORCE_KILL) {
-                builtProcess=new DisableProcess();
-            } else {
-                builtProcess = RootProcess.root();
-            }
-
             buildRobot.build(builtProcess);
 
         } catch (Exception e) {
@@ -54,27 +38,35 @@ public class Robot extends TimedRobot {
 
     }
 
-    boolean ran = false;
-
     @Override
     public void robotPeriodic() {
-        if (!ran) {
-            ran = true;
-            builtProcess.ready();
-        }
+        builtProcess.loop();
 
-        Threads.setCurrentThreadPriority(true, 99); //stupid hack
-        builtProcess.run();
+
+        if (Mattlib.DEFAULT_MODE == ProcessMode.DEBUG) {
+            builtProcess.logLoop();
+        }
+    }
+
+
+    @Override
+    public void autonomousPeriodic() {
+        builtProcess.onRobotEvent(RobotEvent.AUTO_PERIODIC);
+    }
+
+    @Override
+    public void teleopPeriodic() {
+        builtProcess.onRobotEvent(RobotEvent.TELEOP_PERIODIC);
     }
 
     @Override
     public void autonomousInit() {
-        builtProcess.onPhaseChangeEvent(RobotEvent.AUTO_INIT);
+        builtProcess.onRobotEvent(RobotEvent.AUTO_INIT);
     }
 
     @Override
     public void teleopInit() {
-        builtProcess.onPhaseChangeEvent(RobotEvent.TELEOP_INIT);
+        builtProcess.onRobotEvent(RobotEvent.TELEOP_INIT);
     }
 
 

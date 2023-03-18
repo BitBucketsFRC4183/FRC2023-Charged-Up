@@ -4,7 +4,7 @@ import config.Arm;
 import edu.wpi.first.math.VecBuilder;
 import org.bitbuckets.lib.control.IPIDCalculator;
 import org.bitbuckets.lib.core.HasLogLoop;
-import org.bitbuckets.lib.debug.IDebuggable;
+import org.bitbuckets.lib.log.IDebuggable;
 import org.bitbuckets.lib.hardware.IMotorController;
 
 public class ArmControl implements HasLogLoop {
@@ -82,7 +82,7 @@ public class ArmControl implements HasLogLoop {
     public void zeroArmAbs() {
         double absAngleRot = upperArm.getAbsoluteEncoder_rotations() - Arm.UPPER_ARM_OFFSET;
 
-        upperArm.forceOffset_mechanismRotations(-absAngleRot);
+        upperArm.forceOffset_mechanismRotations(absAngleRot);
 
     }
 
@@ -105,12 +105,12 @@ public class ArmControl implements HasLogLoop {
         upperArm.moveAtVoltage(0);
         lowerArm.moveAtVoltage(0);
 
-        gripperActuator.moveAtPercent(0.6);
+        gripperActuator.moveAtPercent(0.8);
     }
 
 
     public void closeGripper() {
-        gripperActuator.moveAtPercent(-0.6);
+        gripperActuator.moveAtPercent(-0.8);
 
     }
 
@@ -119,6 +119,12 @@ public class ArmControl implements HasLogLoop {
     }
 
 
+    public void stopTheArm()
+    {
+        lowerArm.moveAtVoltage(0);
+        upperArm.moveAtVoltage(0);
+
+    }
     public void commandArmToPercent(double lowerArmPercent, double upperArmPercent) {
         lowerArm.moveAtPercent(lowerArmPercent);
         upperArm.moveAtPercent(upperArmPercent);
@@ -138,4 +144,5 @@ public class ArmControl implements HasLogLoop {
     public void logLoop() {
         debuggable.log("abs-angle", upperArm.getAbsoluteEncoder_rotations());
     }
+
 }

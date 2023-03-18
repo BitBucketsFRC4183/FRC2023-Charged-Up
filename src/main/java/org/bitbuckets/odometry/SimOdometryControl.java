@@ -7,7 +7,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import org.bitbuckets.drive.IDriveControl;
 import org.bitbuckets.lib.core.HasLoop;
-import org.bitbuckets.lib.debug.IDebuggable;
+import org.bitbuckets.lib.log.IDebuggable;
 import org.bitbuckets.lib.log.ILoggable;
 
 public class SimOdometryControl implements IOdometryControl, HasLoop {
@@ -52,16 +52,19 @@ public class SimOdometryControl implements IOdometryControl, HasLoop {
     }
 
     @Override
+    public double getAccelerationZ() {
+        return 0;
+    }
+
+    @Override
     public void zero() {
         //reset
-        lastAngle_fieldRelative = Rotation2d.fromDegrees(0);
         estimator.resetPosition(Rotation2d.fromDegrees(0), driveControl.currentPositions(), new Pose2d());
     }
 
     @Override
-    public void setPos(Rotation2d gyroAngle, Pose2d poseMeters) {
-        lastAngle_fieldRelative = gyroAngle;
-        estimator.resetPosition(gyroAngle, driveControl.currentPositions(), poseMeters);
+    public void setPos(Pose2d poseMeters) {
+        estimator.resetPosition(poseMeters.getRotation(), driveControl.currentPositions(), poseMeters);
     }
 
     Rotation2d lastAngle_fieldRelative = Rotation2d.fromDegrees(0);

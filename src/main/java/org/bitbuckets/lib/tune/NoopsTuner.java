@@ -2,7 +2,7 @@ package org.bitbuckets.lib.tune;
 
 import java.util.function.Consumer;
 
-public class NoopsTuner<T> implements IForceSendTuner<T> {
+public class NoopsTuner<T> implements IValueTuner<T> {
 
     final T value;
 
@@ -25,13 +25,5 @@ public class NoopsTuner<T> implements IForceSendTuner<T> {
         return false;
     }
 
-    @Override
-    public void bind(Consumer<T> data) {
-        //do nothing
-    }
 
-    @Override
-    public void forceToValue(T value) {
-
-    }
 }

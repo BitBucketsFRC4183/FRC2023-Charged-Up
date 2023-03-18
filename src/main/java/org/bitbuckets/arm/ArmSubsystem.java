@@ -5,7 +5,7 @@ import org.bitbuckets.OperatorInput;
 import org.bitbuckets.auto.AutoFSM;
 import org.bitbuckets.auto.AutoSubsystem;
 import org.bitbuckets.lib.core.HasLoop;
-import org.bitbuckets.lib.debug.IDebuggable;
+import org.bitbuckets.lib.log.IDebuggable;
 
 public class ArmSubsystem implements HasLoop {
 
@@ -126,14 +126,21 @@ public class ArmSubsystem implements HasLoop {
             armControl.openGripper();
         } else if (operatorInput.closeGripperPressed()) {
             armControl.closeGripper();
-        } else if (!operatorInput.closeGripperPressed() && !operatorInput.openGripperPressed()) {
-            armControl.stopGripper();
+
         } else if (shouldDoNext == ArmFSM.MANUAL) {
             armControl.commandArmToPercent(
                     operatorInput.getLowerArm_PercentOutput() * 0.35,
                     operatorInput.getUpperArm_PercentOutput() * 0.35
             );
-        } else if (shouldDoNext == ArmFSM.LOAD) {
+        }
+
+        if (shouldDoNext == ArmFSM.STOW) {
+            armControl.commandArmToState(
+                    0.19,
+                    -0.4
+            );
+        }
+        if (shouldDoNext == ArmFSM.LOAD) {
             armControl.commandArmToState(
                     0.008,
                     -0.25
@@ -151,16 +158,37 @@ public class ArmSubsystem implements HasLoop {
             if (armControl.getErrorQuantity() > Arm.ARM_TOLERANCE_TO_MOVE_ON) {
                 shouldDoNext = ArmFSM.IDLE;
             }
-        } else if (shouldDoNext == ArmFSM.SCORE_MID) {
+        }
+
+        if (shouldDoNext == ArmFSM.SCORE_MID) {
+
             armControl.commandArmToState(0.008, -0.227);
-        } else if (shouldDoNext == ArmFSM.SCORE_HIGH) {
-            armControl.commandArmToState(-0.126, 0.05);
-        } else if (shouldDoNext == ArmFSM.GROUND_INTAKE) {
+
+
+        }
+        if (shouldDoNext == ArmFSM.SCORE_HIGH) {
+            //TODO technically upeprAmr should be 0 but because of slack we need to compensate for gravity that FF cant
+            armControl.commandArmToState(-0.126, 0.025);
+
+
+        }
+        if (shouldDoNext == ArmFSM.GROUND_INTAKE) {
             armControl.commandArmToState(0.581, -0.274);
-        } else if (shouldDoNext == ArmFSM.UNSTOW) {
+
+        }
+
+        if (shouldDoNext == ArmFSM.UNSTOW) {
             armControl.commandArmToState(- 0.1,armControl.upperArm.getMechanismPositionAccum_rot());
-        } else if (shouldDoNext == ArmFSM.HUMAN_INTAKE) {
+
+
+        }
+
+        if (shouldDoNext == ArmFSM.HUMAN_INTAKE) {
             armControl.commandArmToState(0.008, -0.230);
+        }
+
+        if (shouldDoNext == ArmFSM.IDLE) {
+            armControl.stopTheArm();
         }
         //TODO fill out the rest
     }
