@@ -123,17 +123,19 @@ public class DriveSubsystem implements HasLifecycle, HasLogLoop {
 
     @Override
     public void autonomousInit() {
-        
+
     }
 
     @Override
     public void disabledInit() {
         nextStateShould = DriveFSM.IDLE;
+        driveControl.stop();
     }
 
     @Override
     public void disabledPeriodic() {
         nextStateShould = DriveFSM.IDLE;
+        driveControl.stop();
     }
 
 
