@@ -82,7 +82,7 @@ public class ArmControl implements HasLogLoop {
     public void zeroArmAbs() {
         double absAngleRot = upperArm.getAbsoluteEncoder_rotations() - Arm.UPPER_ARM_OFFSET;
 
-        upperArm.forceOffset_mechanismRotations(-absAngleRot);
+        upperArm.forceOffset_mechanismRotations(absAngleRot);
 
     }
 
