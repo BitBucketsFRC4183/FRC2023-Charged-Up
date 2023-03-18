@@ -126,4 +126,46 @@ public class SimpleProcess implements IProcess {
             loop.loop();
         }
     }
+
+    @Override
+    public void autonomousInit() {
+        for (HasLifecycle loop : lifecycles) {
+            loop.autonomousInit();
+        }
+    }
+
+    @Override
+    public void autonomousPeriodic() {
+        for (HasLifecycle loop : lifecycles) {
+            loop.autonomousPeriodic();
+        }
+    }
+
+    @Override
+    public void teleopInit() {
+        for (HasLifecycle loop : lifecycles) {
+            loop.teleopInit();
+        }
+    }
+
+    @Override
+    public void teleopPeriodic() {
+        for (HasLifecycle loop : lifecycles) {
+            loop.teleopPeriodic();
+        }
+    }
+
+    @Override
+    public void disabledInit() {
+        for (HasLifecycle loop : lifecycles) {
+            loop.disabledInit();
+        }
+    }
+
+    @Override
+    public void disabledPeriodic() {
+        for (HasLifecycle loop : lifecycles) {
+            loop.disabledPeriodic();
+        }
+    }
 }
