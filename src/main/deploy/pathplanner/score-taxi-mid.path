@@ -21,11 +21,7 @@
         ],
         "executionBehavior": "parallel",
         "waitBehavior": "before",
-<<<<<<< HEAD
         "waitTime": 0.5
-=======
-        "waitTime": 1
->>>>>>> main
       }
     },
     {
@@ -52,7 +48,7 @@
         ],
         "executionBehavior": "parallel",
         "waitBehavior": "none",
-        "waitTime": 0
+        "waitTime": 3
       }
     },
     {
@@ -79,7 +75,7 @@
         ],
         "executionBehavior": "parallel",
         "waitBehavior": "none",
-        "waitTime": 1
+        "waitTime": 0.5
       }
     },
     {
@@ -106,7 +102,7 @@
         ],
         "executionBehavior": "parallel",
         "waitBehavior": "none",
-        "waitTime": 0
+        "waitTime": 2
       }
     },
     {
@@ -134,7 +130,7 @@
 >>>>>>> main
         "executionBehavior": "parallel",
         "waitBehavior": "none",
-        "waitTime": 0
+        "waitTime": 1
       }
     }
   ],
