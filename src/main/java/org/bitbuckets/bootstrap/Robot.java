@@ -70,6 +70,11 @@ public class Robot extends TimedRobot {
 
     @Override
     public void disabledInit() {
-        super.disabledInit();
+        builtProcess.disabledInit();
+    }
+
+    @Override
+    public void disabledPeriodic() {
+        builtProcess.disabledPeriodic();
     }
 }
