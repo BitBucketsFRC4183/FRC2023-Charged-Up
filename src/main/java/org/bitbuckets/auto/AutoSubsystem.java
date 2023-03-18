@@ -67,14 +67,6 @@ public class AutoSubsystem implements HasLogLoop, HasLoop, HasLifecycle {
 
     AutoPath toUseLogOnly = AutoPath.NONE;
 
-    void transitionToAutoRun() {
-        AutoPath toUse = pathToUse.readValue();
-        toUseLogOnly = toUse;
-        instance = autoControl.generateAndStartPath(toUse);
-        iteration++;
-
-    }
-
     @Override
     public void logLoop() {
         debug.log("current-state", state);
@@ -85,7 +77,10 @@ public class AutoSubsystem implements HasLogLoop, HasLoop, HasLifecycle {
 
     @Override
     public void autonomousInit() {
-        state = AutoFSM.AUTO_RUN;
+        AutoPath toUse = pathToUse.readValue();
+        toUseLogOnly = toUse;
+        instance = autoControl.generateAndStartPath(toUse);
+        iteration++;
     }
 
     @Override
@@ -115,7 +110,7 @@ public class AutoSubsystem implements HasLogLoop, HasLoop, HasLifecycle {
                 break;
             case INITIALIZATION:
                 if (DriverStation.isAutonomousEnabled()) {
-                    transitionToAutoRun();
+                    autonomousInit();
 
                     state = AutoFSM.AUTO_RUN;
                     hasChanged = true;
@@ -168,7 +163,7 @@ public class AutoSubsystem implements HasLogLoop, HasLoop, HasLifecycle {
                 }
                 //this can only happen in testing
                 if (DriverStation.isAutonomousEnabled()) {
-                    transitionToAutoRun();
+                    autonomousInit();
 
                     state = AutoFSM.AUTO_RUN;
                     hasChanged = true;
