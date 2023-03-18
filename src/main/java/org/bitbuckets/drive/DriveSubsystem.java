@@ -5,10 +5,10 @@ import config.Drive;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import org.bitbuckets.OperatorInput;
-import org.bitbuckets.auto.AutoFSM;
 import org.bitbuckets.auto.AutoSubsystem;
 import org.bitbuckets.drive.balance.BalanceControl;
 import org.bitbuckets.drive.holo.HoloControl;
+import org.bitbuckets.lib.core.HasLifecycle;
 import org.bitbuckets.lib.core.HasLoop;
 import org.bitbuckets.lib.log.IDebuggable;
 import org.bitbuckets.lib.tune.IValueTuner;
@@ -22,7 +22,7 @@ import java.util.Optional;
  * tags: high priority
  * TODO this is becoming a sort of god class, some of this logic has to break out into smaller subsystems
  */
-public class DriveSubsystem implements HasLoop {
+public class DriveSubsystem implements HasLoop, HasLifecycle {
 
 
     final OperatorInput input;
@@ -59,7 +59,6 @@ public class DriveSubsystem implements HasLoop {
             odometryControl.zero();
         }
 
-        handleStateTransitions();
         handleLogic();
 
 
@@ -70,36 +69,51 @@ public class DriveSubsystem implements HasLoop {
 
     DriveFSM nextStateShould = DriveFSM.IDLE;
 
-    void handleStateTransitions() {
-
-
-        if (autoSubsystem.state() == AutoFSM.TELEOP) {
-            if (nextStateShould == DriveFSM.AUTO_PATHFINDING || nextStateShould == DriveFSM.IDLE) {
-                nextStateShould = DriveFSM.MANUAL;
-            } else if (input.isVisionDrivePressed() && visionControl.estimateBestVisionTarget().isPresent()) {
-                nextStateShould = DriveFSM.VISION;
-            } else if (nextStateShould == DriveFSM.VISION && !input.isVisionDrivePressed()) {
-                nextStateShould = DriveFSM.MANUAL;
-            } else if (input.isManualDrivePressed()) {
-                nextStateShould = DriveFSM.MANUAL;
-            } else if (input.isAutoBalancePressed()) {
-                nextStateShould = DriveFSM.BALANCE;
-            } else if (nextStateShould == DriveFSM.BALANCE && !input.isAutoBalancePressed()) {
-                shouldStop = false;
-                nextStateShould = DriveFSM.MANUAL;
-            }
-        } else if (autoSubsystem.state() == AutoFSM.AUTO_RUN) {
-            if (autoSubsystem.sampleHasEventStarted("auto-balance")) {
-                nextStateShould = DriveFSM.BALANCE;
-            } else if (autoSubsystem.sampleHasEventStarted("do-vision")) {
-                nextStateShould = DriveFSM.VISION;
-            } else {
-                nextStateShould = DriveFSM.AUTO_PATHFINDING;
-            }
+    @Override
+    public void autonomousPeriodic() {
+        if (autoSubsystem.sampleHasEventStarted("auto-balance")) {
+            nextStateShould = DriveFSM.BALANCE;
+        } else if (autoSubsystem.sampleHasEventStarted("do-vision")) {
+            nextStateShould = DriveFSM.VISION;
+        } else {
+            nextStateShould = DriveFSM.AUTO_PATHFINDING;
         }
+    }
 
+    @Override
+    public void teleopPeriodic() {
+        if (input.isVisionDrivePressed() && visionControl.estimateBestVisionTarget().isPresent()) {
+            nextStateShould = DriveFSM.VISION;
+        } else if (nextStateShould == DriveFSM.VISION && !input.isVisionDrivePressed()) {
+            nextStateShould = DriveFSM.MANUAL;
+        } else if (input.isManualDrivePressed()) {
+            nextStateShould = DriveFSM.MANUAL;
+        } else if (input.isAutoBalancePressed()) {
+            nextStateShould = DriveFSM.BALANCE;
+        } else if (nextStateShould == DriveFSM.BALANCE && !input.isAutoBalancePressed()) {
+            shouldStop = false;
+            nextStateShould = DriveFSM.MANUAL;
+        }
+    }
 
+    @Override
+    public void teleopInit() {
+        nextStateShould = DriveFSM.MANUAL;
+    }
 
+    @Override
+    public void autonomousInit() {
+        nextStateShould = DriveFSM.AUTO_PATHFINDING;
+    }
+
+    @Override
+    public void disabledInit() {
+        nextStateShould = DriveFSM.IDLE;
+    }
+
+    @Override
+    public void disabledPeriodic() {
+        nextStateShould = DriveFSM.IDLE;
     }
 
     void handleLogic() {
@@ -153,7 +167,6 @@ public class DriveSubsystem implements HasLoop {
             driveControl.stop();
         }
     }
-
 
 
     void teleopVision() {
@@ -241,13 +254,13 @@ public class DriveSubsystem implements HasLoop {
                 shouldStop = true;
                 System.out.println("AAAAAAAAAAAAAAA");
 
-                driveControl.drive(new ChassisSpeeds(Math.signum(Pitch_deg) *1.80,0,0));
+                driveControl.drive(new ChassisSpeeds(Math.signum(Pitch_deg) * 1.80, 0, 0));
                 return;
             } else {
                 double output = balanceControl.calculateBalanceOutput(Pitch_deg, 0);
                 debuggable.log("control-output-autobalance", output);
 
-                driveControl.drive(new ChassisSpeeds(-output , 0.0, 0.0));
+                driveControl.drive(new ChassisSpeeds(-output, 0.0, 0.0));
             }
 
 

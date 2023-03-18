@@ -2,12 +2,12 @@ package org.bitbuckets.arm;
 
 import config.Arm;
 import org.bitbuckets.OperatorInput;
-import org.bitbuckets.auto.AutoFSM;
 import org.bitbuckets.auto.AutoSubsystem;
+import org.bitbuckets.lib.core.HasLifecycle;
 import org.bitbuckets.lib.core.HasLoop;
 import org.bitbuckets.lib.log.IDebuggable;
 
-public class ArmSubsystem implements HasLoop {
+public class ArmSubsystem implements HasLoop, HasLifecycle {
 
     final OperatorInput operatorInput;
     final ArmControl armControl;
@@ -37,86 +37,99 @@ public class ArmSubsystem implements HasLoop {
 
 
         //handle inputs, which will calculate what the next input of the robot is
-        handleStateTransitions();
         handleLogic();
 
         debuggable.log("state", shouldDoNext);
     }
 
-
-    //generates what the FSM should do. Will modify shouldDoNext if something has happened
-    void handleStateTransitions() {
-        if (operatorInput.isStopPidPressed() && autoSubsystem.state() != AutoFSM.AUTO_RUN) {
-            shouldDoNext = ArmFSM.IDLE;
-        } else if (autoSubsystem.state() == AutoFSM.DISABLED) {
-            shouldDoNext = ArmFSM.IDLE;
-        } else if (autoSubsystem.state() == AutoFSM.AUTO_RUN) {
-
-
-            //Only scoring high when moving arm in auto
-
-            if (autoSubsystem.sampleHasEventStarted("arm-human-intake")) {
-                shouldDoNext = ArmFSM.HUMAN_INTAKE;
-                return;
-            }
-            if (autoSubsystem.sampleHasEventStarted("arm-ground-intake")) {
-                shouldDoNext = ArmFSM.GROUND_INTAKE;
-                return;
-            }
-
-            if (autoSubsystem.sampleHasEventStarted("gripper-open")) {
-                shouldDoNext = ArmFSM.ACTUATE_GRIPPER;
-                return;
-            }
-
-            if (autoSubsystem.sampleHasEventStarted("arm-scoreHigh")) {
-                shouldDoNext = ArmFSM.SCORE_HIGH;
-                return;
-            }
-
-            if (autoSubsystem.sampleHasEventStarted("arm-prepare")) {
-                shouldDoNext = ArmFSM.PREPARE;
-                return;
-            }
-
-            if (autoSubsystem.sampleHasEventStarted("arm-unstow")) {
-                shouldDoNext = ArmFSM.UNSTOW;
-                return;
-            }
+    @Override
+    public void autonomousPeriodic() {
+        if (autoSubsystem.sampleHasEventStarted("arm-human-intake")) {
+            shouldDoNext = ArmFSM.HUMAN_INTAKE;
+            return;
+        }
+        if (autoSubsystem.sampleHasEventStarted("arm-ground-intake")) {
+            shouldDoNext = ArmFSM.GROUND_INTAKE;
+            return;
         }
 
-        if (autoSubsystem.state() == AutoFSM.TELEOP) {
+        if (autoSubsystem.sampleHasEventStarted("gripper-open")) {
+            shouldDoNext = ArmFSM.ACTUATE_GRIPPER;
+            return;
+        }
 
-            if (operatorInput.isHumanIntakePressed()) {
-                shouldDoNext = ArmFSM.HUMAN_INTAKE;
-                return;
-            }
+        if (autoSubsystem.sampleHasEventStarted("arm-scoreHigh")) {
+            shouldDoNext = ArmFSM.SCORE_HIGH;
+            return;
+        }
 
-            if (operatorInput.isScoreHighPressed()) {
-                shouldDoNext = ArmFSM.SCORE_HIGH;
-                return;
-            }
-            if (operatorInput.isScoreMidPressed()) {
-                shouldDoNext = ArmFSM.SCORE_MID;
-                return;
-            }
-            if (operatorInput.isScoreLowPressed()) {
-                shouldDoNext = ArmFSM.SCORE_LOW;
-                return;
-            }
-            if (operatorInput.isLoadPresed()) {
-                shouldDoNext = ArmFSM.LOAD;
-                return;
-            }
+        if (autoSubsystem.sampleHasEventStarted("arm-prepare")) {
+            shouldDoNext = ArmFSM.PREPARE;
+            return;
+        }
 
-            if (operatorInput.isManualModePressed()) {
-                shouldDoNext = ArmFSM.MANUAL;
-                return;
-            }
-
-
+        if (autoSubsystem.sampleHasEventStarted("arm-unstow")) {
+            shouldDoNext = ArmFSM.UNSTOW;
+            return;
         }
     }
+
+    @Override
+    public void teleopPeriodic() {
+        if (operatorInput.isStopPidPressed()) {
+            shouldDoNext = ArmFSM.IDLE;
+            return;
+        }
+
+        if (operatorInput.isHumanIntakePressed()) {
+            shouldDoNext = ArmFSM.HUMAN_INTAKE;
+            return;
+        }
+
+        if (operatorInput.isScoreHighPressed()) {
+            shouldDoNext = ArmFSM.SCORE_HIGH;
+            return;
+        }
+        if (operatorInput.isScoreMidPressed()) {
+            shouldDoNext = ArmFSM.SCORE_MID;
+            return;
+        }
+        if (operatorInput.isScoreLowPressed()) {
+            shouldDoNext = ArmFSM.SCORE_LOW;
+            return;
+        }
+        if (operatorInput.isLoadPresed()) {
+            shouldDoNext = ArmFSM.LOAD;
+            return;
+        }
+
+        if (operatorInput.isManualModePressed()) {
+            shouldDoNext = ArmFSM.MANUAL;
+            return;
+        }
+    }
+
+    @Override
+    public void autonomousInit() {
+        shouldDoNext = ArmFSM.IDLE;
+    }
+
+    @Override
+    public void teleopInit() {
+        shouldDoNext = ArmFSM.IDLE;
+    }
+
+    @Override
+    public void disabledInit() {
+        shouldDoNext = ArmFSM.IDLE;
+    }
+
+    @Override
+    public void disabledPeriodic() {
+        shouldDoNext = ArmFSM.IDLE;
+    }
+
+    //generates what the FSM should do. Will modify shouldDoNext if something has happened
 
     //acts on shouldDoNext and then updates it to the result state if it has managed to complete it's task
     void handleLogic() {
@@ -180,7 +193,7 @@ public class ArmSubsystem implements HasLoop {
         }
 
         if (shouldDoNext == ArmFSM.UNSTOW) {
-            armControl.commandArmToState(- 0.1,armControl.upperArm.getMechanismPositionAccum_rot());
+            armControl.commandArmToState(-0.1, armControl.upperArm.getMechanismPositionAccum_rot());
 
 
         }
