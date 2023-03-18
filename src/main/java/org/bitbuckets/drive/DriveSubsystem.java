@@ -36,7 +36,6 @@ public class DriveSubsystem implements HasLoop {
     final IValueTuner<OrientationChooser> orientation;
     final IDebuggable debuggable;
 
-
     public enum OrientationChooser {
         FIELD_ORIENTED,
         ROBOT_ORIENTED,
@@ -76,7 +75,6 @@ public class DriveSubsystem implements HasLoop {
 
     void handleStateTransitions() {
 
-
         if (autoSubsystem.state() == AutoFSM.TELEOP) {
             if (nextStateShould == DriveFSM.AUTO_PATHFINDING || nextStateShould == DriveFSM.IDLE) {
                 nextStateShould = DriveFSM.MANUAL;
@@ -100,6 +98,8 @@ public class DriveSubsystem implements HasLoop {
             } else {
                 nextStateShould = DriveFSM.AUTO_PATHFINDING;
             }
+
+
         }
 
 
@@ -147,7 +147,7 @@ public class DriveSubsystem implements HasLoop {
 
             ChassisSpeeds targetSpeeds_robotRelative = trueFieldRelativeToInitializationRelative(
                     targetSpeeds_trueField,
-                    odometryControl.getRotation2d_initializationRelative()
+                    odometryControl.getGyro().getRotation2d_initializationRelative()
             );
             driveControl.drive(targetSpeeds_robotRelative);
 
@@ -156,7 +156,9 @@ public class DriveSubsystem implements HasLoop {
         }
     }
 
-    public ChassisSpeeds trueFieldRelativeToInitializationRelative(ChassisSpeeds robotSpeeds_trueFieldRelative, Rotation2d robotAngle_initializationRelative ) {
+
+
+    public static ChassisSpeeds trueFieldRelativeToInitializationRelative(ChassisSpeeds robotSpeeds_trueFieldRelative, Rotation2d robotAngle_initializationRelative ) {
 
         //true field relative's zero is in the direction from the blue wall to red wall
         //initialization relative's zero is either the direction facing the blue wall or the direction facing the red wall
@@ -167,7 +169,7 @@ public class DriveSubsystem implements HasLoop {
 
         if (DriverStation.getAlliance() == DriverStation.Alliance.Blue) {
             //The initialization relative angle thinks zero is in the direction of the blue wall, so flip so that 0 is in the direction of the red wall
-            trueFieldRelative = robotAngle_initializationRelative.plus(Rotation2d.fromDegrees(180));
+            trueFieldRelative = robotAngle_initializationRelative;
         } else {
             //the initialization relative angle thinks zero is in the direction of the red wall, so do nothing
             trueFieldRelative = robotAngle_initializationRelative;
@@ -179,7 +181,7 @@ public class DriveSubsystem implements HasLoop {
                 + trueFieldRelative.getSin() * robotSpeeds_trueFieldRelative.vxMetersPerSecond;
 
         double vy_initializationRelative =
-                trueFieldRelative.getCos() * robotSpeeds_trueFieldRelative.vyMetersPerSecond
+                -trueFieldRelative.getCos() * robotSpeeds_trueFieldRelative.vyMetersPerSecond
                 + trueFieldRelative.getSin() * robotSpeeds_trueFieldRelative.vyMetersPerSecond;
 
 
@@ -188,18 +190,8 @@ public class DriveSubsystem implements HasLoop {
 
     }
 
-    public ChassisSpeeds allianceRelativeToInitializationRelative(ChassisSpeeds robotSpeeds_allianceRelative, Rotation2d initializationRelative) {
-        Rotation2d allianceRelative = initializationRelative; //We can say this because the gyro starts always considering 0 to be alliance-relative
-
-        double vx_initializationRelative =
-                allianceRelative.getCos() * robotSpeeds_allianceRelative.vxMetersPerSecond
-                        + allianceRelative.getSin() * robotSpeeds_allianceRelative.vxMetersPerSecond;
-
-        double vy_initializationRelative =
-                allianceRelative.getCos() * robotSpeeds_allianceRelative.vyMetersPerSecond
-                        + allianceRelative.getSin() * robotSpeeds_allianceRelative.vyMetersPerSecond;
-
-        return new ChassisSpeeds(vx_initializationRelative, vy_initializationRelative, robotSpeeds_allianceRelative.omegaRadiansPerSecond);
+    public static ChassisSpeeds allianceRelativeToInitializationRelative(ChassisSpeeds robotSpeeds_allianceRelative, Rotation2d initializationRelative) {
+        return ChassisSpeeds.fromFieldRelativeSpeeds(robotSpeeds_allianceRelative.vxMetersPerSecond, robotSpeeds_allianceRelative.vyMetersPerSecond, robotSpeeds_allianceRelative.omegaRadiansPerSecond, initializationRelative);
     }
 
 
@@ -214,7 +206,7 @@ public class DriveSubsystem implements HasLoop {
             driveControl.drive(
                     trueFieldRelativeToInitializationRelative(
                             controlEffort_trueFieldRelative,
-                            odometryControl.getRotation2d_initializationRelative()
+                            odometryControl.getGyro().getRotation2d_initializationRelative()
 
                     )
             );
@@ -236,14 +228,23 @@ public class DriveSubsystem implements HasLoop {
 
 
 
+        debuggable.log("x-field", desiredSpeeds_allianceRelative.vxMetersPerSecond);
+        debuggable.log("y-field", desiredSpeeds_allianceRelative.vyMetersPerSecond);
+
+
         switch (orientation.readValue()) {
             case FIELD_ORIENTED:
 
+                ChassisSpeeds desiredSpeeds_robotRelative = allianceRelativeToInitializationRelative(
+                        desiredSpeeds_allianceRelative,
+                        odometryControl.getGyro().getRotation2d_initializationRelative()
+                );
+
+                debuggable.log("x-robot", desiredSpeeds_robotRelative.vxMetersPerSecond);
+                debuggable.log("y-robot", desiredSpeeds_robotRelative.vyMetersPerSecond);
+
                 driveControl.drive(
-                        allianceRelativeToInitializationRelative(
-                                desiredSpeeds_allianceRelative,
-                                odometryControl.getRotation2d_initializationRelative()
-                        )
+                    desiredSpeeds_robotRelative
                 );
 
                 break;
@@ -261,10 +262,10 @@ public class DriveSubsystem implements HasLoop {
     boolean shouldStop = false;
 
     void balance() {
-        double Pitch_deg = odometryControl.getPitch_deg();
+        double Pitch_deg = odometryControl.getGyro().getAllianceRelativePitch_deg();
 
         debuggable.log("pitch-now", Pitch_deg);
-        debuggable.log("accel", odometryControl.getAccelerationZ());
+        debuggable.log("accel", odometryControl.getGyro().getAccelerationZ());
         if (Math.abs(Pitch_deg) > 2) {
 
             if (shouldStop) {
@@ -272,7 +273,7 @@ public class DriveSubsystem implements HasLoop {
                 return;
             }
 
-            if (odometryControl.getAccelerationZ() > Drive.ACCEL_THRESHOLD_AUTOBALANCE) {
+            if (odometryControl.getGyro().getAccelerationZ() > Drive.ACCEL_THRESHOLD_AUTOBALANCE) {
                 shouldStop = true;
 
                 //all initialization relative. Is t

@@ -22,42 +22,68 @@ public class TransformUtil {
         }
     }
 
-     static PathPlannerTrajectory.PathPlannerState transformStateForAlliance(
-            PathPlannerTrajectory.PathPlannerState state, DriverStation.Alliance alliance) throws NoSuchFieldException, IllegalAccessException {
-        if (alliance == DriverStation.Alliance.Red) {
-            // Create a new state so that we don't overwrite the original
-            PathPlannerTrajectory.PathPlannerState transformedState = new PathPlannerTrajectory.PathPlannerState();
+     static PathPlannerTrajectory.PathPlannerState transformStateForAlliance(PathPlannerTrajectory.PathPlannerState state, DriverStation.Alliance alliance) throws NoSuchFieldException, IllegalAccessException {
+         // Create a new state so that we don't overwrite the original
+         boolean red = alliance == DriverStation.Alliance.Red;
+         double coef = 1;
+         if (!red) {
+             coef = -1;
+         }
 
-            Translation2d transformedTranslation =
-                    new Translation2d(16.48 - state.poseMeters.getX(), state.poseMeters.getY());
 
-            System.out.println(String.format("Pre: Heading %s | Holo %s", state.poseMeters.getRotation().getDegrees(), state.holonomicRotation.getDegrees()));
+         PathPlannerTrajectory.PathPlannerState transformedState = new PathPlannerTrajectory.PathPlannerState();
 
-            Rotation2d transformedHeading = state.poseMeters.getRotation();
-            Rotation2d transformedHolonomicRotation = state.holonomicRotation.rotateBy(Rotation2d.fromDegrees(180));
 
-            System.out.println(String.format("Post: Heading %s | Holo %s", transformedHeading.getDegrees(), transformedHolonomicRotation.getDegrees()));
+         Translation2d transformedTranslation;
+         if (red) {
+             transformedTranslation =
+                     new Translation2d(16.48 - state.poseMeters.getX(), state.poseMeters.getY());
+         } else {
+             transformedTranslation =
+                     state.poseMeters.getTranslation();
+         }
 
-            transformedState.timeSeconds = state.timeSeconds;
-            transformedState.velocityMetersPerSecond = state.velocityMetersPerSecond;
-            transformedState.accelerationMetersPerSecondSq = state.accelerationMetersPerSecondSq;
-            transformedState.poseMeters = new Pose2d(transformedTranslation, transformedHeading);
-            transformedState.angularVelocityRadPerSec = -state.angularVelocityRadPerSec;
-            transformedState.holonomicRotation = transformedHolonomicRotation;
-            transformedState.holonomicAngularVelocityRadPerSec = -state.holonomicAngularVelocityRadPerSec;
-            Field curveRadius = PathPlannerTrajectory.PathPlannerState.class.getDeclaredField("curveRadius");
-            curveRadius.setAccessible(true);//Very important, this allows the setting to work.
-            curveRadius.set(transformedState, -(double)curveRadius.get(transformedState));
-            transformedState.curvatureRadPerMeter = -state.curvatureRadPerMeter;
-            Field deltaPos = PathPlannerTrajectory.PathPlannerState.class.getDeclaredField("deltaPos");
-            deltaPos.setAccessible(true);//Very important, this allows the setting to work.
-            deltaPos.set(transformedState, deltaPos.get(transformedState));
 
-            return transformedState;
-        } else {
-            return state;
-        }
+         System.out.println(String.format("Pre: Heading %s | Holo %s", state.poseMeters.getRotation().getDegrees(), state.holonomicRotation.getDegrees()));
+
+         Rotation2d transformedHeading;
+         //zero clue why this works
+         if (red) {
+             transformedHeading = state.poseMeters.getRotation();
+         } else {
+             System.out.println("EEEEEE");
+             transformedHeading = state.poseMeters.getRotation().rotateBy(Rotation2d.fromDegrees(180));
+         }
+         Rotation2d transformedHolonomicRotation;
+         if (red) {
+             transformedHolonomicRotation = state.holonomicRotation.rotateBy(Rotation2d.fromDegrees(180));
+         } else {
+             transformedHolonomicRotation = state.holonomicRotation.rotateBy(Rotation2d.fromDegrees(180)).rotateBy(Rotation2d.fromDegrees(180));
+         }
+          //This needs to rotate for some reason LOL
+
+
+         transformedState.timeSeconds = state.timeSeconds;
+         transformedState.velocityMetersPerSecond = state.velocityMetersPerSecond;
+         transformedState.accelerationMetersPerSecondSq = state.accelerationMetersPerSecondSq;
+         transformedState.poseMeters = new Pose2d(transformedTranslation, transformedHeading);
+
+
+
+         transformedState.angularVelocityRadPerSec = coef * state.angularVelocityRadPerSec;
+         transformedState.holonomicRotation = transformedHolonomicRotation;
+         transformedState.holonomicAngularVelocityRadPerSec = coef * state.holonomicAngularVelocityRadPerSec;
+         Field curveRadius = PathPlannerTrajectory.PathPlannerState.class.getDeclaredField("curveRadius");
+         curveRadius.setAccessible(true);//Very important, this allows the setting to work.
+         curveRadius.set(transformedState, coef * (double)curveRadius.get(transformedState));
+         transformedState.curvatureRadPerMeter = coef * state.curvatureRadPerMeter;
+         Field deltaPos = PathPlannerTrajectory.PathPlannerState.class.getDeclaredField("deltaPos");
+         deltaPos.setAccessible(true);//Very important, this allows the setting to work.
+         deltaPos.set(transformedState, deltaPos.get(transformedState));
+
+         return transformedState;
     }
+
 
     public static PathPlannerTrajectory transform(PathPlannerTrajectory trajectory, DriverStation.Alliance alliance) {
         try {
@@ -69,24 +95,20 @@ public class TransformUtil {
 
     static PathPlannerTrajectory transformTrajectoryForAlliance(
             PathPlannerTrajectory trajectory, DriverStation.Alliance alliance) throws NoSuchFieldException, IllegalAccessException {
-        if (alliance == DriverStation.Alliance.Red) {
-            List<Trajectory.State> transformedStates = new ArrayList<>();
+        List<Trajectory.State> transformedStates = new ArrayList<>();
 
-            for (Trajectory.State s : trajectory.getStates()) {
-                PathPlannerTrajectory.PathPlannerState state = (PathPlannerTrajectory.PathPlannerState) s;
+        for (Trajectory.State s : trajectory.getStates()) {
+            PathPlannerTrajectory.PathPlannerState state = (PathPlannerTrajectory.PathPlannerState) s;
 
-                transformedStates.add(transformStateForAlliance(state, alliance));
-            }
-
-            return new PathPlannerTrajectory(
-                    transformedStates,
-                    trajectory.getMarkers(),
-                    trajectory.getStartStopEvent(),
-                    trajectory.getEndStopEvent(),
-                    trajectory.fromGUI);
-        } else {
-            return trajectory;
+            transformedStates.add(transformStateForAlliance(state, alliance));
         }
+
+        return new PathPlannerTrajectory(
+                transformedStates,
+                trajectory.getMarkers(),
+                trajectory.getStartStopEvent(),
+                trajectory.getEndStopEvent(),
+                trajectory.fromGUI);
     }
 
 }

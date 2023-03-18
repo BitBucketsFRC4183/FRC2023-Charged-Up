@@ -18,6 +18,11 @@ public class NavxGyro implements IGyro {
     }
 
     @Override
+    public Rotation2d getRotation2d_initializationAllianceRelative() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public double getAllianceRelativeYaw_deg() {
         return ahrs.getYaw();
     }

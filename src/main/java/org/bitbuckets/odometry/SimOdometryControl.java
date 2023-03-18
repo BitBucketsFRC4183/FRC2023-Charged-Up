@@ -7,6 +7,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import org.bitbuckets.drive.IDriveControl;
 import org.bitbuckets.lib.core.HasLoop;
+import org.bitbuckets.lib.hardware.IGyro;
 import org.bitbuckets.lib.log.IDebuggable;
 import org.bitbuckets.lib.log.ILoggable;
 
@@ -32,29 +33,10 @@ public class SimOdometryControl implements IOdometryControl, HasLoop {
     }
 
     @Override
-    public Rotation2d getRotation2d_initializationRelative() {
-        return lastAngle_initializationRelative;
+    public IGyro getGyro() {
+        throw new UnsupportedOperationException();
     }
 
-    @Override
-    public double getYaw_deg() {
-        return estimator.getEstimatedPosition().getRotation().getDegrees();
-    }
-
-    @Override
-    public double getPitch_deg() {
-        return 0;
-    }
-
-    @Override
-    public double getRoll_deg() {
-        return 0;
-    }
-
-    @Override
-    public double getAccelerationZ() {
-        return 0;
-    }
 
     @Override
     public void zero() {

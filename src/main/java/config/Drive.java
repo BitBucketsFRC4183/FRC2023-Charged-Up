@@ -31,7 +31,7 @@ public interface Drive {
     PIDConfig THETA_HOLO_PID = new PIDConfig(1,0,0,Optional.empty(),Optional.empty());
     TrapezoidProfile.Constraints THETA_CONSTRAINTS = new TrapezoidProfile.Constraints(2,2);
 
-    double SLOW_MODE_COEFFICIENT = 0.3;
+    double SLOW_MODE_COEFFICIENT = 1;
 
     PIDConfig DRIVE_SIM_PID = new PIDConfig(
             0,
@@ -78,5 +78,7 @@ public interface Drive {
     Vector<N3> STD_VISION = VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(10));
 
     SimInertiaConfig STEER_DC_CONFIG = new SimInertiaConfig(0.002, Matrix.mat(Nat.N1(), Nat.N1()).fill(0));
+
+    //TODO why the fuck does this work?
     SimpleMotorFeedforward FF = new SimpleMotorFeedforward(0.65292, 2.3053, 0.37626); //converts velocity to voltage
 }

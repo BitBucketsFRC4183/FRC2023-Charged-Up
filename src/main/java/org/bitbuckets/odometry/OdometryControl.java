@@ -6,6 +6,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import org.bitbuckets.drive.IDriveControl;
 import org.bitbuckets.lib.core.HasLoop;
@@ -17,9 +18,8 @@ import org.bitbuckets.vision.IVisionControl;
 import java.util.Optional;
 
 public class OdometryControl implements HasLoop, IOdometryControl {
-
     final Vector<N3> visionMeasurementStdDevs;
-    final SwerveDrivePoseEstimator swerveDrivePoseEstimator;
+    final SwerveDrivePoseEstimator swerveDrivePoseEstimator; //apparently this is alliance relative even tho the odocs imply otherwise
     final IDriveControl driveControl;
     final IVisionControl visionControl;
     final IGyro gyro;
@@ -34,7 +34,6 @@ public class OdometryControl implements HasLoop, IOdometryControl {
         this.driveControl = driveControl;
         this.visionControl = visionControl;
         this.gyro = gyro;
-
         this.odoEstimatedPose = odoEstimatedPose;
         this.visionEstimatedPose = visionEstimatedPose;
         this.debuggable = debuggable;
@@ -42,6 +41,7 @@ public class OdometryControl implements HasLoop, IOdometryControl {
 
     @Override
     public void loop() {
+
         Pose2d estimatedPose = swerveDrivePoseEstimator.update(
                 gyro.getRotation2d_initializationRelative(),
                 driveControl.currentPositions_initializationRelative()
@@ -65,34 +65,15 @@ public class OdometryControl implements HasLoop, IOdometryControl {
         return swerveDrivePoseEstimator.getEstimatedPosition();
     }
 
-    @Override
-    public Rotation2d getRotation2d_initializationRelative() {
-        return gyro.getRotation2d_initializationRelative();
-    }
 
     @Override
-    public double getYaw_deg() {
-        return gyro.getAllianceRelativeYaw_deg();
+    public IGyro getGyro() {
+        return gyro;
     }
 
-    @Override
-    public double getPitch_deg() {
-        return gyro.getAllianceRelativePitch_deg();
-    }
-
-    @Override
-    public double getRoll_deg() {
-        return gyro.getAllianceRelativeRoll_deg();
-    }
-
-    @Override
-    public double getAccelerationZ() {
-        return gyro.getAccelerationZ();
-    }
 
     @Override
     public void zero() {
-
         this.swerveDrivePoseEstimator.resetPosition(
                 gyro.getRotation2d_initializationRelative(),
                 driveControl.currentPositions_initializationRelative(),
@@ -104,9 +85,18 @@ public class OdometryControl implements HasLoop, IOdometryControl {
     public void setPos(Pose2d pose_trueFieldRelative)
     {
 
+        Pose2d pose_allianceRelative = pose_trueFieldRelative;
+
+        /*if (DriverStation.getAlliance() == DriverStation.Alliance.Red) {
+            pose_allianceRelative = new Pose2d(
+                    pose_allianceRelative.getTranslation(),
+                    pose_allianceRelative.getRotation().plus(Rotation2d.fromDegrees(180))
+            );
+        }*/
+
 
         this.swerveDrivePoseEstimator.resetPosition(
-                gyro.getRotation2d_initializationRelative(),
+                pose_trueFieldRelative.getRotation().rotateBy(Rotation2d.fromDegrees(180)), //i have no idea why this works
                 driveControl.currentPositions_initializationRelative(),
                 pose_trueFieldRelative
         );

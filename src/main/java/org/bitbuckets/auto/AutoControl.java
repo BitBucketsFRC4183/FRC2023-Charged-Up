@@ -92,12 +92,14 @@ public class AutoControl implements IAutoControl {
             transformedTrajectories.add(transformTrajectory);
         }
 
-        System.out.println(DriverStation.getAlliance());
 
         var initialState = transformedTrajectories.get(0).getInitialState();
 
 
-        odometryControl.setPos(initialState.poseMeters);
+        odometryControl.setPos(new Pose2d(
+                initialState.poseMeters.getTranslation(),
+                initialState.holonomicRotation
+        ));
         AutoPathInstance instance = new AutoPathInstance(transformedTrajectories, eventMap, segmentTimes, whichOne, totalTime);
 
         instance.start();

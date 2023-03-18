@@ -97,6 +97,8 @@ public class DriveControl implements IDriveControl, HasLogLoop {
                 //System.out.println("Module " + i + ": " + states[i].angle.getDegrees());
                 int maxVoltage = 12;
                 double ff = Drive.FF.calculate(robotRelativeStates[i].speedMetersPerSecond);
+
+                debug.log("last-ff-" + i, ff);
                 modules.get(i).set(MathUtil.clamp(ff, -maxVoltage, maxVoltage), robotRelativeStates[i].angle.getRadians());
             }
         }

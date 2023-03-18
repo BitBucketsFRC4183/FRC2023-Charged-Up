@@ -3,6 +3,7 @@ package org.bitbuckets.lib.vendor.ctre;
 import com.ctre.phoenix.sensors.WPI_Pigeon2;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.BuiltInAccelerometer;
+import edu.wpi.first.wpilibj.DriverStation;
 import org.bitbuckets.auto.RobotEvent;
 import org.bitbuckets.lib.core.HasLifecycle;
 import org.bitbuckets.lib.core.HasLogLoop;
@@ -23,6 +24,16 @@ public class PigeonGyro implements IGyro, HasLogLoop, HasLifecycle {
     public Rotation2d getRotation2d_initializationRelative() {
 
         return pigeon2.getRotation2d();
+    }
+
+    @Override
+    public Rotation2d getRotation2d_initializationAllianceRelative() {
+        if (DriverStation.getAlliance() == DriverStation.Alliance.Red) {
+            return pigeon2.getRotation2d().plus(Rotation2d.fromDegrees(180));
+        } else {
+            return pigeon2.getRotation2d();
+        }
+
     }
 
     @Override

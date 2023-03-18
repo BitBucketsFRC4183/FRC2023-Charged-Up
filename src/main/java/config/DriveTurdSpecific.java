@@ -44,7 +44,8 @@ public interface DriveTurdSpecific {
             Optional.empty(),
             false,
             false,
-            true, OptimizationMode.VOLTAGE,
+            false,
+            OptimizationMode.VOLTAGE,
             DCMotor.getNEO(1),
             false
     );
@@ -59,7 +60,8 @@ public interface DriveTurdSpecific {
             Optional.empty(),
             false,
             false,
-            true, OptimizationMode.VOLTAGE,
+            false,
+            OptimizationMode.VOLTAGE,
             DCMotor.getNeo550(1),
             false
     );
