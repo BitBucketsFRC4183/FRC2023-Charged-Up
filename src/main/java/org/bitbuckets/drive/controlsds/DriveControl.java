@@ -10,7 +10,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import org.bitbuckets.drive.IDriveControl;
 import org.bitbuckets.drive.controlsds.sds.ISwerveModule;
 import org.bitbuckets.lib.core.HasLogLoop;
-import org.bitbuckets.lib.debug.IDebuggable;
+import org.bitbuckets.lib.log.IDebuggable;
 
 import java.util.List;
 
@@ -75,22 +75,6 @@ public class DriveControl implements IDriveControl, HasLogLoop {
                 new SwerveModuleState(0, Rotation2d.fromDegrees(0)),
                 new SwerveModuleState(0, Rotation2d.fromDegrees(0))
         });
-    }
-
-    public void stopSticky() {
-        doDriveWithStates(new SwerveModuleState[]{
-                new SwerveModuleState(0, Rotation2d.fromDegrees(45)),
-                new SwerveModuleState(0, Rotation2d.fromDegrees(-45)),
-                new SwerveModuleState(0, Rotation2d.fromDegrees(-45)),
-                new SwerveModuleState(0, Rotation2d.fromDegrees(45))
-        });
-    }
-
-    public void stopGentle() {
-        for (int i = 0; i < 4; i++) {
-            modules.get(i).stopMotor();
-
-        }
     }
 
 

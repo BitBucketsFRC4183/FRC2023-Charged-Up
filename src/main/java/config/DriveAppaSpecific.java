@@ -33,7 +33,8 @@ public interface DriveAppaSpecific {
             false,
             false,
             false, OptimizationMode.GENERIC,
-            DCMotor.getFalcon500(1).withReduction(1) //TODO fix for sim
+            DCMotor.getFalcon500(1).withReduction(1), //TODO fix for sim
+            false
     );
 
     double FRONT_LEFT_OFFSET_APPA = -Math.toRadians(51.6); // set front left steer offset

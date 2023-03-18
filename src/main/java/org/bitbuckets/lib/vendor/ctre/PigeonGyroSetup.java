@@ -7,15 +7,16 @@ import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.hardware.IGyro;
 import org.bitbuckets.lib.hardware.IGyroLogger;
+import org.bitbuckets.lib.log.IDebuggable;
 
-public class PidgeonGyroSetup implements ISetup<IGyro> {
+public class PigeonGyroSetup implements ISetup<IGyro> {
 
     final int pidgeonId;
     final Pigeon2.AxisDirection forward; //y
     final Pigeon2.AxisDirection up; //z
 
 
-    public PidgeonGyroSetup(int pidgeonId, Pigeon2.AxisDirection forward, Pigeon2.AxisDirection up) {
+    public PigeonGyroSetup(int pidgeonId, Pigeon2.AxisDirection forward, Pigeon2.AxisDirection up) {
         this.pidgeonId = pidgeonId;
         this.forward = forward;
         this.up = up;
@@ -24,13 +25,19 @@ public class PidgeonGyroSetup implements ISetup<IGyro> {
     @Override
     public IGyro build(IProcess self) {
 
+        System.out.println("EEEEEEJEOKEOKEOKOE");
+
         WPI_Pigeon2 pigeonIMU = new WPI_Pigeon2(pidgeonId);
+
         pigeonIMU.configFactoryDefault();
         pigeonIMU.configMountPose(forward, up);
 
-        PidgeonGyro gyro = new PidgeonGyro(
-                pigeonIMU
-        );
+
+        PigeonGyro gyro = new PigeonGyro(
+                pigeonIMU,
+                self.getDebuggable());
+
+        System.out.println("EEEEEEEE");
 
         IGyroLogger logger = new IGyroLogger(
                 gyro,
@@ -40,6 +47,9 @@ public class PidgeonGyroSetup implements ISetup<IGyro> {
         );
 
         self.registerLogLoop(logger);
+
+
+        System.out.println("EEEEEEEEE");
 
         return gyro;
     }

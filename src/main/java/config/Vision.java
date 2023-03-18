@@ -13,7 +13,7 @@ import java.io.IOException;
 
 public interface Vision {
 
-    String CAMERA_NAME = "";
+    String CAMERA_NAME = "Arducam_OV9281_USB_Camera";
 
     VisionConfig CONFIG = new VisionConfig(
         75.0,
