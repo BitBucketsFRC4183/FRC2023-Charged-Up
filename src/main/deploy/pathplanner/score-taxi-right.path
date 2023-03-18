@@ -21,7 +21,7 @@
         ],
         "executionBehavior": "parallel",
         "waitBehavior": "before",
-        "waitTime": 2.0
+        "waitTime": 0.5
       }
     },
     {
@@ -80,6 +80,17 @@
     },
     {
       "anchorPoint": {
+<<<<<<< HEAD
+        "x": 1.8306,
+        "y": 0.5
+      },
+      "prevControl": {
+        "x": 1.8305,
+        "y": 0.5
+      },
+      "nextControl": {
+        "x": 1.8307,
+=======
         "x": 1.8307,
         "y": 0.5
       },
@@ -89,6 +100,7 @@
       },
       "nextControl": {
         "x": 1.8308,
+>>>>>>> main
         "y": 0.5
       },
       "holonomicAngle": 180.0,
