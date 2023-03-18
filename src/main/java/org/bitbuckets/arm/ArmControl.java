@@ -4,8 +4,8 @@ import config.Arm;
 import edu.wpi.first.math.VecBuilder;
 import org.bitbuckets.lib.control.IPIDCalculator;
 import org.bitbuckets.lib.core.HasLogLoop;
-import org.bitbuckets.lib.log.IDebuggable;
 import org.bitbuckets.lib.hardware.IMotorController;
+import org.bitbuckets.lib.log.IDebuggable;
 
 public class ArmControl implements HasLogLoop {
 
@@ -36,8 +36,8 @@ public class ArmControl implements HasLogLoop {
     /**
      * Commands the gripper to certain places, independent of what the limb is doing right now
      *
-     * @param lowerArm_rot      wrt zero as all the way out to the right
-     * @param upperArm_rot      wrt zero as all the way out to the right if lower arm is all the way out to the right
+     * @param lowerArm_rot wrt zero as all the way out to the right
+     * @param upperArm_rot wrt zero as all the way out to the right if lower arm is all the way out to the right
      */
     public void commandArmToState(double lowerArm_rot, double upperArm_rot) {
 
@@ -91,16 +91,6 @@ public class ArmControl implements HasLogLoop {
     }
 
 
-    public void openGripperAuto() {
-        gripperActuator.moveToPosition_mechanismRotations(-50);
-    }
-
-    public void closeGripperAuto() {
-        gripperActuator.moveToPosition_mechanismRotations(-134);
-    }
-
-
-
     public void openGripper() {
         upperArm.moveAtVoltage(0);
         lowerArm.moveAtVoltage(0);
@@ -119,12 +109,6 @@ public class ArmControl implements HasLogLoop {
     }
 
 
-    public void stopTheArm()
-    {
-        lowerArm.moveAtVoltage(0);
-        upperArm.moveAtVoltage(0);
-
-    }
     public void commandArmToPercent(double lowerArmPercent, double upperArmPercent) {
         lowerArm.moveAtPercent(lowerArmPercent);
         upperArm.moveAtPercent(upperArmPercent);

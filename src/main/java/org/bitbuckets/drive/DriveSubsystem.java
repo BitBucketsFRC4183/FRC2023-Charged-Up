@@ -62,6 +62,7 @@ public class DriveSubsystem implements HasLifecycle, HasLogLoop {
 
     @Override
     public void autonomousPeriodic() {
+        // auto mode will balance at the end, stop when the path is done, or do path finding by default
         if (autoSubsystem.sampleHasEventStarted("auto-balance")) {
             nextStateShould = DriveFSM.BALANCE;
             balance();
@@ -94,36 +95,18 @@ public class DriveSubsystem implements HasLifecycle, HasLogLoop {
             nextStateShould = DriveFSM.MANUAL;
         }
 
-        if (nextStateShould == DriveFSM.MANUAL) {
-            teleopNormal();
-            return;
-        }
-
-        if (nextStateShould == DriveFSM.BALANCE) {
-            balance();
-            return;
-        }
-
-        if (nextStateShould == DriveFSM.VISION) {
-            teleopVision();
-            return;
-
-        }
-
-
-        if (nextStateShould == DriveFSM.IDLE) {
-            driveControl.stop();
+        // call based on state
+        switch (nextStateShould) {
+            case MANUAL -> teleopNormal();
+            case BALANCE -> balance();
+            case VISION -> teleopVision();
+            default -> driveControl.stop();
         }
     }
 
     @Override
     public void teleopInit() {
         nextStateShould = DriveFSM.MANUAL;
-    }
-
-    @Override
-    public void autonomousInit() {
-
     }
 
     @Override

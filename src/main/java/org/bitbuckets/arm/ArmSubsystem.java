@@ -29,13 +29,6 @@ public class ArmSubsystem implements HasLoop, HasLifecycle {
         //handle arm calibration
         armControl.gripperResetonLimit();
 
-        if (operatorInput.isZeroArmPressed()) {
-
-            armControl.zero(); //assume where we are is zero. Only do this if you really have to since zeroing needs
-            //to go outside frame perimeter, and you can only do that in a match L
-        }
-
-
         //handle inputs, which will calculate what the next input of the robot is
         handleLogic();
 
@@ -76,6 +69,16 @@ public class ArmSubsystem implements HasLoop, HasLifecycle {
 
     @Override
     public void teleopPeriodic() {
+        if (operatorInput.isZeroArmPressed()) {
+            armControl.zero(); //assume where we are is zero. Only do this if you really have to since zeroing needs
+            //to go outside frame perimeter, and you can only do that in a match L
+        }
+        if (operatorInput.openGripperPressed()) {
+            armControl.openGripper();
+        } else if (operatorInput.closeGripperPressed()) {
+            armControl.closeGripper();
+        }
+
         if (operatorInput.isStopPidPressed()) {
             shouldDoNext = ArmFSM.IDLE;
             return;
@@ -107,6 +110,14 @@ public class ArmSubsystem implements HasLoop, HasLifecycle {
             shouldDoNext = ArmFSM.MANUAL;
             return;
         }
+
+        // only ever do manual control in teleop
+        if (shouldDoNext == ArmFSM.MANUAL) {
+            armControl.commandArmToPercent(
+                    operatorInput.getLowerArm_PercentOutput() * 0.35,
+                    operatorInput.getUpperArm_PercentOutput()
+            );
+        }
     }
 
     @Override
@@ -117,35 +128,28 @@ public class ArmSubsystem implements HasLoop, HasLifecycle {
     @Override
     public void teleopInit() {
         shouldDoNext = ArmFSM.IDLE;
+        armControl.doNothing();
+        armControl.stopGripper();
     }
 
     @Override
     public void disabledInit() {
         shouldDoNext = ArmFSM.IDLE;
+        armControl.doNothing();
+        armControl.stopGripper();
     }
 
     @Override
     public void disabledPeriodic() {
         shouldDoNext = ArmFSM.IDLE;
+        armControl.doNothing();
+        armControl.stopGripper();
     }
 
     //generates what the FSM should do. Will modify shouldDoNext if something has happened
 
     //acts on shouldDoNext and then updates it to the result state if it has managed to complete it's task
     void handleLogic() {
-
-
-        if (operatorInput.openGripperPressed()) {
-            armControl.openGripper();
-        } else if (operatorInput.closeGripperPressed()) {
-            armControl.closeGripper();
-
-        } else if (shouldDoNext == ArmFSM.MANUAL) {
-            armControl.commandArmToPercent(
-                    operatorInput.getLowerArm_PercentOutput() * 0.35,
-                    operatorInput.getUpperArm_PercentOutput()
-            );
-        }
 
         if (shouldDoNext == ArmFSM.STOW) {
             armControl.commandArmToState(
@@ -203,7 +207,7 @@ public class ArmSubsystem implements HasLoop, HasLifecycle {
         }
 
         if (shouldDoNext == ArmFSM.IDLE) {
-            armControl.stopTheArm();
+            armControl.doNothing();
         }
         //TODO fill out the rest
     }
