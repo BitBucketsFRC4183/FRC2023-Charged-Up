@@ -1,10 +1,27 @@
 package org.bitbuckets.lib.core;
 
-import org.bitbuckets.auto.RobotEvent;
-
+/**
+ * Standard WPI style lifecycle functions
+ */
 @AutoTrait
 public interface HasLifecycle {
 
-    void onRobotEvent(RobotEvent robotEvent);
+    default void autonomousInit() {
+    }
 
+    default void autonomousPeriodic() {
+    }
+
+    default void teleopInit() {
+    }
+
+    default void teleopPeriodic() {
+    }
+
+
+    default void disabledInit() {
+    }
+
+    default void disabledPeriodic() {
+    }
 }
