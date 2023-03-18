@@ -89,7 +89,7 @@ public class DriveSubsystem implements HasLoop {
                 nextStateShould = DriveFSM.MANUAL;
             }
         } else if (autoSubsystem.state() == AutoFSM.AUTO_RUN) {
-            if (autoSubsystem.sampleHasEventStarted("autoBalance")) {
+            if (autoSubsystem.sampleHasEventStarted("auto-balance")) {
                 nextStateShould = DriveFSM.BALANCE;
             } else if (autoSubsystem.sampleHasEventStarted("do-vision")) {
                 nextStateShould = DriveFSM.VISION;

@@ -141,7 +141,7 @@ public class ArmSubsystem implements HasLoop {
         } else if (shouldDoNext == ArmFSM.MANUAL) {
             armControl.commandArmToPercent(
                     operatorInput.getLowerArm_PercentOutput() * 0.35,
-                    operatorInput.getUpperArm_PercentOutput() * 0.35
+                    operatorInput.getUpperArm_PercentOutput()
             );
         }
 
