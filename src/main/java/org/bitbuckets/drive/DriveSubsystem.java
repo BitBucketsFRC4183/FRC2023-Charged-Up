@@ -64,31 +64,14 @@ public class DriveSubsystem implements HasLifecycle, HasLogLoop {
     public void autonomousPeriodic() {
         if (autoSubsystem.sampleHasEventStarted("auto-balance")) {
             nextStateShould = DriveFSM.BALANCE;
-        } else if (autoSubsystem.sampleHasEventStarted("do-vision")) {
-            nextStateShould = DriveFSM.VISION;
-        } else {
-            nextStateShould = DriveFSM.AUTO_PATHFINDING;
-        }
-
-        if (nextStateShould == DriveFSM.AUTO_PATHFINDING) {
-            autoPathFinding();
-            return;
-        }
-
-        if (nextStateShould == DriveFSM.BALANCE) {
             balance();
-            return;
-        }
-
-        if (nextStateShould == DriveFSM.VISION) {
-            teleopVision();
-            return;
-        }
-
-
-        if (nextStateShould == DriveFSM.IDLE) {
+        } else if (autoSubsystem.isPathDone()) {
+            nextStateShould = DriveFSM.IDLE;
             driveControl.stop();
+        } else {
+            autoPathFinding();
         }
+
     }
 
     @Override
@@ -140,7 +123,7 @@ public class DriveSubsystem implements HasLifecycle, HasLogLoop {
 
     @Override
     public void autonomousInit() {
-        nextStateShould = DriveFSM.AUTO_PATHFINDING;
+        
     }
 
     @Override

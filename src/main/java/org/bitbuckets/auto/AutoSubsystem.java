@@ -44,6 +44,12 @@ public class AutoSubsystem implements HasLogLoop, HasLifecycle {
         return Optional.ofNullable(instance.sampleSpeeds());
     }
 
+    public boolean isPathDone() {
+        if (instance != null) {
+            return instance.isDone();
+        }
+        return true;
+    }
 
     int iteration = 0;
 
