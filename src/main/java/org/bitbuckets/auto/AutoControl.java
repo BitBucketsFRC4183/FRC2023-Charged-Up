@@ -1,8 +1,11 @@
 package org.bitbuckets.auto;
 
-import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.TransformUtil;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.DriverStation;
+import org.bitbuckets.lib.log.ILoggable;
 import org.bitbuckets.odometry.IOdometryControl;
 
 import java.util.ArrayList;
@@ -10,23 +13,26 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
 public class AutoControl implements IAutoControl {
 
     final List<List<PathPlannerTrajectory>> trajectories;
     final IOdometryControl odometryControl;
 
-    public AutoControl(List<List<PathPlannerTrajectory>> trajectories, IOdometryControl odometryControl) {
+    public AutoControl(List<List<PathPlannerTrajectory>> trajectories, IOdometryControl odometryControl, ILoggable<Pose2d[]> poses) {
         this.trajectories = trajectories;
         this.odometryControl = odometryControl;
+        this.poses = poses;
     }
+
+
+    final ILoggable<Pose2d[]> poses;
 
     @Override
     public AutoPathInstance generateAndStartPath(AutoPath whichOne) {
         if (whichOne == AutoPath.NONE) {
             return new AutoPathInstance(new ArrayList<>(), new HashMap<>(), new ArrayList<>(), whichOne, 0);
         }
-
-
 
         var segmentGroup = trajectories.get(whichOne.index);
 
@@ -39,8 +45,6 @@ public class AutoControl implements IAutoControl {
 
         for (int i = 0; i < segmentGroup.size(); i++) {
             PathPlannerTrajectory segment = segmentGroup.get(i);
-
-            //if (true) throw new IllegalArgumentException(segment.getMarkers().toString());
 
             if (segment.getStartStopEvent().names.size() > 0) {
                 segmentTimes.add(new AutoPathInstance.SegmentTime(i, totalTime, true));
@@ -78,18 +82,26 @@ public class AutoControl implements IAutoControl {
             }
         }
 
+
         var transformedTrajectories = new ArrayList<PathPlannerTrajectory>();
         for (var trajectory : segmentGroup) {
-            var transformTrajectory = PathPlannerTrajectory.transformTrajectoryForAlliance(trajectory, DriverStation.getAlliance());
+
+            var transformTrajectory = TransformUtil.transform(trajectory, DriverStation.getAlliance());
+
+
             transformedTrajectories.add(transformTrajectory);
         }
 
+        System.out.println(DriverStation.getAlliance());
 
-        var initialState = PathPlannerTrajectory.transformStateForAlliance(segmentGroup.get(0).getInitialState(), DriverStation.getAlliance());
-        odometryControl.setPos(initialState.holonomicRotation, initialState.poseMeters);
+        var initialState = transformedTrajectories.get(0).getInitialState();
+
+
+        odometryControl.setPos(initialState.poseMeters);
         AutoPathInstance instance = new AutoPathInstance(transformedTrajectories, eventMap, segmentTimes, whichOne, totalTime);
 
-        instance.onPhaseChangeEvent(AutoFSM.AUTO_RUN);
+        instance.start();
         return instance;
     }
+
 }

@@ -11,12 +11,15 @@ public interface IOdometryControl {
 
 
     Pose2d estimateFusedPose2d();
+
     Rotation2d getRotation2d();
 
     double getYaw_deg();
     double getPitch_deg();
     double getRoll_deg();
 
+    double getAccelerationZ();
+
     void zero();
-    void setPos(Rotation2d gyroAngle, Pose2d poseMeters);
+    void setPos(Pose2d poseMeters);
 }

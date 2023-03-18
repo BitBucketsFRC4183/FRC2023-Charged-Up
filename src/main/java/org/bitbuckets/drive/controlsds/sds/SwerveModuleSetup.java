@@ -17,6 +17,7 @@ public class SwerveModuleSetup implements ISetup<ISwerveModule> {
 
     @Override
     public ISwerveModule build(IProcess self) {
+
         ILoggable<Double> percentOutput = self.generateLogger(ILogAs.DOUBLE, "percentCommand");
         ILoggable<Double> angleCommand = self.generateLogger(ILogAs.DOUBLE, "angleCommand");
 

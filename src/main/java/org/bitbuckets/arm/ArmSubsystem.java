@@ -5,7 +5,7 @@ import org.bitbuckets.OperatorInput;
 import org.bitbuckets.auto.AutoFSM;
 import org.bitbuckets.auto.AutoSubsystem;
 import org.bitbuckets.lib.core.HasLoop;
-import org.bitbuckets.lib.debug.IDebuggable;
+import org.bitbuckets.lib.log.IDebuggable;
 
 public class ArmSubsystem implements HasLoop {
 
@@ -23,7 +23,6 @@ public class ArmSubsystem implements HasLoop {
     }
 
     ArmFSM shouldDoNext = ArmFSM.IDLE;
-    AutoFSM autoStates = AutoFSM.INITIALIZATION;
 
     @Override
     public void loop() {
@@ -49,19 +48,9 @@ public class ArmSubsystem implements HasLoop {
     void handleStateTransitions() {
         if (operatorInput.isStopPidPressed() && autoSubsystem.state() != AutoFSM.AUTO_RUN) {
             shouldDoNext = ArmFSM.IDLE;
-            return;
-        }
-
-        if (autoSubsystem.state() == AutoFSM.DISABLED) {
+        } else if (autoSubsystem.state() == AutoFSM.DISABLED) {
             shouldDoNext = ArmFSM.IDLE;
-            return;
-        }
-
-        if (autoSubsystem.state() == AutoFSM.AUTO_RUN) {
-            if (autoSubsystem.sampleHasEventStarted("arm-storage")) {
-                shouldDoNext = ArmFSM.STOW;
-                return;
-            }
+        } else if (autoSubsystem.state() == AutoFSM.AUTO_RUN) {
 
 
             //Only scoring high when moving arm in auto
@@ -72,12 +61,6 @@ public class ArmSubsystem implements HasLoop {
             }
             if (autoSubsystem.sampleHasEventStarted("arm-ground-intake")) {
                 shouldDoNext = ArmFSM.GROUND_INTAKE;
-                return;
-            }
-
-            //TODO legacy path event
-            if (autoSubsystem.sampleHasEventStarted("arm-stow")) {
-                shouldDoNext = ArmFSM.STOW;
                 return;
             }
 
@@ -108,11 +91,7 @@ public class ArmSubsystem implements HasLoop {
                 shouldDoNext = ArmFSM.HUMAN_INTAKE;
                 return;
             }
-            //TODO ground intake button
-            if (operatorInput.isStoragePressed()) {
-                shouldDoNext = ArmFSM.STOW;
-                return;
-            }
+
             if (operatorInput.isScoreHighPressed()) {
                 shouldDoNext = ArmFSM.SCORE_HIGH;
                 return;
@@ -147,30 +126,24 @@ public class ArmSubsystem implements HasLoop {
             armControl.openGripper();
         } else if (operatorInput.closeGripperPressed()) {
             armControl.closeGripper();
-        } else if (!operatorInput.closeGripperPressed() && !operatorInput.openGripperPressed()) {
-            armControl.stopGripper();
-        }
 
-        if (autoSubsystem.state() == AutoFSM.DISABLED) { //arm can move after auto fsm has ended, so that if we make a mistake it can still win without us
-
-            return;
-        }
-
-        if (shouldDoNext == ArmFSM.MANUAL) {
-
-
+        } else if (shouldDoNext == ArmFSM.MANUAL) {
             armControl.commandArmToPercent(
                     operatorInput.getLowerArm_PercentOutput() * 0.35,
-                    operatorInput.getUpperArm_PercentOutput() * 0.35,
-                    !operatorInput.closeGripperPressed()
+                    operatorInput.getUpperArm_PercentOutput() * 0.35
             );
         }
 
         if (shouldDoNext == ArmFSM.STOW) {
             armControl.commandArmToState(
                     0.19,
-                    -0.24,
-                    !operatorInput.closeGripperPressed()
+                    -0.4
+            );
+        }
+        if (shouldDoNext == ArmFSM.LOAD) {
+            armControl.commandArmToState(
+                    0.008,
+                    -0.25
             );
         }
         if (shouldDoNext == ArmFSM.LOAD) {
@@ -182,13 +155,12 @@ public class ArmSubsystem implements HasLoop {
 
         if (shouldDoNext == ArmFSM.ACTUATE_GRIPPER) {
             armControl.openGripper();
-        }
 
-        //TODO fix the numbers
-        if (shouldDoNext == ArmFSM.DEBUG_TO_DEGREES) {
+        } else if (shouldDoNext == ArmFSM.IDLE) {
+            armControl.doNothing();
+        } else if (shouldDoNext == ArmFSM.DEBUG_TO_DEGREES) {
             armControl.commandArmToState(
-                    0, 0,
-                    !operatorInput.closeGripperPressed()
+                    0, 0
             );
 
             if (armControl.getErrorQuantity() > Arm.ARM_TOLERANCE_TO_MOVE_ON) {
@@ -198,24 +170,33 @@ public class ArmSubsystem implements HasLoop {
 
         if (shouldDoNext == ArmFSM.SCORE_MID) {
 
-            armControl.commandArmToState(0.008, -0.227, true);
+            armControl.commandArmToState(0.008, -0.227);
 
 
         }
         if (shouldDoNext == ArmFSM.SCORE_HIGH) {
-            armControl.commandArmToState(-0.126, 0.0, true);
+            //TODO technically upeprAmr should be 0 but because of slack we need to compensate for gravity that FF cant
+            armControl.commandArmToState(-0.126, 0.025);
 
 
         }
         if (shouldDoNext == ArmFSM.GROUND_INTAKE) {
-            armControl.commandArmToState(0.581, -0.274, true);
+            armControl.commandArmToState(0.581, -0.274);
 
         }
 
         if (shouldDoNext == ArmFSM.UNSTOW) {
-            armControl.commandArmToState(- 0.1,armControl.upperArm.getMechanismPositionAccum_rot(),false);
+            armControl.commandArmToState(- 0.1,armControl.upperArm.getMechanismPositionAccum_rot());
 
 
+        }
+
+        if (shouldDoNext == ArmFSM.HUMAN_INTAKE) {
+            armControl.commandArmToState(0.008, -0.230);
+        }
+
+        if (shouldDoNext == ArmFSM.IDLE) {
+            armControl.stopTheArm();
         }
         //TODO fill out the rest
     }

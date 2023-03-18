@@ -6,7 +6,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import org.bitbuckets.drive.IDriveControl;
-import org.bitbuckets.lib.debug.IDebuggable;
+import org.bitbuckets.lib.log.IDebuggable;
 import org.bitbuckets.odometry.IOdometryControl;
 
 public class HoloControl {
@@ -31,24 +31,23 @@ public class HoloControl {
     /**
      * @param target setpoint global
      */
-    public ChassisSpeeds calculatePose2D(Pose2d target, double desiredVelocity, Rotation2d desiredRotation) {
+    public ChassisSpeeds calculatePose2D(Pose2d target, double desiredVelocity) {
 
 
         var speed = controller.calculate(
                 odometryControl.estimateFusedPose2d(),
                 target,
                 desiredVelocity,
-                desiredRotation
+                target.getRotation()
 
 
 
         );
+        debuggable.log("last-target", target);
+
         double X_error = controller.getXController().getPositionError();
         double Y_error =  controller.getYController().getPositionError();
         double theta_error = controller.getThetaController().getPositionError();
-
-
-
 
         if((X_error < 0.4 && X_error > -0.4) && (Y_error < 0.2 && Y_error > -0.2) && (theta_error < 5 && theta_error > -5))
         {
@@ -57,14 +56,8 @@ public class HoloControl {
         debuggable.log("rotation", speed.omegaRadiansPerSecond);
         debuggable.log("x-movement", speed.vxMetersPerSecond);
         debuggable.log("y-movement", speed.vyMetersPerSecond);
-    return speed;
+
+        return speed;
     }
 
-    public ChassisSpeeds calculatePose2DFromState(PathPlannerTrajectory.PathPlannerState state) {
-        return controller.calculate(
-                odometryControl.estimateFusedPose2d(),
-                state,
-                state.holonomicRotation
-        );
-    }
 }

@@ -21,7 +21,7 @@
         ],
         "executionBehavior": "parallel",
         "waitBehavior": "before",
-        "waitTime": 2.0
+        "waitTime": 1
       }
     },
     {
@@ -48,7 +48,7 @@
         ],
         "executionBehavior": "parallel",
         "waitBehavior": "none",
-        "waitTime": 2
+        "waitTime": 0
       }
     },
     {
@@ -75,7 +75,7 @@
         ],
         "executionBehavior": "parallel",
         "waitBehavior": "none",
-        "waitTime": 2
+        "waitTime": 1
       }
     },
     {
@@ -122,11 +122,11 @@
       "isStopPoint": false,
       "stopEvent": {
         "names": [
-          "autoBalance"
+          "auto-balance"
         ],
         "executionBehavior": "parallel",
         "waitBehavior": "none",
-        "waitTime": 2
+        "waitTime": 0
       }
     }
   ],

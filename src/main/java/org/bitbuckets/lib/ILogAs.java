@@ -1,70 +1,95 @@
 package org.bitbuckets.lib;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.util.datalog.BooleanLogEntry;
-import edu.wpi.first.util.datalog.DataLog;
+import edu.wpi.first.util.datalog.DoubleArrayLogEntry;
 import edu.wpi.first.util.datalog.DoubleLogEntry;
 import edu.wpi.first.util.datalog.StringLogEntry;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardContainer;
-import org.bitbuckets.lib.log.EnumLoggable;
-import org.bitbuckets.lib.log.FutureLoggable;
+import org.bitbuckets.lib.core.Path;
+import org.bitbuckets.lib.log.DataUtil;
 import org.bitbuckets.lib.log.ILoggable;
-import org.bitbuckets.lib.log.PoseLoggable;
-import org.bitbuckets.lib.process.RegisterType;
-import org.bitbuckets.lib.tune.IValueTuner;
-
-import java.lang.annotation.Documented;
-import java.util.concurrent.CompletableFuture;
 
 public interface ILogAs<T> {
 
-    ILoggable<T> generate(String key, IDoWhenReady whenReady, IValueTuner<ProcessMode> mode);
+    ILoggable<T> generate(String key, Path p);
 
-    ILogAs<Boolean> BOOLEAN = (k, ct, m) -> {
-        CompletableFuture<GenericEntry> onReady = ct.doWhenReady(a -> {
-            return a.add(k, false).getEntry();
-        }, RegisterType.LOG);
+    ILogAs<Boolean> BOOLEAN = (k, p) -> {
+        String fullPath = p.getAsTablePath() + "log-" + k;
 
-        return new FutureLoggable<>(onReady);
+        NetworkTableEntry netEntry = NetworkTableInstance.getDefault().getTable("mattlib").getEntry(fullPath);
+        BooleanLogEntry logEntry = new BooleanLogEntry(DataUtil.LOG, fullPath);
+
+        netEntry.setBoolean(false);
+
+        return a -> {
+            netEntry.setBoolean(a);
+            logEntry.append(a);
+        };
     };
 
 
-    ILogAs<Double> DOUBLE = (key,ct, m) -> {
-        CompletableFuture<GenericEntry> onReady = ct.doWhenReady(a -> {
-            return a.add(key, 0).getEntry();
-        }, RegisterType.LOG);
+    ILogAs<Double> DOUBLE = (k,p) -> {
+        String fullPath = p.getAsTablePath() + "log-"+ k;
 
-        return new FutureLoggable<>(onReady);
+        NetworkTableEntry netEntry = NetworkTableInstance.getDefault().getTable("mattlib").getEntry(fullPath);
+        DoubleLogEntry logEntry = new DoubleLogEntry(DataUtil.LOG, fullPath);
+
+        netEntry.setDouble(0.0);
+
+        return a -> {
+            netEntry.setDouble(a);
+            logEntry.append(a);
+        };
     };
 
-    ILogAs<Pose2d> POSE = (k,c,m) -> {
+    ILogAs<Pose2d> POSE = (k,p) -> {
+        String fullPath = p.getAsTablePath() + "log-"+ k;
+        NetworkTableEntry netEntry = NetworkTableInstance.getDefault().getTable("mattlib").getEntry(fullPath);
+        DoubleArrayLogEntry logEntry = new DoubleArrayLogEntry(DataUtil.LOG, fullPath);
 
-        CompletableFuture<GenericEntry> onReady = c.doWhenReady(a -> {
+        netEntry.setDoubleArray(new double[] {0,0,0});
 
-            return a.add(k, new double[] {0,0,0}).getEntry();
-        }, RegisterType.LOG);
+        return a -> {
+            double[] array = new double[] {a.getX(), a.getY(), a.getRotation().getRadians()};
 
-        return new PoseLoggable(onReady);
+            netEntry.setDoubleArray(array);
+            logEntry.append(array);
+        };
     };
+
+    ILogAs<String> STRING = (k,p) -> {
+        String fullPath = p.getAsTablePath() + "log-"+ k;
+        NetworkTableEntry netEntry = NetworkTableInstance.getDefault().getTable("mattlib").getEntry(fullPath);
+        StringLogEntry logEntry = new StringLogEntry(DataUtil.LOG, fullPath);
+
+        netEntry.setString("default str");
+
+        return a -> {
+            netEntry.setString(a);
+            logEntry.append(a);
+        };
+    };
+
+
+
+
 
     static <T extends Enum<T>> ILogAs<T> ENUM(Class<T> clazz) {
-        return (k,ct, m) -> {
-            CompletableFuture<GenericEntry> onReady = ct.doWhenReady(a -> {
-                return a.add(k, "default enum").getEntry();
-            }, RegisterType.LOG);
 
-            return new EnumLoggable<>(onReady);
-        };
-    }
 
-    static <T extends Enum<T>> ILogAs<T> ENUM_SIDEBAR(Class<T> clazz) {
-        return (k,ct, m) -> {
-            CompletableFuture<GenericEntry> onReady = ct.doWhenReady(a -> {
-                return a.add(k, "default enum").getEntry();
-            }, RegisterType.SIDEBAR);
+        return (k,p) -> {
+            String fullPath = p.getAsTablePath() + "log-" + k;
+            NetworkTableEntry netEntry = NetworkTableInstance.getDefault().getTable("mattlib").getEntry(fullPath);
+            StringLogEntry logEntry = new StringLogEntry(DataUtil.LOG, fullPath);
 
-            return new FutureLoggable<>(onReady);
+            netEntry.setString("default enum");
+
+            return a -> {
+                netEntry.setString(a.name());
+                logEntry.append(a.name());
+            };
         };
     }
 

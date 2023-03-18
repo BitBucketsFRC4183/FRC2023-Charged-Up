@@ -78,20 +78,20 @@ public class OperatorInput {
         return getInputX() == 0 && getInputY() == 0 && getInputRot() == 0;
     }
 
-    public boolean isDefaultDrivePressed() {
-        return driveControl.getRawButtonPressed(XboxController.Button.kX.value);
-    }
-
     public boolean isVisionDrivePressed() {
-        return driveControl.getRawButton(XboxController.Button.kY.value);
+        return driveControl.getRawButton(XboxController.Button.kLeftStick.value);
     }
 
     public boolean isAutoBalancePressed() {
-        return driveControl.getRawButtonPressed(XboxController.Button.kB.value);
+        return driveControl.getRawButton(XboxController.Button.kB.value);
     }
 
     public boolean isResetGyroPressed() {
         return driveControl.getRawButtonPressed(XboxController.Button.kStart.value);
+    }
+
+    public boolean isManualDrivePressed() {
+        return driveControl.getRawButtonPressed(XboxController.Button.kX.value);
     }
 
     //OPERATOR

@@ -2,6 +2,7 @@ package org.bitbuckets;
 
 import com.ctre.phoenix.sensors.Pigeon2;
 import config.*;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.wpilibj.Joystick;
 import org.bitbuckets.arm.ArmSubsystem;
@@ -16,13 +17,13 @@ import org.bitbuckets.drive.DriveSubsystemSetup;
 import org.bitbuckets.drive.IDriveControl;
 import org.bitbuckets.drive.controlsds.DriveControlSetup;
 import org.bitbuckets.drive.holo.HoloControlSetup;
-import org.bitbuckets.lib.IProcess;
-import org.bitbuckets.lib.ISetup;
-import org.bitbuckets.lib.SimulatorKiller;
-import org.bitbuckets.lib.ToggleableSetup;
-import org.bitbuckets.lib.vendor.ctre.PidgeonGyroSetup;
+import org.bitbuckets.lib.*;
+import org.bitbuckets.lib.util.LateSupplier;
+import org.bitbuckets.lib.util.MockingUtil;
+import org.bitbuckets.lib.vendor.ctre.PigeonGyroSetup;
 import org.bitbuckets.odometry.IOdometryControl;
 import org.bitbuckets.odometry.OdometryControlSetup;
+import org.bitbuckets.odometry.SimOdometryControlSetup;
 import org.bitbuckets.vision.IVisionControl;
 import org.bitbuckets.vision.VisionControlSetup;
 
@@ -39,16 +40,14 @@ public class RobotSetup implements ISetup<Void> {
         SwerveDriveKinematics KINEMATICS = DriveTurdSpecific.KINEMATICS; //TODO make this swappable
 
 
+
         OperatorInput operatorInput = new OperatorInput(
                 new Joystick(1),
                 new Joystick(0)
         );
 
         GamePiece piece = self.childSetup("gp", new GamePieceSetup(operatorInput));
-
-
         self.childSetup("cone-cube", new GamePieceSetup(operatorInput));
-
 
         //if only these could be children of the drive subsystem... TODO fix this in mattlib future editions
         IDriveControl driveControl = self.childSetup(
@@ -66,12 +65,20 @@ public class RobotSetup implements ISetup<Void> {
                 )
 
         );
+
+        LateSupplier<Pose3d> robotPose = new LateSupplier<>();
         IVisionControl visionControl = self.childSetup(
                 "vision-ctrl",
                 new ToggleableSetup<>(
                         Enabled.vision,
                         IVisionControl.class,
-                        new VisionControlSetup()
+                        new VisionControlSetup(
+                              robotPose,
+                              Vision.CAMERA_NAME,
+                              Vision.LAYOUTCONTAINER.LAYOUT,
+                              Vision.CONFIG,
+                              Vision.STRATEGY
+                        )
                 )
         );
         IOdometryControl odometryControl = self.childSetup(
@@ -85,19 +92,28 @@ public class RobotSetup implements ISetup<Void> {
                                 KINEMATICS,
                                 MotorIds.PIDGEON_IMU_ID
                         )*/
-                        new OdometryControlSetup(
-                                Drive.STD_VISION,
-                                KINEMATICS,
-                                driveControl,
-                                visionControl,
-                                new PidgeonGyroSetup(
-                                        MotorIds.PIDGEON_IMU_ID,
-                                        Pigeon2.AxisDirection.PositiveY,
-                                        Pigeon2.AxisDirection.PositiveZ
+                        new SwapSetup<>(
+                                MockingUtil.noops(IOdometryControl.class),
+                                new OdometryControlSetup(
+                                        Drive.STD_VISION,
+                                        KINEMATICS,
+                                        driveControl,
+                                        visionControl,
+                                        new PigeonGyroSetup(
+                                                MotorIds.PIGEON_IMU_ID,
+                                                Pigeon2.AxisDirection.PositiveY,
+                                                Pigeon2.AxisDirection.PositiveZ
+                                        )
+                                ),
+                                new SimOdometryControlSetup(
+                                        KINEMATICS,
+                                        driveControl
                                 )
                         )
+
                 )
         );
+        robotPose.set(() -> new Pose3d(odometryControl.estimateFusedPose2d()));
 
         AutoSubsystem autoSubsystem = self.childSetup(
                 "auto-system",
@@ -138,7 +154,11 @@ public class RobotSetup implements ISetup<Void> {
                                 DriveSetups.BALANCE_SETUP,
                                 new HoloControlSetup(
                                         driveControl,
-                                        odometryControl
+                                        odometryControl,
+                                        Drive.X_HOLO_PID,
+                                        Drive.Y_HOLO_PID,
+                                        Drive.THETA_HOLO_PID,
+                                        Drive.THETA_CONSTRAINTS
                                 ),
                                 driveControl
                         )

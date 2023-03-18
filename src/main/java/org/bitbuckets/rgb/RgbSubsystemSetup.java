@@ -5,7 +5,7 @@ import com.ctre.phoenix.led.CANdleConfiguration;
 import org.bitbuckets.OperatorInput;
 import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.lib.ISetup;
-import org.bitbuckets.lib.debug.IDebuggable;
+import org.bitbuckets.lib.log.IDebuggable;
 import org.bitbuckets.lib.util.MockingUtil;
 
 public class RgbSubsystemSetup implements ISetup<RgbSubsystem> {

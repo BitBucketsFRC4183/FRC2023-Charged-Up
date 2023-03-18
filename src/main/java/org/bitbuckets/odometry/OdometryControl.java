@@ -47,10 +47,11 @@ public class OdometryControl implements HasLoop, IOdometryControl {
         Optional<Pose3d> res = visionControl.estimateVisionRobotPose();
         if (res.isEmpty()) return;
 
+
         double epoch = Timer.getFPGATimestamp();
         Pose2d visionEstimatedPose = res.get().toPose2d();
         this.visionEstimatedPose.log(visionEstimatedPose);
-        swerveDrivePoseEstimator.addVisionMeasurement(visionEstimatedPose, epoch, visionMeasurementStdDevs);
+        //swerveDrivePoseEstimator.addVisionMeasurement(visionEstimatedPose, epoch, visionMeasurementStdDevs);
     }
 
     @Override
@@ -79,15 +80,19 @@ public class OdometryControl implements HasLoop, IOdometryControl {
     }
 
     @Override
+    public double getAccelerationZ() {
+        return gyro.getAccelerationZ();
+    }
+
+    @Override
     public void zero() {
-        this.gyro.zero();
         this.swerveDrivePoseEstimator.resetPosition(Rotation2d.fromDegrees(0), driveControl.currentPositions(), new Pose2d());
     }
 
     @Override
-    public void setPos(Rotation2d gyroAngle, Pose2d poseMeters)
+    public void setPos(Pose2d poseMeters)
 
     {
-        this.swerveDrivePoseEstimator.resetPosition(gyroAngle, driveControl.currentPositions(), poseMeters);
+        this.swerveDrivePoseEstimator.resetPosition(poseMeters.getRotation(), driveControl.currentPositions(), poseMeters);
     }
 }
