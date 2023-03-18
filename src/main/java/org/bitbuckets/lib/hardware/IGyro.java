@@ -22,4 +22,5 @@ public interface IGyro {
     double getAccelerationZ();
 
 
+    void zero();
 }

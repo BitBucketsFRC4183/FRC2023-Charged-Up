@@ -1,7 +1,6 @@
 package org.bitbuckets.odometry;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import org.bitbuckets.lib.hardware.IGyro;
 
 /**
@@ -14,6 +13,7 @@ public interface IOdometryControl {
 
     IGyro getGyro();
 
-    void zero();
+    void zeroOdo();
+    void zeroGyro();
     void setPos(Pose2d pose_trueFieldRelative);
 }
