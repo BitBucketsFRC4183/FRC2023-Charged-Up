@@ -2,6 +2,7 @@ package org.bitbuckets.drive;
 
 import com.pathplanner.lib.PathPlannerTrajectory;
 import config.Drive;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import org.bitbuckets.OperatorInput;
 import org.bitbuckets.auto.AutoFSM;
@@ -14,7 +15,6 @@ import org.bitbuckets.lib.tune.IValueTuner;
 import org.bitbuckets.odometry.IOdometryControl;
 import org.bitbuckets.vision.IVisionControl;
 
-import java.util.ArrayList;
 import java.util.Optional;
 
 
@@ -64,6 +64,7 @@ public class DriveSubsystem implements HasLoop {
 
 
         debuggable.log("state", nextStateShould.toString());
+        debuggable.log("stop", shouldStop);
 
     }
 
@@ -84,6 +85,7 @@ public class DriveSubsystem implements HasLoop {
             } else if (input.isAutoBalancePressed()) {
                 nextStateShould = DriveFSM.BALANCE;
             } else if (nextStateShould == DriveFSM.BALANCE && !input.isAutoBalancePressed()) {
+                shouldStop = false;
                 nextStateShould = DriveFSM.MANUAL;
             }
         } else if (autoSubsystem.state() == AutoFSM.AUTO_RUN) {
@@ -134,7 +136,14 @@ public class DriveSubsystem implements HasLoop {
     void autoPathFinding() {
         Optional<PathPlannerTrajectory.PathPlannerState> opt = autoSubsystem.samplePathPlannerState();
         if (opt.isPresent()) {
-            ChassisSpeeds targetSpeeds = holoControl.calculatePose2DFromState(opt.get());
+            PathPlannerTrajectory.PathPlannerState state = opt.get();
+
+            Pose2d filtered = new Pose2d(
+                    state.poseMeters.getTranslation(),
+                    state.holonomicRotation
+            );
+
+            ChassisSpeeds targetSpeeds = holoControl.calculatePose2D(filtered, state.velocityMetersPerSecond);
             targetSpeeds.vxMetersPerSecond = -targetSpeeds.vxMetersPerSecond;
             targetSpeeds.vyMetersPerSecond = -targetSpeeds.vyMetersPerSecond;
             targetSpeeds.omegaRadiansPerSecond = -targetSpeeds.omegaRadiansPerSecond;
@@ -151,7 +160,7 @@ public class DriveSubsystem implements HasLoop {
 
         var targetPose = visionControl.estimateBestVisionTarget();
         if (targetPose.isPresent()) {
-            ChassisSpeeds speeds = holoControl.calculatePose2D(targetPose.get().toPose2d(), 1, targetPose.get().toPose2d().getRotation());
+            ChassisSpeeds speeds = holoControl.calculatePose2D(targetPose.get().toPose2d(), 1);
 
             ChassisSpeeds inverted = new ChassisSpeeds(
                     -speeds.vxMetersPerSecond,
@@ -214,19 +223,31 @@ public class DriveSubsystem implements HasLoop {
 
     }
 
+    boolean shouldStop = false;
+
     void balance() {
         double Pitch_deg = odometryControl.getPitch_deg();
 
         debuggable.log("pitch-now", Pitch_deg);
+        debuggable.log("accel", odometryControl.getAccelerationZ());
         if (Math.abs(Pitch_deg) > 2) {
 
+            if (shouldStop) {
+                driveControl.drive(new ChassisSpeeds(0, 0, 0));
+                return;
+            }
+
             if (odometryControl.getAccelerationZ() > Drive.ACCEL_THRESHOLD_AUTOBALANCE) {
+                shouldStop = true;
+                System.out.println("AAAAAAAAAAAAAAA");
+
+                driveControl.drive(new ChassisSpeeds(Math.signum(Pitch_deg) *1.80,0,0));
                 return;
             } else {
                 double output = balanceControl.calculateBalanceOutput(Pitch_deg, 0);
                 debuggable.log("control-output-autobalance", output);
 
-                driveControl.drive(new ChassisSpeeds(-output / 3.0, 0.0, 0.0));
+                driveControl.drive(new ChassisSpeeds(-output , 0.0, 0.0));
             }
 
 

@@ -5,6 +5,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.DriverStation;
+import org.bitbuckets.lib.util.AngleUtil;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -29,8 +30,13 @@ public class TransformUtil {
 
             Translation2d transformedTranslation =
                     new Translation2d(16.48 - state.poseMeters.getX(), state.poseMeters.getY());
-            Rotation2d transformedHeading = state.poseMeters.getRotation().rotateBy(Rotation2d.fromDegrees(180));
+
+            System.out.println(String.format("Pre: Heading %s | Holo %s", state.poseMeters.getRotation().getDegrees(), state.holonomicRotation.getDegrees()));
+
+            Rotation2d transformedHeading = state.poseMeters.getRotation();
             Rotation2d transformedHolonomicRotation = state.holonomicRotation.rotateBy(Rotation2d.fromDegrees(180));
+
+            System.out.println(String.format("Post: Heading %s | Holo %s", transformedHeading.getDegrees(), transformedHolonomicRotation.getDegrees()));
 
             transformedState.timeSeconds = state.timeSeconds;
             transformedState.velocityMetersPerSecond = state.velocityMetersPerSecond;

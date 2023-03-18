@@ -40,6 +40,6 @@ public class AutoControlSetup implements ISetup<IAutoControl> {
         }
 
 
-        return new AutoControl(paths, odometryControl);
+        return new AutoControl(paths, odometryControl, null);
     }
 }
