@@ -5,7 +5,7 @@ import org.bitbuckets.lib.ProcessMode;
 
 public interface Mattlib {
 
-    ProcessMode DEFAULT_MODE = ProcessMode.COMPETITION;
+    ProcessMode DEFAULT_MODE = ProcessMode.DEBUG;
 
 
 
