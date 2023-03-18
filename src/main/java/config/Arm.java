@@ -33,13 +33,13 @@ public interface Arm {
     double UPPER_ARM_REDUCTION = 4.0 * 4.0 * 4.0 * 3.0;
 
     double LOWER_ARM_BELT = 48.0 / 16.0; //3 to 1
-    double UPPER_ARM_BELT = 1.0; //1 to 1
+    double UPPER_ARM_BELT = 42.0 / 16.0; //1 to 1
 
     //converts encoder rotations -> mechanism rotations (0.036)
     double LOWER_ARM_GEAR_RATIO = 1.0 / LOWER_ARM_REDUCTION / LOWER_ARM_BELT; //divide again since calculator math
     double UPPER_ARM_GEAR_RATIO = 1.0 / UPPER_ARM_REDUCTION / UPPER_ARM_BELT;
 
-    double UPPER_ARM_OFFSET = 0.56;
+    double UPPER_ARM_OFFSET = 0.08;
 
 
     //FF
@@ -88,7 +88,8 @@ public interface Arm {
             false,
             false,
             false, OptimizationMode.GENERIC,
-            DCMotor.getNEO(1)
+            DCMotor.getNEO(1),
+            false
     );
     MotorConfig LOWER_CONFIG = new MotorConfig(
             LOWER_ARM_GEAR_RATIO,
@@ -102,7 +103,8 @@ public interface Arm {
             false,
             false,
             false, OptimizationMode.OFFBOARD_POS_PID,
-            DCMotor.getNEO(1)
+            DCMotor.getNEO(1),
+            false
     );
 
     MotorConfig UPPER_CONFIG = new MotorConfig(
@@ -117,8 +119,8 @@ public interface Arm {
             false,
             false,
             true, OptimizationMode.OFFBOARD_POS_PID,
-            DCMotor.getNEO(1)
-
+            DCMotor.getNEO(1),
+            true
     );
 
     MotorConfig GRIPPER_CONFIG = new MotorConfig(
@@ -133,7 +135,8 @@ public interface Arm {
             true,
             false,
             false, OptimizationMode.GENERIC,
-            DCMotor.getNeo550(1)
+            DCMotor.getNeo550(1),
+            false
     );
     MotorConfig GRIPPER_WHEEL_CONFIG = new MotorConfig(
             1,
@@ -168,7 +171,7 @@ public interface Arm {
     //PID
 
     PIDConfig LOWER_PID = new PIDConfig(
-            7,
+            13,
             0,
             0,
             Optional.empty(),
@@ -176,7 +179,7 @@ public interface Arm {
     );
 
     PIDConfig UPPER_PID = new PIDConfig(
-            4.5,
+            15,
             0,
             0,
             Optional.empty(),
@@ -203,12 +206,12 @@ public interface Arm {
 
 
     TrapezoidProfile.Constraints LOWER_CONSTRAINT = new TrapezoidProfile.Constraints(
-            2,
-            2
+            3,
+            1
     );
     TrapezoidProfile.Constraints UPPER_CONSTRAINTS = new TrapezoidProfile.Constraints(
-            2,
-            2
+            12,
+            1
     );
 
     ArmDynamics DOUBLE_JOINTED_FF = new ArmDynamics(

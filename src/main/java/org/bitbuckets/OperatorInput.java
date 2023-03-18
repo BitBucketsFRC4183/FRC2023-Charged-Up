@@ -83,7 +83,7 @@ public class OperatorInput {
     }
 
     public boolean isAutoBalancePressed() {
-        return driveControl.getRawButtonPressed(XboxController.Button.kB.value);
+        return driveControl.getRawButton(XboxController.Button.kB.value);
     }
 
     public boolean isResetGyroPressed() {

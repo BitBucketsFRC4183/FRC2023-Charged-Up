@@ -5,7 +5,7 @@ import org.bitbuckets.OperatorInput;
 import org.bitbuckets.auto.AutoFSM;
 import org.bitbuckets.auto.AutoSubsystem;
 import org.bitbuckets.lib.core.HasLoop;
-import org.bitbuckets.lib.debug.IDebuggable;
+import org.bitbuckets.lib.log.IDebuggable;
 
 public class ArmSubsystem implements HasLoop {
 
@@ -46,19 +46,9 @@ public class ArmSubsystem implements HasLoop {
     void handleStateTransitions() {
         if (operatorInput.isStopPidPressed() && autoSubsystem.state() != AutoFSM.AUTO_RUN) {
             shouldDoNext = ArmFSM.IDLE;
-            return;
-        }
-
-        if (autoSubsystem.state() == AutoFSM.DISABLED) {
+        } else if (autoSubsystem.state() == AutoFSM.DISABLED) {
             shouldDoNext = ArmFSM.IDLE;
-            return;
-        }
-
-        if (autoSubsystem.state() == AutoFSM.AUTO_RUN) {
-            if (autoSubsystem.sampleHasEventStarted("arm-storage")) {
-                //shouldDoNext = ArmFSM.STOW;
-                return;
-            }
+        } else if (autoSubsystem.state() == AutoFSM.AUTO_RUN) {
 
 
             //Only scoring high when moving arm in auto
@@ -69,12 +59,6 @@ public class ArmSubsystem implements HasLoop {
             }
             if (autoSubsystem.sampleHasEventStarted("arm-ground-intake")) {
                 shouldDoNext = ArmFSM.GROUND_INTAKE;
-                return;
-            }
-
-            //TODO legacy path event
-            if (autoSubsystem.sampleHasEventStarted("arm-idle")) {
-                shouldDoNext = ArmFSM.IDLE;
                 return;
             }
 
@@ -105,11 +89,7 @@ public class ArmSubsystem implements HasLoop {
                 shouldDoNext = ArmFSM.HUMAN_INTAKE;
                 return;
             }
-            //TODO ground intake button
-            if (operatorInput.isStoragePressed()) {
-                shouldDoNext = ArmFSM.STOW;
-                return;
-            }
+
             if (operatorInput.isScoreHighPressed()) {
                 shouldDoNext = ArmFSM.SCORE_HIGH;
                 return;
@@ -158,6 +138,7 @@ public class ArmSubsystem implements HasLoop {
         if (shouldDoNext == ArmFSM.MANUAL) {
 
 
+        } else if (shouldDoNext == ArmFSM.MANUAL) {
             armControl.commandArmToPercent(
                     operatorInput.getLowerArm_PercentOutput() * 0.35,
                     operatorInput.getUpperArm_PercentOutput() * 0.35
@@ -178,11 +159,16 @@ public class ArmSubsystem implements HasLoop {
         }
 
         if (shouldDoNext == ArmFSM.ACTUATE_GRIPPER) {
+<<<<<<< HEAD
             armControl.outtakeGripper();
         }
+=======
+            armControl.openGripper();
+>>>>>>> main
 
-        //TODO fix the numbers
-        if (shouldDoNext == ArmFSM.DEBUG_TO_DEGREES) {
+        } else if (shouldDoNext == ArmFSM.IDLE) {
+            armControl.doNothing();
+        } else if (shouldDoNext == ArmFSM.DEBUG_TO_DEGREES) {
             armControl.commandArmToState(
                     0, 0
             );
@@ -210,7 +196,11 @@ public class ArmSubsystem implements HasLoop {
         }
 
         if (shouldDoNext == ArmFSM.UNSTOW) {
+<<<<<<< HEAD
             armControl.commandArmToState(-0.1, armControl.upperArm.getMechanismPositionAccum_rot());
+=======
+            armControl.commandArmToState(- 0.1,armControl.upperArm.getMechanismPositionAccum_rot());
+>>>>>>> main
 
 
         }

@@ -33,6 +33,11 @@ public class NavxGyro implements IGyro {
     }
 
     @Override
+    public double getAccelerationZ() {
+        return ahrs.getRawAccelZ();
+    }
+
+    @Override
     public void zero() {
         ahrs.calibrate();
     }

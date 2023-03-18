@@ -116,6 +116,5 @@ public class ElevatorSimController implements IMotorController, Runnable {
 
     public void run() {
         elevatorSim.update(0.02);
-        System.out.println(elevatorSim.getCurrentDrawAmps());
     }
 }

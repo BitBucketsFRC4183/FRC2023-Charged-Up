@@ -4,7 +4,7 @@ import config.Arm;
 import edu.wpi.first.math.VecBuilder;
 import org.bitbuckets.lib.control.IPIDCalculator;
 import org.bitbuckets.lib.core.HasLogLoop;
-import org.bitbuckets.lib.debug.IDebuggable;
+import org.bitbuckets.lib.log.IDebuggable;
 import org.bitbuckets.lib.hardware.IMotorController;
 
 public class ArmControl implements HasLogLoop {
@@ -38,8 +38,8 @@ public class ArmControl implements HasLogLoop {
     /**
      * Commands the gripper to certain places, independent of what the limb is doing right now
      *
-     * @param lowerArm_rot wrt zero as all the way out to the right
-     * @param upperArm_rot wrt zero as all the way out to the right if lower arm is all the way out to the right
+     * @param lowerArm_rot      wrt zero as all the way out to the right
+     * @param upperArm_rot      wrt zero as all the way out to the right if lower arm is all the way out to the right
      */
     public void commandArmToState(double lowerArm_rot, double upperArm_rot) {
 
@@ -58,23 +58,21 @@ public class ArmControl implements HasLogLoop {
                 upperArm_rot
         );
 
-//
-//        System.out.println("FF LOW: " + lowerArmFFVoltage);
-//        System.out.println("FB LOW: " + lowerArmFeedbackVoltage);
-//
-//        System.out.println("FF UP: " + upperArmFFVoltage);
-//        System.out.println("FB UP: " + upperArmFeedbackVoltage);
-
         lowerArm.moveAtVoltage(lowerArmFFVoltage + lowerArmFeedbackVoltage);
         upperArm.moveAtVoltage(upperArmFFVoltage + upperArmFeedbackVoltage);
 
+    }
+
+    public void doNothing() {
+        lowerArm.moveAtVoltage(0);
+        upperArm.moveAtVoltage(0);
     }
 
 
     public void zeroArmAbs() {
         double absAngleRot = upperArm.getAbsoluteEncoder_rotations() - Arm.UPPER_ARM_OFFSET;
 
-        upperArm.forceOffset_mechanismRotations(-absAngleRot);
+        upperArm.forceOffset_mechanismRotations(absAngleRot);
 
     }
 
@@ -87,10 +85,21 @@ public class ArmControl implements HasLogLoop {
     }
 
 
-    public void outtakeGripper() {
-        gripperWheelMotor.moveAtPercent(0.5);
+    public void openGripperAuto() {
+        gripperActuator.moveToPosition_mechanismRotations(-50);
+    }
 
-        //     }
+    public void closeGripperAuto() {
+        gripperActuator.moveToPosition_mechanismRotations(-134);
+    }
+
+
+
+    public void openGripper() {
+        upperArm.moveAtVoltage(0);
+        lowerArm.moveAtVoltage(0);
+
+        gripperActuator.moveAtPercent(0.8);
     }
 
 
@@ -117,12 +126,18 @@ public class ArmControl implements HasLogLoop {
         upperArm.moveAtVoltage(0);
 
     }
+<<<<<<< HEAD
 
+=======
+>>>>>>> main
     public void commandArmToPercent(double lowerArmPercent, double upperArmPercent) {
         lowerArm.moveAtPercent(lowerArmPercent);
         upperArm.moveAtPercent(upperArmPercent);
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> main
     }
 
     public void zero() {
@@ -134,13 +149,9 @@ public class ArmControl implements HasLogLoop {
         return 1;
     }
 
-    //probably doesn't work but I need something to test right now
-    public boolean isErrorSmallEnough(double delta) {
-        return Math.abs(lowerArm.getError_mechanismRotations()) < delta && Math.abs(upperArm.getError_mechanismRotations()) < delta;
-    }
-
     @Override
     public void logLoop() {
         debuggable.log("abs-angle", upperArm.getAbsoluteEncoder_rotations());
     }
+
 }
