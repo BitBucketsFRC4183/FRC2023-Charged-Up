@@ -2,14 +2,19 @@ package org.bitbuckets.lib.vendor.ctre;
 
 import com.ctre.phoenix.sensors.WPI_Pigeon2;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.BuiltInAccelerometer;
+import org.bitbuckets.lib.core.HasLogLoop;
 import org.bitbuckets.lib.hardware.IGyro;
+import org.bitbuckets.lib.log.IDebuggable;
 
-public class PidgeonGyro implements IGyro {
+public class PigeonGyro implements IGyro, HasLogLoop {
 
     final WPI_Pigeon2 pigeon2;
+    final IDebuggable debuggable;
 
-    public PidgeonGyro(WPI_Pigeon2 pigeon2) {
+    public PigeonGyro(WPI_Pigeon2 pigeon2, IDebuggable debuggable) {
         this.pigeon2 = pigeon2;
+        this.debuggable = debuggable;
     }
 
     @Override
@@ -36,6 +41,12 @@ public class PidgeonGyro implements IGyro {
         return data[0];*/
     }
 
+    @Override
+    public double getAccelerationZ() {
+        return builtInAccelerometer.getZ();
+    }
+
+
     //hack because the pidgeon doesnt let me reset these other values;
     double rollTare = 0;
     double pitchTare = 0;
@@ -52,4 +63,18 @@ public class PidgeonGyro implements IGyro {
     }
 
 
+
+    BuiltInAccelerometer builtInAccelerometer = new BuiltInAccelerometer();
+
+    @Override
+    public void logLoop() {
+        short[] data = new short[3];
+        pigeon2.getBiasedAccelerometer(data);
+
+
+        debuggable.log("accel-x", builtInAccelerometer.getX());
+        debuggable.log("accel-y", builtInAccelerometer.getY());
+        debuggable.log("accel-z", builtInAccelerometer.getZ());
+
+    }
 }

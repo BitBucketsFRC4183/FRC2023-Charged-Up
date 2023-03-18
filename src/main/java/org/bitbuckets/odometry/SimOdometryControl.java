@@ -52,16 +52,19 @@ public class SimOdometryControl implements IOdometryControl, HasLoop {
     }
 
     @Override
+    public double getAccelerationZ() {
+        return 0;
+    }
+
+    @Override
     public void zero() {
         //reset
-        lastAngle_fieldRelative = Rotation2d.fromDegrees(0);
         estimator.resetPosition(Rotation2d.fromDegrees(0), driveControl.currentPositions(), new Pose2d());
     }
 
     @Override
-    public void setPos(Rotation2d gyroAngle, Pose2d poseMeters) {
-        lastAngle_fieldRelative = gyroAngle;
-        estimator.resetPosition(gyroAngle, driveControl.currentPositions(), poseMeters);
+    public void setPos(Pose2d poseMeters) {
+        estimator.resetPosition(poseMeters.getRotation(), driveControl.currentPositions(), poseMeters);
     }
 
     Rotation2d lastAngle_fieldRelative = Rotation2d.fromDegrees(0);

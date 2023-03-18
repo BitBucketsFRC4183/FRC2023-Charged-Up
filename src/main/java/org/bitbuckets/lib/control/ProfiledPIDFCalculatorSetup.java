@@ -7,12 +7,12 @@ import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ITuneAs;
 
-public class ProfiledPIDFSetup implements ISetup<IPIDCalculator> {
+public class ProfiledPIDFCalculatorSetup implements ISetup<IPIDCalculator> {
 
     final PIDConfig pidConfig;
     final TrapezoidProfile.Constraints profile;
 
-    public ProfiledPIDFSetup(PIDConfig pidConfig, TrapezoidProfile.Constraints profile) {
+    public ProfiledPIDFCalculatorSetup(PIDConfig pidConfig, TrapezoidProfile.Constraints profile) {
         this.pidConfig = pidConfig;
         this.profile = profile;
     }
