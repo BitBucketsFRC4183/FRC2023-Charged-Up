@@ -11,19 +11,14 @@ import org.bitbuckets.lib.util.MockingUtil;
 public class RgbSubsystemSetup implements ISetup<RgbSubsystem> {
 
     final OperatorInput operatorInput;
-    final boolean isEnabled;
 
-    public RgbSubsystemSetup(OperatorInput operatorInput, boolean isEnabled) {
+    public RgbSubsystemSetup(OperatorInput operatorInput) {
         this.operatorInput = operatorInput;
-        this.isEnabled = isEnabled;
     }
 
 
     @Override
     public RgbSubsystem build(IProcess self) {
-        if (!isEnabled) {
-            return MockingUtil.buddy(RgbSubsystem.class);
-        }
 
 
         CANdle candle = new CANdle(15);

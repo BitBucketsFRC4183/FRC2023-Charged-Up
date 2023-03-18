@@ -10,8 +10,7 @@ import org.bitbuckets.arm.ArmSubsystemSetup;
 import org.bitbuckets.auto.AutoControlSetup;
 import org.bitbuckets.auto.AutoSubsystem;
 import org.bitbuckets.auto.AutoSubsystemSetup;
-import org.bitbuckets.cubeCone.GamePiece;
-import org.bitbuckets.cubeCone.GamePieceSetup;
+
 import org.bitbuckets.drive.DriveSubsystem;
 import org.bitbuckets.drive.DriveSubsystemSetup;
 import org.bitbuckets.drive.IDriveControl;
@@ -25,6 +24,8 @@ import org.bitbuckets.lib.vendor.ctre.PigeonGyroSetup;
 import org.bitbuckets.odometry.IOdometryControl;
 import org.bitbuckets.odometry.OdometryControlSetup;
 import org.bitbuckets.odometry.SimOdometryControlSetup;
+import org.bitbuckets.rgb.RgbSubsystem;
+import org.bitbuckets.rgb.RgbSubsystemSetup;
 import org.bitbuckets.vision.IVisionControl;
 import org.bitbuckets.vision.VisionControlSetup;
 
@@ -45,9 +46,6 @@ public class RobotSetup implements ISetup<Void> {
                 new Joystick(1),
                 new Joystick(0)
         );
-
-        GamePiece piece = self.childSetup("gp", new GamePieceSetup(operatorInput));
-        self.childSetup("cone-cube", new GamePieceSetup(operatorInput));
 
         //if only these could be children of the drive subsystem... TODO fix this in mattlib future editions
         IDriveControl driveControl = self.childSetup(
@@ -134,8 +132,7 @@ public class RobotSetup implements ISetup<Void> {
                         new ArmSubsystemSetup(
                                 operatorInput,
                                 autoSubsystem,
-                                ArmSetups.ARM_CONTROL,
-                                piece
+                                ArmSetups.ARM_CONTROL
                         )
                 )
 
@@ -160,7 +157,16 @@ public class RobotSetup implements ISetup<Void> {
                         )
                 )
         );
-
+        self.childSetup(
+                "rgb-subsystem",
+                new ToggleableSetup<>(
+                    Enabled.RGB,
+                    RgbSubsystem.class,
+             new RgbSubsystemSetup(
+                     operatorInput
+                )
+        )
+    );
         /**
          * Register the crasher runnable if we're in github
          */

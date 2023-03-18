@@ -6,5 +6,6 @@ public interface Enabled {
     boolean drive = true;
     boolean auto = true;
     boolean vision = false;
+    boolean RGB = true;
 
 }
