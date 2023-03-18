@@ -9,7 +9,7 @@ import org.bitbuckets.auto.AutoSubsystem;
 import org.bitbuckets.drive.balance.BalanceControl;
 import org.bitbuckets.drive.holo.HoloControl;
 import org.bitbuckets.lib.core.HasLifecycle;
-import org.bitbuckets.lib.core.HasLoop;
+import org.bitbuckets.lib.core.HasLogLoop;
 import org.bitbuckets.lib.log.IDebuggable;
 import org.bitbuckets.lib.tune.IValueTuner;
 import org.bitbuckets.odometry.IOdometryControl;
@@ -22,7 +22,7 @@ import java.util.Optional;
  * tags: high priority
  * TODO this is becoming a sort of god class, some of this logic has to break out into smaller subsystems
  */
-public class DriveSubsystem implements HasLoop, HasLifecycle {
+public class DriveSubsystem implements HasLifecycle, HasLogLoop {
 
 
     final OperatorInput input;
@@ -52,19 +52,10 @@ public class DriveSubsystem implements HasLoop, HasLifecycle {
         this.debuggable = debuggable;
     }
 
-
     @Override
-    public void loop() {
-        if (input.isResetGyroPressed()) {
-            odometryControl.zero();
-        }
-
-        handleLogic();
-
-
+    public void logLoop() {
         debuggable.log("state", nextStateShould.toString());
         debuggable.log("stop", shouldStop);
-
     }
 
     DriveFSM nextStateShould = DriveFSM.IDLE;
@@ -81,11 +72,32 @@ public class DriveSubsystem implements HasLoop, HasLifecycle {
 
         if (nextStateShould == DriveFSM.AUTO_PATHFINDING) {
             autoPathFinding();
+            return;
+        }
+
+        if (nextStateShould == DriveFSM.BALANCE) {
+            balance();
+            return;
+        }
+
+        if (nextStateShould == DriveFSM.VISION) {
+            teleopVision();
+            return;
+        }
+
+
+        if (nextStateShould == DriveFSM.IDLE) {
+            driveControl.stop();
         }
     }
 
     @Override
     public void teleopPeriodic() {
+
+        if (input.isResetGyroPressed()) {
+            odometryControl.zero();
+        }
+
         if (input.isVisionDrivePressed() && visionControl.estimateBestVisionTarget().isPresent()) {
             nextStateShould = DriveFSM.VISION;
         } else if (nextStateShould == DriveFSM.VISION && !input.isVisionDrivePressed()) {
@@ -101,6 +113,23 @@ public class DriveSubsystem implements HasLoop, HasLifecycle {
 
         if (nextStateShould == DriveFSM.MANUAL) {
             teleopNormal();
+            return;
+        }
+
+        if (nextStateShould == DriveFSM.BALANCE) {
+            balance();
+            return;
+        }
+
+        if (nextStateShould == DriveFSM.VISION) {
+            teleopVision();
+            return;
+
+        }
+
+
+        if (nextStateShould == DriveFSM.IDLE) {
+            driveControl.stop();
         }
     }
 
@@ -122,26 +151,6 @@ public class DriveSubsystem implements HasLoop, HasLifecycle {
     @Override
     public void disabledPeriodic() {
         nextStateShould = DriveFSM.IDLE;
-    }
-
-
-    void handleLogic() {
-
-        if (nextStateShould == DriveFSM.BALANCE) {
-            balance();
-            return;
-        }
-
-        if (nextStateShould == DriveFSM.VISION) {
-            teleopVision();
-            return;
-
-        }
-
-
-        if (nextStateShould == DriveFSM.IDLE) {
-            driveControl.stop();
-        }
     }
 
 
