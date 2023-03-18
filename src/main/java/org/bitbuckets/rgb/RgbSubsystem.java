@@ -9,7 +9,6 @@ public class RgbSubsystem implements HasLoop {
 
     final CANdle candle;
 
-    final OperatorInput rgbInput;
 
 
 
@@ -25,9 +24,8 @@ public class RgbSubsystem implements HasLoop {
 
 
 
-    public RgbSubsystem(CANdle candle, OperatorInput rgbInput, IDebuggable debuggable, OperatorInput operatorInput) {
+    public RgbSubsystem(CANdle candle , IDebuggable debuggable, OperatorInput operatorInput) {
         this.candle = candle;
-        this.rgbInput = rgbInput;
         this.debuggable = debuggable;
         this.operatorInput = operatorInput;
     }
@@ -50,12 +48,6 @@ public class RgbSubsystem implements HasLoop {
                     state = RgbFSM.AUTO_HEADING;
                 }
 
-            case AUTO_HEADING:
-                candle.setLEDs(255,255,255);
-
-                if (!operatorInput.isAutoHeadingPressed() ) {
-                    state = RgbFSM.DEFAULT;
-                }
 
         }
 

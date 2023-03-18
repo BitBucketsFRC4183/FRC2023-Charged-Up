@@ -30,6 +30,6 @@ public class RgbSubsystemSetup implements ISetup<RgbSubsystem> {
         config.brightnessScalar = 1; // dim the LEDs to half brightness
         candle.configAllSettings(config);
 
-        return new RgbSubsystem(candle, operatorInput, debuggable, operatorInput);
+        return new RgbSubsystem(candle, debuggable, operatorInput);
     }
 }
