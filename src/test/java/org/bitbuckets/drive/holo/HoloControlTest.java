@@ -1,6 +1,5 @@
 package org.bitbuckets.drive.holo;
 
-import com.pathplanner.lib.PathPlannerTrajectory;
 import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -48,7 +47,7 @@ class HoloControlTest {
 
         // get chassis speeds for a target that is at 1, 0
         var chassisSpeeds = control.calculatePose2D(
-                new Pose2d(1, 0, Rotation2d.fromDegrees(0)),
+                new Pose2d(1, 0, Rotation2d.fromDegrees(0)), Rotation2d.fromDegrees(0),
                 1);
         assertEquals(2, chassisSpeeds.vxMetersPerSecond);
         assertEquals(0, chassisSpeeds.vyMetersPerSecond);

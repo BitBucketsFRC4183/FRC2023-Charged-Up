@@ -2,7 +2,7 @@ package org.bitbuckets.drive;
 
 import com.pathplanner.lib.PathPlannerTrajectory;
 import config.Drive;
-import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import org.bitbuckets.OperatorInput;
 import org.bitbuckets.auto.AutoSubsystem;
@@ -79,7 +79,7 @@ public class DriveSubsystem implements HasLifecycle, HasLogLoop {
     public void teleopPeriodic() {
 
         if (input.isResetGyroPressed()) {
-            odometryControl.zero();
+            odometryControl.zeroOdo();
         }
 
         if (input.isVisionDrivePressed() && visionControl.estimateBestVisionTarget().isPresent()) {
@@ -126,13 +126,9 @@ public class DriveSubsystem implements HasLifecycle, HasLogLoop {
         Optional<PathPlannerTrajectory.PathPlannerState> opt = autoSubsystem.samplePathPlannerState();
         if (opt.isPresent()) {
             PathPlannerTrajectory.PathPlannerState state = opt.get();
+            ChassisSpeeds targetSpeeds = holoControl.calculatePose2D(state.poseMeters, state.holonomicRotation, state.velocityMetersPerSecond);
 
-            Pose2d filtered = new Pose2d(
-                    state.poseMeters.getTranslation(),
-                    state.holonomicRotation
-            );
-
-            ChassisSpeeds targetSpeeds = holoControl.calculatePose2D(filtered, state.velocityMetersPerSecond);
+            // auto is running backwards... but why?
             targetSpeeds.vxMetersPerSecond = -targetSpeeds.vxMetersPerSecond;
             targetSpeeds.vyMetersPerSecond = -targetSpeeds.vyMetersPerSecond;
             targetSpeeds.omegaRadiansPerSecond = -targetSpeeds.omegaRadiansPerSecond;
@@ -148,7 +144,7 @@ public class DriveSubsystem implements HasLifecycle, HasLogLoop {
 
         var targetPose = visionControl.estimateBestVisionTarget();
         if (targetPose.isPresent()) {
-            ChassisSpeeds speeds = holoControl.calculatePose2D(targetPose.get().toPose2d(), 1);
+            ChassisSpeeds speeds = holoControl.calculatePose2D(targetPose.get().toPose2d(), targetPose.get().toPose2d().getRotation().plus(Rotation2d.fromDegrees(180)), 1);
 
             ChassisSpeeds inverted = new ChassisSpeeds(
                     -speeds.vxMetersPerSecond,

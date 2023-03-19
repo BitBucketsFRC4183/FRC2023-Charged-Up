@@ -37,6 +37,10 @@ public class ArmSubsystem implements HasLoop, HasLifecycle {
 
     @Override
     public void autonomousPeriodic() {
+        if (autoSubsystem.sampleHasEventStarted("arm-stow")) {
+            shouldDoNext = ArmFSM.STORE;
+            return;
+        }
         if (autoSubsystem.sampleHasEventStarted("arm-human-intake")) {
             shouldDoNext = ArmFSM.HUMAN_INTAKE;
             return;
@@ -77,6 +81,10 @@ public class ArmSubsystem implements HasLoop, HasLifecycle {
             armControl.openGripper();
         } else if (operatorInput.closeGripperPressed()) {
             armControl.closeGripper();
+        }
+        if (operatorInput.isStoragePressed()) {
+            shouldDoNext = ArmFSM.STORE;
+            return;
         }
 
         if (operatorInput.isStopPidPressed()) {
@@ -151,7 +159,7 @@ public class ArmSubsystem implements HasLoop, HasLifecycle {
     //acts on shouldDoNext and then updates it to the result state if it has managed to complete it's task
     void handleLogic() {
 
-        if (shouldDoNext == ArmFSM.STOW) {
+        if (shouldDoNext == ArmFSM.STORE) {
             armControl.commandArmToState(
                     0.19,
                     -0.4
