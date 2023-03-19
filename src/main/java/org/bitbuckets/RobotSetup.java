@@ -16,6 +16,7 @@ import org.bitbuckets.drive.IDriveControl;
 import org.bitbuckets.drive.controlsds.DriveControlSetup;
 import org.bitbuckets.drive.holo.HoloControlSetup;
 import org.bitbuckets.lib.*;
+import org.bitbuckets.lib.control.PIDCalculatorSetup;
 import org.bitbuckets.lib.util.LateSupplier;
 import org.bitbuckets.lib.util.MockingUtil;
 import org.bitbuckets.lib.vendor.ctre.PigeonGyroSetup;
@@ -152,7 +153,10 @@ public class RobotSetup implements ISetup<Void> {
                                         Drive.THETA_HOLO_PID,
                                         Drive.THETA_CONSTRAINTS
                                 ),
-                                driveControl
+                                driveControl,
+                                new PIDCalculatorSetup(
+                                        Drive.TIME_RESPONSE
+                                )
                         )
                 )
         );
