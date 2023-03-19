@@ -82,21 +82,11 @@ public class OdometryControl implements HasLoop, IOdometryControl {
     }
 
     @Override
-    public void setPos(Pose2d pose_trueFieldRelative)
+    public void setPos(Pose2d pose_trueFieldRelative, Rotation2d holonomicRotation_trueFieldRelative)
     {
 
-        Pose2d pose_allianceRelative = pose_trueFieldRelative;
-
-        /*if (DriverStation.getAlliance() == DriverStation.Alliance.Red) {
-            pose_allianceRelative = new Pose2d(
-                    pose_allianceRelative.getTranslation(),
-                    pose_allianceRelative.getRotation().plus(Rotation2d.fromDegrees(180))
-            );
-        }*/
-
-
         this.swerveDrivePoseEstimator.resetPosition(
-                pose_trueFieldRelative.getRotation().rotateBy(Rotation2d.fromDegrees(180)), //i have no idea why this works
+                holonomicRotation_trueFieldRelative, //i have no idea why this works
                 driveControl.currentPositions_initializationRelative(),
                 pose_trueFieldRelative
         );

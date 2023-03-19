@@ -15,5 +15,5 @@ public interface IOdometryControl {
     IGyro getGyro();
 
     void zero();
-    void setPos(Pose2d pose_trueFieldRelative);
+    void setPos(Pose2d pose_trueFieldRelative, Rotation2d holonomicRotation_trueFieldRelative);
 }

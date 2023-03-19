@@ -51,14 +51,13 @@ public class TransformUtil {
          if (red) {
              transformedHeading = state.poseMeters.getRotation();
          } else {
-             System.out.println("EEEEEE");
              transformedHeading = state.poseMeters.getRotation().rotateBy(Rotation2d.fromDegrees(180));
          }
          Rotation2d transformedHolonomicRotation;
          if (red) {
-             transformedHolonomicRotation = state.holonomicRotation.rotateBy(Rotation2d.fromDegrees(180));
+             transformedHolonomicRotation = state.holonomicRotation;//.rotateBy(Rotation2d.fromDegrees(180));
          } else {
-             transformedHolonomicRotation = state.holonomicRotation.rotateBy(Rotation2d.fromDegrees(180)).rotateBy(Rotation2d.fromDegrees(180));
+             transformedHolonomicRotation = state.holonomicRotation.rotateBy(Rotation2d.fromDegrees(180));//.rotateBy(Rotation2d.fromDegrees(180));
          }
           //This needs to rotate for some reason LOL
 
@@ -80,6 +79,8 @@ public class TransformUtil {
          Field deltaPos = PathPlannerTrajectory.PathPlannerState.class.getDeclaredField("deltaPos");
          deltaPos.setAccessible(true);//Very important, this allows the setting to work.
          deltaPos.set(transformedState, deltaPos.get(transformedState));
+
+
 
          return transformedState;
     }
