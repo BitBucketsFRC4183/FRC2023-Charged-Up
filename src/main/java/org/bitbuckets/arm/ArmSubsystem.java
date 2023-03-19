@@ -67,6 +67,7 @@ public class ArmSubsystem implements HasLoop, HasLifecycle {
 
     @Override
     public void teleopPeriodic() {
+
         if (operatorInput.intakeGripper()) {
             armControl.intakeGripperCone();
 
@@ -76,6 +77,9 @@ public class ArmSubsystem implements HasLoop, HasLifecycle {
         else if (operatorInput.isCube()){
             armControl.gripperHold();
         }
+        else if (operatorInput.openGripper()){
+            armControl.gripperOpen();
+    }
         else {
             armControl.gripperLoop();
         }

@@ -178,5 +178,8 @@ public class OperatorInput {
     public boolean isLoadPresed() {
         return operatorControl.getRawButtonPressed(XboxController.Button.kX.value);
     }
+    public boolean openGripper() {
+        return operatorControl.getRawButton(XboxController.Button.kY.value);
+    }
 
 }
