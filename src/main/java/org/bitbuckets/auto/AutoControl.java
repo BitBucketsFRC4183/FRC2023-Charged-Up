@@ -1,9 +1,7 @@
 package org.bitbuckets.auto;
 
 import com.pathplanner.lib.PathPlannerTrajectory;
-import com.pathplanner.lib.TransformUtil;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.DriverStation;
 import org.bitbuckets.lib.log.ILoggable;
 import org.bitbuckets.odometry.IOdometryControl;
@@ -71,7 +69,6 @@ public class AutoControl implements IAutoControl {
             }
 
 
-
             if (segment.getEndStopEvent().names.size() > 0 && segmentGroup.size() - 1 == i) {
                 segmentTimes.add(new AutoPathInstance.SegmentTime(i, totalTime, true));
 
@@ -81,22 +78,14 @@ public class AutoControl implements IAutoControl {
                 totalTime += segment.getEndStopEvent().waitTime;
             }
         }
-
-
         var transformedTrajectories = new ArrayList<PathPlannerTrajectory>();
         for (var trajectory : segmentGroup) {
-
-            var transformTrajectory = TransformUtil.transform(trajectory, DriverStation.getAlliance());
-
-
+            var transformTrajectory = PathPlannerTrajectory.transformTrajectoryForAlliance(trajectory, DriverStation.getAlliance());
             transformedTrajectories.add(transformTrajectory);
         }
 
-        System.out.println(DriverStation.getAlliance());
 
-        var initialState = transformedTrajectories.get(0).getInitialState();
-
-
+        var initialState = PathPlannerTrajectory.transformStateForAlliance(segmentGroup.get(0).getInitialState(), DriverStation.getAlliance());
         odometryControl.setPos(initialState.poseMeters, initialState.holonomicRotation);
         AutoPathInstance instance = new AutoPathInstance(transformedTrajectories, eventMap, segmentTimes, whichOne, totalTime);
 
