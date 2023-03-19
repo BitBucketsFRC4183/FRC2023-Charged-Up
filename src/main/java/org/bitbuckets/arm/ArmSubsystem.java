@@ -65,8 +65,8 @@ public class ArmSubsystem implements HasLoop, HasLifecycle {
         }
     }
 
-    //acts on shouldDoNext and then updates it to the result state if it has managed to complete it's task
-    void handleLogic() {
+    @Override
+    public void teleopPeriodic() {
         if (operatorInput.intakeGripper()) {
             if (operatorInput.isCube()) {
                 armControl.intakeGripperCube();
@@ -78,14 +78,6 @@ public class ArmSubsystem implements HasLoop, HasLifecycle {
         } else {
             armControl.gripperLoop();
         }
-
-        if (autoSubsystem.state() == AutoFSM.DISABLED) { //arm can move after auto fsm has ended, so that if we make a mistake it can still win without us
-
-            return;
-        }
-
-        if (shouldDoNext == ArmFSM.MANUAL) {
-
 
         if (operatorInput.isStopPidPressed()) {
             shouldDoNext = ArmFSM.IDLE;
@@ -173,13 +165,7 @@ public class ArmSubsystem implements HasLoop, HasLifecycle {
         }
 
         if (shouldDoNext == ArmFSM.ACTUATE_GRIPPER) {
-<<<<<<< HEAD
             armControl.outtakeGripper();
-        }
-=======
-            armControl.openGripper();
->>>>>>> main
-
         } else if (shouldDoNext == ArmFSM.IDLE) {
             armControl.doNothing();
         } else if (shouldDoNext == ArmFSM.DEBUG_TO_DEGREES) {
@@ -210,17 +196,7 @@ public class ArmSubsystem implements HasLoop, HasLifecycle {
         }
 
         if (shouldDoNext == ArmFSM.UNSTOW) {
-<<<<<<< HEAD
-<<<<<<< HEAD
             armControl.commandArmToState(-0.1, armControl.upperArm.getMechanismPositionAccum_rot());
-=======
-            armControl.commandArmToState(- 0.1,armControl.upperArm.getMechanismPositionAccum_rot());
->>>>>>> main
-=======
-            armControl.commandArmToState(-0.1, armControl.upperArm.getMechanismPositionAccum_rot());
->>>>>>> main
-
-
         }
 
         if (shouldDoNext == ArmFSM.HUMAN_INTAKE) {

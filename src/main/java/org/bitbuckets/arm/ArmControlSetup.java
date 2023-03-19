@@ -34,15 +34,10 @@ public class ArmControlSetup implements ISetup<ArmControl> {
                 self.childSetup("upper-joint", upMotor),
                 self.childSetup("lower-pid", lowCalculator),
                 self.childSetup("upper-pid", highCalculator),
-<<<<<<< HEAD
                 self.childSetup("gripper-wheel-motor", gripperWheelMotor),
                 self.childSetup("gripper-claw-motor", gripperClawMotor),
-                self.getDebuggable());
-=======
-                self.childSetup("gripper-motor", gripperMotor),
                 self.getDebuggable()
         );
->>>>>>> main
         control.zeroArmAbs();
         return control;
     }

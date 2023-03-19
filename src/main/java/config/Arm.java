@@ -122,22 +122,7 @@ public interface Arm {
             DCMotor.getNEO(1),
             true
     );
-
-    MotorConfig GRIPPER_CONFIG = new MotorConfig(
-            1,
-            1,
-            1,
-            true,
-            false,
-            30,
-            Optional.empty(),
-            Optional.of(-134.8),
-            true,
-            false,
-            false, OptimizationMode.GENERIC,
-            DCMotor.getNeo550(1),
-            false
-    );
+    
     MotorConfig GRIPPER_WHEEL_CONFIG = new MotorConfig(
             1,
             1,
@@ -150,7 +135,8 @@ public interface Arm {
             true,
             false,
             false, OptimizationMode.GENERIC,
-            DCMotor.getNeo550(1)
+            DCMotor.getNeo550(1),
+            false
     );
     MotorConfig GRIPPER_CLAW_CONFIG = new MotorConfig(
             1,
@@ -164,7 +150,8 @@ public interface Arm {
             true,
             false,
             false, OptimizationMode.GENERIC,
-            DCMotor.getNeo550(1)
+            DCMotor.getNeo550(1),
+            false
     );
 
 

@@ -3,7 +3,6 @@ package config;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.numbers.N1;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import org.bitbuckets.arm.ArmControl;
 import org.bitbuckets.arm.ArmControlSetup;
 import org.bitbuckets.lib.ISetup;
@@ -114,16 +113,15 @@ public interface ArmSetups {
     );
 
     /**
-
-    ISetup<IPIDCalculator> PROFILED_LOWER_PID = new ProfiledPIDFCalculatorSetup(
-            Arm.LOWER_PID,
-            new TrapezoidProfile.Constraints(2, 2)
-    );
-
-    ISetup<IPIDCalculator> PROFILED_UPPER_PID = new ProfiledPIDFCalculatorSetup(
-            Arm.UPPER_PID,
-            new TrapezoidProfile.Constraints(2, 2)
-    );
+     * ISetup<IPIDCalculator> PROFILED_LOWER_PID = new ProfiledPIDFCalculatorSetup(
+     * Arm.LOWER_PID,
+     * new TrapezoidProfile.Constraints(2, 2)
+     * );
+     * <p>
+     * ISetup<IPIDCalculator> PROFILED_UPPER_PID = new ProfiledPIDFCalculatorSetup(
+     * Arm.UPPER_PID,
+     * new TrapezoidProfile.Constraints(2, 2)
+     * );
      */
 
 
@@ -133,7 +131,8 @@ public interface ArmSetups {
             UPPER_ARM,
             PROFILED_LOWER_PID,
             PROFILED_UPPER_PID,
-            GRIPPER_JOINT);
+            GRIPPER_WHEEL,
+            GRIPPER_CLAW);
 
 
 }

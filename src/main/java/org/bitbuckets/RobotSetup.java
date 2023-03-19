@@ -1,5 +1,6 @@
 package org.bitbuckets;
 
+import com.ctre.phoenix.sensors.Pigeon2;
 import config.*;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -16,7 +17,6 @@ import org.bitbuckets.drive.controlsds.DriveControlSetup;
 import org.bitbuckets.drive.holo.HoloControlSetup;
 import org.bitbuckets.lib.*;
 import org.bitbuckets.lib.util.LateSupplier;
-import org.bitbuckets.lib.vendor.navx.NavxGyroSetup;
 import org.bitbuckets.lib.util.MockingUtil;
 import org.bitbuckets.lib.vendor.ctre.PigeonGyroSetup;
 import org.bitbuckets.odometry.IOdometryControl;
@@ -33,7 +33,6 @@ public class RobotSetup implements ISetup<Void> {
 
 
         SwerveDriveKinematics KINEMATICS = DriveTurdSpecific.KINEMATICS; //TODO make this swappable
-
 
 
         OperatorInput operatorInput = new OperatorInput(
