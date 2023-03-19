@@ -127,12 +127,9 @@ public class DriveSubsystem implements HasLifecycle, HasLogLoop {
         if (opt.isPresent()) {
             PathPlannerTrajectory.PathPlannerState state = opt.get();
 
-            Pose2d filtered = new Pose2d(
-                    state.poseMeters.getTranslation(),
-                    state.holonomicRotation
-            );
 
-            ChassisSpeeds targetSpeeds = holoControl.calculatePose2D(filtered, state.velocityMetersPerSecond);
+
+            ChassisSpeeds targetSpeeds = holoControl.calculatePose2D(state.poseMeters, state.velocityMetersPerSecond);
             targetSpeeds.vxMetersPerSecond = -targetSpeeds.vxMetersPerSecond;
             targetSpeeds.vyMetersPerSecond = -targetSpeeds.vyMetersPerSecond;
             targetSpeeds.omegaRadiansPerSecond = -targetSpeeds.omegaRadiansPerSecond;
