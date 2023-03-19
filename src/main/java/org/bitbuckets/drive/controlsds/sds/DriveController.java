@@ -1,5 +1,6 @@
 package org.bitbuckets.drive.controlsds.sds;
 
+import org.bitbuckets.bootstrap.Robot;
 import org.bitbuckets.lib.hardware.IMotorController;
 
 public class DriveController implements IDriveController {
@@ -24,6 +25,7 @@ public class DriveController implements IDriveController {
         // This is inverted because the motor is inverted, which means positive voltage makes the wheels spin
         // backwards. When we go "forward" the encoder is actually going backwards. Invert here so our position updates
         // correctly
-        return -motor.getPositionMechanism_meters();
+        // the sim doesn't have inverted motors, and so doesn't need this
+        return motor.getPositionMechanism_meters() * (Robot.isSimulation() ? 1 : -1);
     }
 }

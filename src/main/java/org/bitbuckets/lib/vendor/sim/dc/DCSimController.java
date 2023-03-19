@@ -74,14 +74,14 @@ public class DCSimController implements IMotorController, HasLoop, HasLogLoop {
         //debuggable.out("moveAtVoltage called with" + voltage);
         lastVoltage = voltage;
 
-        simulatedMotor.setInputVoltage(voltage * (config.isInverted ? -1 : 1));
+        simulatedMotor.setInputVoltage(voltage);
     }
 
     @Override
     public void moveAtPercent(double percent) {
 
 
-        simulatedMotor.setInputVoltage(percent * 12.0 * (config.isInverted ? -1 : 1)); //voltage time\
+        simulatedMotor.setInputVoltage(percent * 12.0); //voltage time\
     }
 
     double lastSetpoint = 0.0;
