@@ -68,17 +68,22 @@ public class ArmSubsystem implements HasLoop, HasLifecycle {
     @Override
     public void teleopPeriodic() {
         if (operatorInput.intakeGripper()) {
-            if (operatorInput.isCube()) {
-                armControl.intakeGripperCube();
-            } else {
-                armControl.intakeGripperCone();
-            }
+            armControl.intakeGripperCone();
+
         } else if (operatorInput.outtakeGripper()) {
             armControl.outtakeGripper();
-        } else {
+        }
+        else if (operatorInput.isCube()){
+            armControl.gripperHold();
+        }
+        else {
             armControl.gripperLoop();
         }
 
+
+        if(operatorInput.isZeroArmPressed()){
+            armControl.zero();
+        }
         if (operatorInput.isStopPidPressed()) {
             shouldDoNext = ArmFSM.IDLE;
             return;

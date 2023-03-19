@@ -167,7 +167,7 @@ public class OperatorInput {
     }
 
     public boolean isCube() {
-        return operatorControl.getRawButton(XboxController.Button.kStart.value);
+        return operatorControl.getRawButton(XboxController.Button.kRightStick.value);
     }
 
     public boolean stopStickyPressed() {

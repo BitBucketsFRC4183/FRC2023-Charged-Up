@@ -77,8 +77,13 @@ public class ArmControl implements HasLogLoop {
     }
 
     public void gripperLoop() {
+        gripperWheelMotor.moveAtPercent(-0);
+    }
+    public void gripperHold() {
         gripperWheelMotor.moveAtPercent(-0.2);
     }
+
+
 
     public double getUpperAbsEncoderAngle() {
         return upperArm.getAbsoluteEncoder_rotations();
@@ -86,17 +91,17 @@ public class ArmControl implements HasLogLoop {
 
 
     public void outtakeGripper() {
-        gripperWheelMotor.moveAtPercent(0.5);
+        gripperWheelMotor.moveAtPercent(0.9);
     }
 
     public void intakeGripperCone() {
-        gripperWheelMotor.moveAtPercent(-1.0);
-        gripperClawMotor.moveToPosition_mechanismRotations(-0.5);
+        gripperWheelMotor.moveAtPercent(-0.9);
+        gripperClawMotor.moveToPosition_mechanismRotations(0);
     }
 
     public void intakeGripperCube() {
-        gripperWheelMotor.moveAtPercent(-1.0);
-        gripperClawMotor.moveToPosition_mechanismRotations(0);
+        gripperWheelMotor.moveAtPercent(-0.9);
+      //  gripperClawMotor.moveToPosition_mechanismRotations(0);
     }
 
     public void stopGripper() {
@@ -118,7 +123,9 @@ public class ArmControl implements HasLogLoop {
 
     public void zero() {
         lowerArm.forceOffset_mechanismRotations(0);
+        gripperClawMotor.forceOffset_mechanismRotations(0);
     }
+
 
 
     public double getErrorQuantity() {
