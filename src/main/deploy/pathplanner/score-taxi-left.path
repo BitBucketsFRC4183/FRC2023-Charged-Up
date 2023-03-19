@@ -107,12 +107,12 @@
     },
     {
       "anchorPoint": {
-        "x": 5.728818077427822,
-        "y": 4.9059556504529676
+        "x": 3.1997310505037677,
+        "y": 4.934775668162447
       },
       "prevControl": {
-        "x": 3.6595180774278218,
-        "y": 4.9059556504529676
+        "x": 1.1304310505037676,
+        "y": 4.934775668162447
       },
       "nextControl": null,
       "holonomicAngle": 180.0,
@@ -121,7 +121,9 @@
       "isLocked": false,
       "isStopPoint": false,
       "stopEvent": {
-        "names": [],
+        "names": [
+          "arm-stow"
+        ],
         "executionBehavior": "parallel",
         "waitBehavior": "none",
         "waitTime": 1
