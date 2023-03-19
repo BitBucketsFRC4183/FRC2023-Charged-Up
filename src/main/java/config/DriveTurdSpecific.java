@@ -29,10 +29,10 @@ public interface DriveTurdSpecific {
      * BR ----- FR
      */
     SwerveDriveKinematics KINEMATICS = new SwerveDriveKinematics(
-            new Translation2d(HALF_WIDTH, HALF_BASE),
-            new Translation2d(HALF_WIDTH, -HALF_BASE),
-            new Translation2d(-HALF_WIDTH, HALF_BASE),
-            new Translation2d(-HALF_WIDTH, -HALF_BASE)
+            new Translation2d(HALF_WIDTH, HALF_BASE), // FL
+            new Translation2d(HALF_WIDTH, -HALF_BASE), // FR
+            new Translation2d(-HALF_WIDTH, HALF_BASE), // BL
+            new Translation2d(-HALF_WIDTH, -HALF_BASE) // BR
     );
     SwerveModuleConfiguration MK4I_L2 = new SwerveModuleConfiguration(
             0.10033,
