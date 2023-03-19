@@ -122,12 +122,27 @@ public interface Arm {
             DCMotor.getNEO(1),
             true
     );
-
-    MotorConfig GRIPPER_CONFIG = new MotorConfig(
+    
+    MotorConfig GRIPPER_WHEEL_CONFIG = new MotorConfig(
             1,
             1,
             1,
             true,
+            false,
+            30,
+            Optional.empty(),
+            Optional.empty(),
+            true,
+            false,
+            false, OptimizationMode.GENERIC,
+            DCMotor.getNeo550(1),
+            false
+    );
+    MotorConfig GRIPPER_CLAW_CONFIG = new MotorConfig(
+            1,
+            1,
+            1,
+            false,
             false,
             30,
             Optional.empty(),
@@ -173,7 +188,8 @@ public interface Arm {
             Optional.empty()
     );
 
-    PIDConfig GRIPPER_PID = new PIDConfig(0.1, 0, 0, Optional.empty(), Optional.empty());
+    PIDConfig GRIPPER_WHEEL_PID = new PIDConfig(0.1, 0, 0, Optional.empty(), Optional.empty());
+    PIDConfig GRIPPER_CLAW_PID = new PIDConfig(0.1, 0, 0, Optional.empty(), Optional.empty());
 
 
     TrapezoidProfile.Constraints LOWER_CONSTRAINT = new TrapezoidProfile.Constraints(

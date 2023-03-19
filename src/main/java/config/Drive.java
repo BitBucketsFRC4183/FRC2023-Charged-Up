@@ -72,7 +72,15 @@ public interface Drive {
             ).fill(0)
     );
 
-    double ACCEL_THRESHOLD_AUTOBALANCE = 1.5; //1.5 Gs
+    double ACCEL_THRESHOLD_AUTOBALANCE = 1.35; //1.5 Gs
+
+    PIDConfig TIME_RESPONSE = new PIDConfig(
+            0.8,
+            0,
+            0,
+            Optional.empty(),
+            Optional.empty()
+    );
 
     Vector<N3> STD_VISION = VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(10));
 
