@@ -21,5 +21,5 @@ public interface IOdometryControl {
 
     void zeroOdo();
     void zeroGyro();
-    void setPos(Pose2d pose_trueFieldRelative);
+    void setPos(Pose2d pose_trueFieldRelative, Rotation2d rotation2d);
 }
