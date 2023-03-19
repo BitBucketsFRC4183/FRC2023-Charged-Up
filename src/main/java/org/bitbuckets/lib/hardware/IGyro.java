@@ -19,4 +19,5 @@ public interface IGyro {
 
     void zero();
 
+    void zero();
 }

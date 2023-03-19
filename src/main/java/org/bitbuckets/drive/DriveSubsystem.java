@@ -79,7 +79,7 @@ public class DriveSubsystem implements HasLifecycle, HasLogLoop {
     public void teleopPeriodic() {
 
         if (input.isResetGyroPressed()) {
-            odometryControl.zero();
+            odometryControl.zeroGyro();
         }
 
         if (input.isVisionDrivePressed() && visionControl.estimateBestVisionTarget().isPresent()) {
