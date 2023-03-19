@@ -128,26 +128,34 @@ public class OperatorInput {
         return operatorControl.getRawButtonPressed(XboxController.Button.kLeftStick.value);
     }
 
-    // checks if operator wants to move arms to intake for human player station (by pressing RIGHT DPAD)
+    /*
+    Left d-pad: store
+    Right d-pad: mid
+    Up d-pad: high
+    Low d-pad: low
+
+     */
+
+    // checks if operator wants to move arms to store position (by pressing LEFT DPAD)
     public boolean isStoragePressed() {
         int pressed = operatorControl.getPOV();
         return pressed == 270;
     }
 
 
-    //controlled by dPad Left
+    // checks if operator wants to move arms to score in low node position (by pressing DOWN DPAD)
     public boolean isScoreLowPressed() {
         int pressed = operatorControl.getPOV();
         return pressed == 180;
     }
 
-    // checks if operator wants to move arms to score in medium node position (by pressing DPad Down)
+    // checks if operator wants to move arms to score in medium node position (by pressing RIGHT DPAD)
     public boolean isScoreMidPressed() {
         int pressed = operatorControl.getPOV();
         return pressed == 90;
     }
 
-    // checks if operator wants to move arms to score in high node position (by pressing dPad Up)
+    // checks if operator wants to move arms to score in high node position (by pressing UP DPAD)
     public boolean isScoreHighPressed() {
         int pressed = operatorControl.getPOV();
         return pressed == 0;
