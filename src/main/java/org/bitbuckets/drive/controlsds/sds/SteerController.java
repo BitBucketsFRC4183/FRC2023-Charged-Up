@@ -38,9 +38,9 @@ public class SteerController implements ISteerController {
         if (motor.getVelocityRaw() * (sensorPositionCoefficient * 10) < ENCODER_RESET_MAX_ANGULAR_VELOCITY) {
             if (++resetIteration >= ENCODER_RESET_ITERATIONS) {
                 resetIteration = 0;
-                double absoluteAngle = encoder.getAbsoluteAngle();
-                motor.forceOffset(absoluteAngle / sensorPositionCoefficient);
-                currentAngleRadians = absoluteAngle;
+//                double absoluteAngle = encoder.getAbsoluteAngle();
+//                motor.forceOffset(absoluteAngle / sensorPositionCoefficient);
+//                currentAngleRadians = absoluteAngle;
             }
         } else {
             resetIteration = 0;
@@ -78,7 +78,7 @@ public class SteerController implements ISteerController {
 
     @Override
     public double getAbsoluteAngle() {
-        return encoder.getAbsoluteAngle();
+        return 0; // encoder.getAbsoluteAngle();
     }
 
     @Override

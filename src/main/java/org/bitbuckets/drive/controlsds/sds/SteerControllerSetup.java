@@ -28,13 +28,14 @@ public class SteerControllerSetup implements ISetup<ISteerController> {
     public ISteerController build(ProcessPath self) {
         var controller = new SteerController(
                 motor.build(self.addChild("motor")),
-                encoder.build(self.addChild("encoder")),
+                null,
+//                encoder.build(self.addChild("encoder")),
                 sensorPositionCoefficient
         );
 
         // this used to be: checkNeoError(integratedEncoder.setPosition(absoluteEncoder.getAbsoluteAngle()), "Failed to set NEO encoder position");
         // in the motor setup
-        controller.forceOffset(controller.getAbsoluteAngle() / sensorPositionCoefficient);
+//        controller.forceOffset(controller.getAbsoluteAngle() / sensorPositionCoefficient);
         return controller;
     }
 }

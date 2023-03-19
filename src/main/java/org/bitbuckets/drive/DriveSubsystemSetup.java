@@ -196,13 +196,13 @@ DriveSubsystemSetup implements ISetup<DriveSubsystem> {
         int backRightModuleSteerMotor_ID = 4;
         int backRightModuleSteerEncoder_ID = 10;
 
-        double frontLeftModuleSteerOffset = -Math.toRadians(51.6); // set front left steer offset
+        double frontLeftModuleSteerOffset = -Math.toRadians(0); // set front left steer offset
 
-        double frontRightModuleSteerOffset = -Math.toRadians(146.7 - 180); // set front right steer offset
+        double frontRightModuleSteerOffset = -Math.toRadians(0); // set front right steer offset
 
-        double backLeftModuleSteerOffset = -Math.toRadians(254.9 + 180); // set back left steer offset
+        double backLeftModuleSteerOffset = -Math.toRadians(0); // set back left steer offset
 
-        double backRightModuleSteerOffset = -Math.toRadians(66.7); // set back right steer offset
+        double backRightModuleSteerOffset = -Math.toRadians(0); // set back right steer offset
 
         double sensorPositionCoefficient = 2.0 * Math.PI / 2048 * DriveConstants.MK4_L2.getSteerReduction();
 
