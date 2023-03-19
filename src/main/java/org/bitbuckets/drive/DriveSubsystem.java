@@ -81,7 +81,7 @@ public class DriveSubsystem implements HasLifecycle, HasLogLoop {
 
         //TODO DONT USE THIS
         if (input.isResetGyroPressed()) {
-            odometryControl.zero(); //THIS ONLY WORKS IF YOU ARE FACING AN ALLIANCE WALL OTHERWISE BAD THINGS
+            odometryControl.zeroGyro(); //THIS ONLY WORKS IF YOU ARE FACING AN ALLIANCE WALL OTHERWISE BAD THINGS
         }
 
         if (input.isVisionDrivePressed() && visionControl.estimateBestVisionTarget().isPresent()) {

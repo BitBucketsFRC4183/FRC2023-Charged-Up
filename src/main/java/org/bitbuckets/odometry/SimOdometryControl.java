@@ -39,7 +39,7 @@ public class SimOdometryControl implements IOdometryControl, HasLoop {
 
 
     @Override
-    public void zero() {
+    public void zeroOdo() {
         //reset
         estimator.resetPosition(Rotation2d.fromDegrees(0), driveControl.currentPositions_initializationRelative(), new Pose2d());
     }

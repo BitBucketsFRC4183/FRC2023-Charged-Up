@@ -90,9 +90,5 @@ public class PigeonGyro implements IGyro, HasLogLoop, HasLifecycle {
 
     }
 
-    @Override
-    public void autonomousInit() {
-        zero(); //no matter what, the robot starts at 0.
-    }
 
 }
