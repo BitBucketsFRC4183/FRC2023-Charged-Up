@@ -57,14 +57,12 @@ public interface ArmSetups {
     );
     ISetup<IMotorController> GRIPPER_WHEEL = new SwapSetup<>(
             MockingUtil.noops(IMotorController.class),
-            //TODO add back motor when gripper is back
-            /*new SparkSetup(
-                    MotorIds.GRIPPER_ARM_ID,
-                    Arm.GRIPPER_CONFIG,
-                    Arm.GRIPPER_PID,
+            new SparkSetup(
+                    MotorIds.GRIPPER_WHEEL_ID,
+                    Arm.GRIPPER_WHEEL_CONFIG,
+                    Arm.GRIPPER_WHEEL_PID,
                     Optional.empty()
-            ),*/
-            MockingUtil.noops(IMotorController.class),
+            ),
             new DCSimSetup(
                     Arm.GRIPPER_WHEEL_CONFIG,
                     new SimInertiaConfig(0.005, Matrix.eye(Nat.N1())),
