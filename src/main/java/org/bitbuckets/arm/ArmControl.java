@@ -82,10 +82,10 @@ public class ArmControl implements HasLogLoop {
     }
 
     int blitzToggle = 0;
-    
+
     public void gripperHold() {
 
-        if(blitzToggle > 2)
+        if(blitzToggle == 0)
         {
                 gripperWheelMotor.moveAtPercent(-0.2);
                 gripperClawMotor.moveAtPercent(-0.2);
@@ -96,7 +96,7 @@ public class ArmControl implements HasLogLoop {
             gripperClawMotor.moveAtPercent(-0);
         }
         blitzToggle += 1;
-        if(blitzToggle == 4)
+        if(blitzToggle > 1)
         {
             blitzToggle = 0;
         }
