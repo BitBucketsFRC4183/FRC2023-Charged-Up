@@ -68,9 +68,10 @@ public class SimOdometryControl implements IOdometryControl, HasLoop {
     }
 
     @Override
-    public void setPos(Pose2d poseMeters) {
-        estimator.resetPosition(poseMeters.getRotation(), driveControl.currentPositions(), poseMeters);
+    public void setPos(Pose2d pose_trueFieldRelative, Rotation2d rotation2d) {
+
     }
+
 
     Rotation2d lastAngle_fieldRelative = Rotation2d.fromDegrees(0);
     SwerveModulePosition[] lastPositions = new SwerveModulePosition[]{
