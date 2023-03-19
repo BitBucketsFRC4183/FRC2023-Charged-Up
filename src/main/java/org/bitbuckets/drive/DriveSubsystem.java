@@ -2,7 +2,6 @@ package org.bitbuckets.drive;
 
 import com.pathplanner.lib.PathPlannerTrajectory;
 import config.Drive;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import org.bitbuckets.OperatorInput;
 import org.bitbuckets.auto.AutoSubsystem;
@@ -79,7 +78,7 @@ public class DriveSubsystem implements HasLifecycle, HasLogLoop {
     public void teleopPeriodic() {
 
         if (input.isResetGyroPressed()) {
-            odometryControl.zeroGyro();
+            odometryControl.zeroOdo();
         }
 
         if (input.isVisionDrivePressed() && visionControl.estimateBestVisionTarget().isPresent()) {
@@ -126,7 +125,6 @@ public class DriveSubsystem implements HasLifecycle, HasLogLoop {
         Optional<PathPlannerTrajectory.PathPlannerState> opt = autoSubsystem.samplePathPlannerState();
         if (opt.isPresent()) {
             PathPlannerTrajectory.PathPlannerState state = opt.get();
-
 
 
             ChassisSpeeds targetSpeeds = holoControl.calculatePose2D(state.poseMeters, state.velocityMetersPerSecond);

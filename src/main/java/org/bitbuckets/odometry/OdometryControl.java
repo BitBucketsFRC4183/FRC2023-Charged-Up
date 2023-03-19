@@ -61,7 +61,7 @@ public class OdometryControl implements HasLoop, IOdometryControl {
 
     @Override
     public Rotation2d getRotation2d() {
-        return gyro.getRotation2d();
+        return swerveDrivePoseEstimator.getEstimatedPosition().getRotation();
     }
 
     @Override
@@ -86,7 +86,7 @@ public class OdometryControl implements HasLoop, IOdometryControl {
 
     @Override
     public void zeroOdo() {
-        this.swerveDrivePoseEstimator.resetPosition(Rotation2d.fromDegrees(0), driveControl.currentPositions(), new Pose2d());
+        this.swerveDrivePoseEstimator.resetPosition(gyro.getRotation2d(), driveControl.currentPositions(), new Pose2d(0, 0, Rotation2d.fromRotations(180)));
     }
 
     @Override
@@ -95,9 +95,7 @@ public class OdometryControl implements HasLoop, IOdometryControl {
     }
 
     @Override
-    public void setPos(Pose2d poseMeters, Rotation2d rotation2d)
-
-    {
-        this.swerveDrivePoseEstimator.resetPosition(rotation2d, driveControl.currentPositions(), poseMeters);
+    public void setPos(Pose2d poseMeters, Rotation2d holonomicRotation) {
+        this.swerveDrivePoseEstimator.resetPosition(gyro.getRotation2d(), driveControl.currentPositions(), new Pose2d(poseMeters.getTranslation(), holonomicRotation));
     }
 }
