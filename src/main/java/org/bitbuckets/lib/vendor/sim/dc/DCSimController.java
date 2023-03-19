@@ -4,9 +4,9 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import org.bitbuckets.lib.core.HasLogLoop;
 import org.bitbuckets.lib.core.HasLoop;
-import org.bitbuckets.lib.log.IDebuggable;
 import org.bitbuckets.lib.hardware.IMotorController;
 import org.bitbuckets.lib.hardware.MotorConfig;
+import org.bitbuckets.lib.log.IDebuggable;
 
 //TODO this needs to be run at 500 hz
 public class DCSimController implements IMotorController, HasLoop, HasLogLoop {
@@ -74,14 +74,14 @@ public class DCSimController implements IMotorController, HasLoop, HasLogLoop {
         //debuggable.out("moveAtVoltage called with" + voltage);
         lastVoltage = voltage;
 
-        simulatedMotor.setInputVoltage(voltage);
+        simulatedMotor.setInputVoltage(voltage * (config.isInverted ? -1 : 1));
     }
 
     @Override
     public void moveAtPercent(double percent) {
 
 
-        simulatedMotor.setInputVoltage(percent * 12.0); //voltage time\
+        simulatedMotor.setInputVoltage(percent * 12.0 * (config.isInverted ? -1 : 1)); //voltage time\
     }
 
     double lastSetpoint = 0.0;

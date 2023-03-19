@@ -128,11 +128,6 @@ public class DriveSubsystem implements HasLifecycle, HasLogLoop {
             PathPlannerTrajectory.PathPlannerState state = opt.get();
             ChassisSpeeds targetSpeeds = holoControl.calculatePose2D(state.poseMeters, state.holonomicRotation, state.velocityMetersPerSecond);
 
-            // auto is running backwards... but why?
-            targetSpeeds.vxMetersPerSecond = -targetSpeeds.vxMetersPerSecond;
-            targetSpeeds.vyMetersPerSecond = -targetSpeeds.vyMetersPerSecond;
-            targetSpeeds.omegaRadiansPerSecond = -targetSpeeds.omegaRadiansPerSecond;
-
             driveControl.drive(targetSpeeds);
         } else {
             driveControl.stop();
@@ -146,31 +141,27 @@ public class DriveSubsystem implements HasLifecycle, HasLogLoop {
         if (targetPose.isPresent()) {
             ChassisSpeeds speeds = holoControl.calculatePose2D(targetPose.get().toPose2d(), targetPose.get().toPose2d().getRotation().plus(Rotation2d.fromDegrees(180)), 1);
 
-            ChassisSpeeds inverted = new ChassisSpeeds(
-                    -speeds.vxMetersPerSecond,
-                    -speeds.vyMetersPerSecond,
-                    -speeds.omegaRadiansPerSecond
-            );//TODO fix this i have no idea why it works
-
-            driveControl.drive(inverted);
+            driveControl.drive(speeds);
         }
     }
 
     void teleopNormal() {
-
-
-        double xOutput;
-        double yOutput;
+        // get the operator inputs
+        // "forward" (away from alliance wall, positive along the x axis)
+        // "left" (positive y axis, left from the perspective of the driver)
+        // rotation output, (positive means spin left)
+        double forwardSpeed;
+        double leftSpeed;
         double rotationOutput;
 
         if (input.isSlowDrivePressed()) {
-            xOutput = input.getInputX() * driveControl.getMaxVelocity() * 0.1;
-            yOutput = -input.getInputY() * driveControl.getMaxVelocity() * 0.1;
+            forwardSpeed = input.getInputForward() * driveControl.getMaxVelocity() * 0.1;
+            leftSpeed = input.getInputLeft() * driveControl.getMaxVelocity() * 0.1;
             rotationOutput = input.getInputRot() * driveControl.getMaxAngularVelocity() * 0.1;
 
         } else {
-            xOutput = input.getInputX() * driveControl.getMaxVelocity();
-            yOutput = -input.getInputY() * driveControl.getMaxVelocity();
+            forwardSpeed = input.getInputForward() * driveControl.getMaxVelocity();
+            leftSpeed = input.getInputLeft() * driveControl.getMaxVelocity();
             rotationOutput = input.getInputRot() * driveControl.getMaxAngularVelocity();
         }
 
@@ -178,28 +169,28 @@ public class DriveSubsystem implements HasLifecycle, HasLogLoop {
             driveControl.stop();
         }
 
-        debuggable.log("x-output", xOutput);
-        debuggable.log("y-output", yOutput);
+        debuggable.log("x-output", leftSpeed);
+        debuggable.log("y-output", forwardSpeed);
         debuggable.log("rot-output", rotationOutput);
 
         switch (orientation.readValue()) {
             case FIELD_ORIENTED:
-                if (xOutput == 0 && yOutput == 0 && rotationOutput == 0) {
+                if (leftSpeed == 0 && forwardSpeed == 0 && rotationOutput == 0) {
                     driveControl.stop();
                 } else {
-                    debuggable.log("y", yOutput);
-                    debuggable.log("x", xOutput);
+                    debuggable.log("y", forwardSpeed);
+                    debuggable.log("x", leftSpeed);
 
                     driveControl.drive(
-                            ChassisSpeeds.fromFieldRelativeSpeeds(yOutput, xOutput, rotationOutput, odometryControl.getRotation2d())
+                            ChassisSpeeds.fromFieldRelativeSpeeds(forwardSpeed, leftSpeed, rotationOutput, odometryControl.getRotation2d())
                     );
                 }
                 break;
             case ROBOT_ORIENTED:
-                if (xOutput == 0 && yOutput == 0 && rotationOutput == 0) {
+                if (leftSpeed == 0 && forwardSpeed == 0 && rotationOutput == 0) {
                     driveControl.stop();
                 } else {
-                    ChassisSpeeds robotOrient = new ChassisSpeeds(xOutput, yOutput, rotationOutput);
+                    ChassisSpeeds robotOrient = new ChassisSpeeds(forwardSpeed, leftSpeed, rotationOutput);
                     driveControl.drive(robotOrient);
                 }
                 break;

@@ -41,17 +41,33 @@ class HoloControlTest {
     }
 
     @Test
-    void calculatePose2D() {
-        // our estimated pose is 0,0,0
+    void calculatePose2DMoveForwards() {
+        // our pose is 0,0 rotated 0º (facing forwards, away from alliance wall)
         when(odometryControl.estimateFusedPose2d()).thenReturn(new Pose2d(0, 0, Rotation2d.fromDegrees(0)));
 
         // get chassis speeds for a target that is at 1, 0
+        // we should get chassisSpeeds telling our robot to move forwards, away from the alliance wall
         var chassisSpeeds = control.calculatePose2D(
                 new Pose2d(1, 0, Rotation2d.fromDegrees(0)), Rotation2d.fromDegrees(0),
                 1);
-        assertEquals(2, chassisSpeeds.vxMetersPerSecond);
-        assertEquals(0, chassisSpeeds.vyMetersPerSecond);
-        assertEquals(0, chassisSpeeds.omegaRadiansPerSecond);
+        assertEquals(2, chassisSpeeds.vxMetersPerSecond, .1);
+        assertEquals(0, chassisSpeeds.vyMetersPerSecond, .1);
+        assertEquals(0, chassisSpeeds.omegaRadiansPerSecond, .1);
+    }
+
+    @Test
+    void calculatePose2DMoveBackwards() {
+        // our pose is 0,0 rotated 180º (facing the alliance wall)
+        when(odometryControl.estimateFusedPose2d()).thenReturn(new Pose2d(0, 0, Rotation2d.fromDegrees(180)));
+
+        // get chassis speeds for a target that is at 1, 0
+        // we should get chassisSpeeds telling our robot to move backwards, away from the alliance wall
+        var chassisSpeeds = control.calculatePose2D(
+                new Pose2d(1, 0, Rotation2d.fromDegrees(0)), Rotation2d.fromDegrees(180),
+                1);
+        assertEquals(-2, chassisSpeeds.vxMetersPerSecond, .1);
+        assertEquals(0, chassisSpeeds.vyMetersPerSecond, .1);
+        assertEquals(0, chassisSpeeds.omegaRadiansPerSecond, .1);
     }
 
 

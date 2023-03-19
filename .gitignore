@@ -237,6 +237,7 @@ Temporary Items
 **/nbproject/Package-*.bash
 build/
 nbbuild/
+
 dist/
 nbdist/
 .nb-gradle/
@@ -290,7 +291,7 @@ $RECYCLE.BIN/
 .gradle
 **/build/
 !src/**/build/
-
+build.nosync/
 # Ignore Gradle GUI config
 gradle-app.setting
 
