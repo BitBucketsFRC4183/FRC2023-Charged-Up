@@ -37,7 +37,7 @@ public interface DriveTurdSpecific {
     SwerveModuleConfiguration MK4I_L2 = new SwerveModuleConfiguration(
             0.10033,
             (14.0 / 50.0) * (27.0 / 17.0) * (15.0 / 45.0),
-            true,
+            false,
             (14.0 / 50.0) * (10.0 / 60.0),
             false
     );
