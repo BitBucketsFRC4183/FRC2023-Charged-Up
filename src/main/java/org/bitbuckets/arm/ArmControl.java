@@ -115,7 +115,7 @@ public class ArmControl implements HasLogLoop {
 
 
     public void outtakeGripper() {
-        gripperWheelMotor.moveAtPercent(0.2);
+        gripperWheelMotor.moveAtPercent(0.7);
     }
 
     public void intakeGripperCone() {
