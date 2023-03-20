@@ -79,7 +79,6 @@ public class DriveSubsystem implements HasLifecycle, HasLogLoop {
     @Override
     public void teleopPeriodic() {
 
-        //TODO DONT USE THIS
         if (input.isResetGyroPressed()) {
             odometryControl.zeroGyro(); //THIS ONLY WORKS IF YOU ARE FACING AN ALLIANCE WALL OTHERWISE BAD THINGS
         }

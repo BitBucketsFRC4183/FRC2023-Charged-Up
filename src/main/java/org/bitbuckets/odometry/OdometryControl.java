@@ -65,6 +65,20 @@ public class OdometryControl implements HasLoop, IOdometryControl {
         return swerveDrivePoseEstimator.getEstimatedPosition();
     }
 
+    @Override
+    public Rotation2d getRotation2d() {
+        return swerveDrivePoseEstimator.getEstimatedPosition().getRotation();
+    }
+
+    @Override
+    public double getYaw_deg() {
+        return gyro.getYaw_deg();
+    }
+
+    @Override
+    public double getPitch_deg() {
+        return gyro.getPitch_deg();
+    }
 
     @Override
     public IGyro getGyro() {

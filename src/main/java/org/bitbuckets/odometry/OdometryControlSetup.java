@@ -6,7 +6,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.numbers.N3;
 import org.bitbuckets.drive.IDriveControl;
 import org.bitbuckets.lib.ILogAs;
@@ -42,13 +41,8 @@ public class OdometryControlSetup implements ISetup<IOdometryControl> {
                 stdDevs,
                 new SwerveDrivePoseEstimator( //will be reset by auto path anyways
                         kinematics,
-                        Rotation2d.fromDegrees(0),
-                        new SwerveModulePosition[]{
-                                new SwerveModulePosition(),
-                                new SwerveModulePosition(),
-                                new SwerveModulePosition(),
-                                new SwerveModulePosition()
-                        },
+                        gyro.getRotation2d(),
+                        driveControl.currentPositions(),
                         new Pose2d()
                 ),
                 driveControl,
