@@ -80,7 +80,7 @@ public class DriveSubsystem implements HasLifecycle, HasLogLoop {
     public void teleopPeriodic() {
 
         if (input.isResetGyroPressed()) {
-            odometryControl.zeroGyro(); //THIS ONLY WORKS IF YOU ARE FACING AN ALLIANCE WALL OTHERWISE BAD THINGS
+            odometryControl.zeroOdo(); //THIS ONLY WORKS IF YOU ARE FACING AN ALLIANCE WALL OTHERWISE BAD THINGS
         }
 
         if (input.isVisionDrivePressed() && visionControl.estimateBestVisionTarget().isPresent()) {

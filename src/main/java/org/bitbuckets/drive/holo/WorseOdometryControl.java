@@ -33,15 +33,16 @@ public class WorseOdometryControl implements IOdometryControl {
         return gyro;
     }
 
-    @Override
-    public void zeroGyro() {
-        throw new UnsupportedOperationException();
-    }
 
     @Override
     public void setPos(Pose2d pose_trueFieldRelative) {
 
         //Set it to a new odometry instance. I hate this.
         odometryInstance = new OdometryInstance(kinematics, driveControl, pose_trueFieldRelative, driveControl.currentPositions_initializationRelative());
+    }
+
+    @Override
+    public void zeroOdo() {
+        throw new UnsupportedOperationException();
     }
 }

@@ -14,11 +14,6 @@ public interface IOdometryControl {
 
     IGyro getGyro();
 
-    void zeroGyro();
     void setPos(Pose2d pose_trueFieldRelative);
-
-
     void zeroOdo();
-    void zeroGyro();
-    void setPos(Pose2d pose_trueFieldRelative);
 }
