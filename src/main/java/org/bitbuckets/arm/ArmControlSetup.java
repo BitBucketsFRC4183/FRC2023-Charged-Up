@@ -12,19 +12,18 @@ public class ArmControlSetup implements ISetup<ArmControl> {
     final ISetup<IMotorController> upMotor;
     final ISetup<IPIDCalculator> lowCalculator;
     final ISetup<IPIDCalculator> highCalculator;
-    final ISetup<IMotorController> gripperMotor;
+    final ISetup<IMotorController> gripperWheelMotor;
+    final ISetup<IMotorController> gripperClawMotor;
 
 
-
-
-
-    public ArmControlSetup(ArmDynamics feedFordward, ISetup<IMotorController> lowMotor, ISetup<IMotorController> upMotor, ISetup<IPIDCalculator> lowCalculator, ISetup<IPIDCalculator> highCalculator, ISetup<IMotorController> gripperMotor) {
+    public ArmControlSetup(ArmDynamics feedFordward, ISetup<IMotorController> lowMotor, ISetup<IMotorController> upMotor, ISetup<IPIDCalculator> lowCalculator, ISetup<IPIDCalculator> highCalculator, ISetup<IMotorController> gripperWheelMotor, ISetup<IMotorController> gripperClawMotor) {
         this.feedFordward = feedFordward;
         this.lowMotor = lowMotor;
         this.upMotor = upMotor;
         this.lowCalculator = lowCalculator;
         this.highCalculator = highCalculator;
-        this.gripperMotor = gripperMotor;
+        this.gripperWheelMotor = gripperWheelMotor;
+        this.gripperClawMotor = gripperClawMotor;
     }
 
     @Override
@@ -35,7 +34,8 @@ public class ArmControlSetup implements ISetup<ArmControl> {
                 self.childSetup("upper-joint", upMotor),
                 self.childSetup("lower-pid", lowCalculator),
                 self.childSetup("upper-pid", highCalculator),
-                self.childSetup("gripper-motor", gripperMotor),
+                self.childSetup("gripper-wheel-motor", gripperWheelMotor),
+                self.childSetup("gripper-claw-motor", gripperClawMotor),
                 self.getDebuggable()
         );
         control.zeroArmAbs();

@@ -3,7 +3,6 @@ package config;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.numbers.N1;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import org.bitbuckets.arm.ArmControl;
 import org.bitbuckets.arm.ArmControlSetup;
 import org.bitbuckets.lib.ISetup;
@@ -56,20 +55,34 @@ public interface ArmSetups {
             )
 
     );
-    ISetup<IMotorController> GRIPPER_JOINT = new SwapSetup<>(
+    ISetup<IMotorController> GRIPPER_WHEEL = new SwapSetup<>(
             MockingUtil.noops(IMotorController.class),
-            //TODO add back motor when gripper is back
-            /*new SparkSetup(
-                    MotorIds.GRIPPER_ARM_ID,
-                    Arm.GRIPPER_CONFIG,
-                    Arm.GRIPPER_PID,
+            new SparkSetup(
+                    MotorIds.GRIPPER_WHEEL_ID,
+                    Arm.GRIPPER_WHEEL_CONFIG,
+                    Arm.GRIPPER_WHEEL_PID,
                     Optional.empty()
-            ),*/
-            MockingUtil.noops(IMotorController.class),
+            ),
             new DCSimSetup(
-                    Arm.GRIPPER_CONFIG,
+                    Arm.GRIPPER_WHEEL_CONFIG,
                     new SimInertiaConfig(0.005, Matrix.eye(Nat.N1())),
-                    Arm.GRIPPER_PID
+                    Arm.GRIPPER_WHEEL_PID
+            )
+
+    );
+
+    ISetup<IMotorController> GRIPPER_CLAW = new SwapSetup<>(
+            MockingUtil.noops(IMotorController.class),
+            new SparkSetup(
+                    MotorIds.GRIPPER_CLAW_ID,
+                    Arm.GRIPPER_CLAW_CONFIG,
+                    Arm.GRIPPER_CLAW_PID,
+                    Optional.empty()
+            ),
+            new DCSimSetup(
+                    Arm.GRIPPER_CLAW_CONFIG,
+                    new SimInertiaConfig(0.005, Matrix.eye(Nat.N1())),
+                    Arm.GRIPPER_CLAW_PID
             )
 
     );
@@ -108,18 +121,16 @@ public interface ArmSetups {
     );
 
     /**
-
-    ISetup<IPIDCalculator> PROFILED_LOWER_PID = new ProfiledPIDFCalculatorSetup(
-            Arm.LOWER_PID,
-            new TrapezoidProfile.Constraints(2,2)
-    );
-
-    ISetup<IPIDCalculator> PROFILED_UPPER_PID = new ProfiledPIDFCalculatorSetup(
-            Arm.UPPER_PID,
-            new TrapezoidProfile.Constraints(2,2)
-    );
+     * ISetup<IPIDCalculator> PROFILED_LOWER_PID = new ProfiledPIDFCalculatorSetup(
+     * Arm.LOWER_PID,
+     * new TrapezoidProfile.Constraints(2, 2)
+     * );
+     * <p>
+     * ISetup<IPIDCalculator> PROFILED_UPPER_PID = new ProfiledPIDFCalculatorSetup(
+     * Arm.UPPER_PID,
+     * new TrapezoidProfile.Constraints(2, 2)
+     * );
      */
-
 
 
     ISetup<ArmControl> ARM_CONTROL = new ArmControlSetup(
@@ -128,7 +139,8 @@ public interface ArmSetups {
             UPPER_ARM,
             PROFILED_LOWER_PID,
             PROFILED_UPPER_PID,
-            GRIPPER_JOINT);
+            GRIPPER_WHEEL,
+            GRIPPER_CLAW);
 
 
 }
