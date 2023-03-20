@@ -21,10 +21,6 @@ public class DriveController implements IDriveController {
 
     @Override
     public double getStatePosition_meters() {
-        // This is inverted because the motor is inverted, which means positive voltage makes the wheels spin
-        // backwards. When we go "forward" the encoder is actually going backwards. Invert here so our position updates
-        // correctly
-        // the sim doesn't have inverted motors, and so doesn't need this
         return motor.getPositionMechanism_meters();
     }
 }
