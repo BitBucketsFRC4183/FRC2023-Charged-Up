@@ -18,18 +18,20 @@ public class ArmControl implements HasLogLoop {
     //these must be continuous and bound (i.e. wrap from 2pi to 0)
     final IPIDCalculator lowerArmControl;
     final IPIDCalculator upperArmControl;
-    final IMotorController gripperActuator;
+    final IMotorController gripperWheelMotor;
+    final IMotorController gripperClawMotor;
 
     final IDebuggable debuggable;
 
 
-    public ArmControl(ArmDynamics ff, IMotorController lowerArm, IMotorController upperArm, IPIDCalculator lowerArmControl, IPIDCalculator upperArmControl, IMotorController gripperActuator, IDebuggable debuggable) {
+    public ArmControl(ArmDynamics ff, IMotorController lowerArm, IMotorController upperArm, IPIDCalculator lowerArmControl, IPIDCalculator upperArmControl, IMotorController gripperActuator, IMotorController gripperClawMotor, IDebuggable debuggable) {
         this.ff = ff;
         this.lowerArm = lowerArm;
         this.upperArm = upperArm;
         this.lowerArmControl = lowerArmControl;
         this.upperArmControl = upperArmControl;
-        this.gripperActuator = gripperActuator;
+        this.gripperWheelMotor = gripperActuator;
+        this.gripperClawMotor = gripperClawMotor;
         this.debuggable = debuggable;
     }
 
@@ -59,25 +61,14 @@ public class ArmControl implements HasLogLoop {
         lowerArm.moveAtVoltage(lowerArmFFVoltage + lowerArmFeedbackVoltage);
         upperArm.moveAtVoltage(upperArmFFVoltage + upperArmFeedbackVoltage);
 
-//        if (gripperShouldOpen) {
-//            gripperActuator.moveToPosition_mechanismRotations(Arm.GRIPPER_SETPOINT_MOTOR_ROTATIONS);
-//        } else {
-//            stopGripper();
-//        }
-
     }
 
     public void doNothing() {
         lowerArm.moveAtVoltage(0);
         upperArm.moveAtVoltage(0);
+        gripperWheelMotor.moveAtVoltage(0);
     }
 
-
-    public void gripperResetonLimit() {
-        if (gripperActuator.isForwardLimitSwitchPressed()) {
-            gripperActuator.forceOffset_mechanismRotations(0);
-        }
-    }
 
     public void zeroArmAbs() {
         double absAngleRot = upperArm.getAbsoluteEncoder_rotations() - Arm.UPPER_ARM_OFFSET;
@@ -86,28 +77,67 @@ public class ArmControl implements HasLogLoop {
 
     }
 
+    public void gripperLoop() {
+        gripperWheelMotor.moveAtPercent(-0);
+        gripperClawMotor.moveAtPercent(-0);
+    }
+
+    int blitzToggle = 0;
+
+    public void gripperHold() {
+
+        if(blitzToggle == 0)
+        {
+                gripperWheelMotor.moveAtPercent(-0.2);
+                gripperClawMotor.moveAtPercent(-0.2);
+        }
+
+        else {
+            gripperWheelMotor.moveAtPercent(-0);
+            gripperClawMotor.moveAtPercent(-0);
+        }
+        blitzToggle += 1;
+        if(blitzToggle > 1)
+        {
+            blitzToggle = 0;
+        }
+
+    }
+    public void gripperOpen() {
+        gripperClawMotor.moveAtPercent(0.2);
+    }
+
+
+
     public double getUpperAbsEncoderAngle() {
         return upperArm.getAbsoluteEncoder_rotations();
     }
 
 
-    public void openGripper() {
-        upperArm.moveAtVoltage(0);
-        lowerArm.moveAtVoltage(0);
-
-        gripperActuator.moveAtPercent(0.8);
+    public void outtakeGripper() {
+        gripperWheelMotor.moveAtPercent(0.7);
     }
 
+    public void intakeGripperCone() {
+        gripperWheelMotor.moveAtPercent(-0.9);
+        gripperClawMotor.moveToPosition_mechanismRotations(0);
+    }
 
-    public void closeGripper() {
-        gripperActuator.moveAtPercent(-0.8);
-
+    public void intakeGripperCube() {
+        gripperWheelMotor.moveAtPercent(-0.9);
+      //  gripperClawMotor.moveToPosition_mechanismRotations(0);
     }
 
     public void stopGripper() {
-        gripperActuator.moveAtPercent(0);
+        gripperWheelMotor.moveAtPercent(0);
     }
 
+
+    public void stopTheArm() {
+        lowerArm.moveAtVoltage(0);
+        upperArm.moveAtVoltage(0);
+
+    }
 
     public void commandArmToPercent(double lowerArmPercent, double upperArmPercent) {
         lowerArm.moveAtPercent(lowerArmPercent);
@@ -117,7 +147,9 @@ public class ArmControl implements HasLogLoop {
 
     public void zero() {
         lowerArm.forceOffset_mechanismRotations(0);
+        gripperClawMotor.forceOffset_mechanismRotations(0);
     }
+
 
 
     public double getErrorQuantity() {
