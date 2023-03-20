@@ -193,11 +193,11 @@ public interface Arm {
 
 
     TrapezoidProfile.Constraints LOWER_CONSTRAINT = new TrapezoidProfile.Constraints(
-            3,
+            0.2,
             1
     );
     TrapezoidProfile.Constraints UPPER_CONSTRAINTS = new TrapezoidProfile.Constraints(
-            12,
+            3,
             1
     );
 
