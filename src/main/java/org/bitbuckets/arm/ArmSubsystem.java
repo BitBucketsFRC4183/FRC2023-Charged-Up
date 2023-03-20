@@ -26,8 +26,6 @@ public class ArmSubsystem implements HasLoop, HasLifecycle {
 
     @Override
     public void loop() {
-        //handle arm calibration
-        armControl.gripperResetonLimit();
 
         //handle inputs, which will calculate what the next input of the robot is
         handleLogic();
@@ -37,7 +35,10 @@ public class ArmSubsystem implements HasLoop, HasLifecycle {
 
     @Override
     public void autonomousPeriodic() {
+
         if (autoSubsystem.sampleHasEventStarted("arm-stow")) {
+            armControl.stopGripper();
+
             shouldDoNext = ArmFSM.STORE;
             return;
         }
@@ -47,6 +48,12 @@ public class ArmSubsystem implements HasLoop, HasLifecycle {
         }
         if (autoSubsystem.sampleHasEventStarted("arm-ground-intake")) {
             shouldDoNext = ArmFSM.GROUND_INTAKE;
+            return;
+        }
+
+        if (autoSubsystem.sampleHasEventStarted("arm-stop")) {
+            System.out.println("j");
+            shouldDoNext = ArmFSM.IDLE;
             return;
         }
 
@@ -65,28 +72,42 @@ public class ArmSubsystem implements HasLoop, HasLifecycle {
             return;
         }
 
+
         if (autoSubsystem.sampleHasEventStarted("arm-unstow")) {
             shouldDoNext = ArmFSM.UNSTOW;
             return;
         }
+
+
     }
 
     @Override
     public void teleopPeriodic() {
-        if (operatorInput.isZeroArmPressed()) {
-            armControl.zero(); //assume where we are is zero. Only do this if you really have to since zeroing needs
-            //to go outside frame perimeter, and you can only do that in a match L
+
+        if (operatorInput.intakeGripper()) {
+            armControl.intakeGripperCone();
+
+        } else if (operatorInput.outtakeGripper()) {
+            armControl.outtakeGripper();
         }
-        if (operatorInput.openGripperPressed()) {
-            armControl.openGripper();
-        } else if (operatorInput.closeGripperPressed()) {
-            armControl.closeGripper();
+        else if (operatorInput.isCube()){
+            armControl.gripperHold();
+        }
+        else if (operatorInput.openGripper()){
+            armControl.gripperOpen();
+    }
+        else {
+            armControl.gripperLoop();
         }
         if (operatorInput.isStoragePressed()) {
             shouldDoNext = ArmFSM.STORE;
             return;
         }
 
+
+        if(operatorInput.isZeroArmPressed()){
+            armControl.zero();
+        }
         if (operatorInput.isStopPidPressed()) {
             shouldDoNext = ArmFSM.IDLE;
             return;
@@ -173,8 +194,7 @@ public class ArmSubsystem implements HasLoop, HasLifecycle {
         }
 
         if (shouldDoNext == ArmFSM.ACTUATE_GRIPPER) {
-            armControl.openGripper();
-
+            armControl.outtakeGripper();
         } else if (shouldDoNext == ArmFSM.IDLE) {
             armControl.doNothing();
         } else if (shouldDoNext == ArmFSM.DEBUG_TO_DEGREES) {
@@ -206,8 +226,6 @@ public class ArmSubsystem implements HasLoop, HasLifecycle {
 
         if (shouldDoNext == ArmFSM.UNSTOW) {
             armControl.commandArmToState(-0.1, armControl.upperArm.getMechanismPositionAccum_rot());
-
-
         }
 
         if (shouldDoNext == ArmFSM.HUMAN_INTAKE) {

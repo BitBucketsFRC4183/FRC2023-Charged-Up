@@ -8,6 +8,7 @@ import org.bitbuckets.OperatorInput;
 import org.bitbuckets.auto.AutoSubsystem;
 import org.bitbuckets.drive.balance.BalanceControl;
 import org.bitbuckets.drive.holo.HoloControl;
+import org.bitbuckets.lib.control.IPIDCalculator;
 import org.bitbuckets.lib.core.HasLifecycle;
 import org.bitbuckets.lib.core.HasLogLoop;
 import org.bitbuckets.lib.log.IDebuggable;
@@ -34,13 +35,14 @@ public class DriveSubsystem implements HasLifecycle, HasLogLoop {
     final IVisionControl visionControl;
     final IValueTuner<OrientationChooser> orientation;
     final IDebuggable debuggable;
+    final IPIDCalculator waitTimeResponse;
 
     public enum OrientationChooser {
         FIELD_ORIENTED,
         ROBOT_ORIENTED,
     }
 
-    public DriveSubsystem(OperatorInput input, IOdometryControl odometryControl, BalanceControl balanceControl, IDriveControl driveControl, AutoSubsystem autoSubsystem, HoloControl holoControl, IVisionControl visionControl, IValueTuner<OrientationChooser> orientation, IDebuggable debuggable) {
+    public DriveSubsystem(OperatorInput input, IOdometryControl odometryControl, BalanceControl balanceControl, IDriveControl driveControl, AutoSubsystem autoSubsystem, HoloControl holoControl, IVisionControl visionControl, IValueTuner<OrientationChooser> orientation, IDebuggable debuggable, IPIDCalculator waitTimeResponse) {
         this.input = input;
         this.odometryControl = odometryControl;
         this.balanceControl = balanceControl;
@@ -50,6 +52,7 @@ public class DriveSubsystem implements HasLifecycle, HasLogLoop {
         this.orientation = orientation;
         this.holoControl = holoControl;
         this.debuggable = debuggable;
+        this.waitTimeResponse = waitTimeResponse;
     }
 
     @Override
@@ -208,6 +211,7 @@ public class DriveSubsystem implements HasLifecycle, HasLogLoop {
     }
 
     boolean shouldStop = false;
+    int dumbCounter = 0;
 
     void balance() {
         double Pitch_deg = odometryControl.getPitch_deg();
@@ -217,7 +221,19 @@ public class DriveSubsystem implements HasLifecycle, HasLogLoop {
         if (Math.abs(Pitch_deg) > 2) {
 
             if (shouldStop) {
-                driveControl.drive(new ChassisSpeeds(0, 0, 0));
+                double waitFB = waitTimeResponse.calculateNext(odometryControl.getYaw_deg(), 0);
+                double adjustedTime = 40 + waitFB;
+
+                debuggable.log("fb-alone", waitFB);
+                debuggable.log("fb-adjusted-time", adjustedTime);
+
+                if (dumbCounter > 60) {
+                    dumbCounter = 0;
+                    driveControl.drive(new ChassisSpeeds(0, 0, 0));
+
+                } else {
+                    dumbCounter++;
+                }
                 return;
             }
 
@@ -225,7 +241,7 @@ public class DriveSubsystem implements HasLifecycle, HasLogLoop {
                 shouldStop = true;
                 System.out.println("AAAAAAAAAAAAAAA");
 
-                driveControl.drive(new ChassisSpeeds(Math.signum(Pitch_deg) * 1.80, 0, 0));
+                driveControl.drive(new ChassisSpeeds(Math.signum(Pitch_deg) * 0.5, 0, 0));
                 return;
             } else {
                 double output = balanceControl.calculateBalanceOutput(Pitch_deg, 0);
