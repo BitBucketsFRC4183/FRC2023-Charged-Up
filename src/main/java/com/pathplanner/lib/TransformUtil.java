@@ -53,11 +53,12 @@ public class TransformUtil {
          } else {
              transformedHeading = state.poseMeters.getRotation().rotateBy(Rotation2d.fromDegrees(180));
          }
+
          Rotation2d transformedHolonomicRotation;
          if (red) {
-             transformedHolonomicRotation = state.holonomicRotation;//.rotateBy(Rotation2d.fromDegrees(180));
+             transformedHolonomicRotation = state.holonomicRotation.rotateBy(Rotation2d.fromDegrees(180));
          } else {
-             transformedHolonomicRotation = state.holonomicRotation.rotateBy(Rotation2d.fromDegrees(180));//.rotateBy(Rotation2d.fromDegrees(180));
+             transformedHolonomicRotation = state.holonomicRotation;//.rotateBy(Rotation2d.fromDegrees(180));
          }
           //This needs to rotate for some reason LOL
 

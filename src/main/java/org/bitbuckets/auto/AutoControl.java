@@ -3,6 +3,7 @@ package org.bitbuckets.auto;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.TransformUtil;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.DriverStation;
 import org.bitbuckets.lib.log.ILoggable;
@@ -96,11 +97,17 @@ public class AutoControl implements IAutoControl {
         var initialState = transformedTrajectories.get(0).getInitialState();
 
 
-        odometryControl.setPos(initialState.poseMeters, initialState.holonomicRotation);
+        odometryControl.setPos(new Pose2d(initialState.poseMeters.getTranslation(), initialState.holonomicRotation));
+
+        System.out.println("HOLO + " + initialState.holonomicRotation.getDegrees());
         AutoPathInstance instance = new AutoPathInstance(transformedTrajectories, eventMap, segmentTimes, whichOne, totalTime);
 
         instance.start();
         return instance;
     }
+
+
+
+
 
 }

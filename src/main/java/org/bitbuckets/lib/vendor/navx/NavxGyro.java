@@ -42,7 +42,10 @@ public class NavxGyro implements IGyro {
         return ahrs.getRawAccelZ();
     }
 
-
+    @Override
+    public void zero() {
+        throw new UnsupportedOperationException();
+    }
 
 
 }

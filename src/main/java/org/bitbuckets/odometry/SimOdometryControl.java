@@ -37,12 +37,11 @@ public class SimOdometryControl implements IOdometryControl, HasLoop {
         throw new UnsupportedOperationException();
     }
 
-
     @Override
-    public void zeroOdo() {
-        //reset
-        estimator.resetPosition(Rotation2d.fromDegrees(0), driveControl.currentPositions_initializationRelative(), new Pose2d());
+    public void zeroGyro() {
+        throw new UnsupportedOperationException();
     }
+
 
     @Override
     public void setPos(Pose2d pose_trueFieldRelative) {

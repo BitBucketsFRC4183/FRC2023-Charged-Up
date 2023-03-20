@@ -3,7 +3,8 @@ package org.bitbuckets.drive;
 import org.bitbuckets.OperatorInput;
 import org.bitbuckets.auto.AutoSubsystem;
 import org.bitbuckets.drive.balance.BalanceControl;
-import org.bitbuckets.drive.holo.HoloControl;
+import org.bitbuckets.drive.holo.WorseHoloControl;
+import org.bitbuckets.drive.holo.WorseOdometryControl;
 import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.ITuneAs;
@@ -16,13 +17,13 @@ public class DriveSubsystemSetup implements ISetup<DriveSubsystem> {
     final OperatorInput operatorInput;
     final AutoSubsystem autoSubsystem;
     final IVisionControl visionControl;
-    final IOdometryControl odometryControl;
+    final WorseOdometryControl odometryControl;
     final ISetup<BalanceControl> balanceControlSetup;
-    final ISetup<HoloControl> holoControlSetup;
+    final ISetup<WorseHoloControl> holoControlSetup;
     final IDriveControl driveControl;
 
 
-    public DriveSubsystemSetup(OperatorInput input, AutoSubsystem autoSubsystem, IVisionControl visionControl, IOdometryControl odometryControl, ISetup<BalanceControl> balanceControlSetup, ISetup<HoloControl> holoControlSetup, IDriveControl driveControl) {
+    public DriveSubsystemSetup(OperatorInput input, AutoSubsystem autoSubsystem, IVisionControl visionControl, WorseOdometryControl odometryControl, ISetup<BalanceControl> balanceControlSetup, ISetup<WorseHoloControl> holoControlSetup, IDriveControl driveControl) {
         this.autoSubsystem = autoSubsystem;
         this.visionControl = visionControl;
         this.operatorInput = input;

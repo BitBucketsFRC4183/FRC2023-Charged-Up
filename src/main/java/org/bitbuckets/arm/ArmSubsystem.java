@@ -174,9 +174,6 @@ public class ArmSubsystem implements HasLoop, HasLifecycle {
                     0, 0
             );
 
-            if (armControl.getErrorQuantity() > Arm.ARM_TOLERANCE_TO_MOVE_ON) {
-                shouldDoNext = ArmFSM.IDLE;
-            }
         }
 
         if (shouldDoNext == ArmFSM.SCORE_MID) {

@@ -48,13 +48,13 @@ public class ArmControl implements HasLogLoop {
         var lowerArmFeedbackVoltage = lowerArmControl.calculateNext(
                 lowerArm.getMechanismPositionAccum_rot(),
                 lowerArm_rot
-        );
+        ) * 12.0; //TODO profiledPID no longer does this for us
 
         var upperArmFFVoltage = ffVoltageVector.get(1, 0);
         var upperArmFeedbackVoltage = upperArmControl.calculateNext(
                 upperArm.getMechanismPositionAccum_rot(),
                 upperArm_rot
-        );
+        ) * 12.0;
 
         lowerArm.moveAtVoltage(lowerArmFFVoltage + lowerArmFeedbackVoltage);
         upperArm.moveAtVoltage(upperArmFFVoltage + upperArmFeedbackVoltage);
@@ -119,10 +119,6 @@ public class ArmControl implements HasLogLoop {
         lowerArm.forceOffset_mechanismRotations(0);
     }
 
-
-    public double getErrorQuantity() {
-        return 1;
-    }
 
     @Override
     public void logLoop() {

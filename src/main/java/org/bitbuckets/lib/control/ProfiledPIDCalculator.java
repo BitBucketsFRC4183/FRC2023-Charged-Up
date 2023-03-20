@@ -53,7 +53,7 @@ public class ProfiledPIDCalculator implements Runnable, IPIDCalculator {
     @Override
     public double calculateNext(double measurement, double setpoint) {
         profiledPIDController.setGoal(setpoint);
-        double output = profiledPIDController.calculate(measurement) * 12;
+        double output = profiledPIDController.calculate(measurement);
         lastVoltageVal = output;
 
         return output;

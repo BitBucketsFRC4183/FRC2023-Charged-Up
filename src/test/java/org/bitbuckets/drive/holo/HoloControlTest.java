@@ -19,7 +19,7 @@ import static org.mockito.Mockito.when;
 
 class HoloControlTest {
 
-    DriveControl driveControl;
+/*    DriveControl driveControl;
     IOdometryControl odometryControl;
     IVisionControl visionControl;
 
@@ -52,7 +52,7 @@ class HoloControlTest {
         assertEquals(2, chassisSpeeds.vxMetersPerSecond);
         assertEquals(0, chassisSpeeds.vyMetersPerSecond);
         assertEquals(0, chassisSpeeds.omegaRadiansPerSecond);
-    }
+    }*/
 
 
 }

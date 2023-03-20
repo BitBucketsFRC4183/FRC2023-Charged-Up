@@ -16,14 +16,14 @@ import org.bitbuckets.drive.DriveSubsystem;
 import org.bitbuckets.drive.DriveSubsystemSetup;
 import org.bitbuckets.drive.IDriveControl;
 import org.bitbuckets.drive.controlsds.DriveControlSetup;
-import org.bitbuckets.drive.holo.HoloControlSetup;
+import org.bitbuckets.drive.holo.WorseHoloControlSetup;
+import org.bitbuckets.drive.holo.WorseOdometryControl;
+import org.bitbuckets.drive.holo.WorseOdometryControlSetup;
 import org.bitbuckets.lib.*;
+import org.bitbuckets.lib.control.PIDCalculatorSetup;
+import org.bitbuckets.lib.control.ProfiledPIDFCalculatorSetup;
 import org.bitbuckets.lib.util.LateSupplier;
-import org.bitbuckets.lib.util.MockingUtil;
 import org.bitbuckets.lib.vendor.ctre.PigeonGyroSetup;
-import org.bitbuckets.odometry.IOdometryControl;
-import org.bitbuckets.odometry.OdometryControlSetup;
-import org.bitbuckets.odometry.SimOdometryControlSetup;
 import org.bitbuckets.vision.IVisionControl;
 import org.bitbuckets.vision.VisionControlSetup;
 
@@ -81,36 +81,16 @@ public class RobotSetup implements ISetup<Void> {
                         )
                 )
         );
-        IOdometryControl odometryControl = self.childSetup(
+        WorseOdometryControl odometryControl = self.childSetup(
                 "odometry-control",
-                new ToggleableSetup<>(
-                        Enabled.drive,
-                        IOdometryControl.class,
-                        /*new PidgeonOdometryControlSetup( //needs to be swappable
-                                driveControl,
-                                visionControl,
-                                KINEMATICS,
-                                MotorIds.PIDGEON_IMU_ID
-                        )*/
-                        new SwapSetup<>(
-                                MockingUtil.noops(IOdometryControl.class),
-                                new OdometryControlSetup(
-                                        Drive.STD_VISION,
-                                        KINEMATICS,
-                                        driveControl,
-                                        visionControl,
-                                        new PigeonGyroSetup(
-                                                MotorIds.PIGEON_IMU_ID,
-                                                Pigeon2.AxisDirection.PositiveY,
-                                                Pigeon2.AxisDirection.PositiveZ
-                                        )
-                                ),
-                                new SimOdometryControlSetup(
-                                        KINEMATICS,
-                                        driveControl
-                                )
+                new WorseOdometryControlSetup(
+                        KINEMATICS,
+                        driveControl,
+                        new PigeonGyroSetup(
+                                MotorIds.PIGEON_IMU_ID,
+                                Pigeon2.AxisDirection.PositiveY,
+                                Pigeon2.AxisDirection.PositiveZ
                         )
-
                 )
         );
         robotPose.set(() -> new Pose3d(odometryControl.estimatePose_trueFieldPose()));
@@ -152,13 +132,11 @@ public class RobotSetup implements ISetup<Void> {
                                 visionControl,
                                 odometryControl,
                                 DriveSetups.BALANCE_SETUP,
-                                new HoloControlSetup(
-                                        driveControl,
-                                        odometryControl,
-                                        Drive.X_HOLO_PID,
-                                        Drive.Y_HOLO_PID,
-                                        Drive.THETA_HOLO_PID,
-                                        Drive.THETA_CONSTRAINTS
+                                new WorseHoloControlSetup(
+                                        new PIDCalculatorSetup(Drive.X_HOLO_PID),
+                                        new PIDCalculatorSetup(Drive.Y_HOLO_PID),
+                                        new PIDCalculatorSetup(Drive.THETA_HOLO_PID), //TODO i have no idea why profiled pid breakes here
+                                        odometryControl
                                 ),
                                 driveControl
                         )

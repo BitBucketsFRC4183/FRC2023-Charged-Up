@@ -73,25 +73,16 @@ public class OdometryControl implements HasLoop, IOdometryControl {
 
 
     @Override
-    public void zeroOdo() {
-        this.swerveDrivePoseEstimator.resetPosition(
-                gyro.getRotation2d_initializationRelative(),
-                driveControl.currentPositions_initializationRelative(),
-                new Pose2d()
-        );
-    }
-
-    @Override
     public void zeroGyro() {
         this.gyro.zero();
     }
 
     @Override
-    public void setPos(Pose2d pose_trueFieldRelative, Rotation2d holonomicRotation_trueFieldRelative)
+    public void setPos(Pose2d pose_trueFieldRelative)
     {
 
         this.swerveDrivePoseEstimator.resetPosition(
-                holonomicRotation_trueFieldRelative, //i have no idea why this works
+                gyro.getRotation2d_initializationRelative(), //i have no idea why this works
                 driveControl.currentPositions_initializationRelative(),
                 pose_trueFieldRelative
         );

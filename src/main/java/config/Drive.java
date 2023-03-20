@@ -26,10 +26,10 @@ public interface Drive {
     PIDConfig THETA_HOLO_PID = new PIDConfig(3,0,0,Optional.empty(),Optional.empty());
     TrapezoidProfile.Constraints THETA_CONSTRAINTS = new TrapezoidProfile.Constraints(3,4);
 */
-    PIDConfig X_HOLO_PID = new PIDConfig(9,0,0, Optional.empty(),Optional.empty());
-    PIDConfig Y_HOLO_PID = new PIDConfig(9,0,0,Optional.empty(),Optional.empty());
+    PIDConfig X_HOLO_PID = new PIDConfig(1.2,0,0, Optional.empty(),Optional.empty());
+    PIDConfig Y_HOLO_PID = new PIDConfig(1.2,0,0,Optional.empty(),Optional.empty());
     PIDConfig THETA_HOLO_PID = new PIDConfig(1,0,0,Optional.empty(),Optional.empty());
-    TrapezoidProfile.Constraints THETA_CONSTRAINTS = new TrapezoidProfile.Constraints(2,2);
+    //TrapezoidProfile.Constraints THETA_CONSTRAINTS = new TrapezoidProfile.Constraints(2,2);
 
     double SLOW_MODE_COEFFICIENT = 1;
 
