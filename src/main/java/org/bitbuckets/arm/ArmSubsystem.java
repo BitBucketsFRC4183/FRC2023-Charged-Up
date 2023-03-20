@@ -48,6 +48,12 @@ public class ArmSubsystem implements HasLoop, HasLifecycle {
             return;
         }
 
+        if (autoSubsystem.sampleHasEventStarted("arm-stop")) {
+            System.out.println("j");
+            shouldDoNext = ArmFSM.IDLE;
+            return;
+        }
+
         if (autoSubsystem.sampleHasEventStarted("gripper-open")) {
             shouldDoNext = ArmFSM.ACTUATE_GRIPPER;
             return;
@@ -62,6 +68,7 @@ public class ArmSubsystem implements HasLoop, HasLifecycle {
             shouldDoNext = ArmFSM.PREPARE;
             return;
         }
+
 
         if (autoSubsystem.sampleHasEventStarted("arm-unstow")) {
             shouldDoNext = ArmFSM.UNSTOW;
@@ -86,6 +93,10 @@ public class ArmSubsystem implements HasLoop, HasLifecycle {
     }
         else {
             armControl.gripperLoop();
+        }
+        if (operatorInput.isStoragePressed()) {
+            shouldDoNext = ArmFSM.STORE;
+            return;
         }
 
 
