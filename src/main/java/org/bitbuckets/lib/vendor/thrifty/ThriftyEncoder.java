@@ -45,8 +45,8 @@ public class ThriftyEncoder implements IAbsoluteEncoder, HasLogLoop {
 
     @Override
     public void logLoop() {
-        rawPosition.log(getRawPositionRadians());
-        absoluteAngle.log(getAbsoluteAngle());
+        rawPosition.log(Math.toDegrees(getRawPositionRadians()));
+        absoluteAngle.log(Math.toDegrees(getAbsoluteAngle()));
         voltage.log(input.getVoltage());
     }
 }

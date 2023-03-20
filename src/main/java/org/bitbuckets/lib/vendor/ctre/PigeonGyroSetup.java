@@ -7,7 +7,6 @@ import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.hardware.IGyro;
 import org.bitbuckets.lib.hardware.IGyroLogger;
-import org.bitbuckets.lib.log.IDebuggable;
 
 public class PigeonGyroSetup implements ISetup<IGyro> {
 
@@ -25,8 +24,6 @@ public class PigeonGyroSetup implements ISetup<IGyro> {
     @Override
     public IGyro build(IProcess self) {
 
-        System.out.println("EEEEEEJEOKEOKEOKOE");
-
         WPI_Pigeon2 pigeonIMU = new WPI_Pigeon2(pidgeonId);
 
         pigeonIMU.configFactoryDefault();
@@ -37,8 +34,6 @@ public class PigeonGyroSetup implements ISetup<IGyro> {
                 pigeonIMU,
                 self.getDebuggable());
 
-        System.out.println("EEEEEEEE");
-
         IGyroLogger logger = new IGyroLogger(
                 gyro,
                 self.generateLogger(ILogAs.DOUBLE, "yaw"),
@@ -47,9 +42,6 @@ public class PigeonGyroSetup implements ISetup<IGyro> {
         );
 
         self.registerLogLoop(logger);
-
-
-        System.out.println("EEEEEEEEE");
 
         return gyro;
     }

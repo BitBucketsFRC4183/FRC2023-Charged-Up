@@ -40,16 +40,21 @@ public class OperatorInput {
      * @return the desired x velocity from joystick modified by an accel. limiter and a deadband
      * @units m/s
      */
-    public double getInputX() {
-        return x.calculate(driveDeadband(driveControl.getRawAxis(0)));
+    public double getInputLeft() {
+        // Get the left or y-axis speed. We are inverting this because
+        // we want a positive value when we pull to the left. Xbox controllers
+        // return positive values when you pull to the right by default.
+        return -x.calculate(driveDeadband(driveControl.getRawAxis(XboxController.Axis.kLeftX.value)));
     }
 
     /**
      * @return the desired y velocity from joystick modified by an accel. limiter and a deadband
      * @units m/s
      */
-    public double getInputY() {
-        return -y.calculate(driveDeadband(driveControl.getRawAxis(1)));
+    public double getInputForward() {
+        // Get the forward or x-axis speed. We are inverting this because Xbox controllers return
+        // negative values when we push forward.
+        return -y.calculate(driveDeadband(driveControl.getRawAxis(XboxController.Axis.kLeftY.value)));
     }
 
     /**
@@ -57,7 +62,11 @@ public class OperatorInput {
      * @units unknown
      */
     public double getInputRot() {
-        return driveDeadband(driveControl.getRawAxis(4));
+        // Get the rate of angular rotation. We are inverting this because we want a
+        // positive value when we pull to the left (remember, CCW is positive in
+        // mathematics). Xbox controllers return positive values when you pull to
+        // the right by default.
+        return -driveDeadband(driveControl.getRawAxis(XboxController.Axis.kRightX.value));
     }
 
     /**
@@ -75,7 +84,7 @@ public class OperatorInput {
     }
 
     public boolean isUserInputNone() {
-        return getInputX() == 0 && getInputY() == 0 && getInputRot() == 0;
+        return getInputLeft() == 0 && getInputForward() == 0 && getInputRot() == 0;
     }
 
     public boolean isVisionDrivePressed() {

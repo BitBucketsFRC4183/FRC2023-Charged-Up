@@ -76,7 +76,7 @@ public class SwerveModule implements ISwerveModule {
         steerController.setReferenceAngle(steerAngle);
 
         swervePercentOut.log(driveVoltage);
-        swerveAngleOut.log(steerAngle);
+        swerveAngleOut.log(Math.toDegrees(steerAngle));
     }
 
     public void stopMotor() {

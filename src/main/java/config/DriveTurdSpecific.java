@@ -19,16 +19,25 @@ public interface DriveTurdSpecific {
     double HALF_WIDTH = Units.inchesToMeters(18.25 / 2);
     double HALF_BASE = Units.inchesToMeters(20.5 / 2);
 
+    /**
+     * The location of the swerve modules compared to the center of the robot
+     * <p>
+     * BL ----- FL
+     * |        |
+     * |    C   | ----> forward x axis
+     * |        |
+     * BR ----- FR
+     */
     SwerveDriveKinematics KINEMATICS = new SwerveDriveKinematics(
-            new Translation2d(HALF_WIDTH, HALF_BASE),
-            new Translation2d(HALF_WIDTH, -HALF_BASE),
-            new Translation2d(-HALF_WIDTH, HALF_BASE),
-            new Translation2d(-HALF_WIDTH, -HALF_BASE)
+            new Translation2d(HALF_WIDTH, HALF_BASE), // FL
+            new Translation2d(HALF_WIDTH, -HALF_BASE), // FR
+            new Translation2d(-HALF_WIDTH, HALF_BASE), // BL
+            new Translation2d(-HALF_WIDTH, -HALF_BASE) // BR
     );
     SwerveModuleConfiguration MK4I_L2 = new SwerveModuleConfiguration(
             0.10033,
             (14.0 / 50.0) * (27.0 / 17.0) * (15.0 / 45.0),
-            true,
+            false,
             (14.0 / 50.0) * (10.0 / 60.0),
             false
     );
