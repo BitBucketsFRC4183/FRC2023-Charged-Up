@@ -66,6 +66,7 @@ public class ArmControl implements HasLogLoop {
     public void doNothing() {
         lowerArm.moveAtVoltage(0);
         upperArm.moveAtVoltage(0);
+        gripperWheelMotor.moveAtVoltage(0);
     }
 
 
@@ -114,7 +115,7 @@ public class ArmControl implements HasLogLoop {
 
 
     public void outtakeGripper() {
-        gripperWheelMotor.moveAtPercent(0.9);
+        gripperWheelMotor.moveAtPercent(0.2);
     }
 
     public void intakeGripperCone() {
