@@ -89,14 +89,11 @@ public class ArmSubsystem implements HasLoop, HasLifecycle {
 
         } else if (operatorInput.outtakeGripper()) {
             armControl.outtakeGripper();
-        }
-        else if (operatorInput.isCube()){
+        } else if (operatorInput.isCube()) {
             armControl.gripperHold();
-        }
-        else if (operatorInput.openGripper()){
+        } else if (operatorInput.openGripper()) {
             armControl.gripperOpen();
-    }
-        else {
+        } else {
             armControl.gripperLoop();
         }
         if (operatorInput.isStoragePressed()) {
@@ -105,7 +102,7 @@ public class ArmSubsystem implements HasLoop, HasLifecycle {
         }
 
 
-        if(operatorInput.isZeroArmPressed()){
+        if (operatorInput.isZeroArmPressed()) {
             armControl.zero();
         }
         if (operatorInput.isStopPidPressed()) {
@@ -113,10 +110,6 @@ public class ArmSubsystem implements HasLoop, HasLifecycle {
             return;
         }
 
-        if (operatorInput.isStoragePressed()) {
-            shouldDoNext = ArmFSM.STORE;
-            return;
-        }
         if (operatorInput.isHumanIntakePressed()) {
             shouldDoNext = ArmFSM.HUMAN_INTAKE;
             return;
