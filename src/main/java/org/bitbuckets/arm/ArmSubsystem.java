@@ -52,7 +52,6 @@ public class ArmSubsystem implements HasLoop, HasLifecycle {
         }
 
         if (autoSubsystem.sampleHasEventStarted("arm-stop")) {
-            System.out.println("j");
             shouldDoNext = ArmFSM.IDLE;
             return;
         }
