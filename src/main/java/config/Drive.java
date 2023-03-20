@@ -26,8 +26,8 @@ public interface Drive {
     PIDConfig THETA_HOLO_PID = new PIDConfig(3,0,0,Optional.empty(),Optional.empty());
     TrapezoidProfile.Constraints THETA_CONSTRAINTS = new TrapezoidProfile.Constraints(3,4);
 */
-    PIDConfig X_HOLO_PID = new PIDConfig(9,0,0, Optional.empty(),Optional.empty());
-    PIDConfig Y_HOLO_PID = new PIDConfig(9,0,0,Optional.empty(),Optional.empty());
+    PIDConfig X_HOLO_PID = new PIDConfig(1.2,0,0, Optional.empty(),Optional.empty());
+    PIDConfig Y_HOLO_PID = new PIDConfig(1.2,0,0,Optional.empty(),Optional.empty());
     PIDConfig THETA_HOLO_PID = new PIDConfig(1,0,0,Optional.empty(),Optional.empty());
     TrapezoidProfile.Constraints THETA_CONSTRAINTS = new TrapezoidProfile.Constraints(2,2);
 
@@ -72,7 +72,15 @@ public interface Drive {
             ).fill(0)
     );
 
-    double ACCEL_THRESHOLD_AUTOBALANCE = 1.5; //1.5 Gs
+    double ACCEL_THRESHOLD_AUTOBALANCE = 1.35; //1.5 Gs
+
+    PIDConfig TIME_RESPONSE = new PIDConfig(
+            0.8,
+            0,
+            0,
+            Optional.empty(),
+            Optional.empty()
+    );
 
     Vector<N3> STD_VISION = VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(10));
 
