@@ -75,7 +75,7 @@
         ],
         "executionBehavior": "parallel",
         "waitBehavior": "none",
-        "waitTime": 0.2
+        "waitTime": 0.5
       }
     },
     {
@@ -98,11 +98,12 @@
       "isStopPoint": true,
       "stopEvent": {
         "names": [
-          "arm-stop"
+
+          "arm-stow"
         ],
         "executionBehavior": "parallel",
         "waitBehavior": "none",
-        "waitTime": 2
+        "waitTime": 1
       }
     },
     {
@@ -111,7 +112,7 @@
         "y": 4.92
       },
       "prevControl": {
-        "x": 2.9100816410549486,
+        "x": 1.83,
         "y": 4.92
       },
       "nextControl": null,

@@ -8,7 +8,8 @@ public enum AutoPath {
     NONE(-1),
     SCORE_TAXI_RIGHT(0),
     SCORE_TAXI_LEFT(1),
-    SCORE_TAXI_MID(2);
+    SCORE_TAXI_MID(2),
+    SCORE_TAXI_LEFT_SWOOPY(3);
 
 
 

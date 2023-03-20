@@ -35,7 +35,10 @@ public class ArmSubsystem implements HasLoop, HasLifecycle {
 
     @Override
     public void autonomousPeriodic() {
+
         if (autoSubsystem.sampleHasEventStarted("arm-stow")) {
+            armControl.stopGripper();
+
             shouldDoNext = ArmFSM.STORE;
             return;
         }
@@ -74,6 +77,8 @@ public class ArmSubsystem implements HasLoop, HasLifecycle {
             shouldDoNext = ArmFSM.UNSTOW;
             return;
         }
+
+
     }
 
     @Override
