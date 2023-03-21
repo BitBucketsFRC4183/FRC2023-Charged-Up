@@ -26,7 +26,7 @@ public class DIOEncoderSetup implements ISetup<IAbsoluteEncoder> {
 //        ILoggable<Double> abs = self.generateLogger(ILogAs.DOUBLE, "abs-deg" + Math.random());
 //        ILoggable<Double> volt = self.generateLogger(ILogAs.DOUBLE, "voltage" + Math.random());
 
-        return encoder;
+        return new DIOEncoder(encoder);
     }
 
 }

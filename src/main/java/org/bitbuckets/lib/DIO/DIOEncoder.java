@@ -9,7 +9,7 @@ public class DIOEncoder implements IAbsoluteEncoder, HasLogLoop {
     final DutyCycleEncoder dutyCycleEncoder;
 
     public DIOEncoder(DutyCycleEncoder dutyCycleEncoder) {
-        this.dutyCycleEncoder = dutyCycleEncoder
+        this.dutyCycleEncoder = dutyCycleEncoder;
     }
 
     @Override
@@ -25,7 +25,7 @@ public class DIOEncoder implements IAbsoluteEncoder, HasLogLoop {
     }
     public double getPos()
     {
-        return dutyCycleEncoder.getAbsolutePosition()
+        return dutyCycleEncoder.getAbsolutePosition();
     }
 
     @Override
