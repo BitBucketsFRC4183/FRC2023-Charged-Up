@@ -1,5 +1,6 @@
 package config;
 
+import com.revrobotics.AbsoluteEncoder;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.numbers.N1;
@@ -10,6 +11,7 @@ import org.bitbuckets.lib.SwapSetup;
 import org.bitbuckets.lib.control.IPIDCalculator;
 import org.bitbuckets.lib.control.PIDCalculatorSetup;
 import org.bitbuckets.lib.control.ProfiledPIDFCalculatorSetup;
+import org.bitbuckets.lib.hardware.IAbsoluteEncoder;
 import org.bitbuckets.lib.hardware.IMotorController;
 import org.bitbuckets.lib.util.MockingUtil;
 import org.bitbuckets.lib.vendor.sim.dc.DCSimSetup;
@@ -109,6 +111,7 @@ public interface ArmSetups {
             new ProfiledPIDFCalculatorSetup(Arm.UPPER_PID, Arm.UPPER_CONSTRAINTS),
             new ProfiledPIDFCalculatorSetup(Arm.UPPER_SIMPID, Arm.UPPER_CONSTRAINTS)
     );
+
 
     /**
      * ISetup<IPIDCalculator> PROFILED_LOWER_PID = new ProfiledPIDFCalculatorSetup(

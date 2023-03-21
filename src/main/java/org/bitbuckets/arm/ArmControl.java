@@ -77,11 +77,6 @@ public class ArmControl implements HasLogLoop {
 
     }
 
-    public void gripperLoop() {
-        gripperWheelMotor.moveAtPercent(-0);
-        gripperClawMotor.moveAtPercent(-0);
-    }
-
     int blitzToggle = 0;
 
     public void gripperHold() {
@@ -103,9 +98,6 @@ public class ArmControl implements HasLogLoop {
         }
 
     }
-    public void gripperOpen() {
-        gripperClawMotor.moveAtPercent(0.2);
-    }
 
 
 
@@ -114,13 +106,14 @@ public class ArmControl implements HasLogLoop {
     }
 
 
-    public void outtakeGripper() {
-        gripperWheelMotor.moveAtPercent(0.7);
+    public void openGripper() {
+      //  gripperClawMotor.moveToPosition_mechanismRotations(0);
+        gripperClawMotor.moveAtPercent(0.5);
     }
 
     public void intakeGripperCone() {
         gripperWheelMotor.moveAtPercent(-0.9);
-        gripperClawMotor.moveToPosition_mechanismRotations(0);
+        //     gripperClawMotor.moveToPosition_mechanismRotations(0);
     }
 
     public void intakeGripperCube() {
