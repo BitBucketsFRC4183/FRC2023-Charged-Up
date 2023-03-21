@@ -164,7 +164,8 @@ public class ArmControl implements HasLogLoop {
 
     @Override
     public void logLoop() {
-        debuggable.log("abs-angle", upperArm.getAbsoluteEncoder_rotations());
+        debuggable.log("abs-angle-upper-arm", upperArm.getAbsoluteEncoder_rotations());
+        debuggable.log("claw-abs-encoder-pos", clawAbsEncoder.getAbsoluteAngle());
     }
 
 }

@@ -23,10 +23,6 @@ public class DIOEncoder implements IAbsoluteEncoder, HasLogLoop {
         return angle;
 
     }
-    public double getPos()
-    {
-        return dutyCycleEncoder.getAbsolutePosition();
-    }
 
     @Override
     public void logLoop() {
