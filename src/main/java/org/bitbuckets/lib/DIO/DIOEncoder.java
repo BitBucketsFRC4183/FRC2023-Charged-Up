@@ -9,7 +9,7 @@ public class DIOEncoder implements IAbsoluteEncoder, HasLogLoop {
     final DutyCycleEncoder dutyCycleEncoder;
 
     public DIOEncoder(DutyCycleEncoder dutyCycleEncoder) {
-        this.dutyCycleEncoder = dutyCycleEncoder\
+        this.dutyCycleEncoder = dutyCycleEncoder
     }
 
     @Override
