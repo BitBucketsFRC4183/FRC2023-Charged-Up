@@ -40,6 +40,7 @@ public interface Arm {
     double UPPER_ARM_GEAR_RATIO = 1.0 / UPPER_ARM_REDUCTION / UPPER_ARM_BELT;
 
     double UPPER_ARM_OFFSET = 0.403;
+    double GRIPPER_CLAW_OFFSET = 0.403;
 
 
     //FF

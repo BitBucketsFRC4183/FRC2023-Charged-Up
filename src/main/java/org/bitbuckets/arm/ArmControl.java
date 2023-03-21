@@ -4,6 +4,7 @@ import config.Arm;
 import edu.wpi.first.math.VecBuilder;
 import org.bitbuckets.lib.control.IPIDCalculator;
 import org.bitbuckets.lib.core.HasLogLoop;
+import org.bitbuckets.lib.hardware.IAbsoluteEncoder;
 import org.bitbuckets.lib.hardware.IMotorController;
 import org.bitbuckets.lib.log.IDebuggable;
 
@@ -21,10 +22,12 @@ public class ArmControl implements HasLogLoop {
     final IMotorController gripperWheelMotor;
     final IMotorController gripperClawMotor;
 
+    final IAbsoluteEncoder clawAbsEncoder;
+
     final IDebuggable debuggable;
 
 
-    public ArmControl(ArmDynamics ff, IMotorController lowerArm, IMotorController upperArm, IPIDCalculator lowerArmControl, IPIDCalculator upperArmControl, IMotorController gripperActuator, IMotorController gripperClawMotor, IDebuggable debuggable) {
+    public ArmControl(ArmDynamics ff, IMotorController lowerArm, IMotorController upperArm, IPIDCalculator lowerArmControl, IPIDCalculator upperArmControl, IMotorController gripperActuator, IMotorController gripperClawMotor, IAbsoluteEncoder clawAbsEncoder, IDebuggable debuggable) {
         this.ff = ff;
         this.lowerArm = lowerArm;
         this.upperArm = upperArm;
@@ -32,6 +35,7 @@ public class ArmControl implements HasLogLoop {
         this.upperArmControl = upperArmControl;
         this.gripperWheelMotor = gripperActuator;
         this.gripperClawMotor = gripperClawMotor;
+        this.clawAbsEncoder = clawAbsEncoder;
         this.debuggable = debuggable;
     }
 
@@ -77,7 +81,16 @@ public class ArmControl implements HasLogLoop {
 
     }
 
+    public void zeroClawAbs()
+    {
+        double absAngleRot = gripperClawMotor.getAbsoluteEncoder_rotations() - Arm.UPPER_ARM_OFFSET;
+
+        gripperClawMotor.forceOffset_mechanismRotations(absAngleRot);
+
+    }
+
     int blitzToggle = 0;
+
 
     public void gripperHold() {
 
@@ -140,7 +153,7 @@ public class ArmControl implements HasLogLoop {
 
     public void zero() {
         lowerArm.forceOffset_mechanismRotations(0);
-        gripperClawMotor.forceOffset_mechanismRotations(0);
+
     }
 
 

@@ -1,11 +1,11 @@
 package config;
 
-import com.revrobotics.AbsoluteEncoder;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.numbers.N1;
 import org.bitbuckets.arm.ArmControl;
 import org.bitbuckets.arm.ArmControlSetup;
+import org.bitbuckets.lib.DIO.DIOEncoderSetup;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.SwapSetup;
 import org.bitbuckets.lib.control.IPIDCalculator;
@@ -112,6 +112,8 @@ public interface ArmSetups {
             new ProfiledPIDFCalculatorSetup(Arm.UPPER_SIMPID, Arm.UPPER_CONSTRAINTS)
     );
 
+    ISetup<IAbsoluteEncoder> clawAbsEncoder = new DIOEncoderSetup(0);
+
 
     /**
      * ISetup<IPIDCalculator> PROFILED_LOWER_PID = new ProfiledPIDFCalculatorSetup(
@@ -133,7 +135,7 @@ public interface ArmSetups {
             PROFILED_LOWER_PID,
             PROFILED_UPPER_PID,
             GRIPPER_WHEEL,
-            GRIPPER_CLAW);
+            GRIPPER_CLAW, clawAbsEncoder);
 
 
 }
