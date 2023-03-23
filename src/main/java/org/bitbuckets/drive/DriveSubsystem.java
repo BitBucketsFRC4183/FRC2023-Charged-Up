@@ -218,7 +218,7 @@ public class DriveSubsystem implements HasLifecycle, HasLogLoop {
                 debuggable.log("fb-alone", waitFB);
                 debuggable.log("fb-adjusted-time", adjustedTime);
 
-                if (dumbCounter > 60) {
+                if (dumbCounter > 50) {
                     dumbCounter = 0;
                     driveControl.drive(new ChassisSpeeds(0, 0, 0));
 
@@ -232,7 +232,7 @@ public class DriveSubsystem implements HasLifecycle, HasLogLoop {
                 shouldStop = true;
                 System.out.println("AAAAAAAAAAAAAAA");
 
-                driveControl.drive(new ChassisSpeeds(Math.signum(Pitch_deg) * 0.5, 0, 0));
+                driveControl.drive(new ChassisSpeeds(Math.signum(Pitch_deg) * 0.7, 0, 0));
                 return;
             } else {
                 double output = balanceControl.calculateBalanceOutput(Pitch_deg, 0);
@@ -244,6 +244,7 @@ public class DriveSubsystem implements HasLifecycle, HasLogLoop {
 
         } else {
             debuggable.log("is-running-ab-2", false);
+
             driveControl.stop();
 
         }

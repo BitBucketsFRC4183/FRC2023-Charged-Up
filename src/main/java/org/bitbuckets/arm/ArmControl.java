@@ -114,8 +114,8 @@ public class ArmControl implements HasLogLoop, HasLifecycle {
 
         if(blitzToggle == 0)
         {
-              //  gripperWheelMotor.moveAtPercent(-0.2);
-                gripperClawMotor.moveAtPercent(0.2);
+            gripperWheelMotor.moveAtPercent(-0.2);
+                gripperClawMotor.moveAtPercent(0.4);
         }
 
         else {
@@ -138,24 +138,24 @@ public class ArmControl implements HasLogLoop, HasLifecycle {
 
 
     public void openGripper() {
-        gripperClawMotor.moveToPosition_mechanismRotations(0.35);
-        gripperWheelMotor.moveAtPercent(0.8);
-       // gripperClawMotor.moveAtPercent(-0.2);
+      //  gripperClawMotor.moveToPosition_mechanismRotations(0.35);
+       // gripperWheelMotor.moveAtPercent(0.8);
+       gripperClawMotor.moveAtPercent(-0.5);
     }
 
     public void intakeGripperCone() {
         gripperWheelMotor.moveAtPercent(-0.9);
-        //     gripperClawMotor.moveToPosition_mechanismRotations(0.62);
+        gripperClawMotor.moveToPosition_mechanismRotations(0.69);
     }
 
     public void intakeGripperCube() {
         gripperWheelMotor.moveAtPercent(-0.9);
-      //  gripperClawMotor.moveToPosition_mechanismRotations(0.49);
+        gripperClawMotor.moveToPosition_mechanismRotations(0.55);
     }
 
     public void stopGripper() {
         gripperWheelMotor.moveAtPercent(0);
-        gripperClawMotor.moveAtPercent(0);
+          gripperClawMotor.moveAtPercent(0);
     }
 
 
