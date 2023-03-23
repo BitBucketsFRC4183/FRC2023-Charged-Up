@@ -14,15 +14,18 @@ public class DIOEncoder implements IAbsoluteEncoder, HasLogLoop {
 
     @Override
     public double getAbsoluteAngle() {
-        double angle = Math.toRadians(dutyCycleEncoder.getAbsolutePosition());
+        double angle = Math.toRadians(dutyCycleEncoder.getAbsolutePosition()*360.0);
         angle %= 2.0 * Math.PI;
         if (angle < 0.0) {
             angle += 2.0 * Math.PI;
         }
 
-        return angle;
+        return 1-dutyCycleEncoder.getAbsolutePosition();
 
     }
+
+
+
 
     @Override
     public void logLoop() {

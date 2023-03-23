@@ -43,6 +43,8 @@ public class ThriftyEncoder implements IAbsoluteEncoder, HasLogLoop {
         return getPositionRadians();
     }
 
+
+
     @Override
     public void logLoop() {
         rawPosition.log(Math.toDegrees(getRawPositionRadians()));

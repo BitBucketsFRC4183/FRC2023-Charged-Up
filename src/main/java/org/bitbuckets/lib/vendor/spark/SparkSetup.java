@@ -80,11 +80,11 @@ public class SparkSetup implements ISetup<IMotorController> {
         }
 
         if (motorConfig.forwardSoftLimitMechanismAccum_rot.isPresent()) {
-            spark.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, motorConfig.forwardSoftLimitMechanismAccum_rot.get().floatValue());
+            spark.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, motorConfig.forwardSoftLimitMechanismAccum_rot.get().floatValue()/(float)motorConfig.encoderToMechanismCoefficient);
             spark.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, true);
         }
         if (motorConfig.reverseSoftLimitMechanismAccum_rot.isPresent()) {
-            spark.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, motorConfig.reverseSoftLimitMechanismAccum_rot.get().floatValue());
+            spark.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, motorConfig.reverseSoftLimitMechanismAccum_rot.get().floatValue()/(float)motorConfig.encoderToMechanismCoefficient);
             spark.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, true);
 
         }

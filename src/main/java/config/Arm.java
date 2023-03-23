@@ -39,8 +39,16 @@ public interface Arm {
     double LOWER_ARM_GEAR_RATIO = 1.0 / LOWER_ARM_REDUCTION / LOWER_ARM_BELT; //divide again since calculator math
     double UPPER_ARM_GEAR_RATIO = 1.0 / UPPER_ARM_REDUCTION / UPPER_ARM_BELT;
 
+    double CLAW_REDUCTION = 5.0 * 4.0 * 3.0;
+
+    double CLAW_BELT = 1.0 / 1.0; //3 to 1
+
+    double CLAW_RATIO = 1.0 / CLAW_REDUCTION / CLAW_BELT; //divide again since calculator math
+
+
+
+
     double UPPER_ARM_OFFSET = 0.403;
-    double GRIPPER_CLAW_OFFSET = 0.403;
 
 
     //FF
@@ -140,14 +148,14 @@ public interface Arm {
             false
     );
     MotorConfig GRIPPER_CLAW_CONFIG = new MotorConfig(
+            CLAW_RATIO,
             1,
             1,
-            1,
-            false,
+            true,
             false,
             30,
-            Optional.empty(),
-            Optional.of(-134.8),
+            Optional.of(0.61),
+            Optional.of(0.0),
             true,
             false,
             false, OptimizationMode.GENERIC,
@@ -190,7 +198,7 @@ public interface Arm {
     );
 
     PIDConfig GRIPPER_WHEEL_PID = new PIDConfig(0.1, 0, 0, Optional.empty(), Optional.empty());
-    PIDConfig GRIPPER_CLAW_PID = new PIDConfig(0.1, 0, 0, Optional.empty(), Optional.empty());
+    PIDConfig GRIPPER_CLAW_PID = new PIDConfig(0.05, 0, 0, Optional.empty(), Optional.empty());
 
 
     TrapezoidProfile.Constraints LOWER_CONSTRAINT = new TrapezoidProfile.Constraints(

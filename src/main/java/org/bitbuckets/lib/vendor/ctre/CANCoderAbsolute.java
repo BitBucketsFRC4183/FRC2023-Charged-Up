@@ -29,6 +29,8 @@ public class CANCoderAbsolute implements IAbsoluteEncoder, HasLogLoop {
 
     }
 
+
+
     @Override
     public void logLoop() {
         absolutePos.log(encoder.getAbsolutePosition());

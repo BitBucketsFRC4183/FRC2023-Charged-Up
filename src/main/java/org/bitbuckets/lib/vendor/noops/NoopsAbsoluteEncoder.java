@@ -14,4 +14,5 @@ public class NoopsAbsoluteEncoder implements IAbsoluteEncoder {
     public double getAbsoluteAngle() {
         return 0;
     }
+
 }

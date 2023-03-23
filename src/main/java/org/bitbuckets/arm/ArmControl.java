@@ -83,7 +83,7 @@ public class ArmControl implements HasLogLoop {
 
     public void zeroClawAbs()
     {
-        double absAngleRot = gripperClawMotor.getAbsoluteEncoder_rotations() - Arm.UPPER_ARM_OFFSET;
+        double absAngleRot = clawAbsEncoder.getAbsoluteAngle();
 
         gripperClawMotor.forceOffset_mechanismRotations(absAngleRot);
 
@@ -96,8 +96,8 @@ public class ArmControl implements HasLogLoop {
 
         if(blitzToggle == 0)
         {
-                gripperWheelMotor.moveAtPercent(-0.2);
-                gripperClawMotor.moveAtPercent(-0.2);
+              //  gripperWheelMotor.moveAtPercent(-0.2);
+                gripperClawMotor.moveAtPercent(0.2);
         }
 
         else {
@@ -120,22 +120,23 @@ public class ArmControl implements HasLogLoop {
 
 
     public void openGripper() {
-      //  gripperClawMotor.moveToPosition_mechanismRotations(0);
-        gripperClawMotor.moveAtPercent(0.5);
+        gripperClawMotor.moveToPosition_mechanismRotations(0.35);
+       // gripperClawMotor.moveAtPercent(-0.2);
     }
 
     public void intakeGripperCone() {
-        gripperWheelMotor.moveAtPercent(-0.9);
-        //     gripperClawMotor.moveToPosition_mechanismRotations(0);
+        //gripperWheelMotor.moveAtPercent(-0.9);
+             gripperClawMotor.moveToPosition_mechanismRotations(0.62);
     }
 
     public void intakeGripperCube() {
-        gripperWheelMotor.moveAtPercent(-0.9);
-      //  gripperClawMotor.moveToPosition_mechanismRotations(0);
+     //   gripperWheelMotor.moveAtPercent(-0.9);
+        gripperClawMotor.moveToPosition_mechanismRotations(0.49);
     }
 
     public void stopGripper() {
         gripperWheelMotor.moveAtPercent(0);
+        gripperClawMotor.moveAtPercent(0);
     }
 
 
@@ -165,7 +166,7 @@ public class ArmControl implements HasLogLoop {
     @Override
     public void logLoop() {
         debuggable.log("abs-angle-upper-arm", upperArm.getAbsoluteEncoder_rotations());
-        debuggable.log("claw-abs-encoder-pos", clawAbsEncoder.getAbsoluteAngle());
+        debuggable.log("claw-abs-encoder-pos",clawAbsEncoder.getAbsoluteAngle());
     }
 
 }
