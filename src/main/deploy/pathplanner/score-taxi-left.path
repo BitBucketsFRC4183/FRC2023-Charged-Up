@@ -99,7 +99,7 @@
       "stopEvent": {
         "names": [
 
-          "arm-stop"
+          "arm-stow"
         ],
         "executionBehavior": "parallel",
         "waitBehavior": "none",

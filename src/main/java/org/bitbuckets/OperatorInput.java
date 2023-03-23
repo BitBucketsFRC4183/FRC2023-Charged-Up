@@ -100,7 +100,7 @@ public class OperatorInput {
     }
 
     public boolean isManualDrivePressed() {
-        return driveControl.getRawButtonPressed(XboxController.Button.kX.value);
+        return driveControl.getRawButtonPressed(XboxController.Button.kA.value);
     }
 
     //OPERATOR
