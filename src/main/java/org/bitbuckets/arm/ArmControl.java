@@ -119,7 +119,7 @@ public class ArmControl implements HasLogLoop, HasLifecycle {
         }
 
         else {
-            gripperWheelMotor.moveAtPercent(-0);
+            gripperWheelMotor.moveAtPercent(-0.2);
             gripperClawMotor.moveAtPercent(-0);
         }
         blitzToggle += 1;
@@ -138,9 +138,9 @@ public class ArmControl implements HasLogLoop, HasLifecycle {
 
 
     public void openGripper() {
-      //  gripperClawMotor.moveToPosition_mechanismRotations(0.35);
+        gripperClawMotor.moveToPosition_mechanismRotations(0.35);
        // gripperWheelMotor.moveAtPercent(0.8);
-       gripperClawMotor.moveAtPercent(-0.5);
+  //     gripperClawMotor.moveAtPercent(-0.5);
     }
 
     public void intakeGripperCone() {
