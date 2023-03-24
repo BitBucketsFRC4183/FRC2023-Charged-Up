@@ -2,7 +2,6 @@ package org.bitbuckets.arm;
 
 import config.Arm;
 import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj.DriverStation;
 import org.bitbuckets.lib.control.IPIDCalculator;
 import org.bitbuckets.lib.core.HasLifecycle;
@@ -85,9 +84,8 @@ public class ArmControl implements HasLogLoop, HasLifecycle {
     public void doNothing() {
         lowerArm.moveAtVoltage(0);
         upperArm.moveAtVoltage(0);
-        if(DriverStation.isAutonomous())
-        {
-               gripperWheelMotor.moveAtVoltage(0);
+        if (DriverStation.isAutonomous()) {
+            gripperWheelMotor.moveAtVoltage(0);
         }
     }
 
@@ -95,13 +93,33 @@ public class ArmControl implements HasLogLoop, HasLifecycle {
     public void zeroArmAbs() {
         double absAngleRot = upperArm.getAbsoluteEncoder_rotations() - Arm.UPPER_ARM_OFFSET;
 
+        // The absolute encoder returns a value from 0 to 1, where .1 is 1/10th of a rotation
+        // clockwise, and .9 is almost fully wrapped around at 9/10th of a rotation clockwise
+        //
+        // Our arm considers these two angles to be -.1 and .1, with zero being straight up
+        // to account for this, we need to update differently if the angle is > .5 and we've
+        // "wrapped around"
+        //
+        // .9 (-.1)  .1
+        // \         /
+        //   \     /
+        //     \ /
+        // - - - - - - - -
+
+        if (absAngleRot > .5) {
+            absAngleRot = -1 + absAngleRot;
+        }
+
         upperArm.forceOffset_mechanismRotations(absAngleRot);
 
     }
 
-    public void zeroClawAbs()
-    {
+    public void zeroClawAbs() {
         double absAngleRot = clawAbsEncoder.getAbsoluteAngle();
+
+        if (absAngleRot > .5) {
+            absAngleRot = -1 + absAngleRot;
+        }
 
         gripperClawMotor.forceOffset_mechanismRotations(absAngleRot);
 
@@ -112,24 +130,19 @@ public class ArmControl implements HasLogLoop, HasLifecycle {
 
     public void gripperHold() {
 
-        if(blitzToggle == 0)
-        {
+        if (blitzToggle == 0) {
             gripperWheelMotor.moveAtPercent(-0.2);
-                gripperClawMotor.moveAtPercent(0.4);
-        }
-
-        else {
+            gripperClawMotor.moveAtPercent(0.4);
+        } else {
             gripperWheelMotor.moveAtPercent(-0.2);
             gripperClawMotor.moveAtPercent(-0);
         }
         blitzToggle += 1;
-        if(blitzToggle > 1)
-        {
+        if (blitzToggle > 1) {
             blitzToggle = 0;
         }
 
     }
-
 
 
     public double getUpperAbsEncoderAngle() {
@@ -139,8 +152,8 @@ public class ArmControl implements HasLogLoop, HasLifecycle {
 
     public void openGripper() {
         gripperClawMotor.moveToPosition_mechanismRotations(0.35);
-       // gripperWheelMotor.moveAtPercent(0.8);
-  //     gripperClawMotor.moveAtPercent(-0.5);
+        // gripperWheelMotor.moveAtPercent(0.8);
+        //     gripperClawMotor.moveAtPercent(-0.5);
     }
 
     public void intakeGripperCone() {
@@ -155,7 +168,7 @@ public class ArmControl implements HasLogLoop, HasLifecycle {
 
     public void stopGripper() {
         gripperWheelMotor.moveAtPercent(0);
-          gripperClawMotor.moveAtPercent(0);
+        gripperClawMotor.moveAtPercent(0);
     }
 
 
@@ -183,9 +196,8 @@ public class ArmControl implements HasLogLoop, HasLifecycle {
     @Override
     public void logLoop() {
         debuggable.log("abs-angle-upper-arm", upperArm.getAbsoluteEncoder_rotations());
-        debuggable.log("claw-abs-encoder-pos",clawAbsEncoder.getAbsoluteAngle());
+        debuggable.log("claw-abs-encoder-pos", clawAbsEncoder.getAbsoluteAngle());
     }
-
 
 
 }
