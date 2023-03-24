@@ -44,14 +44,14 @@ public class ArmControl implements HasLogLoop, HasLifecycle {
 
     @Override
     public void autonomousInit() {
-        //lowerArmControl.rawAccess(ProfiledPIDController.class).reset(lowerArm.getMechanismPositionAccum_rot());
-        //upperArmControl.rawAccess(ProfiledPIDController.class).reset(upperArm.getMechanismPositionAccum_rot());
+        lowerArmControl.rawAccess(ProfiledPIDController.class).reset(lowerArm.getMechanismPositionAccum_rot());
+        upperArmControl.rawAccess(ProfiledPIDController.class).reset(upperArm.getMechanismPositionAccum_rot());
     }
 
     @Override
     public void teleopInit() {
-        //lowerArmControl.rawAccess(ProfiledPIDController.class).reset(lowerArm.getMechanismPositionAccum_rot());
-        //upperArmControl.rawAccess(ProfiledPIDController.class).reset(upperArm.getMechanismPositionAccum_rot());
+        lowerArmControl.rawAccess(ProfiledPIDController.class).reset(lowerArm.getMechanismPositionAccum_rot());
+        upperArmControl.rawAccess(ProfiledPIDController.class).reset(upperArm.getMechanismPositionAccum_rot());
     }
 
     /**

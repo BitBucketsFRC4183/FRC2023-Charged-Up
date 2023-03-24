@@ -3,6 +3,7 @@ package org.bitbuckets.drive;
 import org.bitbuckets.OperatorInput;
 import org.bitbuckets.auto.AutoSubsystem;
 import org.bitbuckets.drive.balance.BalanceControl;
+import org.bitbuckets.drive.balance.ExperimentalBalanceControl;
 import org.bitbuckets.drive.holo.HoloControl;
 import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.lib.ISetup;
@@ -40,6 +41,7 @@ public class DriveSubsystemSetup implements ISetup<DriveSubsystem> {
     public DriveSubsystem build(IProcess self) {
         return new DriveSubsystem(
                 operatorInput,
+
                 odometryControl,
                 self.childSetup("balance-control", balanceControlSetup),
                 driveControl,

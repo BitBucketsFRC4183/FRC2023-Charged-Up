@@ -68,7 +68,8 @@ public class DriveSubsystem implements HasLifecycle, HasLogLoop {
         // auto mode will balance at the end, stop when the path is done, or do path finding by default
         if (autoSubsystem.sampleHasEventStarted("auto-balance")) {
             nextStateShould = DriveFSM.BALANCE;
-            balance();
+            driveControl.stopSticky();
+            //balance();
         } else if (autoSubsystem.isPathDone()) {
             nextStateShould = DriveFSM.IDLE;
             driveControl.stop();
@@ -101,7 +102,7 @@ public class DriveSubsystem implements HasLifecycle, HasLogLoop {
         // call based on state
         switch (nextStateShould) {
             case MANUAL -> teleopNormal();
-            case BALANCE -> balance();
+            case BALANCE -> driveControl.stopSticky();
             case VISION -> teleopVision();
             default -> driveControl.stop();
         }
@@ -169,7 +170,7 @@ public class DriveSubsystem implements HasLifecycle, HasLogLoop {
         }
 
         if (input.stopStickyPressed()) {
-            driveControl.stop();
+            driveControl.stopSticky();
         }
 
         debuggable.log("x-output", leftSpeed);
@@ -244,7 +245,7 @@ public class DriveSubsystem implements HasLifecycle, HasLogLoop {
 
         } else {
             debuggable.log("is-running-ab-2", false);
-
+            
             driveControl.stop();
 
         }

@@ -237,6 +237,7 @@ public class ArmSubsystem implements HasLoop, HasLifecycle {
         }
 
         if (shouldDoNext == ArmFSM.UNSTOW) {
+            armControl.intakeGripperCone();
             armControl.commandArmToState(-0.1, armControl.upperArm.getMechanismPositionAccum_rot());
         }
 

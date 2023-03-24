@@ -32,7 +32,7 @@ public interface Arm {
     double LOWER_ARM_REDUCTION = 5.0 * 5.0 * 3.0;
     double UPPER_ARM_REDUCTION = 4.0 * 4.0 * 4.0 * 3.0;
 
-    double LOWER_ARM_BELT = 48.0 / 16.0; //3 to 1
+    double LOWER_ARM_BELT = 64.0 / 16.0; //3 to 1
     double UPPER_ARM_BELT = 42.0 / 16.0; //1 to 1
 
     //converts encoder rotations -> mechanism rotations (0.036)
@@ -138,7 +138,7 @@ public interface Arm {
             1,
             true,
             false,
-            30,
+            20,
             Optional.empty(),
             Optional.empty(),
             false,
