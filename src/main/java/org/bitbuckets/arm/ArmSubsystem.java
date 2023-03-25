@@ -127,7 +127,7 @@ public class ArmSubsystem implements HasLoop, HasLifecycle {
         }
 
         if (operatorInput.isHumanIntakePressed()) {
-            shouldDoNext = ArmFSM.HUMAN_INTAKE;
+            shouldDoNext = ArmFSM.GROUND_INTAKE;
             return;
         }
 
@@ -143,10 +143,7 @@ public class ArmSubsystem implements HasLoop, HasLifecycle {
             shouldDoNext = ArmFSM.SCORE_LOW;
             return;
         }
-        if (operatorInput.isLoadPresed()) {
-            shouldDoNext = ArmFSM.LOAD;
-            return;
-        }
+
 
         if (operatorInput.isManualModePressed()) {
             shouldDoNext = ArmFSM.MANUAL;
@@ -199,6 +196,12 @@ public class ArmSubsystem implements HasLoop, HasLifecycle {
                     -0.4
             );
         }
+        if (shouldDoNext == ArmFSM.GROUND_INTAKE) {
+            armControl.commandArmToState(
+                    0.19,
+                    0
+            );
+        }
         if (shouldDoNext == ArmFSM.LOAD) {
             armControl.commandArmToState(
                     0.008,
@@ -232,19 +235,14 @@ public class ArmSubsystem implements HasLoop, HasLifecycle {
 
 
         }
-        if (shouldDoNext == ArmFSM.GROUND_INTAKE) {
-            armControl.commandArmToState(0.581, -0.274);
 
-        }
 
         if (shouldDoNext == ArmFSM.UNSTOW) {
             armControl.intakeGripperCone();
             armControl.commandArmToState(-0.1, armControl.upperArm.getMechanismPositionAccum_rot());
         }
 
-        if (shouldDoNext == ArmFSM.HUMAN_INTAKE) {
-            armControl.commandArmToState(0.008, -0.230);
-        }
+
 
         if (shouldDoNext == ArmFSM.IDLE) {
             armControl.doNothing();

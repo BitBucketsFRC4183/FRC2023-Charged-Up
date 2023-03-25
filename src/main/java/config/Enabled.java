@@ -8,7 +8,7 @@ public interface Enabled {
 
 
 
-    boolean arm = false;
+    boolean arm = true;
     boolean drive = true;
     boolean auto = true;
     boolean vision = false;

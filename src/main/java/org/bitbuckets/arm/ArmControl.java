@@ -145,7 +145,7 @@ public class ArmControl implements HasLogLoop, HasLifecycle {
 
     public void intakeGripperCone() {
         gripperWheelMotor.moveAtPercent(-0.9);
-        gripperClawMotor.moveToPosition_mechanismRotations(0.64);
+        gripperClawMotor.moveToPosition_mechanismRotations(0.7);
     }
 
     public void intakeGripperCube() {
