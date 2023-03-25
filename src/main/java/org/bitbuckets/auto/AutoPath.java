@@ -10,7 +10,8 @@ public enum AutoPath {
     SCORE_TAXI_LEFT(1),
     SCORE_TAXI_MID(2),
     SCORE_TAXI_LEFT_SWOOPY(3),
-    BACK_1M(4);
+    BACK_1M(4),
+    SCORE_TAXI_MID_ACTUAL(5);
 
 
     //creates an index to be used for calling each enum as a member of the PathPlannerTrajectory array

@@ -138,7 +138,7 @@ public interface Arm {
             1,
             true,
             false,
-            20,
+            30,
             Optional.empty(),
             Optional.empty(),
             false,
@@ -154,8 +154,8 @@ public interface Arm {
             true,
             false,
             20,
-            Optional.of(0.73),
-            Optional.of(0.2),
+            Optional.of(0.75),
+            Optional.of(0.19),
             false,
             false,
             false, OptimizationMode.GENERIC,
@@ -198,7 +198,7 @@ public interface Arm {
     );
 
     PIDConfig GRIPPER_WHEEL_PID = new PIDConfig(0.1, 0, 0, Optional.empty(), Optional.empty());
-    PIDConfig GRIPPER_CLAW_PID = new PIDConfig(0.05, 0, 0, Optional.empty(), Optional.empty());
+    PIDConfig GRIPPER_CLAW_PID = new PIDConfig(0.03, 0, 0, Optional.empty(), Optional.empty());
 
 
     TrapezoidProfile.Constraints LOWER_CONSTRAINT = new TrapezoidProfile.Constraints(

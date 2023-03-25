@@ -86,7 +86,11 @@ public class ArmSubsystem implements HasLoop, HasLifecycle {
 
 
         //TODO: NEED TO TUNE SETPOINTS FOR CUBE CONE AND OPEN GRIPPER USE LEFT PADDLE TO CLOSE AND LEFT BUMPER TO OPEN FOR NOW
-        if(operatorInput.intakeGripper())
+        if (operatorInput.holdGripper())
+        {
+            armControl.gripperHold();
+        }
+        else if(operatorInput.intakeGripper())
         {
             if(operatorInput.isCube())
             {
@@ -101,10 +105,7 @@ public class ArmSubsystem implements HasLoop, HasLifecycle {
         {
             armControl.openGripper();
         }
-        else if (operatorInput.holdGripper())
-        {
-            armControl.gripperHold();
-        }
+
         else
         {
             armControl.stopGripper();

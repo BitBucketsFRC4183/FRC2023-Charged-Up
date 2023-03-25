@@ -68,7 +68,7 @@ public class DriveSubsystem implements HasLifecycle, HasLogLoop {
         // auto mode will balance at the end, stop when the path is done, or do path finding by default
         if (autoSubsystem.sampleHasEventStarted("auto-balance")) {
             nextStateShould = DriveFSM.BALANCE;
-            driveControl.stopSticky();
+            balance();
             //balance();
         } else if (autoSubsystem.isPathDone()) {
             nextStateShould = DriveFSM.IDLE;
@@ -102,7 +102,7 @@ public class DriveSubsystem implements HasLifecycle, HasLogLoop {
         // call based on state
         switch (nextStateShould) {
             case MANUAL -> teleopNormal();
-            case BALANCE -> driveControl.stopSticky();
+            case BALANCE -> balance();
             case VISION -> teleopVision();
             default -> driveControl.stop();
         }
@@ -210,45 +210,60 @@ public class DriveSubsystem implements HasLifecycle, HasLogLoop {
 
         debuggable.log("pitch-now", Pitch_deg);
         debuggable.log("accel", odometryControl.getAccelerationZ());
-        if (Math.abs(Pitch_deg) > 2) {
 
-            if (shouldStop) {
-                double waitFB = waitTimeResponse.calculateNext(odometryControl.getYaw_deg(), 0);
-                double adjustedTime = 40 + waitFB;
-
-                debuggable.log("fb-alone", waitFB);
-                debuggable.log("fb-adjusted-time", adjustedTime);
-
-                if (dumbCounter > 50) {
-                    dumbCounter = 0;
-                    driveControl.drive(new ChassisSpeeds(0, 0, 0));
-
-                } else {
-                    dumbCounter++;
-                }
-                return;
-            }
-
-            if (odometryControl.getAccelerationZ() > Drive.ACCEL_THRESHOLD_AUTOBALANCE) {
-                shouldStop = true;
-                System.out.println("AAAAAAAAAAAAAAA");
-
-                driveControl.drive(new ChassisSpeeds(Math.signum(Pitch_deg) * 0.7, 0, 0));
-                return;
-            } else {
-                double output = balanceControl.calculateBalanceOutput(Pitch_deg, 0);
-                debuggable.log("control-output-autobalance", output);
-
-                driveControl.drive(new ChassisSpeeds(-output, 0.0, 0.0));
-            }
-
-
-        } else {
-            debuggable.log("is-running-ab-2", false);
-            
-            driveControl.stop();
+        if(Pitch_deg>12)
+        {
+            driveControl.drive(new ChassisSpeeds(-0.2,0,0));
+        }
+        else if (Pitch_deg < -12)
+        {
+            driveControl.drive(new ChassisSpeeds(0.2,0,0));
 
         }
+        else
+        {
+            driveControl.stopSticky();
+        }
+//
+//        if (Math.abs(Pitch_deg) > 2) {
+//
+//            if (shouldStop) {
+//                double waitFB = waitTimeResponse.calculateNext(odometryControl.getYaw_deg(), 0);
+//                double adjustedTime = 40 + waitFB;
+//
+//                debuggable.log("fb-alone", waitFB);
+//                debuggable.log("fb-adjusted-time", adjustedTime);
+//
+//                if (dumbCounter > 50) {
+//                    dumbCounter = 0;
+//                    driveControl.drive(new ChassisSpeeds(0, 0, 0));
+//
+//                } else {
+//                    dumbCounter++;
+//                }
+//                return;
+//            }
+//
+//            if (odometryControl.getAccelerationZ() > Drive.ACCEL_THRESHOLD_AUTOBALANCE) {
+//                shouldStop = true;
+//                System.out.println("AAAAAAAAAAAAAAA");
+//
+//                driveControl.drive(new ChassisSpeeds(Math.signum(Pitch_deg) * 0.7, 0, 0));
+//                return;
+//            } else {
+//                double output = balanceControl.calculateBalanceOutput(Pitch_deg, 0);
+//                debuggable.log("control-output-autobalance", output);
+//
+//                driveControl.drive(new ChassisSpeeds(-output, 0.0, 0.0));
+//            }
+//
+//  x
+//        } else {
+//            debuggable.log("is-running-ab-2", false);
+//
+//            driveControl.stop();
+//
+//        }
     }
 
 
