@@ -5,16 +5,18 @@ package org.bitbuckets.lib.hardware;
  */
 public interface IMotorController extends IMotor, IEncoder {
 
-
-    /**
-     * Gets error in terms of mechanism rotations
-     * @return the current error
-     */
-    default double getError_mechanismRotations(){
+    default double getError_mechanismRotations() {
         double setpoint = getSetpoint_mechanismRotations();
         double actualPosition = getMechanismPositionAccum_rot();
         return setpoint - actualPosition;
+    }
 
+    default boolean isForwardLimitSwitchPressed() {
+        return false;
+    }
+
+    default boolean isReverseLimitSwitchPressed() {
+        return false;
     }
 
 }

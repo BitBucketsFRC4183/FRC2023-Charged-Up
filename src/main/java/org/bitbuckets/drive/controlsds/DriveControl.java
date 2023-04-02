@@ -1,24 +1,26 @@
 package org.bitbuckets.drive.controlsds;
 
+import config.Drive;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import org.bitbuckets.drive.DriveConstants;
 import org.bitbuckets.drive.IDriveControl;
 import org.bitbuckets.drive.controlsds.sds.ISwerveModule;
-import org.bitbuckets.lib.log.Debuggable;
+import org.bitbuckets.lib.core.HasLogLoop;
+import org.bitbuckets.lib.log.IDebuggable;
 
 import java.util.List;
 
 /**
  * Represents a real drive controller that implements control of the drivetrain using a list of SwerveModule interfaces
  */
-public class DriveControl implements IDriveControl {
+public class DriveControl implements IDriveControl, HasLogLoop {
 
-    final Debuggable debug;
+    final SwerveDriveKinematics kinematics;
+    final IDebuggable debug;
 
     // Swerve Modules
     final ISwerveModule moduleFrontLeft;
@@ -28,7 +30,7 @@ public class DriveControl implements IDriveControl {
 
 
     //Speed factor that edits the max velocity and max angular velocity
-    double speedModifier = 1;
+    double speedModifier = 0.75;
 
     List<ISwerveModule> modules;
 
@@ -39,7 +41,8 @@ public class DriveControl implements IDriveControl {
             new SwerveModuleState()
     };
 
-    public DriveControl(Debuggable debug, ISwerveModule moduleFrontLeft, ISwerveModule moduleFrontRight, ISwerveModule moduleBackLeft, ISwerveModule moduleBackRight) {
+    public DriveControl(SwerveDriveKinematics kinematics, IDebuggable debug, ISwerveModule moduleFrontLeft, ISwerveModule moduleFrontRight, ISwerveModule moduleBackLeft, ISwerveModule moduleBackRight) {
+        this.kinematics = kinematics;
         this.moduleFrontLeft = moduleFrontLeft;
         this.moduleFrontRight = moduleFrontRight;
         this.moduleBackLeft = moduleBackLeft;
@@ -58,42 +61,31 @@ public class DriveControl implements IDriveControl {
         }
     }
 
+    @Override
     public void drive(ChassisSpeeds chassisSpeeds) {
-        doDriveWithStates(DriveConstants.KINEMATICS.toSwerveModuleStates(chassisSpeeds));
+        doDriveWithStates(kinematics.toSwerveModuleStates(chassisSpeeds));
     }
 
-    public void stop90degrees() {
+
+    @Override
+    public void stop() {
         doDriveWithStates(new SwerveModuleState[]{
-                new SwerveModuleState(0, Rotation2d.fromDegrees(90)), //Front Left
-                new SwerveModuleState(0, Rotation2d.fromDegrees(-90)), //Front Right
-                new SwerveModuleState(0, Rotation2d.fromDegrees(-90)), //Back Left
-                new SwerveModuleState(0, Rotation2d.fromDegrees(90)) //Back Right
+                new SwerveModuleState(0, Rotation2d.fromDegrees(0)),
+                new SwerveModuleState(0, Rotation2d.fromDegrees(0)),
+                new SwerveModuleState(0, Rotation2d.fromDegrees(0)),
+                new SwerveModuleState(0, Rotation2d.fromDegrees(0))
         });
     }
 
-    public void stopSticky() {
-        doDriveWithStates(new SwerveModuleState[]{
-                new SwerveModuleState(0, Rotation2d.fromDegrees(45)),
-                new SwerveModuleState(0, Rotation2d.fromDegrees(-45)),
-                new SwerveModuleState(0, Rotation2d.fromDegrees(-45)),
-                new SwerveModuleState(0, Rotation2d.fromDegrees(45))
-        });
-    }
 
     public double getMaxVelocity() {
-        return DriveConstants.MAX_DRIVE_VELOCITY * speedModifier;
+        return Drive.MAX_DRIVE_VELOCITY * speedModifier;
     }
 
     public double getMaxAngularVelocity() {
-        return DriveConstants.MAX_ANG_VELOCITY * speedModifier;
+        return Drive.MAX_ANG_VELOCITY * speedModifier;
     }
 
-
-    public void stop() {
-        //tags: low priority
-        //TODO this should use x-lock wheel constants
-        this.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
-    }
 
     private void doDriveWithStates(SwerveModuleState[] states) {
 
@@ -104,7 +96,7 @@ public class DriveControl implements IDriveControl {
             for (int i = 0; i < 4; i++) {
                 //System.out.println("Module " + i + ": " + states[i].angle.getDegrees());
                 int maxVoltage = 12;
-                double ff = DriveConstants.FF.calculate(states[i].speedMetersPerSecond);
+                double ff = Drive.FF.calculate(states[i].speedMetersPerSecond);
                 modules.get(i).set(MathUtil.clamp(ff, -maxVoltage, maxVoltage), states[i].angle.getRadians());
             }
         }
@@ -112,6 +104,7 @@ public class DriveControl implements IDriveControl {
 
     //microoptimization: do this without stream()
     public SwerveModulePosition[] currentPositions() {
+
         debug.log("Pos 0 Dis", this.modules.get(3).getPosition().distanceMeters);
         debug.log("Pos 0 Angle", this.modules.get(3).getPosition().angle.getDegrees());
         return new SwerveModulePosition[]
@@ -129,8 +122,8 @@ public class DriveControl implements IDriveControl {
         return this.modules.stream().map(ISwerveModule::getState).toArray(SwerveModuleState[]::new);
     }
 
-
-    public void log() { //example log loop
+    @Override
+    public void logLoop() {
         debug.log("command-modules", cachedSetpoint);
         debug.log("actual-modules", currentStates());
         debug.log("actual-positions", currentPositions());

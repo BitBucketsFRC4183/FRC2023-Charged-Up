@@ -2,26 +2,23 @@ package org.bitbuckets.lib.vendor.spark;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
-import com.revrobotics.REVPhysicsSim;
 import com.revrobotics.SparkMaxLimitSwitch;
-import edu.wpi.first.math.system.plant.DCMotor;
+import org.bitbuckets.lib.ILogAs;
+import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.lib.ISetup;
-import org.bitbuckets.lib.ProcessPath;
-import org.bitbuckets.lib.StartupProfiler;
+import org.bitbuckets.lib.ITuneAs;
 import org.bitbuckets.lib.control.PIDConfig;
 import org.bitbuckets.lib.hardware.IMotorController;
 import org.bitbuckets.lib.hardware.MotorConfig;
-import org.bitbuckets.lib.log.LoggingConstants;
+import org.bitbuckets.lib.hardware.OptimizationMode;
 import org.bitbuckets.lib.tune.IValueTuner;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static java.lang.String.format;
-import static org.bitbuckets.lib.vendor.spark.RevUtils.checkNeoError;
+import java.util.Optional;
 
 /**
- * SparkPIDSetup is for control based shit
+ * SparkPIDSetup is for control based control
  * SparkPercentSetup is for your normal drive or whatever
  */
 public class SparkSetup implements ISetup<IMotorController> {
@@ -32,23 +29,22 @@ public class SparkSetup implements ISetup<IMotorController> {
     final MotorConfig motorConfig;
     final PIDConfig pidConfig;
 
-    public SparkSetup(int canId, MotorConfig motorConfig, PIDConfig pidConfig) {
+    final Optional<SparkSetup> follower; //This will follow
+
+    public SparkSetup(int canId, MotorConfig motorConfig, PIDConfig pidConfig, Optional<SparkSetup> follower) {
         this.canId = canId;
         this.motorConfig = motorConfig;
         this.pidConfig = pidConfig;
+        this.follower = follower;
     }
 
     @Override
-    public IMotorController build(ProcessPath self) {
+    public IMotorController build(IProcess self) {
 
-        StartupProfiler motorStartup = self.generateSetupProfiler("motor-startup");
-        motorStartup.markProcessing();
 
         //check id for duplicate usage
         if (seen.contains(canId)) {
-            motorStartup.markErrored(
-                    new IllegalStateException(format("duplicate sparkmax usage of id %s", canId))
-            );
+            throw new IllegalStateException();
         }
         seen.add(canId);
 
@@ -58,86 +54,92 @@ public class SparkSetup implements ISetup<IMotorController> {
         spark.enableVoltageCompensation(12.0);
 
         if (motorConfig.shouldBreakOnNoCommand) {
-            motorStartup.sendInfo("using brake mode");
             spark.setIdleMode(CANSparkMax.IdleMode.kBrake);
         } else {
-            motorStartup.sendInfo("using coast mode");
             spark.setIdleMode(CANSparkMax.IdleMode.kCoast);
         }
 
         spark.setInverted(motorConfig.isInverted);
         spark.setSmartCurrentLimit((int) motorConfig.currentLimit);
 
-        // Uncomment this when doing something that may command motors to full throttle by accident
-        //spark.getPIDController().setOutputRange(-0.3,0.3);
 
         SparkMaxLimitSwitch forwardSwitch = null;
         SparkMaxLimitSwitch reverseSwitch = null;
 
         if (motorConfig.isForwardHardLimitEnabled) {
-            motorStartup.sendInfo("using forward limit switch!");
             forwardSwitch = spark.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
             forwardSwitch.enableLimitSwitch(true);
         }
 
         if (motorConfig.isBackwardHardLimitEnabled) {
-            motorStartup.sendInfo("using backward limit switch!");
             reverseSwitch = spark.getReverseLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
             reverseSwitch.enableLimitSwitch(true);
         }
-
-
-        // setup tuneable pid
-        if (pidConfig.kP == 0 && pidConfig.kI == 0 && pidConfig.kD == 0) {
-            motorStartup.sendInfo("using tuneable pid!");
-
-            IValueTuner<Double> p = self.generateValueTuner("p", pidConfig.kP);
-            IValueTuner<Double> i = self.generateValueTuner("i", pidConfig.kI);
-            IValueTuner<Double> d = self.generateValueTuner("d", pidConfig.kD);
-            var pidController = spark.getPIDController();
-            SparkTuner sparkTuner = new SparkTuner(p, i, d, pidController);
-            pidController.setP(p.consumeValue());
-            pidController.setI(i.consumeValue());
-            pidController.setD(d.consumeValue());
-            self.registerLoop(sparkTuner, LoggingConstants.TUNING_PERIOD, "tuning-loop");
-        } else {
-            motorStartup.sendInfo("using hardcoded pid!");
-
-            checkNeoError(spark.getPIDController().setP(pidConfig.kP), "Failed to set NEO PID proportional constant");
-            checkNeoError(spark.getPIDController().setI(pidConfig.kI), "Failed to set NEO PID integral constant");
-            checkNeoError(spark.getPIDController().setD(pidConfig.kD), "Failed to set NEO PID derivative constant");
+        if (motorConfig.isRampRateEnabled) {
+            spark.setOpenLoopRampRate(0.5);
         }
 
-        SparkRelativeMotorController ctrl = new SparkRelativeMotorController(motorConfig, spark);
+        if (motorConfig.forwardSoftLimitMechanismAccum_rot.isPresent()) {
+            spark.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, motorConfig.forwardSoftLimitMechanismAccum_rot.get().floatValue());
+            spark.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, true);
+        }
+        if (motorConfig.reverseSoftLimitMechanismAccum_rot.isPresent()) {
+            spark.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, motorConfig.reverseSoftLimitMechanismAccum_rot.get().floatValue());
+            spark.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, true);
+
+        }
+
+        IValueTuner<Double> p = self.generateTuner(ITuneAs.DOUBLE_INPUT, "p", pidConfig.kP);
+        IValueTuner<Double> i = self.generateTuner(ITuneAs.DOUBLE_INPUT, "i", pidConfig.kI);
+        IValueTuner<Double> d = self.generateTuner(ITuneAs.DOUBLE_INPUT, "d", pidConfig.kD);
+
+        spark.getPIDController().setP(p.readValue());
+        spark.getPIDController().setI(i.readValue());
+        spark.getPIDController().setD(d.readValue());
+
+
+        SparkTuner tuner = new SparkTuner(p, i, d, spark.getPIDController());
+        self.registerLogicLoop(tuner);
+
+        SparkRelativeMotorController ctrl = new SparkRelativeMotorController(motorConfig, spark, self.getDebuggable());
         OnboardPidLogger onboardPidLogger = new OnboardPidLogger(
                 ctrl,
-                self.generateDoubleLogger("pos-setpoint-mechanism-rotations"),
-                self.generateDoubleLogger("encoder-mechanism-rotations"),
-                self.generateDoubleLogger("encoder-position-raw"),
-                self.generateDoubleLogger("error-mechanism-rotations"),
-                self.generateEnumLogger("last-control-mode", LastControlMode.class)
+                self.generateLogger(ILogAs.DOUBLE, "setpointMechanismRot"),
+                self.generateLogger(ILogAs.DOUBLE, "encoderMechanismRot"),
+                self.generateLogger(ILogAs.DOUBLE, "errorMechanismRot"),
+                self.generateLogger(ILogAs.ENUM(LastControlMode.class), "lastControlMode")
         );
 
         self.registerLogLoop(onboardPidLogger);
 
         if (forwardSwitch != null) {
             LimitSwitchLogger loggingAspect = new LimitSwitchLogger(
-                    self.generateBooleanLogger("forward-hard-switch-pressed"),
+                    self.generateLogger(ILogAs.BOOLEAN, "limitFw"),
                     forwardSwitch
             );
-            self.registerLoop(loggingAspect, LoggingConstants.LOGGING_PERIOD, "forward-log-loop");
+            self.registerLogLoop(loggingAspect);
         }
         if (reverseSwitch != null) {
             LimitSwitchLogger loggingAspect = new LimitSwitchLogger(
-                    self.generateBooleanLogger("reverse-hard-switch-pressed"),
+                    self.generateLogger(ILogAs.BOOLEAN, "limitRv"),
                     reverseSwitch
             );
-            self.registerLoop(loggingAspect, LoggingConstants.LOGGING_PERIOD, "reverse-log-loop");
+            self.registerLogLoop(loggingAspect);
         }
 
-        REVPhysicsSim.getInstance().addSparkMax(spark, DCMotor.getNeo550(1));
+        if (follower.isPresent()) {
 
-        motorStartup.markCompleted();
+            SparkRelativeMotorController follower = (SparkRelativeMotorController) self.childSetup(self.getSelfPath().getTail() + "Follower", this.follower.get());
+
+
+            //TODO this shouldnt be true
+            //FIXME THIS IS REALLY BAD IF SOMEONE BESIDES ME TRIES TO FOLLOW THEIR ROBOT WILL EXPLODE
+            follower.rawAccess(CANSparkMax.class).follow(spark, true); //lmao dont do this typically
+
+        }
+
+
+
         return ctrl;
     }
 

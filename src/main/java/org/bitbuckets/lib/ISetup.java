@@ -14,38 +14,10 @@ package org.bitbuckets.lib;
 public interface ISetup<T> {
 
     /**
-     * function representing the setup of a piece of code that requires robot-initalized-specific devices
-     * <p>
-     * make sure you call any child factory with tools.child() and NOT with this tools instance
-     *
-     * @param self a variety of tools.
-     * @return a fully initialized object
+     * never call this
      */
-    T build(ProcessPath self);
+    T build(IProcess self);
 
-
-    /**
-     * TODO make this default behavior because sometimes you want the same object in multiple places (dumb)
-     *
-     * @param delegate
-     * @param <T>
-     * @return
-     */
-    static <T> ISetup<T> caching(ISetup<T> delegate) {
-        return new ISetup<>() {
-
-            T cached = null;
-
-            @Override
-            public T build(ProcessPath self) {
-                if (cached != null) {
-                    return cached;
-                }
-
-                return cached = delegate.build(self);
-            }
-        };
-    }
 
 
 }

@@ -2,12 +2,11 @@ package org.bitbuckets.auto;
 
 import com.pathplanner.lib.PathPlannerTrajectory;
 import edu.wpi.first.wpilibj.Timer;
-import org.bitbuckets.lib.util.HasLifecycle;
 
 import java.util.List;
 import java.util.Map;
 
-public class AutoPathInstance implements HasLifecycle {
+public class AutoPathInstance {
 
     final List<PathPlannerTrajectory> segments;
     final Map<String, Double> eventToTimeMap;
@@ -15,7 +14,17 @@ public class AutoPathInstance implements HasLifecycle {
     final AutoPath type;
     final double totalTime;
 
-    record SegmentTime(int index, double startTime) {
+
+    public void start() {
+        pathTimer.start();
+    }
+
+    public void stop() {
+        pathTimer.stop();
+    }
+
+
+    record SegmentTime(int index, double startTime, boolean stopped) {
     }
 
     public AutoPathInstance(List<PathPlannerTrajectory> segments, Map<String, Double> eventToTimeMap, List<SegmentTime> segmentTimes, AutoPath type, double totalTime) {
@@ -24,6 +33,8 @@ public class AutoPathInstance implements HasLifecycle {
         this.segmentTimes = segmentTimes;
         this.type = type;
         this.totalTime = totalTime;
+
+
     }
 
     //this is dumb
@@ -37,7 +48,7 @@ public class AutoPathInstance implements HasLifecycle {
             }
         }
 
-        return new SegmentTime(0, 0);
+        return new SegmentTime(0, 0, true);
     }
 
 
@@ -59,29 +70,22 @@ public class AutoPathInstance implements HasLifecycle {
 
     public PathPlannerTrajectory.PathPlannerState sampleSpeeds() {
         if (type == AutoPath.NONE) {
-            return new PathPlannerTrajectory.PathPlannerState();
+            return null;
         }
 
         double secondsNow = pathTimer.get();
         SegmentTime lastTimestamp = getSegmentTime(secondsNow);
         double secondsInSegment = secondsNow - lastTimestamp.startTime;
-        
+
+        if (lastTimestamp.stopped()) {
+            return null;
+        }
+
         return (PathPlannerTrajectory.PathPlannerState) segments.get(lastTimestamp.index).sample(secondsInSegment);
     }
 
     public boolean isDone() {
         return pathTimer.hasElapsed(totalTime);
-    }
-
-
-    @Override
-    public void start() {
-        pathTimer.start();
-    }
-
-    @Override
-    public void end() {
-        pathTimer.stop();
     }
 
 

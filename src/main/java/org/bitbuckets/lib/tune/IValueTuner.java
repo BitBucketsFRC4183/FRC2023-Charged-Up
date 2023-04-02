@@ -1,5 +1,7 @@
 package org.bitbuckets.lib.tune;
 
+import java.util.function.Consumer;
+
 /**
  * Represents a value or values that can be tuned from the smart dashboard
  * @param <T> the data type
@@ -24,5 +26,6 @@ public interface IValueTuner<T> {
      * @return whether the data has updated since it was last consumed from this tuner
      */
     boolean hasUpdated();
+
 
 }

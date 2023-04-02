@@ -1,7 +1,5 @@
 package org.bitbuckets.lib.log;
 
-import edu.wpi.first.math.kinematics.SwerveModuleState;
-
 /**
  * Something that can be logged
  * @param <T>

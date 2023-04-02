@@ -11,43 +11,37 @@ public interface IEncoder extends IRaw {
     //actual methods
 
     /**
-     *
      * @return a coefficient representing the conversion of rotations of the motor
      * to rotations of whatever mechanism the motor is meant to be driving
      */
     double getMechanismFactor();
 
     /**
-     *
      * @return a coefficient which converts from rotations of the motor to meters in position,
      * only used for velocity based PID or getting velocity readouts.
-     *
+     * <p>
      * TYPICALLY leave as 1
      */
     double getRotationsToMetersFactor();
 
     /**
-     *
      * @return a coefficient which converts from whatever the raw units of the encoder are (sensor units for ctre)
      * to rotations.
      */
     double getRawToRotationsFactor();
 
     /**
-     *
      * @return a coefficient which converts from whatever time unit^-1 the encoder uses to seconds^-1
      */
     double getTimeFactor();
 
     /**
-     *
      * @return The raw position output of the encoder
      */
     @Deprecated
     double getPositionRaw();
 
     /**
-     *
      * @return The raw velocity output of the encoder
      */
     @Deprecated
@@ -103,5 +97,8 @@ public interface IEncoder extends IRaw {
         return getVelocityRaw() * getRawToRotationsFactor() * getRotationsToMetersFactor() * getTimeFactor();
     }
 
+    default double getAbsoluteEncoder_rotations() {
+        return 0;
+    }
 
 }

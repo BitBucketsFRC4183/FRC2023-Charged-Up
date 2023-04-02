@@ -2,26 +2,26 @@ package org.bitbuckets.arm;
 
 public enum ArmFSM {
 
-    DEFAULT,
+    IDLE,
 
-    TELEOP,
-
-    AUTO_PATHFINDING,
-
-    STORAGE,
+    MANUAL,
+    STORE,
 
     PREPARE,
+    UNSTOW,
+    ACTUATE_GRIPPER, //UNUSED
+    LOAD,
+
 
     SCORE_MID,
-
     SCORE_HIGH,
-
     SCORE_LOW,
 
     HUMAN_INTAKE,
-
     GROUND_INTAKE,
 
-    DEBUG_TO_DEGREES
+    DEBUG_TO_DEGREES,
+    CUBE,
+    CONE
 
 }

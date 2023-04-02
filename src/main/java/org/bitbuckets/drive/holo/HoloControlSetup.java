@@ -6,56 +6,63 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import org.bitbuckets.drive.controlsds.DriveControl;
+import org.bitbuckets.drive.IDriveControl;
+import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.lib.ISetup;
-import org.bitbuckets.lib.ProcessPath;
 import org.bitbuckets.lib.control.IPIDCalculator;
 import org.bitbuckets.lib.control.PIDCalculatorSetup;
 import org.bitbuckets.lib.control.PIDConfig;
-import org.bitbuckets.lib.control.ProfiledPIDFSetup;
+import org.bitbuckets.lib.control.ProfiledPIDFCalculatorSetup;
 import org.bitbuckets.odometry.IOdometryControl;
-import org.bitbuckets.vision.IVisionControl;
 
 public class HoloControlSetup implements ISetup<HoloControl> {
 
-    final DriveControl drive;
-    final IVisionControl visionControl;
+    final IDriveControl drive;
     final IOdometryControl odo;
 
-    public HoloControlSetup(DriveControl drive, IVisionControl visionControl, IOdometryControl odo) {
+    final PIDConfig x_pid;
+    final PIDConfig y_pid;
+    final PIDConfig theta_pid;
+    final TrapezoidProfile.Constraints theta_constraints;
+
+    public HoloControlSetup(IDriveControl drive, IOdometryControl odo, PIDConfig x_pid, PIDConfig y_pid, PIDConfig theta_pid, TrapezoidProfile.Constraints theta_constraints) {
         this.drive = drive;
-        this.visionControl = visionControl;
         this.odo = odo;
+        this.x_pid = x_pid;
+        this.y_pid = y_pid;
+        this.theta_pid = theta_pid;
+        this.theta_constraints = theta_constraints;
     }
 
+
+
     @Override
-    public HoloControl build(ProcessPath self) {
+    public HoloControl build(IProcess self) {
 
-        IPIDCalculator x = new PIDCalculatorSetup(new PIDConfig(1.2, 0, 0, 0))
-                .build(self.addChild("x-control"));
+        IPIDCalculator x = self.childSetup("x-pid", new PIDCalculatorSetup(x_pid));
+        IPIDCalculator y = self.childSetup("y-pid", new PIDCalculatorSetup(y_pid));
+        IPIDCalculator theta = self.childSetup("theta-pid", new ProfiledPIDFCalculatorSetup(theta_pid, theta_constraints));
 
-        IPIDCalculator y = new PIDCalculatorSetup(new PIDConfig(1.2, 0, 0, 0))
-                .build(self.addChild("y-control"));
+        ProfiledPIDController ctrl = theta.rawAccess(ProfiledPIDController.class);
+        ctrl.enableContinuousInput(0, Math.PI * 2.0);
 
-        IPIDCalculator theta = new ProfiledPIDFSetup(new PIDConfig(1, 0, 0, 0), new TrapezoidProfile.Constraints(1, 1)).build(self.addChild("theta-control"));
-
-        //TODO find constants
         HolonomicDriveController holonomicDriveController = new HolonomicDriveController(
                 x.rawAccess(PIDController.class),
                 y.rawAccess(PIDController.class),
-                theta.rawAccess(ProfiledPIDController.class)
+                ctrl
+
         );
+
         holonomicDriveController.setTolerance(
                 new Pose2d(0.1, 0.1, Rotation2d.fromDegrees(1))
         );
-        var debuggable = self.generateDebugger();
 
 
         return new HoloControl(
                 drive,
-                visionControl,
                 odo,
                 holonomicDriveController,
-                debuggable);
+                self.getDebuggable()
+        );
     }
 }

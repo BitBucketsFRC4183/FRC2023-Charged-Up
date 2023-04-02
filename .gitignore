@@ -237,6 +237,7 @@ Temporary Items
 **/nbproject/Package-*.bash
 build/
 nbbuild/
+
 dist/
 nbdist/
 .nb-gradle/
@@ -291,6 +292,7 @@ $RECYCLE.BIN/
 **/build/
 !src/**/build/
 
+
 # Ignore Gradle GUI config
 gradle-app.setting
 
@@ -339,3 +341,7 @@ simgui-window.json
 simgui-ds.json
 src/main/java/org/bitbuckets/bootstrap/BuildConstants.java
 analysis/*
+
+# icloud workspace
+build.nosync
+build

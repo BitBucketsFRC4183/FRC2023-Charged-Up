@@ -103,6 +103,11 @@ public class ElevatorSimController implements IMotorController, Runnable {
     }
 
     @Override
+    public void goLimp() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public <T> T rawAccess(Class<T> clazz) throws UnsupportedOperationException {
         throw new UnsupportedOperationException("Cannot do anything");
     }
@@ -111,6 +116,5 @@ public class ElevatorSimController implements IMotorController, Runnable {
 
     public void run() {
         elevatorSim.update(0.02);
-        System.out.println(elevatorSim.getCurrentDrawAmps());
     }
 }

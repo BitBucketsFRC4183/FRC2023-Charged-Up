@@ -1,9 +1,10 @@
 package org.bitbuckets.lib.vendor.spark;
 
 import com.revrobotics.SparkMaxPIDController;
+import org.bitbuckets.lib.core.HasLoop;
 import org.bitbuckets.lib.tune.IValueTuner;
 
-public class SparkTuner implements Runnable {
+public class SparkTuner implements HasLoop {
 
     final IValueTuner<Double> pTuner;
     final IValueTuner<Double> iTuner;
@@ -18,7 +19,7 @@ public class SparkTuner implements Runnable {
     }
 
     @Override
-    public void run() {
+    public void loop() {
         if (pTuner.hasUpdated()) {
             sparkMaxPIDController.setP(pTuner.consumeValue());
         }
