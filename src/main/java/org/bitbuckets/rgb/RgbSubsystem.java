@@ -44,14 +44,14 @@ public class RgbSubsystem implements HasLoop {
                     candle.setLEDs(255, 0, 255);
                 }
 
-                if (operatorInput.isAutoHeadingPressed()) {
+                if (operatorInput.isVisionDrivePressed()) {
                     state = RgbFSM.AUTO_HEADING;
                 }
 
             case AUTO_HEADING:
                 candle.setLEDs(255, 255, 255);
 
-                if (!operatorInput.isAutoHeadingPressed()) {
+                if (!operatorInput.isVisionDrivePressed()) {
                     state = RgbFSM.DEFAULT;
                 }
 

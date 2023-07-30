@@ -76,23 +76,16 @@ public class OperatorInput {
         return driveControl.getRawAxis(XboxController.Axis.kLeftTrigger.value) > 0.1;
     }
 
-    /**
-     * @return whether the aim drive is held or not
-     */
-    public boolean isAutoHeadingPressed() {
-        return driveControl.getRawButtonPressed(XboxController.Button.kA.value);
-    }
-
     public boolean isUserInputNone() {
         return getInputLeft() == 0 && getInputForward() == 0 && getInputRot() == 0;
     }
 
     public boolean isVisionDrivePressed() {
-        return driveControl.getRawButton(XboxController.Button.kLeftStick.value);
+        return driveControl.getRawButton(XboxController.Button.kB.value);
     }
 
     public boolean isAutoBalancePressed() {
-        return driveControl.getRawButton(XboxController.Button.kB.value);
+        return false;
     }
 
     public boolean isResetGyroPressed() {
