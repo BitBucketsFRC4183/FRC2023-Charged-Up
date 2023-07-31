@@ -70,7 +70,8 @@ public class RobotSetup implements ISetup<Void> {
                                 Vision.CAMERA_NAME,
                                 Vision.LAYOUTCONTAINER.LAYOUT,
                                 Vision.CONFIG,
-                                Vision.STRATEGY
+                                Vision.STRATEGY,
+                                operatorInput
                         )
                 )
         );
