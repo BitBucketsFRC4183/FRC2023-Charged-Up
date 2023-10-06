@@ -2,6 +2,7 @@ package org.bitbuckets.vision;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.geometry.Pose3d;
+import org.bitbuckets.OperatorInput;
 import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.lib.ISetup;
 import org.photonvision.PhotonCamera;
@@ -18,13 +19,15 @@ public class VisionControlSetup implements ISetup<IVisionControl> {
     final AprilTagFieldLayout fieldLayout;
     final VisionConfig visionConfig;
     final PhotonPoseEstimator.PoseStrategy strategy;
+    final OperatorInput operatorInput;
 
-    public VisionControlSetup(Supplier<Pose3d> simulatedPoseSupplier, String cameraName, AprilTagFieldLayout fieldLayout, VisionConfig visionConfig, PhotonPoseEstimator.PoseStrategy strategy) {
+    public VisionControlSetup(Supplier<Pose3d> simulatedPoseSupplier, String cameraName, AprilTagFieldLayout fieldLayout, VisionConfig visionConfig, PhotonPoseEstimator.PoseStrategy strategy, OperatorInput operatorInput) {
         this.simulatedPoseSupplier = simulatedPoseSupplier;
         this.cameraName = cameraName;
         this.fieldLayout = fieldLayout;
         this.visionConfig = visionConfig;
         this.strategy = strategy;
+        this.operatorInput = operatorInput;
     }
 
     @Override
@@ -65,6 +68,7 @@ public class VisionControlSetup implements ISetup<IVisionControl> {
                 photonCamera,
                 fieldLayout,
                 estimator,
+                operatorInput,
                 self.getDebuggable()
         );
     }
