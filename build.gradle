@@ -1,7 +1,7 @@
 //Don't touch this unless you want me to murder you (in minecraft)
 plugins {
     id "java"
-    id "edu.wpi.first.GradleRIO" version "2023.4.2"
+    id "edu.wpi.first.GradleRIO" version "2023.4.3"
     id 'jacoco'
 }
 
@@ -9,6 +9,10 @@ sourceCompatibility = JavaVersion.VERSION_17
 targetCompatibility = JavaVersion.VERSION_17
 
 def ROBOT_MAIN_CLASS = "org.bitbuckets.bootstrap.Main"
+
+repositories {
+    mavenLocal();
+}
 
 deploy {
     targets {
@@ -44,6 +48,7 @@ wpi.java.debugJni = false
 
 
 dependencies {
+
     implementation wpi.java.deps.wpilib()
     implementation wpi.java.vendor.java()
     implementation 'junit:junit:4.13.1'
@@ -69,6 +74,9 @@ dependencies {
     testImplementation 'org.mockito:mockito-junit-jupiter:5.0.0'
 
     implementation 'net.bytebuddy:byte-buddy:1.12.13'
+    implementation 'xyz.auriium:mattlib2-auto:1.0.0-SNAPSHOT'
+    implementation 'xyz.auriium:mattlib2-log:1.0.0-SNAPSHOT'
+
 }
 
 test {

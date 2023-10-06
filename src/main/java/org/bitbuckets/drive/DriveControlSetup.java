@@ -1,8 +1,6 @@
-package org.bitbuckets.drive.controlsds;
+package org.bitbuckets.drive;
 
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import org.bitbuckets.drive.IDriveControl;
-import org.bitbuckets.drive.controlsds.sds.ISwerveModule;
 import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.lib.ISetup;
 

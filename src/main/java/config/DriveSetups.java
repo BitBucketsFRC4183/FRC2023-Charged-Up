@@ -1,8 +1,8 @@
 package config;
 
+import org.bitbuckets.drive.ISwerveModule;
 import org.bitbuckets.drive.balance.BalanceControl;
 import org.bitbuckets.drive.balance.BalanceSetup;
-import org.bitbuckets.drive.controlsds.sds.*;
 import org.bitbuckets.lib.ISetup;
 import org.bitbuckets.lib.SwapSetup;
 import org.bitbuckets.lib.control.IPIDCalculator;

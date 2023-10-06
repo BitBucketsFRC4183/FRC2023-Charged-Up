@@ -3,7 +3,7 @@ package config;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.system.plant.DCMotor;
-import org.bitbuckets.drive.controlsds.sds.SwerveModuleConfiguration;
+import org.bitbuckets.drive.sds.SwerveModuleConfiguration;
 import org.bitbuckets.lib.hardware.MotorConfig;
 import org.bitbuckets.lib.hardware.OptimizationMode;
 

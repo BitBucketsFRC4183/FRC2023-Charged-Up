@@ -6,7 +6,9 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N2;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.numbers.N4;
+import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.NumericalIntegration;
+import edu.wpi.first.math.system.plant.LinearSystemId;
 import org.bitbuckets.arm.config.ArmJointConfig;
 
 /**
@@ -27,6 +29,7 @@ public class ArmDynamics {
     }
 
 
+
     /**
      * Calculates the joint voltages based on the full joint states as a matrix (feedforward). The
      * rows represent each joint and the columns represent position, velocity, and acceleration.
@@ -40,7 +43,11 @@ public class ArmDynamics {
 
     /** Calculates the joint voltages based on the joint positions (feedforward). */
     public Vector<N2> feedforward(Vector<N2> position) {
-        return feedforward(position, VecBuilder.fill(0.0, 0.0), VecBuilder.fill(0.0, 0.0));
+        return feedforward(
+                position,
+                VecBuilder.fill(0.0, 0.0),
+                VecBuilder.fill(0.0, 0.0)
+        );
     }
 
     /** Calculates the joint voltages based on the joint positions and velocities (feedforward). */
@@ -71,8 +78,7 @@ public class ArmDynamics {
      */
     public Vector<N4> simulate(Vector<N4> state, Vector<N2> voltage, double dt) {
         return new Vector<>(
-                NumericalIntegration.rkdp(
-                        (Matrix<N4, N1> x, Matrix<N2, N1> u) -> {
+                NumericalIntegration.rkdp((Matrix<N4, N1> x, Matrix<N2, N1> u) -> {
                             // x = current state, u = voltages, return = state derivatives
 
                             // Get vectors from state

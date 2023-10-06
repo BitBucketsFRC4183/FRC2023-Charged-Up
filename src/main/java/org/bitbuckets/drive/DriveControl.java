@@ -1,14 +1,13 @@
-package org.bitbuckets.drive.controlsds;
+package org.bitbuckets.drive;
 
 import config.Drive;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import org.bitbuckets.drive.IDriveControl;
-import org.bitbuckets.drive.controlsds.sds.ISwerveModule;
 import org.bitbuckets.lib.core.HasLogLoop;
 import org.bitbuckets.lib.log.IDebuggable;
 
@@ -104,6 +103,7 @@ public class DriveControl implements IDriveControl, HasLogLoop {
 
     //microoptimization: do this without stream()
     public SwerveModulePosition[] currentPositions() {
+
 
         debug.log("Pos 0 Dis", this.modules.get(3).getPosition().distanceMeters);
         debug.log("Pos 0 Angle", this.modules.get(3).getPosition().angle.getDegrees());

@@ -7,6 +7,13 @@ public class Main {
 
 
     public static void main(String[] args) {
-        RobotBase.startRobot(() -> new Robot(new RobotSetup()));
+        RobotBase.startRobot(() -> {
+            try {
+                new Robot(new RobotSetup(robot));
+            } catch (Exception e) {
+                throw new IllegalStateException(e);
+                //mattlib exception handling goes here!
+            }
+        });
     }
 }

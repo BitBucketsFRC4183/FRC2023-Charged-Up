@@ -7,7 +7,6 @@ public enum ArmFSM {
     MANUAL,
     STORE,
 
-    PREPARE,
     UNSTOW,
     ACTUATE_GRIPPER, //UNUSED
     LOAD,

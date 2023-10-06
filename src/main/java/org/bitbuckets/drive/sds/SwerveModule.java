@@ -1,4 +1,4 @@
-package org.bitbuckets.drive.controlsds.sds;
+package org.bitbuckets.drive.sds;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;

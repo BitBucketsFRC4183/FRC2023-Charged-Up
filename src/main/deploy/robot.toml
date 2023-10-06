@@ -1,0 +1,11 @@
+[can_ids]
+pidgeon_imu = 5
+front_left_drive = 5
+front_left_steer = 6
+
+[arm]
+tolerance_to_move_on = 0.1
+lower_arm_reduction = 75
+
+[armComponent]
+storePosition=[2,1]

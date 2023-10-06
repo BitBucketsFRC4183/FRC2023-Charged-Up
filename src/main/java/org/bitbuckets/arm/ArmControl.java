@@ -1,9 +1,13 @@
 package org.bitbuckets.arm;
 
 import config.Arm;
+import edu.wpi.first.hal.HALUtil;
+import edu.wpi.first.hal.simulation.RoboRioDataJNI;
 import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.Vector;
+import edu.wpi.first.math.numbers.N2;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import org.bitbuckets.lib.control.IPIDCalculator;
 import org.bitbuckets.lib.core.HasLifecycle;
 import org.bitbuckets.lib.core.HasLogLoop;
@@ -11,31 +15,31 @@ import org.bitbuckets.lib.hardware.IAbsoluteEncoder;
 import org.bitbuckets.lib.hardware.IMotorController;
 import org.bitbuckets.lib.log.IDebuggable;
 
-public class ArmControl implements HasLogLoop, HasLifecycle {
+public class ArmControl implements HasLogLoop, HasLifecycle, Subsystem {
+
+    public static final ArmComponent COMPONENT = (ArmComponent) new Object();
 
     //needs a 1 by 3 mat describing correctness
     final ArmDynamics ff;
 
     final IMotorController lowerArm;
     final IMotorController upperArm;
-
-    //these must be continuous and bound (i.e. wrap from 2pi to 0)
-    final IPIDCalculator lowerArmControl;
-    final IPIDCalculator upperArmControl;
     final IMotorController gripperWheelMotor;
     final IMotorController gripperClawMotor;
 
-    final IAbsoluteEncoder clawAbsEncoder;
+    final IPIDCalculator lowerArmControl_rotations;
+    final IPIDCalculator upperArmControl_rotations;
 
+    final IAbsoluteEncoder clawAbsEncoder;
     final IDebuggable debuggable;
 
 
-    public ArmControl(ArmDynamics ff, IMotorController lowerArm, IMotorController upperArm, IPIDCalculator lowerArmControl, IPIDCalculator upperArmControl, IMotorController gripperActuator, IMotorController gripperClawMotor, IAbsoluteEncoder clawAbsEncoder, IDebuggable debuggable) {
+    public ArmControl(ArmDynamics ff, IMotorController lowerArm, IMotorController upperArm, IPIDCalculator lowerArmControl_rotations, IPIDCalculator upperArmControl_rotations, IMotorController gripperActuator, IMotorController gripperClawMotor, IAbsoluteEncoder clawAbsEncoder, IDebuggable debuggable) {
         this.ff = ff;
         this.lowerArm = lowerArm;
         this.upperArm = upperArm;
-        this.lowerArmControl = lowerArmControl;
-        this.upperArmControl = upperArmControl;
+        this.lowerArmControl_rotations = lowerArmControl_rotations;
+        this.upperArmControl_rotations = upperArmControl_rotations;
         this.gripperWheelMotor = gripperActuator;
         this.gripperClawMotor = gripperClawMotor;
         this.clawAbsEncoder = clawAbsEncoder;
@@ -62,17 +66,22 @@ public class ArmControl implements HasLogLoop, HasLifecycle {
      */
     public void commandArmToState(double lowerArm_rot, double upperArm_rot) {
 
-        var ffVoltageVector = ff.feedforward(VecBuilder.fill(lowerArm_rot * Math.PI * 2.0, upperArm_rot * Math.PI * 2.0));
+        var ffVoltageVector = ff.feedforward(
+                VecBuilder.fill(
+                        lowerArm_rot * Math.PI * 2.0,
+                        upperArm_rot * Math.PI * 2.0
+                )
+        );
 
 
         var lowerArmFFVoltage = ffVoltageVector.get(0, 0);
-        var lowerArmFeedbackVoltage = lowerArmControl.calculateNext(
+        var lowerArmFeedbackVoltage = lowerArmControl_rotations.calculateNext(
                 lowerArm.getMechanismPositionAccum_rot(),
                 lowerArm_rot
         );
 
         var upperArmFFVoltage = ffVoltageVector.get(1, 0);
-        var upperArmFeedbackVoltage = upperArmControl.calculateNext(
+        var upperArmFeedbackVoltage = upperArmControl_rotations.calculateNext(
                 upperArm.getMechanismPositionAccum_rot(),
                 upperArm_rot
         );
@@ -80,6 +89,14 @@ public class ArmControl implements HasLogLoop, HasLifecycle {
         lowerArm.moveAtVoltage(lowerArmFFVoltage + lowerArmFeedbackVoltage);
         upperArm.moveAtVoltage(upperArmFFVoltage + upperArmFeedbackVoltage);
 
+    }
+
+    public void commandGripperClawToPosition(double gripperMotorPosition_rotations) {
+        gripperClawMotor.moveToPosition_mechanismRotations(gripperMotorPosition_rotations);
+    }
+
+    public double gripperClawError_rotations() {
+        return gripperClawMotor.getError_mechanismRotations();
     }
 
     public void doNothing() {
@@ -111,7 +128,6 @@ public class ArmControl implements HasLogLoop, HasLifecycle {
 
 
     public void gripperHold() {
-
         if(blitzToggle == 0)
         {
             gripperWheelMotor.moveAtPercent(-0.2);
@@ -159,25 +175,28 @@ public class ArmControl implements HasLogLoop, HasLifecycle {
     }
 
 
-    public void stopTheArm() {
-        lowerArm.moveAtVoltage(0);
-        upperArm.moveAtVoltage(0);
-
-    }
-
     public void commandArmToPercent(double lowerArmPercent, double upperArmPercent) {
         lowerArm.moveAtPercent(lowerArmPercent);
         upperArm.moveAtPercent(upperArmPercent);
+    }
 
+    public void commandArmToVoltage(double lowerArmVoltage, double upperArmVoltage) {
+        lowerArm.moveAtVoltage(lowerArmVoltage);
+        upperArm.moveAtVoltage(upperArmVoltage);
     }
 
     public void zero() {
         lowerArm.forceOffset_mechanismRotations(0);
-
     }
 
-    public double getErrorQuantity() {
-        return 1;
+    /**
+     * @return error vector based on the pid controllers. wrapped rotations that can be -inf to inf
+     */
+    public Vector<N2> getErrorQuantity_wrappedRotations() {
+        return VecBuilder.fill(
+                lowerArmControl_rotations.lastError(),
+                upperArmControl_rotations.lastError()
+        );
     }
 
     @Override

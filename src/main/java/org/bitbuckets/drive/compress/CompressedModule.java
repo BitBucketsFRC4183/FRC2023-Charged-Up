@@ -1,10 +1,9 @@
-package org.bitbuckets.drive.controlsds.compress;
+package org.bitbuckets.drive.compress;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import org.bitbuckets.drive.controlsds.sds.ISwerveModule;
-import org.bitbuckets.drive.controlsds.sds.SteerController;
+import org.bitbuckets.drive.ISwerveModule;
 import org.bitbuckets.lib.core.HasLogLoop;
 import org.bitbuckets.lib.hardware.IAbsoluteEncoder;
 import org.bitbuckets.lib.hardware.IMotorController;

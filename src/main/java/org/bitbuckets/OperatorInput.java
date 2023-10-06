@@ -4,6 +4,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 public class OperatorInput {
 
@@ -52,6 +53,8 @@ public class OperatorInput {
      * @units m/s
      */
     public double getInputForward() {
+        Trigger trigger = new Trigger();
+
         // Get the forward or x-axis speed. We are inverting this because Xbox controllers return
         // negative values when we push forward.
         return -y.calculate(driveDeadband(driveControl.getRawAxis(XboxController.Axis.kLeftY.value)));
@@ -146,6 +149,7 @@ public class OperatorInput {
 
 
     // checks if operator wants to move arms to score in low node position (by pressing DOWN DPAD)
+    @Deprecated //we dont use this?
     public boolean isScoreLowPressed() {
         int pressed = operatorControl.getPOV();
         return pressed == 180;

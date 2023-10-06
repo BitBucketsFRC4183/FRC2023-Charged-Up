@@ -1,10 +1,9 @@
 package org.bitbuckets.drive;
 
 import com.revrobotics.RelativeEncoder;
-import org.bitbuckets.drive.controlsds.sds.DriveController;
+import org.bitbuckets.drive.sds.DriveController;
 import org.bitbuckets.lib.hardware.IMotorController;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.mockito.ArgumentMatchers.eq;

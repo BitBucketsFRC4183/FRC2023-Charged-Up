@@ -1,4 +1,4 @@
-package org.bitbuckets.drive.controlsds.sds;
+package org.bitbuckets.drive.sds;
 
 import org.bitbuckets.lib.IProcess;
 import org.bitbuckets.lib.ISetup;
