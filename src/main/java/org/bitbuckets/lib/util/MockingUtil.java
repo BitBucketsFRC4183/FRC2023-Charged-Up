@@ -1,5 +1,6 @@
 package org.bitbuckets.lib.util;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.TypeCache;
 import net.bytebuddy.description.modifier.Visibility;
@@ -40,6 +41,7 @@ public class MockingUtil {
             if (method.getReturnType().equals(Optional.class)) return Optional.empty();
             if (method.getReturnType().equals(Boolean.TYPE)) return false;
             if (method.getReturnType().equals(Double.TYPE)) return 0d;
+            if (method.getReturnType().equals(Rotation2d.class)) return Rotation2d.fromDegrees(0);
 
 
             //System.out.println("invocation of: " + method.getName());

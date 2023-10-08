@@ -80,34 +80,43 @@ public class ArmSubsystem implements HasLoop, HasLifecycle {
 
     }
 
+
+
+    String thing = "NO";
     @Override
     public void teleopPeriodic() {
+
 
 
 
         //TODO: NEED TO TUNE SETPOINTS FOR CUBE CONE AND OPEN GRIPPER USE LEFT PADDLE TO CLOSE AND LEFT BUMPER TO OPEN FOR NOW
         if (operatorInput.holdGripper())
         {
+            thing = "gripper-hold";
             armControl.gripperHold();
         }
         else if(operatorInput.intakeGripper())
         {
             if(operatorInput.isCube())
             {
+                thing = "intake-gripper-cube";
                 armControl.intakeGripperCube();
             }
             else
             {
+                thing = "intake-gripper-cone";
                 armControl.intakeGripperCone();
             }
         }
         else if (operatorInput.openGripper())
         {
+            thing = "opne-gripper";
             armControl.openGripper();
         }
 
         else
         {
+            thing = "stop-gripper";
             armControl.stopGripper();
         }
 
@@ -157,6 +166,8 @@ public class ArmSubsystem implements HasLoop, HasLifecycle {
                     operatorInput.getUpperArm_PercentOutput()
             );
         }
+
+        debuggable.log("state-gripper", thing);
     }
 
     @Override
@@ -210,7 +221,8 @@ public class ArmSubsystem implements HasLoop, HasLifecycle {
         }
 
         if (shouldDoNext == ArmFSM.ACTUATE_GRIPPER) {
-            armControl.openGripper();
+            armControl.
+                    openGripper();
         } else if (shouldDoNext == ArmFSM.IDLE) {
             armControl.doNothing();
         } else if (shouldDoNext == ArmFSM.DEBUG_TO_DEGREES) {

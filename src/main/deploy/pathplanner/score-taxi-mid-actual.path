@@ -102,7 +102,7 @@
         ],
         "executionBehavior": "parallel",
         "waitBehavior": "none",
-        "waitTime": 2
+        "waitTime": 1
       }
     },
     {
@@ -125,7 +125,7 @@
       "isStopPoint": false,
       "stopEvent": {
         "names": [
-          "auto-balance"
+
         ],
         "executionBehavior": "parallel",
         "waitBehavior": "none",
