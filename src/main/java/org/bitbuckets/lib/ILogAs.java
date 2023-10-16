@@ -1,6 +1,7 @@
 package org.bitbuckets.lib;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.util.datalog.BooleanLogEntry;
@@ -14,6 +15,26 @@ import org.bitbuckets.lib.log.ILoggable;
 public interface ILogAs<T> {
 
     ILoggable<T> generate(String key, Path p);
+
+    ILogAs<SwerveModuleState[]> STATES = (k,p) -> {
+        String fullPath = p.getAsTablePath() + "log-" + k;
+
+        NetworkTableEntry netEntry = NetworkTableInstance.getDefault().getTable("mattlib").getEntry(fullPath);
+        DoubleArrayLogEntry logEntry = new DoubleArrayLogEntry(DataUtil.LOG, fullPath);
+
+
+        return a -> {
+            double[] data = new double[a.length * 2];
+
+            for (int i = 0; i < a.length; i++) {
+                data[i*2] = a[i].angle.getRadians();
+                data[i*2+1]= a[i].speedMetersPerSecond;
+            }
+
+            netEntry.setDoubleArray(data);
+            logEntry.append(data);
+        };
+    };
 
     ILogAs<Boolean> BOOLEAN = (k, p) -> {
         String fullPath = p.getAsTablePath() + "log-" + k;

@@ -73,6 +73,6 @@ public class SimpleDebuggable implements IDebuggable {
 
     @Override
     public void log(String key, SwerveModuleState[] states) {
-
+        map.computeIfAbsent(key, k -> process.generateLogger(ILogAs.STATES, key)).log(states);
     }
 }
