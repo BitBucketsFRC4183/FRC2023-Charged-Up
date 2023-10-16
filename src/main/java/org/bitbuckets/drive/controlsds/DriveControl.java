@@ -7,6 +7,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.bitbuckets.drive.IDriveControl;
 import org.bitbuckets.drive.controlsds.sds.ISwerveModule;
 import org.bitbuckets.lib.core.HasLogLoop;
@@ -97,6 +98,8 @@ public class DriveControl implements IDriveControl, HasLogLoop {
 
 
     private void doDriveWithStates(SwerveModuleState[] states) {
+        ;
+        debug.log("states-from-drive", states);
 
         if (states != null) {
             cachedSetpoint = states;
