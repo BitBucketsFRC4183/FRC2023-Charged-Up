@@ -176,6 +176,8 @@ public class DriveSubsystem implements HasLifecycle, HasLogLoop {
         debuggable.log("y-output", forwardSpeed);
         debuggable.log("rot-output", rotationOutput);
 
+        debuggable.log("orientation-mode", orientation.readValue());
+
         switch (orientation.readValue()) {
             case FIELD_ORIENTED:
                 if (leftSpeed == 0 && forwardSpeed == 0 && rotationOutput == 0) {

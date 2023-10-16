@@ -53,6 +53,7 @@ public class PigeonGyro implements IGyro, HasLogLoop {
 
     @Override
     public void zero() {
+
         pigeon2.setYaw(0);
 
         rollTare += getRoll_deg();
