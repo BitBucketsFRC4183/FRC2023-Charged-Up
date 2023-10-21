@@ -6,7 +6,7 @@ public interface MotorIds {
     int PIGEON_IMU_ID = 5;
 
     int FRONT_LEFT_DRIVE_ID = 5;
-    int FRONT_LEFT_STEER_ID = 6; ][
+    int FRONT_LEFT_STEER_ID = 6;
     int FRONT_LEFT_ENCODER_CHANNEL = 2;
     int FRONT_RIGHT_DRIVE_ID = 7;
     int FRONT_RIGHT_STEER_ID = 8;
