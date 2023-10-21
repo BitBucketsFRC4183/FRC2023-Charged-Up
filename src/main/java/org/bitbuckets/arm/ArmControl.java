@@ -2,12 +2,16 @@ package org.bitbuckets.arm;
 
 import config.Arm;
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.wpilibj.DriverStation;
 import org.bitbuckets.lib.control.IPIDCalculator;
+import org.bitbuckets.lib.core.HasLifecycle;
 import org.bitbuckets.lib.core.HasLogLoop;
+import org.bitbuckets.lib.hardware.IAbsoluteEncoder;
 import org.bitbuckets.lib.hardware.IMotorController;
 import org.bitbuckets.lib.log.IDebuggable;
 
-public class ArmControl implements HasLogLoop {
+public class ArmControl implements HasLogLoop, HasLifecycle {
 
     //needs a 1 by 3 mat describing correctness
     final ArmDynamics ff;
@@ -21,10 +25,12 @@ public class ArmControl implements HasLogLoop {
     final IMotorController gripperWheelMotor;
     final IMotorController gripperClawMotor;
 
+    final IAbsoluteEncoder clawAbsEncoder;
+
     final IDebuggable debuggable;
 
 
-    public ArmControl(ArmDynamics ff, IMotorController lowerArm, IMotorController upperArm, IPIDCalculator lowerArmControl, IPIDCalculator upperArmControl, IMotorController gripperActuator, IMotorController gripperClawMotor, IDebuggable debuggable) {
+    public ArmControl(ArmDynamics ff, IMotorController lowerArm, IMotorController upperArm, IPIDCalculator lowerArmControl, IPIDCalculator upperArmControl, IMotorController gripperActuator, IMotorController gripperClawMotor, IAbsoluteEncoder clawAbsEncoder, IDebuggable debuggable) {
         this.ff = ff;
         this.lowerArm = lowerArm;
         this.upperArm = upperArm;
@@ -32,7 +38,20 @@ public class ArmControl implements HasLogLoop {
         this.upperArmControl = upperArmControl;
         this.gripperWheelMotor = gripperActuator;
         this.gripperClawMotor = gripperClawMotor;
+        this.clawAbsEncoder = clawAbsEncoder;
         this.debuggable = debuggable;
+    }
+
+    @Override
+    public void autonomousInit() {
+        lowerArmControl.rawAccess(ProfiledPIDController.class).reset(lowerArm.getMechanismPositionAccum_rot());
+        upperArmControl.rawAccess(ProfiledPIDController.class).reset(upperArm.getMechanismPositionAccum_rot());
+    }
+
+    @Override
+    public void teleopInit() {
+        lowerArmControl.rawAccess(ProfiledPIDController.class).reset(lowerArm.getMechanismPositionAccum_rot());
+        upperArmControl.rawAccess(ProfiledPIDController.class).reset(upperArm.getMechanismPositionAccum_rot());
     }
 
     /**
@@ -66,7 +85,10 @@ public class ArmControl implements HasLogLoop {
     public void doNothing() {
         lowerArm.moveAtVoltage(0);
         upperArm.moveAtVoltage(0);
-        gripperWheelMotor.moveAtVoltage(0);
+        if(DriverStation.isAutonomous())
+        {
+               gripperWheelMotor.moveAtVoltage(0);
+        }
     }
 
 
@@ -77,23 +99,27 @@ public class ArmControl implements HasLogLoop {
 
     }
 
-    public void gripperLoop() {
-        gripperWheelMotor.moveAtPercent(-0);
-        gripperClawMotor.moveAtPercent(-0);
+    public void zeroClawAbs()
+    {
+        double absAngleRot = clawAbsEncoder.getAbsoluteAngle();
+
+        gripperClawMotor.forceOffset_mechanismRotations(absAngleRot);
+
     }
 
     int blitzToggle = 0;
+
 
     public void gripperHold() {
 
         if(blitzToggle == 0)
         {
-                gripperWheelMotor.moveAtPercent(-0.2);
-                gripperClawMotor.moveAtPercent(-0.2);
+            gripperWheelMotor.moveAtPercent(-0.2);
+                gripperClawMotor.moveAtPercent(0.4);
         }
 
         else {
-            gripperWheelMotor.moveAtPercent(-0);
+            gripperWheelMotor.moveAtPercent(-0.2);
             gripperClawMotor.moveAtPercent(-0);
         }
         blitzToggle += 1;
@@ -103,9 +129,6 @@ public class ArmControl implements HasLogLoop {
         }
 
     }
-    public void gripperOpen() {
-        gripperClawMotor.moveAtPercent(0.2);
-    }
 
 
 
@@ -114,22 +137,25 @@ public class ArmControl implements HasLogLoop {
     }
 
 
-    public void outtakeGripper() {
-        gripperWheelMotor.moveAtPercent(0.7);
+    public void openGripper() {
+        gripperClawMotor.moveToPosition_mechanismRotations(0.23);
+       // gripperWheelMotor.moveAtPercent(0.8);
+  //     gripperClawMotor.moveAtPercent(-0.5);
     }
 
     public void intakeGripperCone() {
         gripperWheelMotor.moveAtPercent(-0.9);
-        gripperClawMotor.moveToPosition_mechanismRotations(0);
+        gripperClawMotor.moveToPosition_mechanismRotations(0.7);
     }
 
     public void intakeGripperCube() {
         gripperWheelMotor.moveAtPercent(-0.9);
-      //  gripperClawMotor.moveToPosition_mechanismRotations(0);
+        gripperClawMotor.moveToPosition_mechanismRotations(0.61);
     }
 
     public void stopGripper() {
         gripperWheelMotor.moveAtPercent(0);
+          gripperClawMotor.moveAtPercent(0);
     }
 
 
@@ -147,10 +173,8 @@ public class ArmControl implements HasLogLoop {
 
     public void zero() {
         lowerArm.forceOffset_mechanismRotations(0);
-        gripperClawMotor.forceOffset_mechanismRotations(0);
+
     }
-
-
 
     public double getErrorQuantity() {
         return 1;
@@ -158,7 +182,10 @@ public class ArmControl implements HasLogLoop {
 
     @Override
     public void logLoop() {
-        debuggable.log("abs-angle", upperArm.getAbsoluteEncoder_rotations());
+        debuggable.log("abs-angle-upper-arm", upperArm.getAbsoluteEncoder_rotations());
+        debuggable.log("claw-abs-encoder-pos",clawAbsEncoder.getAbsoluteAngle());
     }
+
+
 
 }

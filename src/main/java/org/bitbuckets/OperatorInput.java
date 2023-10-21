@@ -100,7 +100,7 @@ public class OperatorInput {
     }
 
     public boolean isManualDrivePressed() {
-        return driveControl.getRawButtonPressed(XboxController.Button.kX.value);
+        return driveControl.getRawButtonPressed(XboxController.Button.kA.value);
     }
 
     //OPERATOR
@@ -179,7 +179,7 @@ public class OperatorInput {
         return operatorControl.getRawButton(XboxController.Button.kRightBumper.value);
     }
 
-    public boolean outtakeGripper() {
+    public boolean openGripper() {
         return operatorControl.getRawButton(XboxController.Button.kLeftBumper.value);
     }
 
@@ -192,10 +192,8 @@ public class OperatorInput {
     }
 
 
-    public boolean isLoadPresed() {
-        return operatorControl.getRawButtonPressed(XboxController.Button.kX.value);
-    }
-    public boolean openGripper() {
+
+    public boolean holdGripper() {
         return operatorControl.getRawButton(XboxController.Button.kY.value);
     }
 

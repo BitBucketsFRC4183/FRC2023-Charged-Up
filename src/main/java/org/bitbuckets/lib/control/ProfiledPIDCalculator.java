@@ -2,10 +2,13 @@ package org.bitbuckets.lib.control;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import org.bitbuckets.lib.core.HasLifecycle;
+import org.bitbuckets.lib.core.HasLogLoop;
+import org.bitbuckets.lib.core.HasLoop;
 import org.bitbuckets.lib.log.ILoggable;
 import org.bitbuckets.lib.tune.IValueTuner;
 
-public class ProfiledPIDCalculator implements Runnable, IPIDCalculator {
+public class ProfiledPIDCalculator implements HasLoop, HasLifecycle, IPIDCalculator {
 
     final ProfiledPIDController profiledPIDController;
     final IValueTuner<Double> p;
@@ -31,7 +34,7 @@ public class ProfiledPIDCalculator implements Runnable, IPIDCalculator {
     }
 
     @Override
-    public void run() {
+    public void loop() {
         if (p.hasUpdated()) {
             profiledPIDController.setP(p.consumeValue());
         }
@@ -72,4 +75,8 @@ public class ProfiledPIDCalculator implements Runnable, IPIDCalculator {
     public <T> T rawAccess(Class<T> clazz) throws UnsupportedOperationException {
         return clazz.cast(profiledPIDController);
     }
+
+    //TODO this shouldn't be zero but the encoder's actual value, but we dont have access to  that here. Need to fix this in the future.
+
+
 }

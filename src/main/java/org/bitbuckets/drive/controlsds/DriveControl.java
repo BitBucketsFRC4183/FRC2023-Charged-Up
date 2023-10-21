@@ -31,7 +31,7 @@ public class DriveControl implements IDriveControl, HasLogLoop {
 
 
     //Speed factor that edits the max velocity and max angular velocity
-    double speedModifier = 0.75;
+    double speedModifier = 1;
 
     List<ISwerveModule> modules;
 
@@ -75,6 +75,15 @@ public class DriveControl implements IDriveControl, HasLogLoop {
                 new SwerveModuleState(0, Rotation2d.fromDegrees(0)),
                 new SwerveModuleState(0, Rotation2d.fromDegrees(0)),
                 new SwerveModuleState(0, Rotation2d.fromDegrees(0))
+        });
+    }
+    @Override
+    public void stopSticky() {
+        doDriveWithStates(new SwerveModuleState[]{
+                new SwerveModuleState(0, Rotation2d.fromDegrees(45)),
+                new SwerveModuleState(0, Rotation2d.fromDegrees(-45)),
+                new SwerveModuleState(0, Rotation2d.fromDegrees(-45)),
+                new SwerveModuleState(0, Rotation2d.fromDegrees(45))
         });
     }
 

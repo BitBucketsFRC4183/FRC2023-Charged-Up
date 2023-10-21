@@ -7,6 +7,7 @@ import org.bitbuckets.lib.log.IDebuggable;
 import org.bitbuckets.lib.tune.IValueTuner;
 
 import java.util.Optional;
+import java.util.Timer;
 
 public class AutoSubsystem implements HasLogLoop, HasLifecycle {
 
